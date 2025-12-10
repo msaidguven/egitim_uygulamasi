@@ -18,9 +18,43 @@ class AuthViewModel extends ChangeNotifier {
     });
   }
 
-  Future<bool> signUp(String email, String password) async {
+  Future<bool> signUp({
+    required String email,
+    required String password,
+    required String fullName,
+    required String username,
+    required String gender,
+    DateTime? birthDate,
+  }) async {
     return _handleAuth(() async {
-      await supabase.auth.signUp(email: email, password: password);
+      // 1. Adım: Supabase Auth ile kullanıcıyı oluştur.
+      final AuthResponse res = await supabase.auth.signUp(
+        email: email,
+        password: password,
+      );
+
+      // 2. Adım: Kullanıcı başarıyla oluşturulduysa, 'profiles' tablosuna ek bilgileri kaydet.
+      if (res.user != null) {
+        // Supabase'de tarih formatı 'YYYY-MM-DD' olmalıdır.
+        final String? birthDateString = birthDate
+            ?.toIso8601String()
+            .split('T')
+            .first;
+
+        await supabase.from('profiles').insert({
+          'id': res.user!.id, // Auth kullanıcısının ID'si ile eşleştir
+          'full_name': fullName,
+          'username': username,
+          'gender': gender,
+          'birth_date': birthDateString,
+        });
+      } else {
+        // Beklenmedik bir durum, kullanıcı null geldi.
+        // _handleAuth bunu yakalayacaktır, ancak yine de bir istisna fırlatmak iyi bir pratiktir.
+        throw const AuthException(
+          'Kullanıcı oluşturulamadı. Lütfen tekrar deneyin.',
+        );
+      }
     });
   }
 
@@ -50,6 +84,9 @@ class AuthViewModel extends ChangeNotifier {
       return true;
     } on AuthException catch (e) {
       _errorMessage = e.message;
+      return false;
+    } on PostgrestException catch (e) {
+      _errorMessage = 'Veritabanı hatası: ${e.message}';
       return false;
     } finally {
       _isLoading = false;

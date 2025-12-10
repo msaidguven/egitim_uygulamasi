@@ -14,7 +14,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final AuthViewModel _viewModel = AuthViewModel();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _fullNameController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? _selectedGender;
+  DateTime? _selectedDate;
 
   @override
   void initState() {
@@ -35,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-              'Kayıt başarılı! Lütfen e-postanızı kontrol ederek hesabınızı onaylayın.',
+              'Kayıt başarılı! Giriş ekranına yönlendiriliyorsunuz...',
             ),
             backgroundColor: Colors.green,
           ),
@@ -54,6 +59,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _fullNameController.dispose();
+    _usernameController.dispose();
     _viewModel.dispose();
     super.dispose();
   }
@@ -61,8 +69,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
       await _viewModel.signUp(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        fullName: _fullNameController.text.trim(),
+        username: _usernameController.text.trim(),
+        gender: _selectedGender!, // Validator null olmamasını garantiliyor
+        birthDate: _selectedDate,
       );
     }
   }
@@ -71,36 +83,125 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Kayıt Ol')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'E-posta'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) =>
-                    value!.isEmpty ? 'Lütfen e-posta girin' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Şifre'),
-                obscureText: true,
-                validator: (value) =>
-                    value!.length < 6 ? 'Şifre en az 6 karakter olmalı' : null,
-              ),
-              const SizedBox(height: 24),
-              _viewModel.isLoading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: _signUp,
-                      child: const Text('Kayıt Ol'),
+      body: SingleChildScrollView(
+        // Alanlar ekrana sığmazsa kaydırma özelliği ekler
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextFormField(
+                  controller: _fullNameController,
+                  decoration: const InputDecoration(labelText: 'İsim Soyisim'),
+                  validator: (value) => value!.isEmpty
+                      ? 'Lütfen isminizi ve soyisminizi girin'
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(labelText: 'Kullanıcı Adı'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Lütfen bir kullanıcı adı girin' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'E-posta'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Lütfen e-posta girin' : null,
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: _selectedGender,
+                  decoration: const InputDecoration(labelText: 'Cinsiyet'),
+                  hint: const Text('Seçiniz'),
+                  items: ['Kadın', 'Erkek', 'Belirtmek İstemiyorum']
+                      .map(
+                        (label) =>
+                            DropdownMenuItem(child: Text(label), value: label),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGender = value;
+                    });
+                  },
+                  validator: (value) =>
+                      value == null ? 'Lütfen cinsiyet seçin' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Doğum Tarihi (İsteğe Bağlı)',
+                    hintText: _selectedDate == null
+                        ? 'Tarih seçmek için dokunun'
+                        : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+                    suffixIcon: const Icon(Icons.calendar_today),
+                  ),
+                  onTap: () async {
+                    final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: _selectedDate ?? DateTime.now(),
+                      firstDate: DateTime(1920),
+                      lastDate: DateTime.now(),
+                    );
+                    if (picked != null && picked != _selectedDate) {
+                      setState(() {
+                        _selectedDate = picked;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Şifre'),
+                  obscureText: true,
+                  validator: (value) => value!.length < 6
+                      ? 'Şifre en az 6 karakter olmalı'
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Şifreyi Onayla',
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value != _passwordController.text) {
+                      return 'Şifreler eşleşmiyor';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 24),
+                _viewModel.isLoading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: _signUp,
+                        child: const Text('Kayıt Ol'),
+                      ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Zaten bir hesabın var mı?'),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Giriş Yap'),
                     ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
