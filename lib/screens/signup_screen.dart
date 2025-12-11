@@ -68,14 +68,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
-      await _viewModel.signUp(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-        fullName: _fullNameController.text.trim(),
-        username: _usernameController.text.trim(),
-        gender: _selectedGender!, // Validator null olmamasını garantiliyor
-        birthDate: _selectedDate,
-      );
+      final username = _usernameController.text.trim();
+
+      // Kullanıcı adının alınıp alınmadığını kontrol et
+      final isTaken = await _viewModel.isUsernameTaken(username);
+
+      if (!mounted) return;
+
+      if (isTaken) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Bu kullanıcı adı zaten alınmış. Lütfen farklı bir kullanıcı adı seçin.',
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else {
+        // Kullanıcı adı müsaitse kayıt işlemine devam et
+        await _viewModel.signUp(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+          fullName: _fullNameController.text.trim(),
+          username: username,
+          gender: _selectedGender!, // Validator null olmamasını garantiliyor
+          birthDate: _selectedDate,
+        );
+      }
     }
   }
 

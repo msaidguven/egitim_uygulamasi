@@ -70,6 +70,22 @@ class AuthViewModel extends ChangeNotifier {
     });
   }
 
+  /// Verilen kullanıcı adının veritabanında mevcut olup olmadığını kontrol eder.
+  Future<bool> isUsernameTaken(String username) async {
+    try {
+      final List<dynamic> data = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('username', username)
+          .limit(1);
+      // Eğer data listesi boş değilse, bu kullanıcı adı zaten var demektir.
+      return data.isNotEmpty;
+    } catch (e) {
+      // Bir hata oluşursa, işlemin devam etmesini engellemek için istisna fırlat.
+      throw Exception('Kullanıcı adı kontrol edilirken bir hata oluştu: $e');
+    }
+  }
+
   Future<void> signOut() async {
     await supabase.auth.signOut();
   }
