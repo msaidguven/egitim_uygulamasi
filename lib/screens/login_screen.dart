@@ -51,15 +51,10 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordController.text.trim(),
       );
 
-      // Giriş başarılıysa ve widget hala ekrandaysa, başarı mesajı göster.
-      // AuthGate zaten bizi ana sayfaya yönlendirecek.
+      // Giriş başarılıysa ve widget hala ağaçtaysa, LoginScreen'i kapat.
+      // Bu, kullanıcıyı ana ekrana geri döndürecektir.
       if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Başarıyla giriş yaptınız!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+        Navigator.of(context).pop();
       }
     }
   }
