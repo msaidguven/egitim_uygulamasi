@@ -1,5 +1,6 @@
 // lib/screens/subjects_screen.dart
 
+import 'package:egitim_uygulamasi/screens/outcomes_screen.dart';
 import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:egitim_uygulamasi/viewmodels/subject_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,20 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
             subtitle: subject.description != null
                 ? Text(subject.description!)
                 : null,
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OutcomesScreen(
+                    subjectId: subject.id,
+                    gradeId: widget.grade.id,
+                    gradeName: widget.grade.name,
+                    subjectName: subject.name,
+                  ),
+                ),
+              );
+            },
           ),
         );
       },
