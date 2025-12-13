@@ -62,14 +62,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
         return Card(
           child: ListTile(
             // İkon verisi varsa göster, yoksa varsayılan bir ikon göster
-            leading: lesson.icon != null
-                ? Icon(
-                    IconData(
-                      int.parse(lesson.icon!),
-                      fontFamily: 'MaterialIcons',
-                    ),
-                  )
-                : const Icon(Icons.class_),
+            leading: _buildLessonIcon(lesson.icon),
             title: Text(lesson.name),
             subtitle: lesson.description != null
                 ? Text(lesson.description!)
@@ -92,5 +85,17 @@ class _LessonsScreenState extends State<LessonsScreen> {
         );
       },
     );
+  }
+
+  /// Ders ikonunu güvenli bir şekilde oluşturan yardımcı metot.
+  Widget _buildLessonIcon(String? iconData) {
+    if (iconData != null) {
+      final codePoint = int.tryParse(iconData);
+      if (codePoint != null) {
+        return Icon(IconData(codePoint, fontFamily: 'MaterialIcons'));
+      }
+    }
+    // Eğer ikon verisi yoksa veya geçersizse varsayılan ikonu döndür.
+    return const Icon(Icons.class_);
   }
 }

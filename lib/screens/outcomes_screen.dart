@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OutcomesScreen extends StatefulWidget {
-  final int subjectId;
+  final int lessonId;
   final int gradeId;
   final String gradeName;
-  final String subjectName;
+  final String lessonName;
 
   const OutcomesScreen({
     super.key,
-    required this.subjectId,
+    required this.lessonId,
     required this.gradeId,
     required this.gradeName,
-    required this.subjectName,
+    required this.lessonName,
   });
 
   @override
@@ -23,7 +23,7 @@ class OutcomesScreen extends StatefulWidget {
 
 class _OutcomesScreenState extends State<OutcomesScreen> {
   PageController? _pageController;
-  late final Future<List<int>> _weeksFuture;
+  late final Future<List<Map<String, dynamic>>> _weeksFuture;
 
   @override
   void initState() {
@@ -38,21 +38,20 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
   }
 
   /// Derse ait kazanımların bulunduğu hafta numaralarını çeker.
-  Future<List<int>> _fetchAvailableWeeks() async {
+  Future<List<Map<String, dynamic>>> _fetchAvailableWeeks() async {
     try {
-      // 1. Adımda oluşturduğumuz RPC fonksiyonunu çağırıyoruz.
-      // Bu yöntem hem daha temiz, hem daha güvenli, hem de daha performanslıdır.
+      // get_available_weeks RPC'sini çağırarak haftaları alıyoruz.
+      // Bu RPC'nin de yukarıdaki gibi güncellendiğini varsayıyoruz.
       final response = await Supabase.instance.client.rpc(
-        'get_available_weeks_for_subject',
-        params: {'p_subject_id': widget.subjectId},
+        'get_available_weeks_for_lesson',
+        params: {
+          'p_lesson_id': widget.lessonId,
+          'p_grade_id': widget.gradeId, // Artık doğrudan gradeId kullanıyoruz.
+        },
       );
 
       // Gelen veri List<dynamic> olduğu için önce doğru tipe çeviriyoruz.
-      final data = List<Map<String, dynamic>>.from(response);
-
-      // Gelen veriden sadece 'week_number' değerlerini alıp bir liste oluşturuyoruz.
-      final weeks = data.map<int>((e) => e['week_number'] as int).toList();
-      return weeks;
+      return List<Map<String, dynamic>>.from(response);
     } catch (e) {
       debugPrint("Haftalar çekilirken hata: $e");
       rethrow;
@@ -87,9 +86,8 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.subjectName)),
-      // _weeksFuture null ise yükleniyor göster, değilse FutureBuilder'ı çiz.
-      body: FutureBuilder<List<int>>(
+      appBar: AppBar(title: Text(widget.lessonName)),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _weeksFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -107,7 +105,10 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
             );
           }
 
-          final weeks = snapshot.data!;
+          // Gelen veriden sadece 'week_number' değerlerini alıp bir liste oluşturuyoruz.
+          final weeks = snapshot.data!
+              .map<int>((e) => e['week_number'] as int)
+              .toList();
 
           // Mevcut hafta numarasını dinamik başlangıç tarihine göre hesapla
           final schoolStart = _getCurrentAcademicYearStartDate();
@@ -189,9 +190,9 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
                   itemCount: weeks.length,
                   itemBuilder: (context, index) {
                     return WeekOutcomesView(
-                      subjectId: widget.subjectId,
+                      lessonId: widget.lessonId,
                       gradeId: widget.gradeId,
-                      subjectName: widget.subjectName,
+                      lessonName: widget.lessonName,
                       gradeName: widget.gradeName,
                       weekNumber: weeks[index],
                     );
@@ -223,17 +224,17 @@ const List<String> aylar = [
 
 /// Belirli bir haftanın kazanımlarını RPC ile çeken ve listeleyen Widget.
 class WeekOutcomesView extends StatelessWidget {
-  final int subjectId;
+  final int lessonId;
   final int gradeId;
-  final String subjectName;
+  final String lessonName;
   final String gradeName;
   final int weekNumber;
 
   const WeekOutcomesView({
     super.key,
-    required this.subjectId,
+    required this.lessonId,
     required this.gradeId,
-    required this.subjectName,
+    required this.lessonName,
     required this.gradeName,
     required this.weekNumber,
   });
@@ -244,8 +245,8 @@ class WeekOutcomesView extends StatelessWidget {
         .rpc(
           'get_outcomes_for_week', // Bu RPC'yi bir önceki adımda oluşturmuştuk.
           params: {
-            'p_subject_id': subjectId,
-            'p_grade_id': gradeId,
+            'p_lesson_id': lessonId,
+            'p_grade_id': gradeId, // Artık doğrudan gradeId kullanıyoruz.
             'p_week_number': weekNumber,
           },
         )
@@ -276,8 +277,8 @@ class WeekOutcomesView extends StatelessWidget {
             final outcome = outcomes[index];
             return _OutcomeCard(
               outcomeData: outcome,
-              subjectName: subjectName, // 'widget.' olmadan doğrudan kullan
-              gradeName: gradeName, // 'widget.' olmadan doğrudan kullan
+              lessonName: lessonName,
+              gradeName: gradeName,
             );
           },
         );
@@ -287,25 +288,73 @@ class WeekOutcomesView extends StatelessWidget {
 }
 
 /// Tasarıma uygun olarak her bir kazanım ve içeriğini gösteren ana kart.
-class _OutcomeCard extends StatelessWidget {
+class _OutcomeCard extends StatefulWidget {
   final Map<String, dynamic> outcomeData;
-  final String subjectName;
+  final String lessonName;
   final String gradeName;
 
   const _OutcomeCard({
     required this.outcomeData,
-    required this.subjectName,
+    required this.lessonName,
     required this.gradeName,
   });
 
   @override
+  State<_OutcomeCard> createState() => _OutcomeCardState();
+}
+
+class _OutcomeCardState extends State<_OutcomeCard> {
+  late final Future<Map<String, List<Map<String, dynamic>>>>
+  _topicDetailsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // Gelen outcome verisinden topic_id'yi alıyoruz.
+    // RPC'nizin bu ID'yi döndürdüğünden emin olun.
+    final topicId = widget.outcomeData['topic_id'] as int?;
+    _topicDetailsFuture = _fetchTopicDetails(topicId);
+  }
+
+  /// Konuya ait içerikleri ve videoları çeken metot.
+  Future<Map<String, List<Map<String, dynamic>>>> _fetchTopicDetails(
+    int? topicId,
+  ) async {
+    if (topicId == null) {
+      // Eğer topicId yoksa, boş bir map döndürerek hatayı engelle.
+      return {'contents': [], 'videos': []};
+    }
+
+    try {
+      // İçerikleri ve videoları aynı anda çekmek için Future.wait kullanıyoruz.
+      final results = await Future.wait([
+        Supabase.instance.client
+            .from('topic_contents')
+            .select()
+            .eq('topic_id', topicId),
+        Supabase.instance.client
+            .from('topic_videos')
+            .select()
+            .eq('topic_id', topicId),
+      ]);
+
+      return {
+        'contents': List<Map<String, dynamic>>.from(results[0]),
+        'videos': List<Map<String, dynamic>>.from(results[1]),
+      };
+    } catch (e) {
+      debugPrint("Konu detayları çekilirken hata: $e");
+      rethrow;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Verileri daha okunabilir değişkenlere atayalım
-    final outcomeDescription = outcomeData['outcome_description'] as String?;
-    final unitTitle = outcomeData['unit_title'] as String?;
-    final topicTitle = outcomeData['topic_title'] as String?;
-    final topicContent = outcomeData['topic_content'] as String?;
-    final videoUrl = outcomeData['topic_video_url'] as String?;
+    final outcomeDescription =
+        widget.outcomeData['outcome_description'] as String?;
+    final unitTitle = widget.outcomeData['unit_title'] as String?;
+    final topicTitle = widget.outcomeData['topic_title'] as String?;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 24.0),
@@ -330,38 +379,72 @@ class _OutcomeCard extends StatelessWidget {
               icon: Icons.account_tree_outlined,
               title: 'DERS HİYERARŞİSİ',
               child: _HierarchyView(
-                subject: subjectName,
+                lesson: widget.lessonName,
                 unit: unitTitle,
                 topic: topicTitle,
               ),
             ),
             const Divider(height: 32),
 
-            // 3. İÇERİKLER BÖLÜMÜ
-            _InfoSection(
-              icon: Icons.article_outlined,
-              title: 'İÇERİKLER',
-              content: topicContent,
-            ),
+            // 3. İÇERİKLER VE VİDEOLAR BÖLÜMÜ (FutureBuilder ile)
+            FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
+              future: _topicDetailsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return const Center(child: Text('İçerikler yüklenemedi.'));
+                }
+                final contents = snapshot.data?['contents'] ?? [];
+                final videos = snapshot.data?['videos'] ?? [];
 
-            // Video butonu (sadece videoUrl varsa gösterilir)
-            if (videoUrl != null && videoUrl.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    // TODO: url_launcher paketi ile videoyu aç
-                  },
-                  icon: const Icon(Icons.play_circle_outline),
-                  label: const Text('Konu Anlatım Videosu'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 44),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // İçerikler bölümü
+                    if (contents.isNotEmpty)
+                      _InfoSection(
+                        icon: Icons.article_outlined,
+                        title: 'İÇERİKLER',
+                        // Tüm içerikleri birleştirip gösterelim
+                        content: contents
+                            .map((c) => c['content'] as String)
+                            .join('\n\n'),
+                      ),
+
+                    // Videolar bölümü
+                    if (videos.isNotEmpty) ...[
+                      if (contents.isNotEmpty) const Divider(height: 32),
+                      _InfoSection(
+                        icon: Icons.video_collection_outlined,
+                        title: 'VİDEOLAR',
+                        child: Column(
+                          children: videos.map((video) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  // TODO: url_launcher ile videoyu aç
+                                },
+                                icon: const Icon(Icons.play_circle_outline),
+                                label: Text(
+                                  video['title'] as String? ??
+                                      'Konu Anlatım Videosu',
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(double.infinity, 44),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ],
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -416,11 +499,11 @@ class _InfoSection extends StatelessWidget {
 
 /// Ders -> Ünite -> Konu hiyerarşisini gösteren widget.
 class _HierarchyView extends StatelessWidget {
-  final String? subject;
+  final String? lesson;
   final String? unit;
   final String? topic;
 
-  const _HierarchyView({this.subject, this.unit, this.topic});
+  const _HierarchyView({this.lesson, this.unit, this.topic});
 
   Widget _buildHierarchyItem(String label, String? value, {int level = 0}) {
     return Padding(
@@ -445,7 +528,7 @@ class _HierarchyView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHierarchyItem('Ders', subject, level: 0),
+        _buildHierarchyItem('Ders', lesson, level: 0),
         _buildHierarchyItem('Ünite', unit, level: 1),
         _buildHierarchyItem('Konu', topic, level: 2),
       ],

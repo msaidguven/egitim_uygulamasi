@@ -1,26 +1,23 @@
-// lib/models/subject_model.dart
+// lib/models/lesson_model.dart
 
-class Subject {
+class Lesson {
   final int id;
-  final int? gradeId;
   final String name;
   final String? icon;
   final String? description;
   final int orderNo;
 
-  Subject({
+  Lesson({
     required this.id,
-    this.gradeId,
     required this.name,
     this.icon,
     this.description,
     required this.orderNo,
   });
 
-  factory Subject.fromMap(Map<String, dynamic> map) {
-    return Subject(
+  factory Lesson.fromMap(Map<String, dynamic> map) {
+    return Lesson(
       id: map['id'] as int,
-      gradeId: map['grade_id'] as int?,
       name: map['name'] as String,
       icon: map['icon'] as String?,
       description: map['description'] as String?,
