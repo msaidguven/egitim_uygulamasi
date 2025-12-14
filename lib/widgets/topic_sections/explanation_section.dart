@@ -1,12 +1,11 @@
 // lib/widgets/topic_sections/explanation_section.dart
 
 import 'package:egitim_uygulamasi/models/topic_content.dart';
-import 'package:egitim_uygulamasi/utils/html_style.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
 import 'package:flutter/material.dart';
 
-/// **Explanation Section:** Standard text with a bold title.
+/// 'Açıklama' türündeki içerikleri sade ve şık bir kart içinde gösteren widget.
 class ExplanationSection extends StatelessWidget {
   final TopicContent content;
   const ExplanationSection({super.key, required this.content});
@@ -15,25 +14,60 @@ class ExplanationSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Get the base styles and override the title style.
-    final titleStyle = getBaseHtmlStyle(context)
-      ..addAll({
-        "p": Style(
-          fontSize: FontSize(theme.textTheme.titleMedium?.fontSize ?? 16.0),
-          fontWeight: FontWeight.bold,
-        ),
-      });
+    // Başlık için özel HTML stili oluşturuyoruz.
+    final titleStyle = {
+      // 'p' etiketi için varsayılan boşlukları kaldırıp stil uyguluyoruz.
+      "p": Style(
+        margin: Margins.zero,
+        padding: HtmlPaddings.zero,
+        fontWeight: FontWeight.bold,
+        color: theme.primaryColor,
+      ),
+    };
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (content.title != null && content.title!.isNotEmpty) ...[
-          ContentRenderer(content: content.title!, style: titleStyle),
-          const SizedBox(height: 8.0), // Add spacing between title and content
+    return Card(
+      // Kartın etrafında hafif bir gölge ve yuvarlak köşeler
+      elevation: 1.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        side: BorderSide(color: Colors.grey.shade300, width: 0.5),
+      ),
+      clipBehavior: Clip.antiAlias, // Köşelerin düzgün görünmesini sağlar
+      margin: EdgeInsets.zero, // Üst widget'tan gelen boşlukları kullanır
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Başlık Bölümü
+          Container(
+            width: double.infinity,
+            color: theme.primaryColor.withOpacity(0.08),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 12.0,
+            ),
+            child: ContentRenderer(
+              // Varsa veritabanından gelen başlığı, yoksa 'Açıklama'yı kullan.
+              content: content.title ?? 'Açıklama',
+              style: titleStyle.map(
+                (key, value) => MapEntry(
+                  key,
+                  value.copyWith(
+                    // fontSize null olabileceğinden, ?? operatörü ile varsayılan bir değer (16.0) atıyoruz.
+                    fontSize: FontSize(
+                      theme.textTheme.titleMedium?.fontSize ?? 16.0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // İçerik Bölümü
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 16.0),
+            child: ContentRenderer(content: content.content),
+          ),
         ],
-        // Use the default style from ContentRenderer for the body
-        ContentRenderer(content: content.content),
-      ],
+      ),
     );
   }
 }

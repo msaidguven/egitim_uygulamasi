@@ -145,59 +145,42 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
             _pageController = PageController(initialPage: initialPageIndex);
           }
 
-          // Sayfa değişimlerini dinlemek için bir ValueNotifier kullanalım.
-          final currentPageNotifier = ValueNotifier<int>(initialPageIndex);
-
-          _pageController!.addListener(() {
-            if (_pageController!.page?.round() != currentPageNotifier.value) {
-              currentPageNotifier.value = _pageController!.page!.round();
-            }
-          });
-
           return Column(
             children: [
-              ValueListenableBuilder<int>(
-                valueListenable: currentPageNotifier,
-                builder: (context, currentPage, child) {
-                  final weekNum = weeks[currentPage];
-                  final (startDate, endDate) = _getWeekDateRange(weekNum);
-                  final formattedStartDate =
-                      '${startDate.day} ${aylar[startDate.month - 1]}';
-                  final formattedEndDate =
-                      '${endDate.day} ${aylar[endDate.month - 1]} ${endDate.year}';
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 12.0,
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          '$weekNum. Hafta',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '$formattedStartDate - $formattedEndDate',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: weeks.length,
                   itemBuilder: (context, index) {
-                    return WeekOutcomesView(
-                      lessonId: widget.lessonId,
-                      gradeId: widget.gradeId,
-                      lessonName: widget.lessonName,
-                      gradeName: widget.gradeName,
-                      weekNumber: weeks[index],
+                    final weekNum = weeks[index];
+                    final (startDate, endDate) = _getWeekDateRange(weekNum);
+                    final formattedStartDate =
+                        '${startDate.day} ${aylar[startDate.month - 1]}';
+                    final formattedEndDate =
+                        '${endDate.day} ${aylar[endDate.month - 1]} ${endDate.year}';
+
+                    // Her sayfa, kendi başlığını ve içeriğini içeren
+                    // dikey bir liste olacak.
+                    return ListView(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      children: [
+                        _WeekHeaderCard(
+                          weekNum: weekNum,
+                          startDate: formattedStartDate,
+                          endDate: formattedEndDate,
+                        ),
+                        const SizedBox(height: 8),
+                        WeekOutcomesView(
+                          lessonId: widget.lessonId,
+                          gradeId: widget.gradeId,
+                          lessonName: widget.lessonName,
+                          gradeName: widget.gradeName,
+                          weekNumber: weekNum,
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -205,6 +188,46 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// Hafta başlığını ve tarihini gösteren şık kart widget'ı.
+class _WeekHeaderCard extends StatelessWidget {
+  const _WeekHeaderCard({
+    required this.weekNum,
+    required this.startDate,
+    required this.endDate,
+  });
+
+  final int weekNum;
+  final String startDate;
+  final String endDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.only(bottom: 8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        child: Column(
+          children: [
+            Text(
+              '$weekNum. Hafta',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '$startDate - $endDate',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -273,8 +296,11 @@ class WeekOutcomesView extends StatelessWidget {
           );
         }
 
+        // WeekOutcomesView artık bir ListView içinde olduğu için
+        // kendi kaydırma özelliğini kapatmamız gerekiyor.
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: outcomes.length,
           itemBuilder: (context, index) {
             final outcome = outcomes[index];
@@ -282,7 +308,7 @@ class WeekOutcomesView extends StatelessWidget {
               outcomeData: outcome,
               lessonName: lessonName,
               gradeName: gradeName,
-              weekNumber: weekNumber, // Hafta numarasını doğrudan iletiyoruz
+              weekNumber: weekNumber,
             );
           },
         );

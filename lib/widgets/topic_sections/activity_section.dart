@@ -1,11 +1,11 @@
 // lib/widgets/topic_sections/activity_section.dart
 
-import 'package:flutter_html/flutter_html.dart';
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
-/// **Activity Section:** A task card with a call-to-action button.
+/// 'Etkinlik' türündeki içerikleri sade ve şık bir kart içinde gösteren widget.
 class ActivitySection extends StatelessWidget {
   final TopicContent content;
   const ActivitySection({super.key, required this.content});
@@ -13,55 +13,58 @@ class ActivitySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accentColor = theme.colorScheme.secondary;
+    final accentColor =
+        theme.colorScheme.secondary; // Etkinlikler için ikincil renk
 
-    final titleTextStyle = theme.textTheme.titleMedium;
-    final bodyTextStyle = theme.textTheme.bodyMedium;
-
+    // Başlık için özel HTML stili
     final titleStyle = {
       "p": Style(
-        fontSize: FontSize(titleTextStyle?.fontSize ?? 16.0),
+        margin: Margins.zero,
+        padding: HtmlPaddings.zero,
         fontWeight: FontWeight.bold,
         color: accentColor,
-      ),
-    };
-
-    final contentStyle = {
-      "p": Style(
-        fontSize: FontSize(bodyTextStyle?.fontSize ?? 14.0),
-        lineHeight: LineHeight.em(1.5),
+        fontSize: FontSize(theme.textTheme.titleMedium?.fontSize ?? 16.0),
       ),
     };
 
     return Card(
-      elevation: 1,
-      color: accentColor.withOpacity(0.05),
+      elevation: 1.0,
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: accentColor.withOpacity(0.2)),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.0),
+        side: BorderSide(color: accentColor.withOpacity(0.5), width: 0.5),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      clipBehavior: Clip.antiAlias,
+      margin: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Başlık Bölümü
+          Container(
+            width: double.infinity,
+            color: accentColor.withOpacity(0.08),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 12.0,
+            ),
+            child: Row(
               children: [
-                Icon(Icons.edit_note_rounded, color: accentColor),
+                Icon(Icons.edit_note_rounded, color: accentColor, size: 20),
                 const SizedBox(width: 8),
-                if (content.title != null && content.title!.isNotEmpty)
-                  Expanded(
-                    child: ContentRenderer(
-                      content: content.title!,
-                      style: titleStyle,
-                    ),
+                Expanded(
+                  child: ContentRenderer(
+                    content: content.title ?? 'Etkinlik',
+                    style: titleStyle,
                   ),
+                ),
               ],
             ),
-            const SizedBox(height: 12),
-            ContentRenderer(content: content.content, style: contentStyle),
-          ],
-        ),
+          ),
+          // İçerik Bölümü
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 16.0),
+            child: ContentRenderer(content: content.content),
+          ),
+        ],
       ),
     );
   }
