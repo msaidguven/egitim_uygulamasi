@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:egitim_uygulamasi/models/topic_content.dart'; // Bu satır zaten vardı, referans için burada.
+import 'package:egitim_uygulamasi/widgets/topic_section_renderer.dart';
+import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart'; // Bu import'u ekliyoruz
 
 class OutcomesScreen extends StatefulWidget {
   final int lessonId;
@@ -304,8 +307,7 @@ class _OutcomeCard extends StatefulWidget {
 }
 
 class _OutcomeCardState extends State<_OutcomeCard> {
-  late final Future<Map<String, List<Map<String, dynamic>>>>
-  _topicDetailsFuture;
+  late final Future<Map<String, List<dynamic>>> _topicDetailsFuture;
 
   @override
   void initState() {
@@ -317,9 +319,7 @@ class _OutcomeCardState extends State<_OutcomeCard> {
   }
 
   /// Konuya ait içerikleri ve videoları çeken metot.
-  Future<Map<String, List<Map<String, dynamic>>>> _fetchTopicDetails(
-    int? topicId,
-  ) async {
+  Future<Map<String, List<dynamic>>> _fetchTopicDetails(int? topicId) async {
     if (topicId == null) {
       // Eğer topicId yoksa, boş bir map döndürerek hatayı engelle.
       return {'contents': [], 'videos': []};
@@ -338,8 +338,16 @@ class _OutcomeCardState extends State<_OutcomeCard> {
             .eq('topic_id', topicId),
       ]);
 
+      final contents =
+          (results[0] as List)
+              .map(
+                (json) => TopicContent.fromJson(json as Map<String, dynamic>),
+              )
+              .toList()
+            ..sort((a, b) => a.orderNo.compareTo(b.orderNo));
+
       return {
-        'contents': List<Map<String, dynamic>>.from(results[0]),
+        'contents': contents,
         'videos': List<Map<String, dynamic>>.from(results[1]),
       };
     } catch (e) {
@@ -387,7 +395,7 @@ class _OutcomeCardState extends State<_OutcomeCard> {
             const Divider(height: 32),
 
             // 3. İÇERİKLER VE VİDEOLAR BÖLÜMÜ (FutureBuilder ile)
-            FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
+            FutureBuilder<Map<String, List<dynamic>>>(
               future: _topicDetailsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -396,7 +404,12 @@ class _OutcomeCardState extends State<_OutcomeCard> {
                 if (snapshot.hasError) {
                   return const Center(child: Text('İçerikler yüklenemedi.'));
                 }
-                final contents = snapshot.data?['contents'] ?? [];
+                // Gelen 'contents' listesini güvenli bir şekilde alıyoruz.
+                // _fetchTopicDetails metodu zaten List<TopicContent> döndürdüğü için
+                // burada doğrudan cast işlemi yapabiliriz.
+                final List<TopicContent> contents =
+                    snapshot.data?['contents'] as List<TopicContent>? ?? [];
+
                 final videos = snapshot.data?['videos'] ?? [];
 
                 return Column(
@@ -404,14 +417,7 @@ class _OutcomeCardState extends State<_OutcomeCard> {
                   children: [
                     // İçerikler bölümü
                     if (contents.isNotEmpty)
-                      _InfoSection(
-                        icon: Icons.article_outlined,
-                        title: 'İÇERİKLER',
-                        // Tüm içerikleri birleştirip gösterelim
-                        content: contents
-                            .map((c) => c['content'] as String)
-                            .join('\n\n'),
-                      ),
+                      _TopicContentView(contents: contents),
 
                     // Videolar bölümü
                     if (videos.isNotEmpty) ...[
@@ -452,6 +458,31 @@ class _OutcomeCardState extends State<_OutcomeCard> {
   }
 }
 
+/// Topic contents listesini alan ve her bir içeriği
+/// section_type'a göre uygun widget ile render eden widget.
+class _TopicContentView extends StatelessWidget {
+  final List<TopicContent> contents;
+  const _TopicContentView({super.key, required this.contents});
+
+  @override
+  Widget build(BuildContext context) {
+    return _InfoSection(
+      icon: Icons.article_outlined,
+      title: 'İÇERİKLER',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: contents.map((content) {
+          return Padding(
+            // Add spacing between content sections
+            padding: const EdgeInsets.only(top: 16.0),
+            child: buildTopicSection(content),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
 /// Başlık, ikon ve içerikten oluşan genel bir bölüm widget'ı.
 class _InfoSection extends StatelessWidget {
   final IconData icon;
@@ -486,11 +517,7 @@ class _InfoSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        if (content != null)
-          Text(
-            content!,
-            style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
-          ),
+        if (content != null) ContentRenderer(content: content!),
         if (child != null) child!,
       ],
     );
@@ -505,21 +532,10 @@ class _HierarchyView extends StatelessWidget {
 
   const _HierarchyView({this.lesson, this.unit, this.topic});
 
-  Widget _buildHierarchyItem(String label, String? value, {int level = 0}) {
+  Widget _buildHierarchyItem(String label, String? value) {
     return Padding(
-      padding: EdgeInsets.only(left: level * 16.0, top: 4, bottom: 4),
-      child: Text.rich(
-        TextSpan(
-          text: '$label: ',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-          children: [
-            TextSpan(
-              text: value ?? 'N/A',
-              style: const TextStyle(fontWeight: FontWeight.normal),
-            ),
-          ],
-        ),
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: ContentRenderer(content: '• $label: ${value ?? 'N/A'}'),
     );
   }
 
@@ -528,9 +544,9 @@ class _HierarchyView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHierarchyItem('Ders', lesson, level: 0),
-        _buildHierarchyItem('Ünite', unit, level: 1),
-        _buildHierarchyItem('Konu', topic, level: 2),
+        _buildHierarchyItem('Ders', lesson),
+        _buildHierarchyItem('Ünite', unit),
+        _buildHierarchyItem('Konu', topic),
       ],
     );
   }

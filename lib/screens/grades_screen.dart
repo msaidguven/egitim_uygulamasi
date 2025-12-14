@@ -1,5 +1,6 @@
 // lib/screens/grades_screen.dart
 
+import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
 import 'package:egitim_uygulamasi/screens/lessons_screen.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class _GradesScreenState extends State<GradesScreen> {
         final grade = _viewModel.grades[index];
         return Card(
           child: ListTile(
-            title: Text(grade.name),
+            title: ContentRenderer(content: grade.name),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.push(
