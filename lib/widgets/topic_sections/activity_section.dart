@@ -60,17 +60,6 @@ class ActivitySection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             ContentRenderer(content: content.content, style: contentStyle),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Implement activity action
-              },
-              icon: const Icon(Icons.play_circle_outline),
-              label: const Text('Etkinliği Başlat'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 44),
-              ),
-            ),
           ],
         ),
       ),

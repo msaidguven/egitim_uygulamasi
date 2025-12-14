@@ -1,5 +1,7 @@
 // lib/widgets/common/content_renderer.dart
 
+import 'package:egitim_uygulamasi/utils/html_style.dart';
+import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -19,6 +21,11 @@ class ContentRenderer extends StatelessWidget {
   Widget build(BuildContext context) {
     // Html widget parses the given 'data' string and builds
     // a widget tree that displays the formatted HTML content.
-    return Html(data: content, style: style ?? {});
+    // If no specific style is provided, it uses the base style from the theme.
+    return Html(
+      data: content,
+      style: style ?? getBaseHtmlStyle(context),
+      extensions: [const TableHtmlExtension()],
+    );
   }
 }

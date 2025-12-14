@@ -282,6 +282,7 @@ class WeekOutcomesView extends StatelessWidget {
               outcomeData: outcome,
               lessonName: lessonName,
               gradeName: gradeName,
+              weekNumber: weekNumber, // Hafta numarasını doğrudan iletiyoruz
             );
           },
         );
@@ -295,11 +296,13 @@ class _OutcomeCard extends StatefulWidget {
   final Map<String, dynamic> outcomeData;
   final String lessonName;
   final String gradeName;
+  final int weekNumber;
 
   const _OutcomeCard({
     required this.outcomeData,
     required this.lessonName,
     required this.gradeName,
+    required this.weekNumber,
   });
 
   @override
@@ -315,12 +318,15 @@ class _OutcomeCardState extends State<_OutcomeCard> {
     // RPC'den gelen 'topic_id'yi alıyoruz. Bu ID null olabilir.
     // _fetchTopicDetails metodu bu durumu kontrol edecektir.
     final topicId = widget.outcomeData['topic_id'] as int?;
-    _topicDetailsFuture = _fetchTopicDetails(topicId);
+    _topicDetailsFuture = _fetchTopicDetails(topicId, widget.weekNumber);
   }
 
   /// Konuya ait içerikleri ve videoları çeken metot.
-  Future<Map<String, List<dynamic>>> _fetchTopicDetails(int? topicId) async {
-    if (topicId == null) {
+  Future<Map<String, List<dynamic>>> _fetchTopicDetails(
+    int? topicId,
+    int? weekNumber,
+  ) async {
+    if (topicId == null || weekNumber == null) {
       // Eğer topicId yoksa, sorgu yapmadan boş dön.
       return {'contents': [], 'videos': []};
     }
@@ -331,6 +337,7 @@ class _OutcomeCardState extends State<_OutcomeCard> {
         Supabase.instance.client
             .from('topic_contents')
             .select()
+            .eq('display_week', weekNumber)
             .eq('topic_id', topicId) // 'outcome_id' yerine 'topic_id' kullan
             .order('order_no', ascending: true),
         Supabase.instance.client
@@ -401,11 +408,14 @@ class _OutcomeCardState extends State<_OutcomeCard> {
                 if (snapshot.hasError) {
                   return const Center(child: Text('İçerikler yüklenemedi.'));
                 }
-                // Gelen 'contents' listesini güvenli bir şekilde alıyoruz.
-                // _fetchTopicDetails metodu zaten List<TopicContent> döndürdüğü için
-                // burada doğrudan cast işlemi yapabiliriz.
+                // Gelen 'contents' listesini güvenli bir şekilde TopicContent listesine dönüştürüyoruz.
+                // `snapshot.data?['contents']` bir `List<dynamic>` döndürür.
+                // Bu listeyi `map` ile gezip her bir elemanı `TopicContent.fromJson` ile oluşturuyoruz.
                 final List<TopicContent> contents =
-                    snapshot.data?['contents'] as List<TopicContent>? ?? [];
+                    (snapshot.data?['contents'] as List<dynamic>?)
+                        ?.map((item) => item as TopicContent)
+                        .toList() ??
+                    [];
 
                 final videos = snapshot.data?['videos'] ?? [];
 
