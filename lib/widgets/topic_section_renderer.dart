@@ -7,62 +7,24 @@ import 'package:egitim_uygulamasi/widgets/topic_sections/explanation_section.dar
 import 'package:egitim_uygulamasi/widgets/topic_sections/intro_section.dart';
 import 'package:egitim_uygulamasi/widgets/topic_sections/summary_section.dart';
 import 'package:flutter/material.dart';
-import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
 
 /// Returns a specific widget based on the `sectionType` of the [TopicContent].
 ///
 /// This function acts as a widget factory, mapping a data type to a UI component.
 Widget buildTopicSection(TopicContent item) {
-  Widget sectionWidget;
   switch (item.sectionType) {
     case 'intro':
-      sectionWidget = IntroSection(content: item.content, title: item.title);
-      break;
+      return IntroSection(content: item);
     case 'explanation':
-      sectionWidget = ExplanationSection(
-        title: item.title,
-        content: item.content,
-      );
-      break;
+      return ExplanationSection(content: item);
     case 'example':
-      sectionWidget = ExampleSection(title: item.title, content: item.content);
-      break;
+      return ExampleSection(content: item);
     case 'summary':
-      sectionWidget = SummarySection(title: item.title, content: item.content);
-      break;
+      return SummarySection(content: item);
     case 'activity':
-      sectionWidget = ActivitySection(title: item.title, content: item.content);
-      break;
+      return ActivitySection(content: item);
     default:
       // A fallback widget for any unknown or unhandled section types.
-      sectionWidget = ExplanationSection(
-        title: item.title,
-        content: item.content,
-      );
-      break;
+      return ExplanationSection(content: item);
   }
-
-  // Eğer section 'intro' ise ve 'displayWeek' varsa, bir rozet ekle.
-  if (item.sectionType == 'intro' && item.displayWeek != null) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            color: Colors.teal.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: ContentRenderer(
-            content: 'HAFTA ${item.displayWeek}',
-            // Note: Specific styling from Text is now handled by ContentRenderer's theme usage.
-          ),
-        ),
-        const SizedBox(height: 16),
-        sectionWidget,
-      ],
-    );
-  }
-
-  return sectionWidget;
 }

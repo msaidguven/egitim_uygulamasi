@@ -1,31 +1,24 @@
 // lib/widgets/common/content_renderer.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 /// A centralized widget for rendering content strings.
 ///
-/// This widget normalizes the input text by handling escaped newline characters
-/// and renders it using a standard `Text` widget. It is designed to be
-/// easily swappable with other renderers, such as a Markdown renderer,
-/// in the future without requiring changes to the widgets that use it.
+/// This widget uses the `flutter_html` package to parse and render HTML
+/// content. It can handle various HTML tags like headings, paragraphs, and lists.
+/// It is designed to be easily swappable with other renderers in the future
+/// without requiring changes to the widgets that use it.
 class ContentRenderer extends StatelessWidget {
   final String content;
+  final Map<String, Style>? style;
 
-  const ContentRenderer({super.key, required this.content});
-
-  /// Normalizes the content text by replacing escaped newline characters with actual line breaks.
-  String _formatContentText(String text) {
-    return text.replaceAll(r'\n', '\n');
-  }
+  const ContentRenderer({super.key, required this.content, this.style});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Text(
-      _formatContentText(content),
-      style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
-      softWrap: true,
-    );
+    // Html widget parses the given 'data' string and builds
+    // a widget tree that displays the formatted HTML content.
+    return Html(data: content, style: style ?? {});
   }
 }

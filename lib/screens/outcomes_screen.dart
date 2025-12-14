@@ -312,8 +312,8 @@ class _OutcomeCardState extends State<_OutcomeCard> {
   @override
   void initState() {
     super.initState();
-    // Gelen outcome verisinden topic_id'yi alıyoruz.
-    // RPC'nizin bu ID'yi döndürdüğünden emin olun.
+    // RPC'den gelen 'topic_id'yi alıyoruz. Bu ID null olabilir.
+    // _fetchTopicDetails metodu bu durumu kontrol edecektir.
     final topicId = widget.outcomeData['topic_id'] as int?;
     _topicDetailsFuture = _fetchTopicDetails(topicId);
   }
@@ -321,30 +321,27 @@ class _OutcomeCardState extends State<_OutcomeCard> {
   /// Konuya ait içerikleri ve videoları çeken metot.
   Future<Map<String, List<dynamic>>> _fetchTopicDetails(int? topicId) async {
     if (topicId == null) {
-      // Eğer topicId yoksa, boş bir map döndürerek hatayı engelle.
+      // Eğer topicId yoksa, sorgu yapmadan boş dön.
       return {'contents': [], 'videos': []};
     }
 
     try {
-      // İçerikleri ve videoları aynı anda çekmek için Future.wait kullanıyoruz.
+      // İçerikleri ve videoları topic_id kullanarak aynı anda çekiyoruz.
       final results = await Future.wait([
         Supabase.instance.client
             .from('topic_contents')
             .select()
-            .eq('topic_id', topicId),
+            .eq('topic_id', topicId) // 'outcome_id' yerine 'topic_id' kullan
+            .order('order_no', ascending: true),
         Supabase.instance.client
             .from('topic_videos')
             .select()
-            .eq('topic_id', topicId),
+            .eq('topic_id', topicId), // Videoları da topic_id ile çek
       ]);
 
-      final contents =
-          (results[0] as List)
-              .map(
-                (json) => TopicContent.fromJson(json as Map<String, dynamic>),
-              )
-              .toList()
-            ..sort((a, b) => a.orderNo.compareTo(b.orderNo));
+      final contents = (results[0] as List)
+          .map((json) => TopicContent.fromJson(json as Map<String, dynamic>))
+          .toList();
 
       return {
         'contents': contents,
@@ -469,15 +466,17 @@ class _TopicContentView extends StatelessWidget {
     return _InfoSection(
       icon: Icons.article_outlined,
       title: 'İÇERİKLER',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: contents.map((content) {
-          return Padding(
-            // Add spacing between content sections
-            padding: const EdgeInsets.only(top: 16.0),
-            child: buildTopicSection(content),
-          );
-        }).toList(),
+      // Use ListView.separated for performance and clean separation.
+      // It builds items lazily as they scroll into view.
+      child: ListView.separated(
+        itemCount: contents.length,
+        shrinkWrap: true, // Important for nesting in a Column
+        physics: const NeverScrollableScrollPhysics(), // Let the parent scroll
+        itemBuilder: (context, index) {
+          return buildTopicSection(contents[index]);
+        },
+        separatorBuilder: (context, index) =>
+            const SizedBox(height: 24.0), // Space between sections
       ),
     );
   }
@@ -517,8 +516,12 @@ class _InfoSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        if (content != null) ContentRenderer(content: content!),
-        if (child != null) child!,
+        // Render either the content string or the child widget, but not both.
+        // If a child widget is provided, it takes precedence.
+        child ??
+            (content != null
+                ? ContentRenderer(content: content!)
+                : const SizedBox.shrink()),
       ],
     );
   }
