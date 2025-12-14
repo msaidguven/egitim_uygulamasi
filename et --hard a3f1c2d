@@ -1,0 +1,14 @@
+[33mff2135a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: reset: moving to HEAD~1
+[33m7fa0662[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{1}: commit: Tablo iyileştirmeleri öncesi stabil sürüm
+[33mff2135a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{2}: commit: feat: Konu içeriklerini HTML olarak render etme
+[33m6bcc5b9[m HEAD@{3}: commit: Refactor: İçerik gösterimini ContentRenderer ile merkezileştir
+[33m3271301[m HEAD@{4}: Branch: renamed refs/heads/main to refs/heads/main
+[33m3271301[m HEAD@{6}: commit: Initial commit
+[33md1e2e8c[m HEAD@{7}: reset: moving to HEAD
+[33md1e2e8c[m HEAD@{8}: commit: Kazanımlar sayfası tasarımı ve dinamik hafta hesaplama eklendi
+[33m791c1a3[m HEAD@{9}: reset: moving to HEAD
+[33m791c1a3[m HEAD@{10}: commit: feat: Add bottom navigation and refactor core structure
+[33mf1112f9[m HEAD@{11}: commit: feat: Kullanıcı adı mevcut mu kontrolü ekle
+[33m1e169bb[m HEAD@{12}: commit: feat: Kayıt sırasında kullanıcı profili oluşturma eklendi
+[33m3f6f5f5[m HEAD@{13}: reset: moving to HEAD
+[33m3f6f5f5[m HEAD@{14}: commit (initial): feat: Implement authentication and category listing with MVVM
