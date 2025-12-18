@@ -34,6 +34,25 @@ class ProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Kullanıcının 'admin' rolüne sahip olup olmadığını kontrol eder.
+  /// Kullanıcı oturumu yoksa veya rol bilgisi alınamazsa `false` döner.
+  Future<bool> isAdmin() async {
+    try {
+      if (supabase.auth.currentUser == null) return false;
+      final response = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', supabase.auth.currentUser!.id)
+          .single();
+      final role = response['role'] as String?;
+      return role == 'admin';
+    } catch (e) {
+      // Hata durumunda loglama yapılabilir.
+      debugPrint('Admin kontrolünde hata: $e');
+      return false; // Hata durumunda varsayılan olarak false döndür.
+    }
+  }
+
   Future<bool> updateProfile(Map<String, dynamic> data) async {
     _isLoading = true;
     _errorMessage = null;

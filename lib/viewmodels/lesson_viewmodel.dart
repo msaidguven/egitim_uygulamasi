@@ -13,29 +13,19 @@ class LessonViewModel extends ChangeNotifier {
   List<Lesson> get lessons => _lessons;
   String? get errorMessage => _errorMessage;
 
-  Future<void> fetchLessonsForGrade(String gradeName) async {
+  Future<void> fetchLessonsForGrade(int gradeId) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
-    // gradeName'den (örn: "5. Sınıf") sayısal değeri (5) çıkaralım.
-    int? gradeNumber;
-    gradeNumber = int.tryParse(gradeName.split('.').first);
-
-    // Eğer gradeName'den sayısal bir değer çıkaramazsak, hata verip işlemi durduralım.
-    if (gradeNumber == null) {
-      _errorMessage = "Geçersiz sınıf formatı: $gradeName";
-      _isLoading = false;
-      notifyListeners();
-      return;
-    }
-
     try {
       // lesson_grades tablosu üzerinden, belirtilen sınıf numarasına sahip dersleri çekiyoruz.
+      // Hata düzeltildi: 'grade' kolonu 'grade_id' olarak güncellendi.
+      // Metod artık doğrudan 'gradeId' parametresi alıyor.
       final response = await supabase
           .from('lesson_grades')
           .select('lessons!inner(*)') // !inner belirsizliği giderir
-          .eq('grade', gradeNumber)
+          .eq('grade_id', gradeId)
           .order('order_no', referencedTable: 'lessons', ascending: true);
 
       // Gelen veri `[{'lessons': {...}}, ...]` formatında olacağı için 'lessons' anahtarını alıyoruz.

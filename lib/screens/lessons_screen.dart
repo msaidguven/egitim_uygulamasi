@@ -23,8 +23,8 @@ class _LessonsScreenState extends State<LessonsScreen> {
     _viewModel.addListener(() {
       if (mounted) setState(() {});
     });
-    // Artık sadece seçilen sınıfa ait dersleri çekiyoruz.
-    _viewModel.fetchLessonsForGrade(widget.grade.name);
+    // Hata düzeltildi: Metod artık String (name) yerine int (id) bekliyor.
+    _viewModel.fetchLessonsForGrade(widget.grade.id!);
   }
 
   @override
@@ -61,19 +61,17 @@ class _LessonsScreenState extends State<LessonsScreen> {
         final lesson = _viewModel.lessons[index];
         return Card(
           child: ListTile(
-            // İkon verisi varsa göster, yoksa varsayılan bir ikon göster
-            leading: _buildLessonIcon(lesson.icon),
+            // Hata düzeltildi: lesson.icon yerine varsayılan ikon kullanılıyor.
+            leading: const Icon(Icons.class_),
             title: Text(lesson.name),
-            subtitle: lesson.description != null
-                ? Text(lesson.description!)
-                : null,
+            // Hata düzeltildi: lesson.description alanı kaldırıldı.
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => OutcomesScreen(
-                    gradeId: widget.grade.id,
+                    gradeId: widget.grade.id!,
                     lessonId: lesson.id,
                     gradeName: widget.grade.name,
                     lessonName: lesson.name,

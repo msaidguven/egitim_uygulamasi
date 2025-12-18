@@ -138,12 +138,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   value: _selectedGender,
                   decoration: const InputDecoration(labelText: 'Cinsiyet'),
                   hint: const Text('Seçiniz'),
-                  items: ['Kadın', 'Erkek', 'Belirtmek İstemiyorum']
-                      .map(
-                        (label) =>
-                            DropdownMenuItem(child: Text(label), value: label),
-                      )
-                      .toList(),
+                  // Veritabanı şemasındaki CHECK kısıtlamasına ('Kadın', 'Erkek', 'Diğer') uyumlu hale getirildi.
+                  // DB şeması güncellendi: CHECK ('male', 'female', 'other')
+                  // Hatalı .map() çağrısı kaldırılarak liste doğrudan kullanıldı.
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'female', // DB'ye 'female' gidecek
+                      child: Text('Kadın'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'male',
+                      child: Text('Erkek'),
+                    ), // DB'ye 'male' gidecek
+                    DropdownMenuItem(
+                      value: 'other', // DB'ye 'other' gidecek
+                      child: Text('Belirtmek İstemiyorum'),
+                    ),
+                  ],
                   onChanged: (value) {
                     setState(() {
                       _selectedGender = value;

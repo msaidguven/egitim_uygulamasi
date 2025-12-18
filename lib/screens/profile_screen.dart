@@ -1,8 +1,9 @@
 // lib/screens/profile_screen.dart
 
-import 'package:egitim_uygulamasi/main.dart';
+import 'package:egitim_uygulamasi/admin/admin_auth_gate.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,6 +14,8 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileViewModel _viewModel = ProfileViewModel();
+  final _supabaseClient = Supabase.instance.client;
+  bool _isAdmin = false;
 
   @override
   void initState() {
@@ -20,7 +23,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _viewModel.addListener(() {
       if (mounted) setState(() {});
     });
-    _viewModel.fetchProfile();
+    _loadProfileAndCheckAdmin();
+  }
+
+  Future<void> _loadProfileAndCheckAdmin() async {
+    await _viewModel.fetchProfile();
+    // fetchProfile'dan sonra profil bilgisi doluysa rol kontrolü yap
+    if (_viewModel.profile != null) {
+      final isAdmin = await _viewModel.isAdmin();
+      // mounted kontrolü ile widget'ın hala ağaçta olduğundan emin ol
+      if (mounted) setState(() => _isAdmin = isAdmin);
+    }
   }
 
   @override
@@ -86,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = supabase.auth.currentUser;
+    final user = _supabaseClient.auth.currentUser;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Profilim')),
@@ -143,6 +156,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             subtitle: const Text('E-posta'),
           ),
           const Spacer(), // Boşlukları doldurur
+          // Admin paneli butonu (sadece admin ise gösterilir)
+          if (_isAdmin)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _openAdminPanel,
+                  icon: const Icon(Icons.admin_panel_settings),
+                  label: const Text('Admin Paneline Git'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigo,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
@@ -155,5 +185,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _openAdminPanel() async {
+    // url_launcher kullanmak yerine AdminAuthGate'i yeni bir sayfa olarak açıyoruz.
+    // Bu, admin panelini uygulama içinde tutar.
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const AdminAuthGate()));
   }
 }
