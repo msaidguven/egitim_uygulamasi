@@ -25,14 +25,21 @@ Map<String, Style> getBaseHtmlStyle(BuildContext context) {
       fontWeight: FontWeight.bold,
     ),
     "h2": Style(
-      fontSize: FontSize(textTheme.headlineMedium?.fontSize ?? 28.0),
+      fontSize: FontSize(textTheme.titleLarge?.fontSize ?? 22.0),
       fontWeight: FontWeight.bold,
       margin: Margins.only(top: 16, bottom: 8),
     ),
     "h3": Style(
-      fontSize: FontSize(textTheme.headlineSmall?.fontSize ?? 24.0),
+      fontSize: FontSize(textTheme.titleMedium?.fontSize ?? 16.0),
       fontWeight: FontWeight.bold,
       margin: Margins.only(top: 12, bottom: 6),
+    ),
+
+    "hr": Style(
+      height: Height(0), // No visible line
+      backgroundColor: Colors.transparent,
+      border: Border.all(width: 0, color: Colors.transparent), // No border
+      margin: Margins.only(top: 8.0, bottom: 24.0), // Just space
     ),
 
     // List styles

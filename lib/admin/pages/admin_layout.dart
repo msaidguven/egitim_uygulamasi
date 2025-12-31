@@ -18,16 +18,22 @@ class _AdminLayoutState extends State<AdminLayout> {
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       case 0:
-        context.go('/admin/lessons');
+        context.go(AdminRoutes.curriculum);
         break;
       case 1:
-        context.go('/admin/units');
+        context.go(AdminRoutes.lessons);
         break;
       case 2:
-        // context.go('/admin/topics'); // Sayfası oluşturulunca aktif edilecek
+        context.go(AdminRoutes.units);
         break;
       case 3:
-        context.go('/admin/outcomes');
+        context.go(AdminRoutes.topics);
+        break;
+      case 4:
+        context.go(AdminRoutes.outcomes);
+        break;
+      case 5: // New case for Smart Content Addition
+        context.go(AdminRoutes.smartContentAddition);
         break;
     }
   }
@@ -37,14 +43,18 @@ class _AdminLayoutState extends State<AdminLayout> {
     // Mevcut rotanın yolunu alıp hangi menünün seçili olduğunu belirleyelim.
     final String location = GoRouterState.of(context).uri.toString();
     int selectedIndex = 0;
-    if (location.startsWith(AdminRoutes.lessons)) {
+    if (location.startsWith(AdminRoutes.curriculum)) {
       selectedIndex = 0;
-    } else if (location.startsWith(AdminRoutes.units)) {
+    } else if (location.startsWith(AdminRoutes.lessons)) {
       selectedIndex = 1;
-    } else if (location.startsWith(AdminRoutes.topics)) {
+    } else if (location.startsWith(AdminRoutes.units)) {
       selectedIndex = 2;
-    } else if (location.startsWith(AdminRoutes.outcomes)) {
+    } else if (location.startsWith(AdminRoutes.topics)) {
       selectedIndex = 3;
+    } else if (location.startsWith(AdminRoutes.outcomes)) {
+      selectedIndex = 4;
+    } else if (location.startsWith(AdminRoutes.smartContentAddition)) { // New else if for Smart Content Addition
+      selectedIndex = 5;
     }
 
     return Scaffold(

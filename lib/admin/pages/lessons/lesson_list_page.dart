@@ -41,11 +41,12 @@ class _LessonListPageState extends State<LessonListPage> {
       _lessonsError = null;
     });
     try {
-      // Oluşturduğumuz PostgreSQL fonksiyonunu RPC ile çağırıyoruz.
-      final response = await supabase.rpc(
-        'get_lessons_by_grade',
-        params: {'gid': gradeId},
-      );
+      // RPC yerine direkt sorgu kullanarak 'is_active' filtresi ekliyoruz.
+      final response = await supabase
+          .from('lessons')
+          .select('*, lesson_grades!inner(grade_id)')
+          .eq('lesson_grades.grade_id', gradeId)
+          .eq('is_active', true);
 
       // Gelen veri List<Map<String, dynamic>> formatındadır.
       // Bunu Lesson model listesine dönüştürüyoruz.

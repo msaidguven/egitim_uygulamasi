@@ -1,10 +1,18 @@
-// lib/screens/outcomes_screen.dart
-
+import 'package:egitim_uygulamasi/screens/questions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:egitim_uygulamasi/models/topic_content.dart'; // Bu satır zaten vardı, referans için burada.
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html_table/flutter_html_table.dart';
+import 'package:egitim_uygulamasi/models/topic_content.dart';
+import 'package:egitim_uygulamasi/services/unit_service.dart';
+import 'package:egitim_uygulamasi/services/topic_service.dart';
+import 'package:egitim_uygulamasi/services/outcome_service.dart';
+import 'package:egitim_uygulamasi/models/topic_model.dart';
+import 'package:egitim_uygulamasi/models/unit_model.dart';
+import 'package:egitim_uygulamasi/models/outcome_model.dart';
 import 'package:egitim_uygulamasi/widgets/topic_section_renderer.dart';
-import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart'; // Bu import'u ekliyoruz
+import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
+import 'package:egitim_uygulamasi/utils/html_style.dart';
 
 class OutcomesScreen extends StatefulWidget {
   final int lessonId;
@@ -27,6 +35,7 @@ class OutcomesScreen extends StatefulWidget {
 class _OutcomesScreenState extends State<OutcomesScreen> {
   PageController? _pageController;
   late final Future<List<Map<String, dynamic>>> _weeksFuture;
+  final _unitService = UnitService(); // Add service instance
 
   @override
   void initState() {
@@ -36,38 +45,32 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
 
   @override
   void dispose() {
-    _pageController?.dispose(); // Artık doğru çalışacak
+    _pageController?.dispose();
     super.dispose();
   }
 
-  /// Derse ait kazanımların bulunduğu hafta numaralarını çeker.
+  /// Derse ait içeriklerin bulunduğu hafta numaralarını çeker.
   Future<List<Map<String, dynamic>>> _fetchAvailableWeeks() async {
     try {
-      // get_available_weeks RPC'sini çağırarak haftaları alıyoruz.
-      // Bu RPC'nin de yukarıdaki gibi güncellendiğini varsayıyoruz.
-      final response = await Supabase.instance.client.rpc(
-        'get_available_weeks_for_lesson',
-        params: {
-          'p_lesson_id': widget.lessonId,
-          'p_grade_id': widget.gradeId, // Artık doğrudan gradeId kullanıyoruz.
-        },
+      final List<dynamic> result = await Supabase.instance.client.rpc(
+        'get_available_weeks',
+        params: {'p_grade_id': widget.gradeId, 'p_lesson_id': widget.lessonId},
       );
-
-      // Gelen veri List<dynamic> olduğu için önce doğru tipe çeviriyoruz.
-      return List<Map<String, dynamic>>.from(response);
+      final weeks = List<Map<String, dynamic>>.from(result);
+      return weeks;
     } catch (e) {
-      debugPrint("Haftalar çekilirken hata: $e");
+      debugPrint("Haftalar çekilirken hata (RPC): $e");
       rethrow;
     }
   }
 
   /// Hafta numarasına göre o haftanın başlangıç ve bitiş tarihlerini hesaplar.
-  (DateTime, DateTime) _getWeekDateRange(int weekNumber) {
+  (DateTime, DateTime) _getWeekDateRange(int weekNo) {
     // Okul başlangıç tarihini burada da tanımlıyoruz.
     final schoolStart = _getCurrentAcademicYearStartDate();
 
-    // İstenen haftanın başlangıç gününü hesapla.
-    final daysToAdd = (weekNumber - 1) * 7;
+    // İstenen haftanın başlangıç gününü hesapla (1 tabanlı olduğu için 1 çıkarıyoruz).
+    final daysToAdd = (weekNo - 1) * 7;
     final weekStartDate = schoolStart.add(Duration(days: daysToAdd));
 
     // Haftanın bitiş gününü hesapla (başlangıca 6 gün ekleyerek).
@@ -82,7 +85,7 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
     // Akademik yıl genellikle Eylül'de başlar.
     // Eğer mevcut ay Eylül'den önce ise (Ocak-Ağustos), başlangıç yılı bir önceki yıldır.
     final year = now.month < 9 ? now.year - 1 : now.year;
-    // Başlangıç tarihini 9 Eylül olarak varsayalım. Bu tarih bir ayar olarak saklanabilir.
+    // Başlangıç tarihini 8 Eylül olarak varsayalım. Bu tarih bir ayar olarak saklanabilir.
     return DateTime(year, 9, 8);
   }
 
@@ -108,14 +111,16 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
             );
           }
 
-          // Gelen veriden sadece 'week_number' değerlerini alıp bir liste oluşturuyoruz.
+          // Gelen veriden sadece 'week_no' değerlerini alıp bir liste oluşturuyoruz.
           final weeks = snapshot.data!
-              .map<int>((e) => e['week_number'] as int)
+              .map<int>((e) => e['week_no'] as int)
               .toList();
 
           // Mevcut hafta numarasını dinamik başlangıç tarihine göre hesapla
           final schoolStart = _getCurrentAcademicYearStartDate();
           final now = DateTime.now();
+          // RPC'den gelen hafta numaraları 1 tabanlı olduğu için,
+          // mevcut hafta numarasını da 1 tabanlı hesaplıyoruz.
           final currentWeekNumber =
               ((now.difference(schoolStart).inDays) / 7).floor() + 1;
 
@@ -152,8 +157,8 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
                   controller: _pageController,
                   itemCount: weeks.length,
                   itemBuilder: (context, index) {
-                    final weekNum = weeks[index];
-                    final (startDate, endDate) = _getWeekDateRange(weekNum);
+                    final weekNo = weeks[index];
+                    final (startDate, endDate) = _getWeekDateRange(weekNo);
                     final formattedStartDate =
                         '${startDate.day} ${aylar[startDate.month - 1]}';
                     final formattedEndDate =
@@ -168,7 +173,7 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
                       ),
                       children: [
                         _WeekHeaderCard(
-                          weekNum: weekNum,
+                          weekNo: weekNo,
                           startDate: formattedStartDate,
                           endDate: formattedEndDate,
                         ),
@@ -178,7 +183,7 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
                           gradeId: widget.gradeId,
                           lessonName: widget.lessonName,
                           gradeName: widget.gradeName,
-                          weekNumber: weekNum,
+                          weekNo: weekNo,
                         ),
                       ],
                     );
@@ -196,12 +201,12 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
 /// Hafta başlığını ve tarihini gösteren şık kart widget'ı.
 class _WeekHeaderCard extends StatelessWidget {
   const _WeekHeaderCard({
-    required this.weekNum,
+    required this.weekNo,
     required this.startDate,
     required this.endDate,
   });
 
-  final int weekNum;
+  final int weekNo;
   final String startDate;
   final String endDate;
 
@@ -216,7 +221,7 @@ class _WeekHeaderCard extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              '$weekNum. Hafta',
+              '$weekNo. Hafta',
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -254,7 +259,7 @@ class WeekOutcomesView extends StatefulWidget {
   final int gradeId;
   final String lessonName;
   final String gradeName;
-  final int weekNumber;
+  final int weekNo;
 
   const WeekOutcomesView({
     super.key,
@@ -262,7 +267,7 @@ class WeekOutcomesView extends StatefulWidget {
     required this.gradeId,
     required this.lessonName,
     required this.gradeName,
-    required this.weekNumber,
+    required this.weekNo,
   });
 
   @override
@@ -278,59 +283,80 @@ class _WeekOutcomesViewState extends State<WeekOutcomesView> {
     _weekDataFuture = _fetchWeekData();
   }
 
-  /// Haftanın kazanımlarını ve bu kazanımlarla ilişkili konu içeriklerini tek seferde çeker.
   Future<Map<String, dynamic>> _fetchWeekData() async {
-    // 1. Adım: Haftaya ait kazanımları çek.
-    final outcomesResponse = await Supabase.instance.client.rpc(
-      'get_outcomes_for_week',
-      params: {
-        'p_lesson_id': widget.lessonId,
-        'p_grade_id': widget.gradeId,
-        'p_week_number': widget.weekNumber,
-      },
-    );
-    final outcomes = List<Map<String, dynamic>>.from(outcomesResponse);
-
-    if (outcomes.isEmpty) {
-      // Kazanım yoksa içerik de yoktur, boş veri dön.
-      return {'outcomes': [], 'contents': [], 'videos': []};
-    }
-
-    // 2. Adım: İlk kazanımın topic_id'sini alarak içerikleri çek.
-    // Varsayım: Bir haftadaki tüm kazanımlar aynı konuya (topic) aittir.
-    final topicId = outcomes.first['topic_id'] as int?;
-
-    if (topicId == null) {
-      // Topic ID yoksa, sadece kazanımları dön.
-      return {'outcomes': outcomes, 'contents': [], 'videos': []};
-    }
-
-    // 3. Adım: Konu içeriklerini ve videolarını çek.
     try {
-      final results = await Future.wait([
-        Supabase.instance.client
-            .from('topic_contents')
-            .select(
-              'id, topic_id, title, content, section_type, display_week, order_no',
-            )
-            .eq('display_week', widget.weekNumber)
-            .eq('topic_id', topicId)
-            .order('order_no', ascending: true),
-        Supabase.instance.client
-            .from('topic_videos')
-            .select('id, topic_id, title, video_url, order_no')
-            .eq('topic_id', topicId)
-            .order('order_no', ascending: true),
-      ]);
+      final response = await Supabase.instance.client.rpc(
+        'get_weekly_curriculum',
+        params: {
+          'p_grade_id': widget.gradeId,
+          'p_lesson_id': widget.lessonId,
+          'p_week_no': widget.weekNo,
+        },
+      );
 
-      final contents = (results[0] as List)
-          .map((json) => TopicContent.fromJson(json as Map<String, dynamic>))
+      if (response == null || (response as List).isEmpty) {
+        return {'outcomes': [], 'contents': [], 'videos': [], 'questions': []};
+      }
+
+      final curriculumData = response as List;
+      final topicId = curriculumData.first['topic_id'];
+
+      final outcomesData = curriculumData
+          .map((item) => {
+                'description': item['outcome_description'],
+                'unit_title': item['unit_title'],
+                'topic_title': item['topic_title'],
+                'topic_id': item['topic_id'],
+              })
           .toList();
-      final videos = List<Map<String, dynamic>>.from(results[1]);
 
-      return {'outcomes': outcomes, 'contents': contents, 'videos': videos};
-    } catch (e) {
+      // Use a Set to store unique TopicContent objects based on their ID.
+      final uniqueContents = curriculumData
+          .expand((item) => (item['contents'] as List))
+          .map((content) => TopicContent.fromJson(content as Map<String, dynamic>))
+          .toSet()
+          .toList();
+
+      List<Map<String, dynamic>> videos = [];
+      if (topicId != null) {
+        final unitId = curriculumData.first['unit_id'];
+        final videosResponse = await Supabase.instance.client
+            .from('unit_videos')
+            .select('id, unit_id, title, video_url, order_no')
+            .eq('unit_id', unitId)
+            .order('order_no', ascending: true);
+        videos = List<Map<String, dynamic>>.from(videosResponse);
+      }
+
+      List<Map<String, dynamic>> questions = [];
+      if (topicId != null) {
+        final questionsResponse = await Supabase.instance.client
+            .from('question_usages')
+            .select(
+              '*, questions(*, question_choices(*), question_blanks(*), question_classical(*))',
+            )
+            .eq('topic_id', topicId)
+            .eq('usage_type', 'weekly')
+            .eq('display_week', widget.weekNo);
+
+        if (questionsResponse is List) {
+          questions = questionsResponse
+              .map((e) => e['questions'] as Map<String, dynamic>?)
+              .where((q) => q != null)
+              .cast<Map<String, dynamic>>()
+              .toList();
+        }
+      }
+
+      return {
+        'outcomes': outcomesData,
+        'contents': uniqueContents,
+        'videos': videos,
+        'questions': questions,
+      };
+    } catch (e, st) {
       debugPrint("Hafta verileri çekilirken hata: $e");
+      debugPrint("Stack trace: $st");
       rethrow;
     }
   }
@@ -349,32 +375,34 @@ class _WeekOutcomesViewState extends State<WeekOutcomesView> {
           );
         }
 
+        final data = snapshot.data ?? {};
         final outcomes =
-            (snapshot.data?['outcomes'] as List<dynamic>?)
+            (data['outcomes'] as List<dynamic>?)
                 ?.cast<Map<String, dynamic>>() ??
             [];
         final contents =
-            (snapshot.data?['contents'] as List<dynamic>?)
-                ?.cast<TopicContent>() ??
-            [];
+            (data['contents'] as List<dynamic>?)?.cast<TopicContent>() ?? [];
         final videos =
-            (snapshot.data?['videos'] as List<dynamic>?)
+            (data['videos'] as List<dynamic>?)?.cast<Map<String, dynamic>>() ??
+            [];
+        final questions =
+            (data['questions'] as List<dynamic>?)
                 ?.cast<Map<String, dynamic>>() ??
             [];
 
-        if (outcomes == null || outcomes.isEmpty) {
+        if (outcomes.isEmpty) {
           return Center(
-            child: Text('${widget.weekNumber}. hafta için kazanım bulunamadı.'),
+            child: Text('${widget.weekNo}. hafta için içerik bulunamadı.'),
           );
         }
 
-        // Artık _OutcomeCard yerine doğrudan verileri kullanarak
-        // birleşik bir görünüm oluşturuyoruz.
         return _CombinedWeekContentCard(
           outcomes: outcomes,
           contents: contents,
           videos: videos,
+          questions: questions,
           lessonName: widget.lessonName,
+          weekNo: widget.weekNo,
         );
       },
     );
@@ -387,13 +415,17 @@ class _CombinedWeekContentCard extends StatelessWidget {
   final List<Map<String, dynamic>> outcomes;
   final List<TopicContent> contents;
   final List<Map<String, dynamic>> videos;
+  final List<Map<String, dynamic>> questions;
   final String lessonName;
+  final int weekNo;
 
   const _CombinedWeekContentCard({
     required this.outcomes,
     required this.contents,
     required this.videos,
+    required this.questions,
     required this.lessonName,
+    required this.weekNo,
   });
 
   @override
@@ -402,6 +434,8 @@ class _CombinedWeekContentCard extends StatelessWidget {
     final firstOutcome = outcomes.first;
     final unitTitle = firstOutcome['unit_title'] as String?;
     final topicTitle = firstOutcome['topic_title'] as String?;
+    final topicId = firstOutcome['topic_id'] as int?;
+    final theme = Theme.of(context);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 24.0),
@@ -413,25 +447,7 @@ class _CombinedWeekContentCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. KAZANIM BÖLÜMÜ
-            _InfoSection(
-              icon: Icons.flag_circle_outlined,
-              title: 'KAZANIMLAR',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: outcomes.map((outcome) {
-                  final description = outcome['description'] as String?;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    // Her kazanımı bir madde imi ile gösterelim.
-                    child: ContentRenderer(content: '• ${description ?? ''}'),
-                  );
-                }).toList(),
-              ),
-            ),
-            const Divider(height: 32),
-
-            // 2. DERS HİYERARŞİSİ BÖLÜMÜ
+            // 1. DERS HİYERARŞİSİ BÖLÜMÜ (YUKARI TAŞINDI)
             _InfoSection(
               icon: Icons.account_tree_outlined,
               title: 'DERS HİYERARŞİSİ',
@@ -439,6 +455,49 @@ class _CombinedWeekContentCard extends StatelessWidget {
                 lesson: lessonName,
                 unit: unitTitle,
                 topic: topicTitle,
+              ),
+            ),
+            const Divider(height: 32),
+
+            // 2. KAZANIM BÖLÜMÜ (GÖSTER/GİZLE)
+            Theme(
+              data: theme.copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: _InfoSection(
+                  icon: Icons.flag_circle_outlined,
+                  title: 'KAZANIMLAR',
+                ),
+                initiallyExpanded: false,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      bottom: 8.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: outcomes.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final outcome = entry.value;
+                        final description = outcome['description'] as String?;
+                        final letter = String.fromCharCode(
+                          'a'.codeUnitAt(0) + index,
+                        );
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Html(
+                            data: '$letter) ${description ?? ''}',
+                            style: getBaseHtmlStyle(context),
+                            extensions: const [TableHtmlExtension()],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -476,6 +535,37 @@ class _CombinedWeekContentCard extends StatelessWidget {
                 ),
               ),
             ],
+
+            // 4. HAFTALIK SORULAR BÖLÜMÜ
+            if (questions.isNotEmpty && topicId != null) ...[
+              const Divider(height: 32),
+              _InfoSection(
+                icon: Icons.quiz_outlined,
+                title: 'HAFTALIK DEĞERLENDİRME',
+                child: Center(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              QuestionsScreen(topicId: topicId, weekNo: weekNo),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.arrow_forward),
+                    label: Text('${questions.length} Soru ile Başla'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
+                      textStyle: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -491,20 +581,53 @@ class _TopicContentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // getBaseHtmlStyle'ı kullanabilmek için html_style.dart dosyasını import etmeliyiz.
+    // Bu dosya zaten `outcomes_screen.dart` dosyasının üst kısımlarında import edilmiş olmalı.
+    // Eğer edilmemişse, manuel olarak eklemek gerekir.
+    // import 'package:egitim_uygulamasi/utils/html_style.dart';
+
     return _InfoSection(
       icon: Icons.article_outlined,
       title: 'İÇERİKLER',
-      // Use ListView.separated for performance and clean separation.
-      // It builds items lazily as they scroll into view.
-      child: ListView.separated(
+      child: ListView.builder(
         itemCount: contents.length,
-        shrinkWrap: true, // Important for nesting in a Column
-        physics: const NeverScrollableScrollPhysics(), // Let the parent scroll
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          return buildTopicSection(contents[index]);
+          final content = contents[index];
+          final hasTitle = content.title.isNotEmpty;
+
+          return Card(
+            elevation: 2,
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            clipBehavior: Clip.antiAlias, // Köşelerin yuvarlak kalmasını sağlar
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (hasTitle) ...[
+                    Text(
+                      content.title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Divider(height: 24),
+                  ],
+                  Html(
+                    data: content.content,
+                    extensions: const [
+                      TableHtmlExtension(),
+                      // Diğer extension'ları buraya ekleyebilirsiniz.
+                    ],
+                    style: getBaseHtmlStyle(context),
+                  ),
+                ],
+              ),
+            ),
+          );
         },
-        separatorBuilder: (context, index) =>
-            const SizedBox(height: 24.0), // Space between sections
       ),
     );
   }
@@ -563,10 +686,33 @@ class _HierarchyView extends StatelessWidget {
 
   const _HierarchyView({this.lesson, this.unit, this.topic});
 
-  Widget _buildHierarchyItem(String label, String? value) {
+  Widget _buildHierarchyItem(
+    BuildContext context,
+    String label,
+    String? value,
+  ) {
+    final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
-      child: ContentRenderer(content: '• $label: ${value ?? 'N/A'}'),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '• $label: ',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value ?? 'N/A',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -575,9 +721,9 @@ class _HierarchyView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHierarchyItem('Ders', lesson),
-        _buildHierarchyItem('Ünite', unit),
-        _buildHierarchyItem('Konu', topic),
+        _buildHierarchyItem(context, 'Ders', lesson),
+        _buildHierarchyItem(context, 'Ünite', unit),
+        _buildHierarchyItem(context, 'Konu', topic),
       ],
     );
   }

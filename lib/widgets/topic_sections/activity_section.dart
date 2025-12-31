@@ -3,7 +3,6 @@
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 /// 'Etkinlik' türündeki içerikleri sade ve şık bir kart içinde gösteren widget.
 class ActivitySection extends StatelessWidget {
@@ -15,17 +14,6 @@ class ActivitySection extends StatelessWidget {
     final theme = Theme.of(context);
     final accentColor =
         theme.colorScheme.secondary; // Etkinlikler için ikincil renk
-
-    // Başlık için özel HTML stili
-    final titleStyle = {
-      "p": Style(
-        margin: Margins.zero,
-        padding: HtmlPaddings.zero,
-        fontWeight: FontWeight.bold,
-        color: accentColor,
-        fontSize: FontSize(theme.textTheme.titleMedium?.fontSize ?? 16.0),
-      ),
-    };
 
     return Card(
       elevation: 1.0,
@@ -51,9 +39,12 @@ class ActivitySection extends StatelessWidget {
                 Icon(Icons.edit_note_rounded, color: accentColor, size: 20),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: ContentRenderer(
-                    content: content.title ?? 'Etkinlik',
-                    style: titleStyle,
+                  child: Text(
+                    content.title ?? 'Etkinlik',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: accentColor,
+                    ),
                   ),
                 ),
               ],

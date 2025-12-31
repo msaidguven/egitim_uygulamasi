@@ -1,5 +1,3 @@
-// lib/screens/lessons_screen.dart
-
 import 'package:egitim_uygulamasi/screens/outcomes_screen.dart';
 import 'package:egitim_uygulamasi/models/lesson_model.dart';
 import 'package:egitim_uygulamasi/models/grade_model.dart';

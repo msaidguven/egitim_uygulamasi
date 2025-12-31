@@ -1,6 +1,5 @@
 // lib/widgets/topic_sections/summary_section.dart
 
-import 'package:flutter_html/flutter_html.dart';
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
 import 'package:flutter/material.dart';
@@ -14,21 +13,6 @@ class SummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final accentColor = Colors.orange.shade700;
-
-    final titleTextStyle = theme.textTheme.titleMedium;
-    final bodyTextStyle = theme.textTheme.bodyMedium;
-
-    // Define styles for consistent typography
-    final titleStyle = {
-      "p": Style(fontSize: FontSize(titleTextStyle?.fontSize ?? 16.0)),
-    };
-
-    final contentStyle = {
-      "p": Style(
-        fontSize: FontSize(bodyTextStyle?.fontSize ?? 14.0),
-        lineHeight: LineHeight.em(1.5),
-      ),
-    };
 
     return Stack(
       clipBehavior: Clip.none,
@@ -51,10 +35,14 @@ class SummarySection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (content.title != null && content.title!.isNotEmpty) ...[
-                ContentRenderer(content: content.title!, style: titleStyle),
+                Text(
+                  content.title!,
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
               ],
-              ContentRenderer(content: content.content, style: contentStyle),
+              ContentRenderer(content: content.content),
             ],
           ),
         ),

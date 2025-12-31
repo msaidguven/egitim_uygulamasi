@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  /// Giriş başarılı olduğunda sayfanın otomatik olarak kapanıp kapanmayacağını belirler.
+  /// Varsayılan değer [true]'dur. AdminAuthGate gibi sayfa içinde gömülü kullanımlarda [false] yapılmalıdır.
+  final bool shouldPopOnSuccess;
+
+  const LoginScreen({super.key, this.shouldPopOnSuccess = true});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -53,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Giriş başarılıysa ve widget hala ağaçtaysa, LoginScreen'i kapat.
       // Bu, kullanıcıyı ana ekrana geri döndürecektir.
-      if (success && mounted) {
+      if (success && mounted && widget.shouldPopOnSuccess) {
         Navigator.of(context).pop();
       }
     }

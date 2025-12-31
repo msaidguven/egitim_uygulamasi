@@ -22,6 +22,7 @@ class GradeViewModel extends ChangeNotifier {
       final response = await supabase
           .from('grades')
           .select()
+          .eq('is_active', true)
           .order('order_no', ascending: true);
       _grades = response.map((data) => Grade.fromMap(data)).toList();
     } catch (e) {

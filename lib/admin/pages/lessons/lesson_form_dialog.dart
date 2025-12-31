@@ -36,9 +36,7 @@ class _LessonFormDialogState extends State<LessonFormDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.lesson?.name ?? '');
-    _selectedGradeId =
-        widget.lesson?.gradeId ??
-        widget.gradeId; // Düzenleme modunda dersin kendi sınıf ID'sini kullan
+    _selectedGradeId = widget.gradeId; // Düzenleme modunda dersin kendi sınıf ID'sini kullan
     _gradesFuture = _gradeService.getGrades();
   }
 
@@ -78,21 +76,24 @@ class _LessonFormDialogState extends State<LessonFormDialog> {
           final successMessage = isCreating
               ? 'Ders başarıyla eklendi!'
               : 'Ders başarıyla güncellendi!';
-          ScaffoldMessenger.of(context).showSnackBar(
+          // SnackBar hatasını önlemek için ScaffoldMessenger'ı yakala
+          final scaffoldMessenger = ScaffoldMessenger.of(context);
+          Navigator.of(context).pop(); // Diyaloğu kapat
+          widget.onSave(); // Listeyi yenile
+
+          scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Text(successMessage),
               backgroundColor: Colors.green,
             ),
           );
-          widget.onSave(); // Listeyi yenile
-          Navigator.of(context).pop(); // Diyaloğu kapat
         }
       } catch (e) {
         if (mounted) {
-          debugPrint(
-            'Ders işlemi sırasında hata: $e',
-          ); // Hata ayıklama için eklendi
-          ScaffoldMessenger.of(context).showSnackBar(
+          debugPrint('Ders işlemi sırasında hata: $e');
+          // SnackBar hatasını önlemek için ScaffoldMessenger'ı yakala
+          final scaffoldMessenger = ScaffoldMessenger.of(context);
+          scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Text('Bir hata oluştu: ${e.toString()}'),
               backgroundColor: Colors.red,
@@ -161,7 +162,7 @@ class _LessonFormDialogState extends State<LessonFormDialog> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Kaydet'),
+              : Text(widget.lesson == null ? 'Kaydet' : 'Güncelle'),
         ),
       ],
     );

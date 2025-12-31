@@ -1,7 +1,6 @@
 // lib/widgets/topic_sections/explanation_section.dart
 
 import 'package:egitim_uygulamasi/models/topic_content.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
 import 'package:flutter/material.dart';
 
@@ -13,17 +12,6 @@ class ExplanationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    // Başlık için özel HTML stili oluşturuyoruz.
-    final titleStyle = {
-      // 'p' etiketi için varsayılan boşlukları kaldırıp stil uyguluyoruz.
-      "p": Style(
-        margin: Margins.zero,
-        padding: HtmlPaddings.zero,
-        fontWeight: FontWeight.bold,
-        color: theme.primaryColor,
-      ),
-    };
 
     return Card(
       // Kartın etrafında hafif bir gölge ve yuvarlak köşeler
@@ -45,19 +33,11 @@ class ExplanationSection extends StatelessWidget {
               horizontal: 16.0,
               vertical: 12.0,
             ),
-            child: ContentRenderer(
-              // Varsa veritabanından gelen başlığı, yoksa 'Açıklama'yı kullan.
-              content: content.title ?? 'Açıklama',
-              style: titleStyle.map(
-                (key, value) => MapEntry(
-                  key,
-                  value.copyWith(
-                    // fontSize null olabileceğinden, ?? operatörü ile varsayılan bir değer (16.0) atıyoruz.
-                    fontSize: FontSize(
-                      theme.textTheme.titleMedium?.fontSize ?? 16.0,
-                    ),
-                  ),
-                ),
+            child: Text(
+              content.title ?? 'Açıklama',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.primaryColor,
               ),
             ),
           ),

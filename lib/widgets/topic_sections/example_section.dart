@@ -1,6 +1,5 @@
 // lib/widgets/topic_sections/example_section.dart
 
-import 'package:flutter_html/flutter_html.dart';
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
 import 'package:flutter/material.dart';
@@ -14,26 +13,6 @@ class ExampleSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final accentColor = Colors.green;
-
-    final titleTextStyle = theme.textTheme.titleMedium;
-    final bodyTextStyle = theme.textTheme.bodyMedium;
-
-    // Define a style for the title to appear as a bold subtitle.
-    final titleStyle = {
-      "p": Style(
-        fontSize: FontSize(titleTextStyle?.fontSize ?? 16.0),
-        fontWeight: FontWeight.bold,
-        color: accentColor,
-      ),
-    };
-
-    // Define a style for the main content with proper line height.
-    final contentStyle = {
-      "p": Style(
-        fontSize: FontSize(bodyTextStyle?.fontSize ?? 14.0),
-        lineHeight: LineHeight.em(1.5),
-      ),
-    };
 
     return Card(
       elevation: 0,
@@ -53,15 +32,18 @@ class ExampleSection extends StatelessWidget {
                 const SizedBox(width: 8),
                 if (content.title != null && content.title!.isNotEmpty)
                   Expanded(
-                    child: ContentRenderer(
-                      content: content.title!,
-                      style: titleStyle,
+                    child: Text(
+                      content.title!,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: accentColor,
+                      ),
                     ),
                   ),
               ],
             ),
             const SizedBox(height: 12),
-            ContentRenderer(content: content.content, style: contentStyle),
+            ContentRenderer(content: content.content),
           ],
         ),
       ),

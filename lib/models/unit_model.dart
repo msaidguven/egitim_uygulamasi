@@ -30,12 +30,12 @@ class Unit {
   factory Unit.fromMap(Map<String, dynamic> map) {
     return Unit(
       id: map['id'] as int,
-      title: map['title'] as String,
+      title: map['title'] as String? ?? '',
       description: map['description'] as String?,
-      orderNo: map['order_no'] as int,
-      isActive: map['is_active'] as bool,
-      createdAt: DateTime.parse(map['created_at'] as String),
-      updatedAt: DateTime.parse(map['updated_at'] as String),
+      orderNo: map['order_no'] as int? ?? 0,
+      isActive: map['is_active'] as bool? ?? false,
+      createdAt: DateTime.tryParse(map['created_at']?.toString() ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(map['updated_at']?.toString() ?? '') ?? DateTime.now(),
       lessonId: map['lesson_id'] as int?,
       lessonName: (map['lessons'] is Map)
           ? map['lessons']['name'] as String?

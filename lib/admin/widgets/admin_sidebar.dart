@@ -24,6 +24,11 @@ class AdminSidebar extends StatelessWidget {
       ),
       destinations: const [
         NavigationRailDestination(
+          icon: Icon(Icons.hub_outlined),
+          selectedIcon: Icon(Icons.hub),
+          label: Text('Müfredat'),
+        ),
+        NavigationRailDestination(
           icon: Icon(Icons.book_outlined),
           selectedIcon: Icon(Icons.book),
           label: Text('Lessons'),
@@ -42,6 +47,12 @@ class AdminSidebar extends StatelessWidget {
           icon: Icon(Icons.check_circle_outline),
           selectedIcon: Icon(Icons.check_circle),
           label: Text('Outcomes'),
+        ),
+        // New NavigationRailDestination for Smart Content Addition
+        NavigationRailDestination(
+          icon: Icon(Icons.auto_awesome_outlined),
+          selectedIcon: Icon(Icons.auto_awesome),
+          label: Text('Akıllı İçerik Ekleme'),
         ),
       ],
     );

@@ -15,6 +15,7 @@ class LessonService {
     final response = await _client
         .from('lessons')
         .select()
+        .eq('is_active', true)
         .order('id', ascending: true);
 
     return response.map((map) => Lesson.fromMap(map)).toList();

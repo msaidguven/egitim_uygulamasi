@@ -51,10 +51,11 @@ class _UnitListPageState extends State<UnitListPage> {
       _units = [];
     });
     try {
-      final response = await supabase.rpc(
-        'get_lessons_by_grade',
-        params: {'gid': gradeId},
-      );
+      final response = await supabase
+          .from('lessons')
+          .select('*, lesson_grades!inner(grade_id)')
+          .eq('lesson_grades.grade_id', gradeId)
+          .eq('is_active', true);
       final lessons = (response as List)
           .map((data) => Lesson.fromMap(data as Map<String, dynamic>))
           .toList();
@@ -77,11 +78,13 @@ class _UnitListPageState extends State<UnitListPage> {
       _units = [];
     });
     try {
-      // Hem derse hem de sınıfa göre filtreleyen yeni RPC fonksiyonunu çağırıyoruz.
-      final response = await supabase.rpc(
-        'get_units_by_lesson_and_grade',
-        params: {'lid': lessonId, 'gid': _selectedGrade!.id!},
-      );
+      // RPC ÇAĞRISI KALDIRILDI. 'is_active' FİLTRESİ İLE DOĞRUDAN SORGULAMA YAPILIYOR.
+      final response = await supabase
+          .from('units')
+          .select('*, unit_grades!inner(grade_id)')
+          .eq('lesson_id', lessonId)
+          .eq('unit_grades.grade_id', _selectedGrade!.id!)
+          .eq('is_active', true);
 
       final units = (response as List)
           .map((data) => Unit.fromMap(data as Map<String, dynamic>))
@@ -129,14 +132,12 @@ class _UnitListPageState extends State<UnitListPage> {
   }
 
   void _showFormDialog({Unit? unit}) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return UnitFormDialog(
-          unit: unit, // Düzenleme için üniteyi gönder
-          onSave: _refreshUnitList, // Kaydetme sonrası listeyi yenile
-        );
-      },
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            UnitFormPage(unit: unit, onSave: _refreshUnitList),
+      ),
     );
   }
 
