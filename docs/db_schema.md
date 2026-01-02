@@ -59,12 +59,15 @@ updated_at timestamp with time zone DEFAULT now(),
 CONSTRAINT profiles_pkey PRIMARY KEY (id),
 CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
 );
-CREATE TABLE public.question_blanks (
+CREATE TABLE public.question_blank_options (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 question_id bigint NOT NULL,
-correct_answer text NOT NULL,
-CONSTRAINT question_blanks_pkey PRIMARY KEY (id),
-CONSTRAINT question_blanks_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id)
+option_text text NOT NULL,
+is_correct boolean NOT NULL DEFAULT false,
+order_no integer NOT NULL DEFAULT 0 CHECK (order_no >= 0),
+created_at timestamp with time zone NOT NULL DEFAULT now(),
+CONSTRAINT question_blank_options_pkey PRIMARY KEY (id),
+CONSTRAINT question_blank_options_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id)
 );
 CREATE TABLE public.question_choices (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -112,6 +115,7 @@ question_text text NOT NULL,
 difficulty smallint DEFAULT 1 CHECK (difficulty >= 1 AND difficulty <= 5),
 score smallint DEFAULT 1 CHECK (score >= 1 AND score <= 10),
 created_at timestamp without time zone DEFAULT now(),
+correct_answer boolean,
 CONSTRAINT questions_pkey PRIMARY KEY (id),
 CONSTRAINT questions_question_type_id_fkey FOREIGN KEY (question_type_id) REFERENCES public.question_types(id)
 );
@@ -137,7 +141,7 @@ CREATE TABLE public.topics (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 unit_id bigint NOT NULL,
 title text NOT NULL,
-slug text NOT NULL UNIQUE,
+slug text NOT NULL,
 order_no integer NOT NULL DEFAULT 0 CHECK (order_no >= 0),
 is_active boolean NOT NULL DEFAULT true,
 order_status text NOT NULL DEFAULT 'approved'::text CHECK (order_status = ANY (ARRAY['approved'::text, 'pending'::text, 'rejected'::text])),

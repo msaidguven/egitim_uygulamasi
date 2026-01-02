@@ -35,12 +35,60 @@ class OutcomesScreen extends StatefulWidget {
 class _OutcomesScreenState extends State<OutcomesScreen> {
   PageController? _pageController;
   late final Future<List<Map<String, dynamic>>> _weeksFuture;
-  final _unitService = UnitService(); // Add service instance
+
+  final List<Map<String, dynamic>> _academicBreaks = [
+
+    {
+      'after_week': 9,
+      'weeks': [
+        {
+          'type': 'break',
+          'title': 'Ara Tatil',
+          'duration': '1.  DÖNEM ARA TATİLİ: 10 Kasım - 14 Kasım 2024',
+          'description': 'Dinlenmek ve konuları tekrar etmek için harika bir fırsat!',
+        },
+      ],
+    },
+    {
+      'after_week': 18,
+      'weeks': [
+        {
+          'type': 'break',
+          'title': 'Yarıyıl Tatili',
+          'duration': '1. Hafta',
+          'description': 'Dinlenmek ve konuları tekrar etmek için harika bir fırsat!',
+        },
+        {
+          'type': 'break',
+          'title': 'Yarıyıl Tatili',
+          'duration': '2. Hafta',
+          'description': 'Tatilin tadını çıkarın! Yeni döneme enerjik bir başlangıç yapın.',
+        },
+      ],
+    },
+    {
+      'after_week': 26,
+      'weeks': [
+        {
+          'type': 'break',
+          'title': 'Ara Tatil',
+          'duration': '2. DÖNEM ARA TATİLİ: 30 Mart - 3 Nisan 2025',
+          'description': 'Dinlenmek ve konuları tekrar etmek için harika bir fırsat!',
+        },
+      ],
+    },
+  ];
+
+  final Map<int, Map<String, dynamic>> _weekNotes = {
+    8: {'note': 'Sınav Haftası', 'icon': Icons.edit_note},
+    16: {'note': 'Sınav Haftası', 'icon': Icons.edit_note},
+    //17: {'note': 'Proje Teslim Haftası', 'icon': Icons.assignment},
+  };
 
   @override
   void initState() {
     super.initState();
-    _weeksFuture = _fetchAvailableWeeks();
+    _weeksFuture = _fetchAndProcessWeeks();
   }
 
   @override
@@ -49,43 +97,57 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
     super.dispose();
   }
 
-  /// Derse ait içeriklerin bulunduğu hafta numaralarını çeker.
-  Future<List<Map<String, dynamic>>> _fetchAvailableWeeks() async {
+  Future<List<Map<String, dynamic>>> _fetchAndProcessWeeks() async {
     try {
       final List<dynamic> result = await Supabase.instance.client.rpc(
         'get_available_weeks',
         params: {'p_grade_id': widget.gradeId, 'p_lesson_id': widget.lessonId},
       );
-      final weeks = List<Map<String, dynamic>>.from(result);
-      return weeks;
+      
+      List<Map<String, dynamic>> processedWeeks = result.map((item) {
+        final weekNo = item['week_no'];
+        final weekData = {'type': 'week', 'week_no': weekNo};
+        if (_weekNotes.containsKey(weekNo)) {
+          weekData.addAll(_weekNotes[weekNo]!);
+        }
+        return weekData;
+      }).toList();
+
+      for (final breakInfo in _academicBreaks) {
+        int breakIndex = processedWeeks.indexWhere((week) => week['type'] == 'week' && week['week_no'] == breakInfo['after_week']);
+        if (breakIndex != -1) {
+          processedWeeks.insertAll(breakIndex + 1, breakInfo['weeks']);
+        }
+      }
+
+      return processedWeeks;
     } catch (e) {
-      debugPrint("Haftalar çekilirken hata (RPC): $e");
+      debugPrint("Haftalar çekilirken ve işlenirken hata: $e");
       rethrow;
     }
   }
 
-  /// Hafta numarasına göre o haftanın başlangıç ve bitiş tarihlerini hesaplar.
   (DateTime, DateTime) _getWeekDateRange(int weekNo) {
-    // Okul başlangıç tarihini burada da tanımlıyoruz.
     final schoolStart = _getCurrentAcademicYearStartDate();
+    
+    int weekOffset = 0;
+    for (final breakInfo in _academicBreaks) {
+      if (weekNo > breakInfo['after_week']) {
+        weekOffset += (breakInfo['weeks'] as List).length;
+      }
+    }
 
-    // İstenen haftanın başlangıç gününü hesapla (1 tabanlı olduğu için 1 çıkarıyoruz).
-    final daysToAdd = (weekNo - 1) * 7;
+    final adjustedWeekNo = weekNo + weekOffset;
+    final daysToAdd = (adjustedWeekNo - 1) * 7;
     final weekStartDate = schoolStart.add(Duration(days: daysToAdd));
-
-    // Haftanın bitiş gününü hesapla (başlangıca 6 gün ekleyerek).
     final weekEndDate = weekStartDate.add(const Duration(days: 6));
 
     return (weekStartDate, weekEndDate);
   }
 
-  /// İçinde bulunulan akademik yılın başlangıç tarihini (örn: 9 Eylül) hesaplar.
   DateTime _getCurrentAcademicYearStartDate() {
     final now = DateTime.now();
-    // Akademik yıl genellikle Eylül'de başlar.
-    // Eğer mevcut ay Eylül'den önce ise (Ocak-Ağustos), başlangıç yılı bir önceki yıldır.
     final year = now.month < 9 ? now.year - 1 : now.year;
-    // Başlangıç tarihini 8 Eylül olarak varsayalım. Bu tarih bir ayar olarak saklanabilir.
     return DateTime(year, 9, 8);
   }
 
@@ -99,53 +161,45 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasError ||
-              !snapshot.hasData ||
-              snapshot.data!.isEmpty) {
+          if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
               child: Text(
-                snapshot.hasError
-                    ? 'Hata: ${snapshot.error}'
-                    : 'Bu derse ait kazanım bulunamadı.',
+                snapshot.hasError ? 'Hata: ${snapshot.error}' : 'Bu derse ait hafta bulunamadı.',
               ),
             );
           }
 
-          // Gelen veriden sadece 'week_no' değerlerini alıp bir liste oluşturuyoruz.
-          final weeks = snapshot.data!
-              .map<int>((e) => e['week_no'] as int)
-              .toList();
+          final allWeeksData = snapshot.data!;
 
-          // Mevcut hafta numarasını dinamik başlangıç tarihine göre hesapla
           final schoolStart = _getCurrentAcademicYearStartDate();
           final now = DateTime.now();
-          // RPC'den gelen hafta numaraları 1 tabanlı olduğu için,
-          // mevcut hafta numarasını da 1 tabanlı hesaplıyoruz.
-          final currentWeekNumber =
-              ((now.difference(schoolStart).inDays) / 7).floor() + 1;
+          final totalDays = now.difference(schoolStart).inDays;
+          
+          int currentWeekNumber = (totalDays / 7).floor() + 1;
+          int breakWeeksPassed = 0;
+          for (final breakInfo in _academicBreaks) {
+            final breakStartDay = (breakInfo['after_week']) * 7;
+            if (totalDays > breakStartDay) {
+               breakWeeksPassed += (breakInfo['weeks'] as List).length;
+            }
+          }
+          currentWeekNumber -= breakWeeksPassed;
 
-          // Mevcut haftanın listesindeki indeksi bul, bulunamazsa 0 ata.
-          int initialPageIndex = weeks.indexOf(currentWeekNumber);
+          int initialPageIndex = allWeeksData.indexWhere((week) => week['type'] == 'week' && week['week_no'] == currentWeekNumber);
 
-          // Eğer PageController daha önce oluşturulmadıysa, şimdi oluştur.
-          // Bu, build metodunun her çağrısında yeniden oluşturulmasını engeller.
           if (_pageController == null) {
-            if (initialPageIndex == -1) {
-              // Mevcut hafta listede bulunamadı.
-              // Kullanıcıya bilgi verip ilk haftayı açalım.
+             if (initialPageIndex == -1) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(
-                        '$currentWeekNumber. hafta için kazanım bulunamadı. İlk hafta gösteriliyor.',
-                      ),
+                      content: Text('$currentWeekNumber. hafta için içerik bulunamadı. İlk hafta gösteriliyor.'),
                       duration: const Duration(seconds: 3),
                     ),
                   );
                 }
               });
-              initialPageIndex = 0; // İlk haftanın indeksine ayarla.
+              initialPageIndex = 0;
             }
             _pageController = PageController(initialPage: initialPageIndex);
           }
@@ -155,27 +209,32 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
-                  itemCount: weeks.length,
+                  itemCount: allWeeksData.length,
                   itemBuilder: (context, index) {
-                    final weekNo = weeks[index];
-                    final (startDate, endDate) = _getWeekDateRange(weekNo);
-                    final formattedStartDate =
-                        '${startDate.day} ${aylar[startDate.month - 1]}';
-                    final formattedEndDate =
-                        '${endDate.day} ${aylar[endDate.month - 1]} ${endDate.year}';
+                    final weekData = allWeeksData[index];
 
-                    // Her sayfa, kendi başlığını ve içeriğini içeren
-                    // dikey bir liste olacak.
+                    if (weekData['type'] == 'break') {
+                      return _BreakCard(
+                        title: weekData['title'],
+                        duration: weekData['duration'],
+                        description: weekData['description'],
+                      );
+                    }
+
+                    final weekNo = weekData['week_no'];
+                    final (startDate, endDate) = _getWeekDateRange(weekNo);
+                    final formattedStartDate = '${startDate.day} ${aylar[startDate.month - 1]}';
+                    final formattedEndDate = '${endDate.day} ${aylar[endDate.month - 1]} ${endDate.year}';
+
                     return ListView(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       children: [
                         _WeekHeaderCard(
                           weekNo: weekNo,
                           startDate: formattedStartDate,
                           endDate: formattedEndDate,
+                          note: weekData['note'],
+                          noteIcon: weekData['icon'],
                         ),
                         const SizedBox(height: 8),
                         WeekOutcomesView(
@@ -198,17 +257,83 @@ class _OutcomesScreenState extends State<OutcomesScreen> {
   }
 }
 
-/// Hafta başlığını ve tarihini gösteren şık kart widget'ı.
+class _BreakCard extends StatelessWidget {
+  final String title;
+  final String duration;
+  final String description;
+
+  const _BreakCard({
+    required this.title,
+    required this.duration,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Icon(
+                Icons.beach_access,
+                size: 60,
+                color: Theme.of(context).colorScheme.onSecondaryContainer,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                duration,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSecondaryContainer.withOpacity(0.8),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _WeekHeaderCard extends StatelessWidget {
   const _WeekHeaderCard({
     required this.weekNo,
     required this.startDate,
     required this.endDate,
+    this.note,
+    this.noteIcon,
   });
 
   final int weekNo;
   final String startDate;
   final String endDate;
+  final String? note;
+  final IconData? noteIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -222,15 +347,21 @@ class _WeekHeaderCard extends StatelessWidget {
           children: [
             Text(
               '$weekNo. Hafta',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             Text(
               '$startDate - $endDate',
               style: Theme.of(context).textTheme.bodySmall,
             ),
+            if (note != null) ...[
+              const SizedBox(height: 8),
+              Chip(
+                avatar: noteIcon != null ? Icon(noteIcon, size: 16) : null,
+                label: Text(note!),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+              ),
+            ],
           ],
         ),
       ),
@@ -253,7 +384,6 @@ const List<String> aylar = [
   'Aralık',
 ];
 
-/// Belirli bir haftanın kazanımlarını RPC ile çeken ve listeleyen Widget.
 class WeekOutcomesView extends StatefulWidget {
   final int lessonId;
   final int gradeId;
@@ -310,7 +440,6 @@ class _WeekOutcomesViewState extends State<WeekOutcomesView> {
               })
           .toList();
 
-      // Use a Set to store unique TopicContent objects based on their ID.
       final uniqueContents = curriculumData
           .expand((item) => (item['contents'] as List))
           .map((content) => TopicContent.fromJson(content as Map<String, dynamic>))
@@ -333,7 +462,7 @@ class _WeekOutcomesViewState extends State<WeekOutcomesView> {
         final questionsResponse = await Supabase.instance.client
             .from('question_usages')
             .select(
-              '*, questions(*, question_choices(*), question_blanks(*), question_classical(*))',
+              '*, questions(*, question_choices(*), question_blank_options!question_blank_options_question_id_fkey(*), question_classical(*))',
             )
             .eq('topic_id', topicId)
             .eq('usage_type', 'weekly')
@@ -409,8 +538,6 @@ class _WeekOutcomesViewState extends State<WeekOutcomesView> {
   }
 }
 
-/// Tasarıma uygun olarak her bir kazanım ve içeriğini gösteren ana kart.
-/// Bu widget artık tüm hafta içeriğini tek bir kartta birleştirir.
 class _CombinedWeekContentCard extends StatelessWidget {
   final List<Map<String, dynamic>> outcomes;
   final List<TopicContent> contents;
@@ -430,12 +557,15 @@ class _CombinedWeekContentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // İlk kazanımdan hiyerarşi bilgilerini alalım (hepsi için aynı olmalı).
     final firstOutcome = outcomes.first;
     final unitTitle = firstOutcome['unit_title'] as String?;
     final topicTitle = firstOutcome['topic_title'] as String?;
     final topicId = firstOutcome['topic_id'] as int?;
     final theme = Theme.of(context);
+
+    final easyQuestions = questions.where((q) => (q['difficulty'] ?? 1) == 1).toList();
+    final mediumQuestions = questions.where((q) => (q['difficulty'] ?? 1) == 2).toList();
+    final hardQuestions = questions.where((q) => (q['difficulty'] ?? 1) == 3).toList();
 
     return Card(
       margin: const EdgeInsets.only(bottom: 24.0),
@@ -447,7 +577,6 @@ class _CombinedWeekContentCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. DERS HİYERARŞİSİ BÖLÜMÜ (YUKARI TAŞINDI)
             _InfoSection(
               icon: Icons.account_tree_outlined,
               title: 'DERS HİYERARŞİSİ',
@@ -459,7 +588,6 @@ class _CombinedWeekContentCard extends StatelessWidget {
             ),
             const Divider(height: 32),
 
-            // 2. KAZANIM BÖLÜMÜ (GÖSTER/GİZLE)
             Theme(
               data: theme.copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
@@ -501,14 +629,11 @@ class _CombinedWeekContentCard extends StatelessWidget {
               ),
             ),
 
-            // 3. İÇERİKLER VE VİDEOLAR BÖLÜMÜ
-            // İçerikler bölümü
             if (contents.isNotEmpty) ...[
               const Divider(height: 32),
               _TopicContentView(contents: contents),
             ],
 
-            // Videolar bölümü
             if (videos.isNotEmpty) ...[
               const Divider(height: 32),
               _InfoSection(
@@ -519,9 +644,7 @@ class _CombinedWeekContentCard extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                          // TODO: url_launcher ile videoyu aç
-                        },
+                        onPressed: () {},
                         icon: const Icon(Icons.play_circle_outline),
                         label: Text(
                           video['title'] as String? ?? 'Konu Anlatım Videosu',
@@ -536,33 +659,21 @@ class _CombinedWeekContentCard extends StatelessWidget {
               ),
             ],
 
-            // 4. HAFTALIK SORULAR BÖLÜMÜ
             if (questions.isNotEmpty && topicId != null) ...[
               const Divider(height: 32),
               _InfoSection(
                 icon: Icons.quiz_outlined,
                 title: 'HAFTALIK DEĞERLENDİRME',
-                child: Center(
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              QuestionsScreen(topicId: topicId, weekNo: weekNo),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.arrow_forward),
-                    label: Text('${questions.length} Soru ile Başla'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 12,
-                      ),
-                      textStyle: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (easyQuestions.isNotEmpty)
+                      _buildDifficultyButton(context, topicId, 1, 'Kolay', easyQuestions.length, Colors.green),
+                    if (mediumQuestions.isNotEmpty)
+                      _buildDifficultyButton(context, topicId, 2, 'Orta', mediumQuestions.length, Colors.orange),
+                    if (hardQuestions.isNotEmpty)
+                      _buildDifficultyButton(context, topicId, 3, 'Zor', hardQuestions.length, Colors.red),
+                  ],
                 ),
               ),
             ],
@@ -571,21 +682,45 @@ class _CombinedWeekContentCard extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildDifficultyButton(BuildContext context, int topicId, int difficulty, String label, int count, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: ElevatedButton.icon(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuestionsScreen(
+                topicId: topicId,
+                weekNo: weekNo,
+                difficulty: difficulty,
+              ),
+            ),
+          );
+        },
+        icon: const Icon(Icons.arrow_forward),
+        label: Text('$label Seviye ($count Soru)'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 32,
+            vertical: 12,
+          ),
+          textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
+        ),
+      ),
+    );
+  }
 }
 
-/// Topic contents listesini alan ve her bir içeriği
-/// section_type'a göre uygun widget ile render eden widget.
 class _TopicContentView extends StatelessWidget {
   final List<TopicContent> contents;
   const _TopicContentView({super.key, required this.contents});
 
   @override
   Widget build(BuildContext context) {
-    // getBaseHtmlStyle'ı kullanabilmek için html_style.dart dosyasını import etmeliyiz.
-    // Bu dosya zaten `outcomes_screen.dart` dosyasının üst kısımlarında import edilmiş olmalı.
-    // Eğer edilmemişse, manuel olarak eklemek gerekir.
-    // import 'package:egitim_uygulamasi/utils/html_style.dart';
-
     return _InfoSection(
       icon: Icons.article_outlined,
       title: 'İÇERİKLER',
@@ -600,7 +735,7 @@ class _TopicContentView extends StatelessWidget {
           return Card(
             elevation: 2,
             margin: const EdgeInsets.symmetric(vertical: 8.0),
-            clipBehavior: Clip.antiAlias, // Köşelerin yuvarlak kalmasını sağlar
+            clipBehavior: Clip.antiAlias,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -619,7 +754,6 @@ class _TopicContentView extends StatelessWidget {
                     data: content.content,
                     extensions: const [
                       TableHtmlExtension(),
-                      // Diğer extension'ları buraya ekleyebilirsiniz.
                     ],
                     style: getBaseHtmlStyle(context),
                   ),
@@ -633,7 +767,6 @@ class _TopicContentView extends StatelessWidget {
   }
 }
 
-/// Başlık, ikon ve içerikten oluşan genel bir bölüm widget'ı.
 class _InfoSection extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -667,8 +800,6 @@ class _InfoSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        // Render either the content string or the child widget, but not both.
-        // If a child widget is provided, it takes precedence.
         child ??
             (content != null
                 ? ContentRenderer(content: content!)
@@ -678,7 +809,6 @@ class _InfoSection extends StatelessWidget {
   }
 }
 
-/// Ders -> Ünite -> Konu hiyerarşisini gösteren widget.
 class _HierarchyView extends StatelessWidget {
   final String? lesson;
   final String? unit;

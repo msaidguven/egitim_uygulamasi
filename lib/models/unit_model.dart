@@ -51,4 +51,16 @@ class Unit {
     // İlişki tablosu kullanıldığı için toMap'te gradeId göndermeye gerek yok.
     return {'title': title, 'description': description, 'lesson_id': lessonId};
   }
+
+  // Add equals and hashCode to allow for object comparison in Sets.
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is Unit &&
+      other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

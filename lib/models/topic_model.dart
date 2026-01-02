@@ -40,4 +40,16 @@ class Topic {
       'is_active': isActive,
     };
   }
+
+  // Add equals and hashCode to allow for object comparison in Sets.
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is Topic &&
+      other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

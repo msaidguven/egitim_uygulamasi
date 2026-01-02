@@ -1,0 +1,123 @@
+{
+  "_supported_question_types": [
+    { "type": "Çoktan Seçmeli", "id": 1, "keyboard_input": false },
+    { "type": "Doğru / Yanlış", "id": 2, "keyboard_input": false },
+    { "type": "Boşluk Doldurma (Drag & Drop)", "id": 3, "keyboard_input": false },
+    { "type": "Eşleştirme", "id": 5, "keyboard_input": false }
+  ],
+
+  "topic": "Kesirlerin Farklı Gösterimleri",
+
+  "questions": [
+    {
+      "question_type_id": 1,
+      "question_text": "1/2 kesrinin ondalık gösterimi hangisidir?",
+      "difficulty": 1,
+      "score": 1,
+      "choices": [
+        { "text": "0,25", "is_correct": false },
+        { "text": "0,5", "is_correct": true },
+        { "text": "1,5", "is_correct": false },
+        { "text": "2", "is_correct": false }
+      ]
+    },
+    {
+      "question_type_id": 1,
+      "question_text": "Aşağıdakilerden hangisi bileşik kesirdir?",
+      "difficulty": 1,
+      "score": 1,
+      "choices": [
+        { "text": "1/4", "is_correct": false },
+        { "text": "2/3", "is_correct": false },
+        { "text": "3/2", "is_correct": true },
+        { "text": "1/5", "is_correct": false }
+      ]
+    },
+    {
+      "question_type_id": 1,
+      "question_text": "%25 ifadesine eşit olan kesir hangisidir?",
+      "difficulty": 1,
+      "score": 1,
+      "choices": [
+        { "text": "1/2", "is_correct": false },
+        { "text": "3/4", "is_correct": false },
+        { "text": "1/4", "is_correct": true },
+        { "text": "5/4", "is_correct": false }
+      ]
+    },
+    {
+      "question_type_id": 2,
+      "question_text": "0,5 ile %50 aynı miktarı ifade eder.",
+      "difficulty": 1,
+      "score": 1,
+      "correct_answer": true
+    },
+    {
+      "question_type_id": 2,
+      "question_text": "1 1/2 sayısı basit kesirdir.",
+      "difficulty": 1,
+      "score": 1,
+      "correct_answer": false
+    },
+    {
+      "question_type_id": 3,
+      "question_text": "1/4 kesrinin yüzde gösterimi ______ şeklindedir.",
+      "difficulty": 1,
+      "score": 1,
+      "blank": {
+        "options": [
+          { "text": "%25", "is_correct": true },
+          { "text": "%50", "is_correct": false },
+          { "text": "%75", "is_correct": false }
+        ]
+      }
+    },
+    {
+      "question_type_id": 3,
+      "question_text": "3/2 kesrinin ondalık gösterimi ______ şeklindedir.",
+      "difficulty": 1,
+      "score": 1,
+      "blank": {
+        "options": [
+          { "text": "1,5", "is_correct": true },
+          { "text": "0,5", "is_correct": false },
+          { "text": "2,5", "is_correct": false }
+        ]
+      }
+    },
+    {
+      "question_type_id": 5,
+      "question_text": "Aşağıdaki kesirleri uygun ondalık gösterimleriyle eşleştiriniz.",
+      "difficulty": 1,
+      "score": 1,
+      "pairs": [
+        { "left_text": "1/2", "right_text": "0,5" },
+        { "left_text": "1/4", "right_text": "0,25" },
+        { "left_text": "3/2", "right_text": "1,5" }
+      ]
+    },
+    {
+      "question_type_id": 5,
+      "question_text": "Aşağıdaki gösterimleri uygun yüzde ifadeleriyle eşleştiriniz.",
+      "difficulty": 1,
+      "score": 1,
+      "pairs": [
+        { "left_text": "1/2", "right_text": "%50" },
+        { "left_text": "1/4", "right_text": "%25" },
+        { "left_text": "3/2", "right_text": "%150" }
+      ]
+    },
+    {
+      "question_type_id": 1,
+      "question_text": "1,5 sayısının kesir gösterimi hangisidir?",
+      "difficulty": 1,
+      "score": 1,
+      "choices": [
+        { "text": "1/5", "is_correct": false },
+        { "text": "3/2", "is_correct": true },
+        { "text": "5/3", "is_correct": false },
+        { "text": "2/3", "is_correct": false }
+      ]
+    }
+  ]
+}

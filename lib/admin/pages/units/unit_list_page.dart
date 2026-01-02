@@ -78,13 +78,13 @@ class _UnitListPageState extends State<UnitListPage> {
       _units = [];
     });
     try {
-      // RPC ÇAĞRISI KALDIRILDI. 'is_active' FİLTRESİ İLE DOĞRUDAN SORGULAMA YAPILIYOR.
       final response = await supabase
           .from('units')
           .select('*, unit_grades!inner(grade_id)')
           .eq('lesson_id', lessonId)
-          .eq('unit_grades.grade_id', _selectedGrade!.id!)
-          .eq('is_active', true);
+          .eq('unit_grades.grade_id', _selectedGrade!.id)
+          .eq('is_active', true)
+          .order('order_no', ascending: true); // Sıralamayı order_no'ya göre yap
 
       final units = (response as List)
           .map((data) => Unit.fromMap(data as Map<String, dynamic>))
@@ -110,7 +110,7 @@ class _UnitListPageState extends State<UnitListPage> {
       _units = [];
     });
     if (grade != null) {
-      _loadLessonsForGrade(grade.id!);
+      _loadLessonsForGrade(grade.id);
     }
   }
 
@@ -124,7 +124,6 @@ class _UnitListPageState extends State<UnitListPage> {
     }
   }
 
-  // Liste yenileme metodu
   void _refreshUnitList() {
     if (_selectedLesson != null) {
       _loadUnitsForLesson(_selectedLesson!.id);
@@ -142,12 +141,11 @@ class _UnitListPageState extends State<UnitListPage> {
   }
 
   Future<void> _deleteUnit(int id) async {
-    // Silme onayı
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Üniteyi Sil'),
-        content: const Text('Bu üniteyi silmek istediğinizden emin misiniz?'),
+        content: const Text('Bu üniteyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -155,6 +153,7 @@ class _UnitListPageState extends State<UnitListPage> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('Sil'),
           ),
         ],
@@ -164,13 +163,60 @@ class _UnitListPageState extends State<UnitListPage> {
     if (confirmed == true) {
       try {
         await _unitService.deleteUnit(id);
-        _refreshUnitList(); // Silme sonrası listeyi yenile
-      } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Hata: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Ünite başarıyla silindi.'), backgroundColor: Colors.green),
+          );
         }
+        _refreshUnitList();
+      } catch (e, st) {
+        final errorMessage = 'Ünite silinirken bir hata oluştu: $e';
+        debugPrint('--- ÜNİTE SİLME HATASI ---');
+        debugPrint(errorMessage);
+        debugPrint('Stack Trace:\n$st');
+        debugPrint('--------------------------');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _onReorder(int oldIndex, int newIndex) async {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+
+    final Unit item = _units.removeAt(oldIndex);
+    setState(() {
+      _units.insert(newIndex, item);
+    });
+
+    final List<int> unitIds = _units.map((u) => u.id).toList();
+
+    try {
+      await supabase.rpc('update_unit_order', params: {'p_unit_ids': unitIds});
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sıralama güncellendi.'), backgroundColor: Colors.green),
+        );
+      }
+    } catch (e, st) {
+      setState(() {
+        _units.removeAt(newIndex);
+        _units.insert(oldIndex, item);
+      });
+      final errorMessage = 'Sıralama güncellenemedi: $e';
+      debugPrint('--- SIRALAMA GÜNCELLEME HATASI ---');
+      debugPrint(errorMessage);
+      debugPrint('Stack Trace:\n$st');
+      debugPrint('---------------------------------');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+        );
       }
     }
   }
@@ -184,7 +230,7 @@ class _UnitListPageState extends State<UnitListPage> {
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: FilledButton.icon(
-              onPressed: () => _showFormDialog(),
+              onPressed: _selectedLesson == null ? null : () => _showFormDialog(),
               icon: const Icon(Icons.add),
               label: const Text('Yeni Ünite'),
             ),
@@ -271,10 +317,6 @@ class _UnitListPageState extends State<UnitListPage> {
   }
 
   Widget _buildUnitList() {
-    if (_selectedGrade == null) {
-      return const Center(child: Text('Önce bir sınıf seçin.'));
-    }
-
     if (_selectedLesson == null) {
       return const Center(child: Text('Üniteleri görmek için bir ders seçin.'));
     }
@@ -288,38 +330,37 @@ class _UnitListPageState extends State<UnitListPage> {
       return const Center(child: Text('Bu derse ait ünite bulunamadı.'));
     }
 
-    return SingleChildScrollView(
-      child: DataTable(
-        columns: const [
-          DataColumn(label: Text('ID')),
-          DataColumn(label: Text('Ünite Başlığı')),
-          DataColumn(label: Text('Açıklama')),
-          DataColumn(label: Text('İşlemler')),
-        ],
-        rows: _units.map((unit) {
-          return DataRow(
-            cells: [
-              DataCell(Text(unit.id.toString())),
-              DataCell(Text(unit.title)),
-              DataCell(Text(unit.description ?? '-')),
-              DataCell(
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => _showFormDialog(unit: unit),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _deleteUnit(unit.id),
-                    ),
-                  ],
+    return ReorderableListView.builder(
+      itemCount: _units.length,
+      itemBuilder: (context, index) {
+        final unit = _units[index];
+        return Card(
+          key: ValueKey(unit.id),
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          child: ListTile(
+            leading: ReorderableDragStartListener(
+              index: index,
+              child: const Icon(Icons.drag_handle),
+            ),
+            title: Text(unit.title),
+            subtitle: Text(unit.description ?? 'Açıklama yok'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit, size: 20),
+                  onPressed: () => _showFormDialog(unit: unit),
                 ),
-              ),
-            ],
-          );
-        }).toList(),
-      ),
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                  onPressed: () => _deleteUnit(unit.id),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      onReorder: _onReorder,
     );
   }
 }

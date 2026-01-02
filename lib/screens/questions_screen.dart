@@ -1,6 +1,11 @@
 // lib/screens/questions_screen.dart
 
+import 'dart:collection';
+import 'dart:math';
+
+import 'package:collection/collection.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
+import 'package:egitim_uygulamasi/models/question_blank_option.dart';
 import 'package:egitim_uygulamasi/services/question_service.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +13,13 @@ import 'package:flutter/material.dart';
 class QuestionsScreen extends StatefulWidget {
   final int topicId;
   final int weekNo;
+  final int? difficulty;
 
-  const QuestionsScreen({
+  QuestionsScreen({
     super.key,
     required this.topicId,
     required this.weekNo,
+    this.difficulty,
   });
 
   @override
@@ -26,6 +33,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   List<Question> _questions = [];
   bool _isAdmin = false;
   bool _isLoadingData = true;
+  String? _error;
 
   final PageController _pageController = PageController();
   final Map<int, dynamic> _userAnswers = {}; // question.id -> answer
@@ -42,11 +50,32 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   }
 
   Future<void> _loadData() async {
-    setState(() { _isLoadingData = true; });
-    await _checkAdminStatus();
-    _questions = await _questionService.getQuestionsForWeek(widget.topicId, widget.weekNo);
-    if(mounted) {
-      setState(() { _isLoadingData = false; });
+    setState(() { 
+      _isLoadingData = true; 
+      _error = null;
+    });
+    try {
+      await _checkAdminStatus();
+      var allQuestions = await _questionService.getQuestionsForWeek(widget.topicId, widget.weekNo);
+      if (widget.difficulty != null) {
+        _questions = allQuestions.where((q) => q.difficulty == widget.difficulty).toList();
+      } else {
+        _questions = allQuestions;
+      }
+    } catch (e, st) {
+      debugPrint('--- SORU YÜKLENİRKEN HATA ---');
+      debugPrint('Hata: $e');
+      debugPrint('Stack Trace:\n$st');
+      debugPrint('-----------------------------');
+      if (mounted) {
+        setState(() {
+          _error = 'Sorular yüklenirken bir hata oluştu: $e';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() { _isLoadingData = false; });
+      }
     }
   }
 
@@ -72,27 +101,55 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         isCorrect = true;
       }
     } else if (question.type == QuestionType.fill_blank) {
-      if ((userAnswer as String).trim().toLowerCase() ==
-          question.correctAnswer?.toLowerCase()) {
-        isCorrect = true;
+      if (question.blankOptions.isNotEmpty) {
+        if (userAnswer is Map<int, QuestionBlankOption?>) {
+          final correctOptionIds = question.blankOptions
+              .where((opt) => opt.isCorrect)
+              .map((opt) => opt.id)
+              .toSet();
+
+          final userAnswerIds = userAnswer.values
+              .whereNotNull()
+              .map((opt) => opt.id)
+              .toSet();
+
+          isCorrect = const SetEquality().equals(userAnswerIds, correctOptionIds);
+
+        } else { 
+          final correctOptionIds = question.blankOptions.where((o) => o.isCorrect).map((o) => o.id).toList();
+          if (correctOptionIds.contains(userAnswer)) {
+            isCorrect = true;
+          }
+        }
+      } else {
+        // This case is for simple fill-in-the-blanks without predefined options.
+        // It seems the `correctAnswer` field in the model is now bool?, so we need to handle this.
+        // Assuming this type of question is not used for now, or it needs a different field.
+        // For safety, we'll compare with `toString()`.
+        if ((userAnswer as String).trim().toLowerCase() == question.correctAnswer.toString().toLowerCase()) {
+          isCorrect = true;
+        }
       }
     } else if (question.type == QuestionType.true_false) {
-      final bool correctAnswer =
-          question.correctAnswer?.toLowerCase() == 'true';
-      if (userAnswer == correctAnswer) {
+      // With the corrected model, this is a direct boolean comparison.
+      if (userAnswer == question.correctAnswer) {
         isCorrect = true;
       }
     } else if (question.type == QuestionType.matching) {
-      final userMatches = userAnswer as Map<String, String?>?;
+      final userMatches = userAnswer as Map<String, MatchingPair?>?;
       if (userMatches != null &&
-          question.matchingPairs != null && // Add null check here
-          userMatches.length == question.matchingPairs!.length && // Use ! since it's checked
-          userMatches.values.every((v) => v != null && v.isNotEmpty)) { 
+          question.matchingPairs != null &&
+          userMatches.length == question.matchingPairs!.length &&
+          userMatches.values.every((v) => v != null)) {
         final correctMatches = {
-          for (var p in question.matchingPairs!) p.left_text: p.right_text // Use ! since it's checked
+          for (var p in question.matchingPairs!) p.left_text: p.right_text
         };
-        isCorrect = userMatches.entries
-            .every((entry) => correctMatches[entry.key] == entry.value);
+
+        isCorrect = userMatches.entries.every((entry) {
+          final leftText = entry.key;
+          final selectedRightText = entry.value?.right_text;
+          return correctMatches[leftText] == selectedRightText;
+        });
       } else {
         isCorrect = false;
       }
@@ -156,11 +213,27 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     });
   }
 
+  String _getAppBarTitle() {
+    if (widget.difficulty == null) {
+      return 'Haftalık Değerlendirme';
+    }
+    switch (widget.difficulty) {
+      case 1:
+        return 'Kolay Seviye Testi';
+      case 2:
+        return 'Orta Seviye Testi';
+      case 3:
+        return 'Zor Seviye Testi';
+      default:
+        return 'Haftalık Değerlendirme';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Haftalık Değerlendirme'),
+        title: Text(_getAppBarTitle()),
       ),
       body: _isLoadingData 
           ? const Center(child: CircularProgressIndicator())
@@ -169,8 +242,14 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   }
 
   Widget _buildBody() {
+    if (_error != null) {
+      return Center(child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(_error!, style: const TextStyle(color: Colors.red)),
+      ));
+    }
     if (_questions.isEmpty) {
-      return const Center(child: Text('Bu hafta için soru bulunamadı.'));
+      return const Center(child: Text('Bu seviye için soru bulunamadı.'));
     }
 
     if (_showResults) {
@@ -331,8 +410,14 @@ class _QuestionCard extends StatelessWidget {
               ],
             ),
             const Divider(height: 24),
-            Text(question.text, style: Theme.of(context).textTheme.bodyLarge),
-            const SizedBox(height: 24),
+            if (question.type != QuestionType.fill_blank)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Text(
+                  question.text,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
             Expanded(child: _buildAnswerArea(context)),
             if (!isChecked)
               ElevatedButton(
@@ -371,17 +456,27 @@ class _QuestionCard extends StatelessWidget {
       case QuestionType.true_false:
         return _buildTrueFalse(context);
       case QuestionType.fill_blank:
-        return TextFormField(
-          initialValue: userAnswer as String?,
-          onChanged: onAnswered,
-          readOnly: isChecked,
-          decoration: InputDecoration(
-            labelText: 'Cevabınız',
-            border: const OutlineInputBorder(),
-            filled: isChecked,
-            fillColor: Colors.grey[200],
-          ),
-        );
+        if (question.blankOptions.isNotEmpty) {
+          return _FillBlankWithOptionsBody(
+            question: question,
+            onAnswered: onAnswered,
+            userAnswer: userAnswer,
+            isChecked: isChecked,
+            isCorrect: isCorrect,
+          );
+        } else {
+          return TextFormField(
+            initialValue: userAnswer as String?,
+            onChanged: onAnswered,
+            readOnly: isChecked,
+            decoration: InputDecoration(
+              labelText: 'Cevabınız',
+              border: const OutlineInputBorder(),
+              filled: isChecked,
+              fillColor: Colors.grey[200],
+            ),
+          );
+        }
       case QuestionType.classical:
         return TextFormField(
           initialValue: userAnswer as String?,
@@ -400,7 +495,7 @@ class _QuestionCard extends StatelessWidget {
         return _MatchingQuestionBody(
           question: question,
           onAnswered: onAnswered,
-          userAnswer: (userAnswer as Map?)?.cast<String, String?>() ?? {},
+          userAnswer: (userAnswer as Map?)?.cast<String, MatchingPair?>() ?? {},
           isChecked: isChecked,
         );
       case QuestionType.unknown:
@@ -441,15 +536,25 @@ class _QuestionCard extends StatelessWidget {
   }
 
   Widget _buildTrueFalse(BuildContext context) {
+    Color? getCardColor(bool forValue) {
+      if (!isChecked) return null;
+
+      final bool isThisTheCorrectAnswer = (question.correctAnswer == forValue);
+      final bool isThisTheUserAnswer = (userAnswer == forValue);
+
+      if (isThisTheCorrectAnswer) {
+        return Colors.green.withOpacity(0.3);
+      }
+      if (isThisTheUserAnswer) { // and not the correct answer
+        return Colors.red.withOpacity(0.3);
+      }
+      return null;
+    }
+
     return Column(
       children: [
         Card(
-          color: isChecked && (question.correctAnswer == 'true')
-              ? Colors.green.withOpacity(0.3)
-              : (isChecked && userAnswer == true &&
-                      (question.correctAnswer != 'true'))
-                  ? Colors.red.withOpacity(0.3)
-                  : null,
+          color: getCardColor(true),
           child: RadioListTile<bool>(
             title: const Text('Doğru'),
             value: true,
@@ -458,13 +563,7 @@ class _QuestionCard extends StatelessWidget {
           ),
         ),
         Card(
-          color: isChecked && (question.correctAnswer == 'false')
-              ? Colors.green.withOpacity(0.3)
-              : (isChecked &&
-                      userAnswer == false &&
-                      (question.correctAnswer != 'false'))
-                  ? Colors.red.withOpacity(0.3)
-                  : null,
+          color: getCardColor(false),
           child: RadioListTile<bool>(
             title: const Text('Yanlış'),
             value: false,
@@ -477,10 +576,164 @@ class _QuestionCard extends StatelessWidget {
   }
 }
 
+class _FillBlankWithOptionsBody extends StatefulWidget {
+  final Question question;
+  final ValueChanged<dynamic> onAnswered;
+  final dynamic userAnswer;
+  final bool isChecked;
+  final bool isCorrect;
+
+  const _FillBlankWithOptionsBody({
+    required this.question,
+    required this.onAnswered,
+    required this.userAnswer,
+    required this.isChecked,
+    required this.isCorrect,
+  });
+
+  @override
+  _FillBlankWithOptionsBodyState createState() => _FillBlankWithOptionsBodyState();
+}
+
+class _FillBlankWithOptionsBodyState extends State<_FillBlankWithOptionsBody> {
+  late Map<int, QuestionBlankOption?> _droppedAnswers;
+  late List<QuestionBlankOption> _availableOptions;
+
+  @override
+  void initState() {
+    super.initState();
+    final int blankCount = '______'.allMatches(widget.question.text).length;
+    _droppedAnswers = {for (var i = 0; i < blankCount; i++) i: null};
+    _availableOptions = List.from(widget.question.blankOptions);
+
+    if (widget.userAnswer is Map<int, QuestionBlankOption?>) {
+       _droppedAnswers.addAll(widget.userAnswer as Map<int, QuestionBlankOption?>);
+       for (var answer in _droppedAnswers.values) {
+         if (answer != null) {
+           _availableOptions.removeWhere((opt) => opt.id == answer.id);
+         }
+       }
+    }
+  }
+
+  void _onDrop(int blankIndex, QuestionBlankOption option) {
+    if (widget.isChecked) return;
+
+    setState(() {
+      final previousEntry = _droppedAnswers.entries.firstWhereOrNull((entry) => entry.value?.id == option.id);
+      if (previousEntry != null) {
+        _droppedAnswers[previousEntry.key] = null;
+      }
+
+      final existingOption = _droppedAnswers[blankIndex];
+      if (existingOption != null) {
+        _availableOptions.add(existingOption);
+      }
+
+      _droppedAnswers[blankIndex] = option;
+      _availableOptions.removeWhere((opt) => opt.id == option.id);
+
+      final answersToSubmit = Map<int, QuestionBlankOption?>.from(_droppedAnswers);
+      widget.onAnswered(answersToSubmit);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    // Make blank width responsive, clamping it to avoid being too small or large.
+    final blankWidth = (screenWidth * 0.25).clamp(100.0, 150.0);
+
+    final questionParts = widget.question.text.split('______');
+    List<Widget> questionWidgets = [];
+
+    for (int i = 0; i < questionParts.length; i++) {
+      questionWidgets.add(Text(questionParts[i], style: Theme.of(context).textTheme.headlineSmall?.copyWith(height: 1.5)));
+      if (i < questionParts.length - 1) {
+        final blankIndex = i;
+        final droppedOption = _droppedAnswers[blankIndex];
+        
+        Color borderColor = Colors.grey;
+        Color backgroundColor = Colors.grey.shade100;
+
+        if (widget.isChecked) {
+          borderColor = widget.isCorrect ? Colors.green : Colors.red;
+          backgroundColor = widget.isCorrect ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2);
+        }
+
+        questionWidgets.add(
+          DragTarget<QuestionBlankOption>(
+            builder: (context, candidateData, rejectedData) {
+              return Container(
+                height: 50,
+                width: blankWidth, // USE RESPONSIVE WIDTH
+                margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: borderColor),
+                  borderRadius: BorderRadius.circular(8),
+                  color: backgroundColor,
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: FittedBox( // ADD FITTEDBOX
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        droppedOption?.optionText ?? '______',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: droppedOption != null ? FontWeight.bold : FontWeight.normal,
+                          color: droppedOption != null ? Colors.blue.shade800 : Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+            onAccept: (option) => _onDrop(blankIndex, option),
+          ),
+        );
+      }
+    }
+
+    return ListView(
+      children: [
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: questionWidgets,
+        ),
+        const Divider(height: 48, thickness: 1),
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 8.0,
+          alignment: WrapAlignment.center,
+          children: _availableOptions.map((option) {
+            return Draggable<QuestionBlankOption>(
+              data: option,
+              feedback: Material(
+                elevation: 4.0,
+                child: Chip(label: Text(option.optionText), backgroundColor: Colors.blue.shade200),
+              ),
+              childWhenDragging: Chip(
+                label: Text(option.optionText),
+                backgroundColor: Colors.grey.shade300,
+              ),
+              child: Chip(label: Text(option.optionText)),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+}
+
+
 class _MatchingQuestionBody extends StatefulWidget {
   final Question question;
   final ValueChanged<dynamic> onAnswered;
-  final Map<String, String?> userAnswer;
+  final Map<String, MatchingPair?> userAnswer;
   final bool isChecked;
 
   const _MatchingQuestionBody({
@@ -496,175 +749,113 @@ class _MatchingQuestionBody extends StatefulWidget {
 
 class _MatchingQuestionBodyState extends State<_MatchingQuestionBody> {
   late List<String> leftTexts;
-  late List<String> shuffledRightTexts;
-  late Map<String, String?> userMatches; // left_text -> right_text
-  late List<String> availableRightTexts;
+  late List<MatchingPair> shuffledRightPairs;
+  late Map<String, MatchingPair?> userMatches;
 
   @override
   void initState() {
     super.initState();
     leftTexts = widget.question.matchingPairs?.map((p) => p.left_text).toList() ?? [];
-    shuffledRightTexts = widget.question.matchingPairs?.map((p) => p.right_text).toList() ?? [];
-    shuffledRightTexts.shuffle();
+    shuffledRightPairs = List.from(widget.question.matchingPairs ?? []);
+    shuffledRightPairs.shuffle();
     userMatches = Map.from(widget.userAnswer);
-
-    final matchedValues = userMatches.values.toSet();
-    availableRightTexts =
-        shuffledRightTexts.where((m) => !matchedValues.contains(m)).toList();
   }
 
-  void _handleDrop(String leftText, String rightText) {
+  void _handleDrop(String leftText, MatchingPair droppedPair) {
     if (widget.isChecked) return;
 
     setState(() {
-      String? previousLeftText;
-      for (final entry in userMatches.entries) {
-        if (entry.value == rightText) {
-          previousLeftText = entry.key;
-          break;
+      // We are dropping `droppedPair` onto the slot for `leftText`.
+
+      // The most important thing is to ensure the `droppedPair` is not present in any *other* slot.
+      // We create a new map for the updated matches.
+      final newMatches = <String, MatchingPair?>{};
+      userMatches.forEach((key, value) {
+        // If the value is not the one we just dropped, keep it.
+        if (value?.id != droppedPair.id) {
+          newMatches[key] = value;
         }
-      }
+      });
 
-      if (previousLeftText != null) {
-        userMatches[previousLeftText] = null;
-      }
+      // Now, add the new match.
+      newMatches[leftText] = droppedPair;
 
-      final previousRightText = userMatches[leftText];
-      if (previousRightText != null && previousRightText != rightText) {
-        if (!availableRightTexts.contains(previousRightText)) {
-          availableRightTexts.add(previousRightText);
-        }
-      }
-
-      userMatches[leftText] = rightText;
-      availableRightTexts.remove(rightText);
+      // Update the state with the new map.
+      userMatches = newMatches;
       widget.onAnswered(userMatches);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // The available options to drag from.
-    final draggableOptions = shuffledRightTexts.map((rightText) {
-      bool isUsed = userMatches.containsValue(rightText);
-      return Draggable<String>(
-        key: ValueKey(rightText),
-        data: rightText,
+    // Use the ID to check for availability, allowing duplicate texts.
+    final availableRightPairs = shuffledRightPairs.where((pair) {
+      return !userMatches.values.any((matchedPair) => matchedPair?.id == pair.id);
+    }).toList();
+
+    final draggableOptions = availableRightPairs.map((pair) {
+      return Draggable<MatchingPair>(
+        data: pair,
         feedback: Material(
           elevation: 4.0,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.8),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(rightText,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: Colors.white)),
-          ),
+          child: Chip(label: Text(pair.right_text)),
         ),
-        childWhenDragging: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Text(rightText,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.grey.shade300)),
-        ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade400),
-              borderRadius: BorderRadius.circular(8.0),
-              color:
-                  widget.isChecked || isUsed ? Colors.grey.shade300 : Colors.white,
-              boxShadow: widget.isChecked || isUsed
-                  ? []
-                  : [
-                      BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: const Offset(0, 1))
-                    ]),
-          child: Text(rightText,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: widget.isChecked || isUsed ? Colors.grey.shade600 : null,
-                  )),
-        ),
+        childWhenDragging: Chip(label: Text(pair.right_text), backgroundColor: Colors.grey.shade300),
+        child: Chip(label: Text(pair.right_text)),
       );
     }).toList();
 
-    // The drop targets.
     final dropTargets = ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: leftTexts.length,
       itemBuilder: (context, index) {
         final leftText = leftTexts[index];
-        final matchedValue = userMatches[leftText];
+        final matchedPair = userMatches[leftText];
         bool? isCorrect;
+
         if (widget.isChecked) {
-          if (matchedValue != null && widget.question.matchingPairs != null) {
-            final correctMatch = widget.question.matchingPairs!
-                .firstWhere((p) => p.left_text == leftText)
-                .right_text;
-            isCorrect = matchedValue == correctMatch;
-          } else {
-            isCorrect = false;
-          }
+          final correctMatch = widget.question.matchingPairs!.firstWhere((p) => p.left_text == leftText).right_text;
+          isCorrect = matchedPair?.right_text == correctMatch;
         }
 
-        return DragTarget<String>(
-          key: ValueKey(leftText),
+        return DragTarget<MatchingPair>(
           builder: (context, candidateData, rejectedData) {
             return Container(
-              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-              padding: const EdgeInsets.all(12.0),
+              margin: const EdgeInsets.symmetric(vertical: 4.0),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade400),
+                border: Border.all(color: Colors.grey.shade300),
                 borderRadius: BorderRadius.circular(8.0),
-                color: isCorrect == null
-                    ? (candidateData.isNotEmpty
-                        ? Colors.blue.withOpacity(0.1)
-                        : Colors.grey.shade50)
-                    : (isCorrect
-                        ? Colors.green.withOpacity(0.2)
-                        : Colors.red.withOpacity(0.2)),
+                color: widget.isChecked ? (isCorrect! ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2)) : Colors.grey.shade100,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: Row(
                 children: [
-                  Text(leftText,
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 48,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.grey.shade600,
-                          width: 1.5,
-                          style: BorderStyle.solid),
-                      borderRadius: BorderRadius.circular(4),
-                      color: Colors.white,
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(leftText),
                     ),
-                    child: Center(
-                        child: Text(matchedValue ?? '...',
-                            textAlign: TextAlign.center,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold))),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        border: Border(left: BorderSide(color: Colors.grey.shade300)),
+                      ),
+                      child: Center(
+                        child: Text(
+                          matchedPair?.right_text ?? '...',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             );
           },
-          onWillAccept: (data) => true,
           onAccept: (data) => _handleDrop(leftText, data),
         );
       },
@@ -672,19 +863,13 @@ class _MatchingQuestionBodyState extends State<_MatchingQuestionBody> {
 
     return ListView(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: dropTargets,
-        ),
-        const Divider(height: 24, thickness: 1,),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Wrap(
-            spacing: 12.0,
-            runSpacing: 12.0,
-            alignment: WrapAlignment.center,
-            children: draggableOptions,
-          ),
+        dropTargets,
+        const Divider(height: 24),
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 4.0,
+          alignment: WrapAlignment.center,
+          children: draggableOptions,
         ),
       ],
     );

@@ -1,5 +1,7 @@
 // lib/models/question_model.dart
 
+import 'package:egitim_uygulamasi/models/question_blank_option.dart';
+
 enum QuestionType {
   multiple_choice,
   true_false,
@@ -19,6 +21,23 @@ enum QuestionType {
       case 'classical':
         return QuestionType.classical;
       case 'matching':
+        return QuestionType.matching;
+      default:
+        return QuestionType.unknown;
+    }
+  }
+
+  static QuestionType fromId(int? id) {
+    switch (id) {
+      case 1:
+        return QuestionType.multiple_choice;
+      case 2:
+        return QuestionType.true_false;
+      case 3:
+        return QuestionType.fill_blank;
+      case 4:
+        return QuestionType.classical;
+      case 5:
         return QuestionType.matching;
       default:
         return QuestionType.unknown;
@@ -73,7 +92,8 @@ class Question {
   final int score;
   final QuestionType type;
   final List<QuestionChoice> choices;
-  final String? correctAnswer; // For blank and true/false types
+  final bool? correctAnswer; // For true/false types
+  final List<QuestionBlankOption> blankOptions;
   final String? modelAnswer; // For classical type
   final List<MatchingPair>? matchingPairs;
 
@@ -85,13 +105,20 @@ class Question {
     required this.type,
     this.choices = const [],
     this.correctAnswer,
+    this.blankOptions = const [],
     this.modelAnswer,
     this.matchingPairs,
   });
 
   factory Question.fromMap(Map<String, dynamic> map) {
-    final questionType =
-        QuestionType.fromString(map['question_type_code'] as String?);
+    QuestionType questionType;
+    if (map['question_type'] != null && map['question_type'] is Map) {
+      questionType = QuestionType.fromString(map['question_type']['code'] as String?);
+    } else if (map['question_type_id'] != null) {
+      questionType = QuestionType.fromId(map['question_type_id'] as int?);
+    } else {
+      questionType = QuestionType.unknown;
+    }
         
     final choicesList = (map['question_choices'] as List<dynamic>?)
             ?.map((choiceMap) =>
@@ -102,28 +129,33 @@ class Question {
     final matchingPairsList = (map['question_matching_pairs'] as List<dynamic>?)
             ?.map((pairMap) =>
                 MatchingPair.fromMap(pairMap as Map<String, dynamic>))
-            .toList(); // Removed ?? []
-    
-    String? correctAnswer;
-    if ((questionType == QuestionType.fill_blank || questionType == QuestionType.true_false) &&
-        map['question_blanks'] != null && 
-        (map['question_blanks'] as List).isNotEmpty) {
-      correctAnswer = (map['question_blanks'] as List).first['correct_answer'] as String?;
-    }
+            .toList();
+
+    final blankOptionsList = (map['question_blank_options'] as List<dynamic>?)
+            ?.map((optionMap) =>
+                QuestionBlankOption.fromMap(optionMap as Map<String, dynamic>))
+            .toList() ??
+        [];
 
     String? modelAnswer;
      if (questionType == QuestionType.classical && map['question_classical'] != null && (map['question_classical'] as List).isNotEmpty) {
         modelAnswer = (map['question_classical'] as List).first['model_answer'] as String?;
     }
 
+    bool? correctAnswer;
+    if (questionType == QuestionType.true_false) {
+      correctAnswer = map['correct_answer'] as bool?;
+    }
+
     return Question(
       id: map['id'] as int,
-      text: map['question_text'] as String,
+      text: map['question_text'] as String? ?? '',
       difficulty: map['difficulty'] as int? ?? 1,
       score: map['score'] as int? ?? 1,
       type: questionType,
       choices: choicesList,
       correctAnswer: correctAnswer,
+      blankOptions: blankOptionsList,
       modelAnswer: modelAnswer,
       matchingPairs: matchingPairsList,
     );

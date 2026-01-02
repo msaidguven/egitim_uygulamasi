@@ -48,11 +48,15 @@ class AdminSidebar extends StatelessWidget {
           selectedIcon: Icon(Icons.check_circle),
           label: Text('Outcomes'),
         ),
-        // New NavigationRailDestination for Smart Content Addition
         NavigationRailDestination(
           icon: Icon(Icons.auto_awesome_outlined),
           selectedIcon: Icon(Icons.auto_awesome),
           label: Text('Akıllı İçerik Ekleme'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.quiz_outlined),
+          selectedIcon: Icon(Icons.quiz),
+          label: Text('Akıllı Soru Ekleme'),
         ),
       ],
     );

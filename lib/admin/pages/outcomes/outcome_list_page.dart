@@ -366,8 +366,8 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                   border: OutlineInputBorder(),
                   isDense: true,
                 ),
-                maxLines: 3,
-                minLines: 2,
+                maxLines: 13,
+                minLines: 9,
                 validator: (val) => val == null || val.trim().isEmpty
                     ? 'Kazanım metni boş olamaz'
                     : null,

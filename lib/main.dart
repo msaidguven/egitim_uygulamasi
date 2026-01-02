@@ -1,5 +1,6 @@
 // lib/main.dart
 
+import 'dart:ui'; // PointerDeviceKind için gerekli
 import 'package:egitim_uygulamasi/screens/reset_password_screen.dart';
 import 'package:egitim_uygulamasi/constants.dart';
 import 'package:egitim_uygulamasi/screens/auth_gate.dart';
@@ -18,6 +19,17 @@ Future<void> main() async {
 // Global Navigator Key
 final navigatorKey = GlobalKey<NavigatorState>();
 
+// --- YENİ: Web ve Masaüstü için Fare ile Kaydırmayı Etkinleştiren Sınıf ---
+// Bu sınıf, uygulamanın fare tekerleği veya trackpad ile de kaydırılabilmesini sağlar.
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
+}
+
 class EgitimUygulamasi extends StatelessWidget {
   const EgitimUygulamasi({super.key});
 
@@ -26,6 +38,10 @@ class EgitimUygulamasi extends StatelessWidget {
     return MaterialApp(
       title: 'Eğitim Uygulaması',
       navigatorKey: navigatorKey, // Navigator key'i ekliyoruz
+      
+      // --- YENİ: Özel kaydırma davranışını tüm uygulamaya uygula ---
+      scrollBehavior: MyCustomScrollBehavior(),
+
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,

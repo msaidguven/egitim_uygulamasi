@@ -32,15 +32,17 @@ class _AdminLayoutState extends State<AdminLayout> {
       case 4:
         context.go(AdminRoutes.outcomes);
         break;
-      case 5: // New case for Smart Content Addition
+      case 5:
         context.go(AdminRoutes.smartContentAddition);
+        break;
+      case 6: // New case for Smart Question Addition
+        context.go(AdminRoutes.smartQuestionAddition);
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Mevcut rotanın yolunu alıp hangi menünün seçili olduğunu belirleyelim.
     final String location = GoRouterState.of(context).uri.toString();
     int selectedIndex = 0;
     if (location.startsWith(AdminRoutes.curriculum)) {
@@ -53,8 +55,10 @@ class _AdminLayoutState extends State<AdminLayout> {
       selectedIndex = 3;
     } else if (location.startsWith(AdminRoutes.outcomes)) {
       selectedIndex = 4;
-    } else if (location.startsWith(AdminRoutes.smartContentAddition)) { // New else if for Smart Content Addition
+    } else if (location.startsWith(AdminRoutes.smartContentAddition)) {
       selectedIndex = 5;
+    } else if (location.startsWith(AdminRoutes.smartQuestionAddition)) { // New else if for Smart Question Addition
+      selectedIndex = 6;
     }
 
     return Scaffold(
@@ -62,9 +66,7 @@ class _AdminLayoutState extends State<AdminLayout> {
       body: Row(
         children: [
           AdminSidebar(
-            // Belirlenen indeksi NavigationRail'e verelim.
             selectedIndex: selectedIndex,
-            // Menüden bir eleman seçildiğinde _onItemTapped fonksiyonunu çağıralım.
             onDestinationSelected: (index) => _onItemTapped(index, context),
           ),
           const VerticalDivider(thickness: 1, width: 1),

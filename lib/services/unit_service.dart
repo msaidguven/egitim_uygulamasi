@@ -109,6 +109,6 @@ class UnitService {
 
   /// Belirtilen ID'ye sahip üniteyi siler.
   Future<void> deleteUnit(int id) async {
-    return _client.rpc('transactional_delete_unit', params: {'p_unit_id': id});
+    await _client.from('units').delete().eq('id', id);
   }
 }

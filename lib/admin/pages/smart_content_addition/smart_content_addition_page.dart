@@ -1,4 +1,5 @@
-import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/widgets/bulk_question_form.dart';
+import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:egitim_uygulamasi/models/lesson_model.dart';
 import 'package:egitim_uygulamasi/models/topic_model.dart';
@@ -6,7 +7,6 @@ import 'package:egitim_uygulamasi/models/unit_model.dart';
 import 'package:egitim_uygulamasi/services/grade_service.dart';
 import 'package:egitim_uygulamasi/services/topic_service.dart';
 import 'package:egitim_uygulamasi/services/unit_service.dart';
-import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SmartContentAdditionPage extends StatefulWidget {
@@ -75,11 +75,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     try {
       _availableGrades = await _gradeService.getGradesWithLessons();
     } catch (e) {
-      debugPrint('Error loading grades: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Sınıflar ve dersler yüklenemedi: $e')));
-      }
+      _showError('Sınıflar ve dersler yüklenemedi: $e');
     } finally {
       if (mounted) setState(() => _isLoadingGrades = false);
     }
@@ -95,11 +91,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       _availableUnits =
           await _unitService.getUnitsForGradeAndLesson(gradeId, lessonId);
     } catch (e) {
-      debugPrint('Error loading units: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Üniteler yüklenemedi: $e')));
-      }
+      _showError('Üniteler yüklenemedi: $e');
     } finally {
       if (mounted) setState(() => _isLoadingUnits = false);
     }
@@ -115,14 +107,19 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     try {
       _availableTopics = await _topicService.getTopicsForUnit(unitId);
     } catch (e, st) {
-      final errorMessage = 'Error loading topics for unit $unitId: $e\n$st';
-      debugPrint('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-      debugPrint('!!! HATA: Konular yüklenemedi !!!');
-      debugPrint(errorMessage);
-      debugPrint('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      final errorMessage = 'Konular yüklenemedi: $e\n$st';
+      debugPrint('HATA: Konular yüklenemedi: $errorMessage');
       setState(() => _topicError = errorMessage);
     } finally {
       if (mounted) setState(() => _isLoadingTopics = false);
+    }
+  }
+
+  void _showError(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), backgroundColor: Colors.red),
+      );
     }
   }
 
@@ -214,38 +211,27 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         }
       }
 
-      // --- Step 3: Create Content ---
-      final orderNoRes = await supabase
-          .from('topic_contents')
-          .select('order_no')
-          .eq('topic_id', topicId)
-          .order('order_no', ascending: false)
-          .limit(1)
-          .maybeSingle();
-      
-      final nextOrderNo = (orderNoRes?['order_no'] ?? -1) + 1;
+      // --- Step 3: Process Content (HTML or JSON) ---
+      dynamic decodedContent;
+      try {
+        decodedContent = jsonDecode(contentText);
+      } catch (e) {
+        decodedContent = null;
+      }
 
-      final newContent = await supabase
-          .from('topic_contents')
-          .insert({
-            'topic_id': topicId,
-            'title': contentTitle,
-            'content': contentText,
-            'order_no': nextOrderNo,
-          })
-          .select('id')
-          .single();
-      final newContentId = newContent['id'];
+      if (decodedContent is Map<String, dynamic> && decodedContent.containsKey('questions')) {
+        // It's a JSON for questions, process it
+        await _processAndInsertQuestions(decodedContent, topicId, displayWeek);
+      } else {
+        // It's regular HTML content
+        await _insertTopicContent(topicId, contentTitle, contentText, displayWeek);
+      }
 
-      await supabase.from('topic_content_weeks').insert({
-        'topic_content_id': newContentId,
-        'display_week': displayWeek,
-      });
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Konu içeriği başarıyla eklendi!'),
+              content: Text('İçerik başarıyla eklendi!'),
               backgroundColor: Colors.green),
         );
         _resetForm();
@@ -263,6 +249,91 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       if (mounted) setState(() => _isSubmitting = false);
     }
   }
+
+  Future<void> _insertTopicContent(int topicId, String title, String content, int displayWeek) async {
+      final supabase = Supabase.instance.client;
+      final orderNoRes = await supabase
+          .from('topic_contents')
+          .select('order_no')
+          .eq('topic_id', topicId)
+          .order('order_no', ascending: false)
+          .limit(1)
+          .maybeSingle();
+      
+      final nextOrderNo = (orderNoRes?['order_no'] ?? -1) + 1;
+
+      final newContent = await supabase
+          .from('topic_contents')
+          .insert({
+            'topic_id': topicId,
+            'title': title,
+            'content': content,
+            'order_no': nextOrderNo,
+          })
+          .select('id')
+          .single();
+      final newContentId = newContent['id'];
+
+      await supabase.from('topic_content_weeks').insert({
+        'topic_content_id': newContentId,
+        'display_week': displayWeek,
+      });
+  }
+
+  Future<void> _processAndInsertQuestions(Map<String, dynamic> data, int topicId, int displayWeek) async {
+    final supabase = Supabase.instance.client;
+    final questions = data['questions'] as List<dynamic>;
+
+    for (final q in questions) {
+      final questionData = q as Map<String, dynamic>;
+      
+      // 1. Insert the base question
+      final Map<String, dynamic> questionToInsert = {
+        'question_type_id': questionData['question_type_id'],
+        'question_text': questionData['question_text'],
+        'difficulty': questionData['difficulty'],
+        'score': questionData['score'],
+      };
+
+      if (questionData.containsKey('correct_answer')) {
+        questionToInsert['correct_answer'] = questionData['correct_answer'];
+      }
+
+      final newQuestion = await supabase.from('questions').insert(questionToInsert).select('id').single();
+      final questionId = newQuestion['id'];
+
+      // 2. Insert question details based on type
+      final typeId = questionData['question_type_id'];
+
+      if (typeId == 1 && questionData.containsKey('choices')) { // Multiple Choice
+        final choices = (questionData['choices'] as List).map((c) => {
+          'question_id': questionId,
+          'choice_text': c['text'],
+          'is_correct': c['is_correct'],
+        }).toList();
+        await supabase.from('question_choices').insert(choices);
+      } 
+      else if (typeId == 3 && questionData.containsKey('blank')) { // Fill in the Blank
+        final blankData = questionData['blank'] as Map<String, dynamic>;
+        final options = (blankData['options'] as List).map((opt) => {
+          'question_id': questionId, // Use question_id directly
+          'option_text': opt['text'],
+          'is_correct': opt['is_correct'],
+        }).toList();
+        await supabase.from('question_blank_options').insert(options);
+      }
+      // ... handle other question types like matching, classical etc.
+
+      // 3. Create usage record
+      await supabase.from('question_usages').insert({
+        'question_id': questionId,
+        'topic_id': topicId,
+        'usage_type': 'weekly',
+        'display_week': displayWeek,
+      });
+    }
+  }
+
 
   void _resetForm() {
     _formKey.currentState?.reset();
@@ -293,48 +364,36 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('İçerik & Soru Ekleme'),
-          bottom: const TabBar(tabs: [
-            Tab(text: 'Konu İçeriği Ekle'),
-            Tab(text: 'Toplu Soru Ekle'),
-          ]),
-        ),
-        body: TabBarView(
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionTitle('1. Sınıf ve Ders Seçimi'),
-                    _buildGradeSelector(),
-                    const SizedBox(height: 12),
-                    _buildLessonSelector(),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle('2. Ünite'),
-                    _buildUnitBlock(),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle('3. Konu'),
-                    _buildTopicBlock(),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle('4. Konu İçeriği'),
-                    _buildWeekSelector(),
-                    const SizedBox(height: 12),
-                    _buildContentInput(),
-                    const SizedBox(height: 24),
-                    _buildSubmitButton(),
-                  ],
-                ),
-              ),
-            ),
-            const BulkQuestionForm(),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Akıllı İçerik Ekleme'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle('1. Sınıf ve Ders Seçimi'),
+              _buildGradeSelector(),
+              const SizedBox(height: 12),
+              _buildLessonSelector(),
+              const SizedBox(height: 24),
+              _buildSectionTitle('2. Ünite'),
+              _buildUnitBlock(),
+              const SizedBox(height: 24),
+              _buildSectionTitle('3. Konu'),
+              _buildTopicBlock(),
+              const SizedBox(height: 24),
+              _buildSectionTitle('4. Konu İçeriği'),
+              _buildWeekSelector(),
+              const SizedBox(height: 12),
+              _buildContentInput(),
+              const SizedBox(height: 24),
+              _buildSubmitButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -514,7 +573,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         const SizedBox(height: 12),
         TextFormField(
           controller: _rawTopicContentController,
-          decoration: const InputDecoration(labelText: 'Konu İçeriği (HTML)', hintText: 'HTML formatında içeriği buraya girin...', border: OutlineInputBorder(), alignLabelWithHint: true),
+          decoration: const InputDecoration(labelText: 'Konu İçeriği (HTML veya JSON)', hintText: 'HTML içeriği veya soru JSON\'u buraya girin...', border: OutlineInputBorder(), alignLabelWithHint: true),
           maxLines: 20, minLines: 10,
           textAlignVertical: TextAlignVertical.top,
           validator: (val) => (val == null || val.trim().isEmpty) ? 'İçerik metni boş olamaz.' : null,
@@ -529,7 +588,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       child: ElevatedButton.icon(
         onPressed: _isSubmitting ? null : _submitForm,
         icon: _isSubmitting ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.add_box),
-        label: Text(_isSubmitting ? 'Kaydediliyor...' : 'Konu İçeriği Oluştur'),
+        label: Text(_isSubmitting ? 'Kaydediliyor...' : 'İçerik Oluştur'),
         style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16), textStyle: const TextStyle(fontSize: 18)),
       ),
     );
