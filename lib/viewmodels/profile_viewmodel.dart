@@ -20,14 +20,26 @@ class ProfileViewModel extends ChangeNotifier {
 
     try {
       final userId = supabase.auth.currentUser!.id;
+      // İlişkili tablolardan veri çekmek için sorguyu genişletiyoruz.
+      // Supabase, foreign key'leri otomatik olarak tanır.
+      const query = '''
+        *,
+        grades ( id, name ),
+        cities ( id, name ),
+        districts ( id, name )
+      ''';
+
       final data = await supabase
           .from('profiles')
-          .select()
+          .select(query)
           .eq('id', userId)
           .single();
+          
       _profile = Profile.fromMap(data);
+
     } catch (e) {
       _errorMessage = "Profil bilgileri yüklenirken bir hata oluştu: $e";
+      debugPrint('Profil Hatası: $_errorMessage');
     }
 
     _isLoading = false;
@@ -39,17 +51,12 @@ class ProfileViewModel extends ChangeNotifier {
   Future<bool> isAdmin() async {
     try {
       if (supabase.auth.currentUser == null) return false;
-      final response = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', supabase.auth.currentUser!.id)
-          .single();
-      final role = response['role'] as String?;
-      return role == 'admin';
+      // fetchProfile zaten rol bilgisini çektiği için _profile'ı kullanabiliriz.
+      if (_profile == null) await fetchProfile();
+      return _profile?.role == 'admin';
     } catch (e) {
-      // Hata durumunda loglama yapılabilir.
       debugPrint('Admin kontrolünde hata: $e');
-      return false; // Hata durumunda varsayılan olarak false döndür.
+      return false;
     }
   }
 
@@ -79,12 +86,12 @@ class ProfileViewModel extends ChangeNotifier {
 
     try {
       await supabase.auth.signOut();
+      _profile = null; // Çıkış yapıldığında profili temizle
     } catch (e) {
       _errorMessage = "Çıkış yapılırken bir hata oluştu: $e";
     }
 
     _isLoading = false;
-    // Çıkış yapıldıktan sonra dinleyicileri haberdar etmeye gerek yok,
-    // çünkü ekran kapatılacak.
+    notifyListeners();
   }
 }

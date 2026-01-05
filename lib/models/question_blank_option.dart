@@ -19,11 +19,12 @@ class QuestionBlankOption {
 
   factory QuestionBlankOption.fromMap(Map<String, dynamic> map) {
     return QuestionBlankOption(
-      id: map['id'] as int,
-      questionId: map['question_id'] as int,
-      optionText: map['option_text'] as String,
-      isCorrect: map['is_correct'] as bool,
-      orderNo: map['order_no'] ?? 0,
+      // HATA DÜZELTMESİ: int alanları null gelirse, varsayılan olarak 0 ata.
+      id: map['id'] as int? ?? 0,
+      questionId: map['question_id'] as int? ?? 0,
+      optionText: map['option_text'] as String? ?? '',
+      isCorrect: map['is_correct'] as bool? ?? false,
+      orderNo: map['order_no'] as int? ?? 0,
     );
   }
 

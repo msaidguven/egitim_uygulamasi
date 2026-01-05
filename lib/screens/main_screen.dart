@@ -4,6 +4,7 @@ import 'package:egitim_uygulamasi/screens/home_screen.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:egitim_uygulamasi/screens/profile_screen.dart';
 import 'package:egitim_uygulamasi/screens/grades_screen.dart';
+import 'package:egitim_uygulamasi/screens/tests_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -60,7 +61,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    // Oturum durumundaki değişiklikleri dinle ve arayüzü güncelle
     _authStream = Supabase.instance.client.auth.onAuthStateChange;
     _authStream.listen((data) {
       if (mounted) setState(() {});
@@ -78,10 +78,11 @@ class _MainScreenState extends State<MainScreen> {
     final bool isLoggedIn = Supabase.instance.client.auth.currentUser != null;
 
     // Her sekme için gösterilecek sayfaların listesi
+    // DİKKAT: HomeScreen'e _onItemTapped fonksiyonunu geçiyoruz.
     final List<Widget> _pages = <Widget>[
-      const HomeScreen(), // Ana Sayfa
-      const GradesScreen(), // Dersler sekmesi artık Sınıfları gösteriyor
-      const Center(child: Text('Mesajlar (Yakında)')), // Mesajlar
+      HomeScreen(onNavigate: _onItemTapped), // Ana Sayfa
+      const GradesScreen(), // Dersler
+      const TestsScreen(), // Testler
       isLoggedIn ? const ProfileScreen() : const LoginPromptScreen(), // Profil
     ];
 
@@ -91,12 +92,12 @@ class _MainScreenState extends State<MainScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Ana Sayfa'),
           BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Dersler'),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Mesajlar'),
+          BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Testler'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed, // 4+ item için bu gerekli
+        type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
       ),

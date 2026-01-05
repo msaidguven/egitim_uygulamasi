@@ -1,8 +1,10 @@
--- supabase/migrations/0010_create_get_question_details_rpc.sql
-
 -- Bu RPC, bir soruya ait tüm ilişkili verileri tek bir JSON nesnesinde birleştirir.
--- Bu, istemci tarafındaki karmaşık 'select' sorgularını ve PostgREST ilişki önbelleği sorunlarını önler.
+-- DÜZELTME: Artık var olmayan 'correct_answer' sütunu kaldırıldı.
 
+-- Önce mevcut fonksiyonu sil (yapısı değiştiği için)
+DROP FUNCTION IF EXISTS public.get_question_details(bigint);
+
+-- Fonksiyonu güncel haliyle yeniden oluştur
 CREATE OR REPLACE FUNCTION public.get_question_details(p_question_id bigint)
 RETURNS jsonb
 LANGUAGE sql
@@ -14,8 +16,7 @@ AS $$
       'question_text', q.question_text,
       'difficulty', q.difficulty,
       'score', q.score,
-      'correct_answer', q.correct_answer, -- EKLENDİ
-      'question_type_id', q.question_type_id, -- EKLENDİ (Modelin doğru çalışması için)
+      'question_type_id', q.question_type_id,
       'question_type', jsonb_build_object('code', qt.code),
       'question_choices', COALESCE(
         (

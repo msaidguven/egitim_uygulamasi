@@ -25,24 +25,56 @@ class QuestionService {
       final questionIds = usageResponse.map((usage) => usage['question_id'] as int).toList();
 
       // Adım 2: Tüm soru ID'leri için yeni RPC'yi tek bir çağrıda kullan.
+      return await _getQuestionsDetailsByIds(questionIds);
+
+    } catch (e) {
+      debugPrint('Error fetching questions for week: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<Question>> getQuestionsForUnit(int unitId) async {
+    try {
+      // Adım 1: Üniteye ait temel soru bilgilerini (sadece ID) al.
       final questionsResponse = await _client.rpc(
+        'get_questions_for_unit',
+        params: {'unit_id_param': unitId},
+      );
+
+      if (questionsResponse is! List || questionsResponse.isEmpty) {
+        return [];
+      }
+
+      final questionIds = questionsResponse.map((q) => q['id'] as int).toList();
+
+      // Adım 2: Tüm soru ID'leri için detayları getiren RPC'yi kullan.
+      return await _getQuestionsDetailsByIds(questionIds);
+
+    } catch (e) {
+      debugPrint('Error fetching questions for unit: $e');
+      rethrow;
+    }
+  }
+
+  // Helper method to get full question details from a list of IDs
+  Future<List<Question>> _getQuestionsDetailsByIds(List<int> questionIds) async {
+    if (questionIds.isEmpty) return [];
+    
+    try {
+      final response = await _client.rpc(
         'get_questions_details',
         params: {'p_question_ids': questionIds},
       );
 
-      // RPC'den bir JSON dizisi (List<dynamic>) dönmesini bekliyoruz.
-      if (questionsResponse is List) {
-        final questions = questionsResponse
+      if (response is List) {
+        final questions = response
             .map((data) => Question.fromMap(data as Map<String, dynamic>))
             .toList();
         return questions;
       }
-      
-      // Beklenmedik bir formatta veri gelirse boş liste döndür.
       return [];
-
     } catch (e) {
-      debugPrint('Error fetching questions for week: $e');
+      debugPrint('Error in _getQuestionsDetailsByIds: $e');
       rethrow;
     }
   }

@@ -1,5 +1,5 @@
--- supabase/migrations/0007_bulk_question_creation.sql
--- FINAL ATOMIC VERSION - UPDATED FOR SIMPLIFIED BLANK_OPTIONS SCHEMA & TRUE/FALSE QUESTIONS
+-- DÜZELTME: 'bulk_create_questions' fonksiyonu, 'true_false' tipi soruları
+-- JSON'daki 'correct_answer' alanına göre işleyecek şekilde güncellendi.
 
 -- Adım 1: 'question_usages' tablosu (Değişiklik yok, sadece var olmalı)
 CREATE TABLE IF NOT EXISTS public.question_usages (
@@ -33,6 +33,7 @@ DECLARE
     question_type_text TEXT;
     v_question_type_id SMALLINT;
     new_question_id BIGINT;
+    v_is_true_correct BOOLEAN;
 BEGIN
     FOR question_data IN SELECT * FROM jsonb_array_elements(p_questions_json->'questions')
     LOOP
@@ -42,21 +43,14 @@ BEGIN
         IF NOT FOUND THEN RAISE EXCEPTION 'Geçersiz "question_type_id": %', v_question_type_id; END IF;
 
         -- Adım 2: Ana 'questions' tablosuna yeni soruyu ekle.
-        -- ********************************************************************
-        -- DEĞİŞİKLİK BURADA: 'correct_answer' sütunu eklendi.
-        -- ********************************************************************
-        INSERT INTO public.questions (question_type_id, question_text, difficulty, score, correct_answer)
+        INSERT INTO public.questions (question_type_id, question_text, difficulty, score)
         VALUES (
             v_question_type_id,
             question_data->>'question_text',
             (question_data->>'difficulty')::SMALLINT,
-            (question_data->>'score')::SMALLINT,
-            (question_data->>'correct_answer')::BOOLEAN -- Bu satır eklendi.
+            (question_data->>'score')::SMALLINT
         )
         RETURNING id INTO new_question_id;
-        -- ********************************************************************
-        -- DEĞİŞİKLİK SONU
-        -- ********************************************************************
 
         -- Adım 3: 'question_usages' tablosuna kullanım bilgisini ekle.
         IF p_usage_type = 'weekly' THEN
@@ -74,6 +68,19 @@ BEGIN
                 INSERT INTO public.question_choices (question_id, choice_text, is_correct)
                 VALUES (new_question_id, choice_data->>'text', (choice_data->>'is_correct')::BOOLEAN);
             END LOOP;
+
+        -- YENİ MANTIK: 'true_false' soruları için özel işlem
+        ELSIF question_type_text = 'true_false' THEN
+            v_is_true_correct := (question_data->>'correct_answer')::BOOLEAN;
+            IF v_is_true_correct IS NULL THEN
+                RAISE EXCEPTION 'Doğru/Yanlış sorusu için "correct_answer" alanı (true/false) zorunludur. Soru metni: %', question_data->>'question_text';
+            END IF;
+
+            -- 'Doğru' ve 'Yanlış' seçeneklerini otomatik olarak oluştur
+            INSERT INTO public.question_choices (question_id, choice_text, is_correct)
+            VALUES
+                (new_question_id, 'Doğru', v_is_true_correct),
+                (new_question_id, 'Yanlış', NOT v_is_true_correct);
 
         ELSIF question_type_text = 'fill_blank' THEN
             IF question_data->'blank' ? 'options' THEN

@@ -63,6 +63,14 @@ class QuestionChoice {
       isCorrect: map['is_correct'] as bool,
     );
   }
+
+  factory QuestionChoice.fromJson(Map<String, dynamic> json) {
+    return QuestionChoice(
+      id: json['id'] as int,
+      text: json['option_text'] as String,
+      isCorrect: json['is_correct'] as bool,
+    );
+  }
 }
 
 class MatchingPair {
@@ -83,6 +91,14 @@ class MatchingPair {
       right_text: map['right_text'] as String,
     );
   }
+
+  factory MatchingPair.fromJson(Map<String, dynamic> json) {
+    return MatchingPair(
+      id: json['id'] as int,
+      left_text: json['left_text'] as String,
+      right_text: json['right_text'] as String,
+    );
+  }
 }
 
 class Question {
@@ -92,9 +108,8 @@ class Question {
   final int score;
   final QuestionType type;
   final List<QuestionChoice> choices;
-  final bool? correctAnswer; // For true/false types
   final List<QuestionBlankOption> blankOptions;
-  final String? modelAnswer; // For classical type
+  final String? modelAnswer;
   final List<MatchingPair>? matchingPairs;
 
   Question({
@@ -104,7 +119,6 @@ class Question {
     required this.score,
     required this.type,
     this.choices = const [],
-    this.correctAnswer,
     this.blankOptions = const [],
     this.modelAnswer,
     this.matchingPairs,
@@ -142,11 +156,6 @@ class Question {
         modelAnswer = (map['question_classical'] as List).first['model_answer'] as String?;
     }
 
-    bool? correctAnswer;
-    if (questionType == QuestionType.true_false) {
-      correctAnswer = map['correct_answer'] as bool?;
-    }
-
     return Question(
       id: map['id'] as int,
       text: map['question_text'] as String? ?? '',
@@ -154,10 +163,42 @@ class Question {
       score: map['score'] as int? ?? 1,
       type: questionType,
       choices: choicesList,
-      correctAnswer: correctAnswer,
       blankOptions: blankOptionsList,
       modelAnswer: modelAnswer,
       matchingPairs: matchingPairsList,
+    );
+  }
+
+  factory Question.fromJson(Map<String, dynamic> json) {
+    final questionType = QuestionType.fromString(json['question_type_code'] as String?);
+
+    final choicesList = (json['options'] as List<dynamic>?)
+            ?.map((choiceJson) =>
+                QuestionChoice.fromJson(choiceJson as Map<String, dynamic>))
+            .toList() ??
+        [];
+
+    final blankOptionsList = (json['blanks'] as List<dynamic>?)
+            ?.map((blankJson) =>
+                QuestionBlankOption.fromMap(blankJson as Map<String, dynamic>))
+            .toList() ??
+        [];
+
+    final matchingPairsList = (json['matching_pairs'] as List<dynamic>?)
+            ?.map((pairJson) =>
+                MatchingPair.fromJson(pairJson as Map<String, dynamic>))
+            .toList();
+
+    return Question(
+      id: json['id'] as int,
+      text: json['question_text'] as String? ?? '',
+      difficulty: json['difficulty'] as int? ?? 1,
+      score: json['score'] as int? ?? 1,
+      type: questionType,
+      choices: choicesList,
+      blankOptions: blankOptionsList,
+      matchingPairs: matchingPairsList,
+      modelAnswer: null,
     );
   }
 }

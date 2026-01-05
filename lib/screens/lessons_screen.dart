@@ -4,6 +4,23 @@ import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:egitim_uygulamasi/viewmodels/lesson_viewmodel.dart';
 import 'package:flutter/material.dart';
 
+// İkon isimlerini Flutter ikonlarına çevirmek için bir yardımcı map
+const Map<String, IconData> _iconMap = {
+  'calculate': Icons.calculate,
+  'science': Icons.science,
+  'book': Icons.book,
+  'translate': Icons.translate,
+  'history_edu': Icons.history_edu,
+  'public': Icons.public,
+  'church': Icons.church,
+  // Diğer ikonları buraya ekleyebilirsiniz
+};
+
+IconData _getIconFromString(String? iconName) {
+  if (iconName == null) return Icons.class_; // Varsayılan ikon
+  return _iconMap[iconName] ?? Icons.class_;
+}
+
 class LessonsScreen extends StatefulWidget {
   final Grade grade;
   const LessonsScreen({super.key, required this.grade});
@@ -21,7 +38,6 @@ class _LessonsScreenState extends State<LessonsScreen> {
     _viewModel.addListener(() {
       if (mounted) setState(() {});
     });
-    // Hata düzeltildi: Metod artık String (name) yerine int (id) bekliyor.
     _viewModel.fetchLessonsForGrade(widget.grade.id!);
   }
 
@@ -35,11 +51,11 @@ class _LessonsScreenState extends State<LessonsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('${widget.grade.name} Dersleri')),
-      body: _buildLessonList(),
+      body: _buildBody(),
     );
   }
 
-  Widget _buildLessonList() {
+  Widget _buildBody() {
     if (_viewModel.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -52,18 +68,27 @@ class _LessonsScreenState extends State<LessonsScreen> {
       return const Center(child: Text('Gösterilecek ders bulunamadı.'));
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(8.0),
+    return GridView.builder(
+      padding: const EdgeInsets.all(16.0),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16.0,
+        mainAxisSpacing: 16.0,
+        childAspectRatio: 1.0,
+      ),
       itemCount: _viewModel.lessons.length,
       itemBuilder: (context, index) {
         final lesson = _viewModel.lessons[index];
+        final color = Colors.primaries[(index + 2) % Colors.primaries.length].shade700;
+        final icon = _getIconFromString(lesson.icon);
+
         return Card(
-          child: ListTile(
-            // Hata düzeltildi: lesson.icon yerine varsayılan ikon kullanılıyor.
-            leading: const Icon(Icons.class_),
-            title: Text(lesson.name),
-            // Hata düzeltildi: lesson.description alanı kaldırıldı.
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+          elevation: 4.0,
+          color: color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: InkWell(
             onTap: () {
               Navigator.push(
                 context,
@@ -77,21 +102,29 @@ class _LessonsScreenState extends State<LessonsScreen> {
                 ),
               );
             },
+            borderRadius: BorderRadius.circular(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 50, color: Colors.white),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    lesson.name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
-  }
-
-  /// Ders ikonunu güvenli bir şekilde oluşturan yardımcı metot.
-  Widget _buildLessonIcon(String? iconData) {
-    if (iconData != null) {
-      final codePoint = int.tryParse(iconData);
-      if (codePoint != null) {
-        return Icon(IconData(codePoint, fontFamily: 'MaterialIcons'));
-      }
-    }
-    // Eğer ikon verisi yoksa veya geçersizse varsayılan ikonu döndür.
-    return const Icon(Icons.class_);
   }
 }
