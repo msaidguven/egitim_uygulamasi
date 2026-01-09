@@ -4,23 +4,6 @@ import 'package:egitim_uygulamasi/screens/units_for_lesson_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// İkon isimlerini Flutter ikonlarına çevirmek için bir yardımcı map
-const Map<String, IconData> _iconMap = {
-  'calculate': Icons.calculate,
-  'science': Icons.science,
-  'book': Icons.book,
-  'translate': Icons.translate,
-  'history_edu': Icons.history_edu,
-  'public': Icons.public,
-  'church': Icons.church,
-  // Diğer ikonları buraya ekleyebilirsiniz
-};
-
-IconData _getIconFromString(String? iconName) {
-  if (iconName == null) return Icons.class_; // Varsayılan ikon
-  return _iconMap[iconName] ?? Icons.class_;
-}
-
 class LessonsForGradeScreen extends StatefulWidget {
   final int gradeId;
   final String gradeName;
@@ -48,19 +31,13 @@ class _LessonsForGradeScreenState extends State<LessonsForGradeScreen> {
 
   Future<List<Map<String, dynamic>>> _fetchLessonsForGrade() async {
     try {
-      // Bu RPC'nin artık question_count döndürdüğünü varsayıyoruz.
       final response = await _supabase.rpc(
         'get_lessons_for_grade',
         params: {'grade_id_param': widget.gradeId},
       );
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
-      debugPrint('Derse ait dersler çekilirken hata: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dersler yüklenirken bir hata oluştu.')),
-        );
-      }
+      debugPrint('Dersler çekilirken hata: $e');
       return [];
     }
   }
@@ -83,28 +60,39 @@ class _LessonsForGradeScreenState extends State<LessonsForGradeScreen> {
 
           final lessons = snapshot.data!;
 
-          return GridView.builder(
-            padding: const EdgeInsets.all(16.0),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
-              childAspectRatio: 1.0,
-            ),
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
             itemCount: lessons.length,
             itemBuilder: (context, index) {
               final lesson = lessons[index];
-              final questionCount = lesson['question_count'] ?? 0; // Veriyi al
-              final color = Colors.primaries[(index + 2) % Colors.primaries.length].shade700;
-              final icon = _getIconFromString(lesson['icon']);
+              final questionCount = lesson['question_count'] ?? 0;
 
               return Card(
-                elevation: 4.0,
-                color: color,
+                elevation: 2.0,
+                margin: const EdgeInsets.symmetric(vertical: 6.0),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: InkWell(
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                    foregroundColor: Theme.of(context).primaryColor,
+                    child: const Icon(Icons.book_outlined),
+                  ),
+                  title: Text(
+                    lesson['name'],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  trailing: Text(
+                    '$questionCount Soru',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 14,
+                    ),
+                  ),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -117,32 +105,6 @@ class _LessonsForGradeScreenState extends State<LessonsForGradeScreen> {
                       ),
                     );
                   },
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(icon, size: 50, color: Colors.white),
-                      const SizedBox(height: 12),
-                      Text(
-                        lesson['name'],
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      // Soru sayısını göster
-                      Text(
-                        '$questionCount Soru',
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               );
             },

@@ -1,6 +1,6 @@
 // lib/screens/units_for_lesson_screen.dart
 
-import 'package:egitim_uygulamasi/screens/questions_screen.dart';
+import 'package:egitim_uygulamasi/screens/unit_summary_screen.dart'; // GÜNCELLENDİ
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -42,11 +42,6 @@ class _UnitsForLessonScreenState extends State<UnitsForLessonScreen> {
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
       debugPrint('Üniteler çekilirken hata: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Üniteler yüklenirken bir hata oluştu.')),
-        );
-      }
       return [];
     }
   }
@@ -102,14 +97,13 @@ class _UnitsForLessonScreenState extends State<UnitsForLessonScreen> {
                       fontSize: 14,
                     ),
                   ),
-                  onTap: questionCount > 0 ? () {
+                  onTap: questionCount >= 10 ? () {
+                    // DOĞRUDAN TEST YERİNE ÖZET EKRANINA GİT
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UnitTestsScreen(
+                        builder: (context) => UnitSummaryScreen(
                           unitId: unit['id'],
-                          unitTitle: unit['title'],
-                          questionCount: questionCount,
                         ),
                       ),
                     );
@@ -119,68 +113,6 @@ class _UnitsForLessonScreenState extends State<UnitsForLessonScreen> {
             },
           );
         },
-      ),
-    );
-  }
-}
-
-class UnitTestsScreen extends StatelessWidget {
-  final int unitId;
-  final String unitTitle;
-  final int questionCount;
-  final int questionsPerTest = 10;
-
-  const UnitTestsScreen({
-    super.key,
-    required this.unitId,
-    required this.unitTitle,
-    required this.questionCount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final totalTests = (questionCount / questionsPerTest).ceil();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('$unitTitle - Testler'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 2.8,
-          ),
-          itemCount: totalTests,
-          itemBuilder: (context, index) {
-            final testNumber = index + 1;
-            return ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QuestionsScreen(
-                      unitId: unitId, // DÜZELTME: Artık unitId gönderiyoruz
-                      testNumber: testNumber,
-                      questionsPerTest: questionsPerTest,
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                foregroundColor: Theme.of(context).primaryColor,
-                elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
-              ),
-              child: Text('Test $testNumber'),
-            );
-          },
-        ),
       ),
     );
   }

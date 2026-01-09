@@ -2,52 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StatisticsScreen extends StatefulWidget {
-  const StatisticsScreen({Key? key}) : super(key: key);
+  const StatisticsScreen({super.key});
 
   @override
-  _StatisticsScreenState createState() => _StatisticsScreenState();
+  State<StatisticsScreen> createState() => _StatisticsScreenState();
 }
 
-class _StatisticsScreenState extends State<StatisticsScreen> {
-  // Future'ı initState'ten kaldırıyoruz.
-  // late final Future<Map<String, dynamic>> _statsFuture;
+class _StatisticsScreenState extends State<StatisticsScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final List<Map<String, String>> _periods = [
+    {'label': 'Genel', 'value': 'all'},
+    {'label': 'Günlük', 'value': 'daily'},
+    {'label': 'Haftalık', 'value': 'weekly'},
+    {'label': 'Aylık', 'value': 'monthly'},
+  ];
 
   @override
   void initState() {
     super.initState();
-    // _statsFuture = _fetchUserStats(); // Bu satırı kaldırıyoruz.
+    _tabController = TabController(length: _periods.length, vsync: this);
   }
 
-  // Fonksiyonu _fetchUserStats'ten fetchUserStats'e çeviriyoruz ve widget'ın içinden çağıracağız.
-  Future<Map<String, dynamic>> fetchUserStats() async {
-    // build metodu sık sık çağrılabileceği için, context'i burada kullanmak riskli olabilir.
-    // SnackBar gösterimi için bir kontrol ekleyelim.
-    if (!mounted) return {};
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
-    final userId = Supabase.instance.client.auth.currentUser!.id;
-    try {
-      final response = await Supabase.instance.client.rpc(
-        'get_user_stats',
-        params: {'p_user_id': userId},
-      );
-      return response as Map<String, dynamic>;
-    } on PostgrestException catch (e) {
-      print('Error fetching stats: ${e.message}');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('İstatistikler yüklenirken bir hata oluştu: ${e.message}')),
-        );
-      }
-      return {}; // Hata durumunda boş harita döndür.
-    } catch (e) {
-      print('An unexpected error occurred: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Beklenmedik bir hata oluştu.')),
-        );
-      }
-      return {};
-    }
+  Future<Map<String, dynamic>> _fetchStats(String period) async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) throw Exception("İstatistikleri görmek için giriş yapmalısınız.");
+
+    final response = await Supabase.instance.client.rpc(
+      'get_user_stats_by_period',
+      params: {
+        'p_user_id': user.id,
+        'p_period': period,
+      },
+    );
+
+    return response as Map<String, dynamic>;
   }
 
   @override
@@ -55,107 +49,111 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('İstatistiklerim'),
-        // Yenileme butonu ekleyerek manuel olarak da güncellemeyi sağlayalım.
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              setState(() {
-                // State'i yeniden oluşturarak FutureBuilder'ın tekrar çalışmasını tetikler.
-              });
-            },
-          ),
-        ],
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: false,
+          tabs: _periods.map((p) => Tab(text: p['label'])).toList(),
+        ),
       ),
-      // Future'ı doğrudan FutureBuilder'a veriyoruz.
-      // Bu, setState çağrıldığında veya ekran yeniden çizildiğinde Future'ın tekrar çalışmasını sağlar.
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: fetchUserStats(), // Future'ı burada çağırıyoruz.
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text('İstatistikler yüklenemedi veya henüz veri yok.'),
-            );
-          }
-
-          final stats = snapshot.data!;
-          final lessonStats = (stats['lesson_stats'] as List<dynamic>?)
-              ?.map((item) => item as Map<String, dynamic>)
-              .toList() ?? []; // Null gelme ihtimaline karşı kontrol
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildOverallStatsCard(stats),
-                const SizedBox(height: 24),
-                Text(
-                  'Derse Göre Başarı',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                const SizedBox(height: 12),
-                if (lessonStats.isEmpty)
-                  const Text('Henüz ders bazında bir istatistik bulunmuyor.')
-                else
-                  _buildLessonStatsList(lessonStats),
-              ],
-            ),
-          );
-        },
+      body: TabBarView(
+        controller: _tabController,
+        children: _periods.map((p) => _StatsView(period: p['value']!, fetcher: _fetchStats)).toList(),
       ),
     );
   }
+}
 
-  Widget _buildOverallStatsCard(Map<String, dynamic> stats) {
-    final double successRate = (stats['success_rate'] as num? ?? 0).toDouble();
+class _StatsView extends StatelessWidget {
+  final String period;
+  final Future<Map<String, dynamic>> Function(String) fetcher;
+
+  const _StatsView({required this.period, required this.fetcher});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, dynamic>>(
+      future: fetcher(period),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(child: Text('Hata: ${snapshot.error}'));
+        }
+
+        final data = snapshot.data!;
+        final total = data['total_questions'] as int;
+
+        if (total == 0) {
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.analytics_outlined, size: 64, color: Colors.grey),
+                SizedBox(height: 16),
+                Text('Bu dönemde henüz çözülmüş soru yok.', style: TextStyle(color: Colors.grey)),
+              ],
+            ),
+          );
+        }
+
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _buildSummaryCard(context, data),
+            const SizedBox(height: 24),
+            const Text(
+              'Ders Bazlı Başarı',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            ... (data['lesson_stats'] as List).map((l) => _buildLessonCard(context, l)),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSummaryCard(BuildContext context, Map<String, dynamic> data) {
+    final successRate = (data['success_rate'] as num).toDouble();
 
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Text(
-              'Genel Bakış',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatItem('Testler', (stats['total_tests'] ?? 0).toString()),
-                _buildStatItem('Sorular', (stats['total_questions'] ?? 0).toString()),
+                _buildStatItem('Toplam', data['total_questions'].toString(), Colors.blue),
+                _buildStatItem('Doğru', data['correct_answers'].toString(), Colors.green),
+                _buildStatItem('Yanlış', data['incorrect_answers'].toString(), Colors.red),
               ],
             ),
-            const SizedBox(height: 16),
+            const Divider(height: 32),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatItem('Doğru', (stats['correct_answers'] ?? 0).toString(), color: Colors.green),
-                _buildStatItem('Yanlış', (stats['incorrect_answers'] ?? 0).toString(), color: Colors.red),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Başarı Oranı: %$successRate', 
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      LinearProgressIndicator(
+                        value: successRate / 100,
+                        backgroundColor: Colors.grey.shade200,
+                        color: _getSuccessColor(successRate),
+                        minHeight: 10,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ],
+                  ),
+                ),
               ],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Başarı Oranı',
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: successRate / 100,
-              minHeight: 10,
-              backgroundColor: Colors.grey[300],
-              color: Colors.blue,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '${successRate.toStringAsFixed(1)}%',
-              style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.blue),
             ),
           ],
         ),
@@ -163,45 +161,41 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Widget _buildStatItem(String label, String value, {Color? color}) {
+  Widget _buildLessonCard(BuildContext context, Map<String, dynamic> lesson) {
+    final rate = (lesson['success_rate'] as num).toDouble();
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        title: Text(lesson['lesson_name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text('Toplam: ${lesson['total_questions']} | D: ${lesson['correct_answers']} Y: ${lesson['incorrect_answers']}'),
+        trailing: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: _getSuccessColor(rate).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            '%$rate',
+            style: TextStyle(color: _getSuccessColor(rate), fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String value, Color color) {
     return Column(
       children: [
-        Text(
-          value,
-          style: Theme.of(context).textTheme.headline4?.copyWith(color: color ?? Theme.of(context).textTheme.bodyText1?.color),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodyText2,
-        ),
+        Text(value, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: color)),
+        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
       ],
     );
   }
 
-  Widget _buildLessonStatsList(List<Map<String, dynamic>> lessonStats) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: lessonStats.length,
-      itemBuilder: (context, index) {
-        final lesson = lessonStats[index];
-        final double successRate = (lesson['success_rate'] as num? ?? 0).toDouble();
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: ListTile(
-            title: Text(lesson['lesson_name'] ?? 'Bilinmeyen Ders'),
-            subtitle: Text('${lesson['total_questions'] ?? 0} soru, ${lesson['correct_answers'] ?? 0} doğru'),
-            trailing: Text(
-              '${successRate.toStringAsFixed(1)}%',
-              style: TextStyle(
-                color: successRate > 75 ? Colors.green : (successRate > 50 ? Colors.orange : Colors.red),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        );
-      },
-    );
+  Color _getSuccessColor(double rate) {
+    if (rate >= 70) return Colors.green;
+    if (rate >= 40) return Colors.orange;
+    return Colors.red;
   }
 }

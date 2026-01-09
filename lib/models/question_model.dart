@@ -58,17 +58,17 @@ class QuestionChoice {
 
   factory QuestionChoice.fromMap(Map<String, dynamic> map) {
     return QuestionChoice(
-      id: map['id'] as int,
-      text: map['choice_text'] as String,
-      isCorrect: map['is_correct'] as bool,
+      id: map['id'] as int? ?? 0,
+      text: map['choice_text'] as String? ?? '',
+      isCorrect: map['is_correct'] as bool? ?? false,
     );
   }
 
   factory QuestionChoice.fromJson(Map<String, dynamic> json) {
     return QuestionChoice(
-      id: json['id'] as int,
-      text: json['option_text'] as String,
-      isCorrect: json['is_correct'] as bool,
+      id: json['id'] as int? ?? 0,
+      text: json['option_text'] as String? ?? '',
+      isCorrect: json['is_correct'] as bool? ?? false,
     );
   }
 }
@@ -86,17 +86,17 @@ class MatchingPair {
 
   factory MatchingPair.fromMap(Map<String, dynamic> map) {
     return MatchingPair(
-      id: map['id'] as int,
-      left_text: map['left_text'] as String,
-      right_text: map['right_text'] as String,
+      id: map['id'] as int? ?? 0,
+      left_text: map['left_text'] as String? ?? '',
+      right_text: map['right_text'] as String? ?? '',
     );
   }
 
   factory MatchingPair.fromJson(Map<String, dynamic> json) {
     return MatchingPair(
-      id: json['id'] as int,
-      left_text: json['left_text'] as String,
-      right_text: json['right_text'] as String,
+      id: json['id'] as int? ?? 0,
+      left_text: json['left_text'] as String? ?? '',
+      right_text: json['right_text'] as String? ?? '',
     );
   }
 }
@@ -157,7 +157,7 @@ class Question {
     }
 
     return Question(
-      id: map['id'] as int,
+      id: map['id'] as int? ?? 0,
       text: map['question_text'] as String? ?? '',
       difficulty: map['difficulty'] as int? ?? 1,
       score: map['score'] as int? ?? 1,
@@ -190,7 +190,7 @@ class Question {
             .toList();
 
     return Question(
-      id: json['id'] as int,
+      id: json['id'] as int? ?? 0,
       text: json['question_text'] as String? ?? '',
       difficulty: json['difficulty'] as int? ?? 1,
       score: json['score'] as int? ?? 1,

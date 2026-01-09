@@ -1,9 +1,12 @@
+import 'dart:developer';
+import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/models/question_blank_option.dart';
-import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class TestQuestion {
   final Question question;
@@ -19,196 +22,152 @@ class TestQuestion {
   });
 }
 
-class SessionAnswer {
-  final int questionId;
-  final int? selectedOptionId;
-  final String? userAnswerText;
-  final bool isCorrect;
-
-  SessionAnswer({
-    required this.questionId,
-    this.selectedOptionId,
-    this.userAnswerText,
-    required this.isCorrect,
-  });
-
-  factory SessionAnswer.fromJson(Map<String, dynamic> json) {
-    return SessionAnswer(
-      questionId: json['question_id'] as int,
-      selectedOptionId: json['selected_option_id'] as int?,
-      userAnswerText: json['user_answer_text'] as String?,
-      isCorrect: json['is_correct'] as bool,
-    );
-  }
-}
-
 class QuestionsScreen extends StatefulWidget {
-  final int? topicId;
-  final int? unitId;
-  final int testNumber;
-  final int questionsPerTest;
-  final int? weekNo;
-  final int? previousSessionId;
+  final int unitId;
 
   const QuestionsScreen({
     super.key,
-    this.topicId,
-    this.unitId,
-    required this.testNumber,
-    required this.questionsPerTest,
-    this.weekNo,
-    this.previousSessionId,
-  }) : assert(
-            (topicId != null && weekNo != null) || unitId != null,
-            'Either (topicId and weekNo) or unitId must be provided.');
+    required this.unitId,
+  });
 
   @override
   State<QuestionsScreen> createState() => _QuestionsScreenState();
 }
 
 class _QuestionsScreenState extends State<QuestionsScreen> {
-  final ProfileViewModel _profileViewModel = ProfileViewModel();
-  
-  List<TestQuestion> _testQuestions = [];
-  
-  bool _isAdmin = false;
-  bool _isLoadingData = true;
-  String? _error;
-
-  final PageController _pageController = PageController();
-  int _score = 0;
-  bool _showResults = false;
-  int _currentPage = 0;
-
+  TestQuestion? _currentTestQuestion;
   int? _sessionId;
+  
+  bool _isLoadingData = true;
+  bool _isSavingAnswer = false;
+  String? _error;
+  int _score = 0;
+  int _answeredCount = 0;
+  final int _totalQuestions = 10;
+
   final Stopwatch _questionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _startOrResumeTest();
   }
 
-  Future<void> _loadData() async {
+  Future<String> _getOrCreateClientId() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? clientId = prefs.getString('client_id');
+    if (clientId == null) {
+      clientId = const Uuid().v4();
+      await prefs.setString('client_id', clientId);
+      debugPrint('--- YENİ CLIENT_ID ÜRETİLDİ: $clientId ---');
+    } else {
+      debugPrint('--- MEVCUT CLIENT_ID KULLANILIYOR: $clientId ---');
+    }
+    return clientId;
+  }
+
+  Future<void> _startOrResumeTest() async {
+    debugPrint('--- TEST BAŞLATMA SÜRECİ BAŞLADI (unitId: ${widget.unitId}) ---');
     setState(() { _isLoadingData = true; _error = null; });
     try {
-      await _checkAdminStatus();
-      List<TestQuestion> loadedTestQuestions;
       final client = Supabase.instance.client;
-      final userId = client.auth.currentUser!.id;
+      final userId = client.auth.currentUser?.id;
+      final clientId = await _getOrCreateClientId();
 
-      if (widget.previousSessionId != null) {
-        final response = await client.rpc(
-          'get_session_review_data',
-          params: {'p_session_id': widget.previousSessionId!},
-        ) as List<dynamic>?;
+      debugPrint('--- RPC start_test_v2 ÇAĞRILIYOR ---');
+      debugPrint('Parametreler: {p_client_id: $clientId, p_unit_id: ${widget.unitId}, p_user_id: $userId}');
 
-        if (response == null || response.isEmpty) throw Exception("Bu geçmiş teste ait veri bulunamadı.");
-        
-        int currentScore = 0;
-        loadedTestQuestions = response.map((json) {
-          final question = Question.fromMap(json);
-          final isCorrect = json['is_correct'] as bool? ?? false;
-          if (isCorrect) currentScore += question.score;
-          return TestQuestion(
-            question: question,
-            userAnswer: json['user_selected_option_id'] ?? json['user_answer_text'],
-            isChecked: true,
-            isCorrect: isCorrect,
-          );
-        }).toList();
-        
-        _sessionId = widget.previousSessionId;
-        _score = currentScore;
-      } else {
-        // *** BİRLEŞTİRİLMİŞ VE GÜVENİLİR MANTIK ***
-        List<int> questionIds = [];
+      final response = await client.rpc(
+        'start_test_v2',
+        params: {
+          'p_client_id': clientId,
+          'p_unit_id': widget.unitId,
+          'p_user_id': userId,
+        },
+      );
 
-        if (widget.topicId != null && widget.weekNo != null) {
-          // Haftalık test için soru ID'lerini al
-          final response = await client
-              .from('question_usages')
-              .select('question_id')
-              .eq('topic_id', widget.topicId!)
-              .eq('display_week', widget.weekNo!);
-          questionIds = response.map((e) => e['question_id'] as int).toList();
+      debugPrint('--- RPC start_test_v2 YANITI: $response ---');
+      _sessionId = response as int;
+      await _loadNextQuestion();
 
-        } else if (widget.unitId != null) {
-          // Ünite testi için soru ID'lerini al
-          final topicsResponse = await client.from('topics').select('id').eq('unit_id', widget.unitId!);
-          final topicIds = topicsResponse.map((e) => e['id'] as int).toList();
-
-          if (topicIds.isNotEmpty) {
-            final response = await client
-                .from('question_usages')
-                .select('question_id')
-                .inFilter('topic_id', topicIds);
-            questionIds = response.map((e) => e['question_id'] as int).toList();
-          }
-        }
-
-        if (questionIds.isEmpty) {
-            loadedTestQuestions = [];
-        } else {
-            questionIds.shuffle();
-            final selectedQuestionIds = questionIds.take(widget.questionsPerTest).toList();
-
-            if (selectedQuestionIds.isEmpty) {
-                loadedTestQuestions = [];
-            } else {
-                final sessionResponse = await client.from('test_sessions').insert({
-                    'user_id': userId,
-                    'unit_id': widget.unitId, // Haftalık testte bu null olabilir, ünite testinde dolu
-                    'settings': {
-                        'topic_id': widget.topicId,
-                        'unit_id': widget.unitId,
-                        'week_no': widget.weekNo,
-                        'test_number': widget.testNumber,
-                        'type': widget.unitId != null ? 'unit_test' : 'weekly_test'
-                    }
-                }).select('id').single();
-                
-                _sessionId = sessionResponse['id'] as int?;
-
-                final questionsResponse = await client
-                    .from('questions')
-                    .select('*, question_choices(*), question_blank_options(*), question_matching_pairs(*), question_classical(*)')
-                    .inFilter('id', selectedQuestionIds);
-
-                loadedTestQuestions = questionsResponse.map((json) => TestQuestion(question: Question.fromMap(json))).toList();
-            }
-        }
-      }
-
+    } catch (e, st) {
+      debugPrint('--- TEST BAŞLATILIRKEN KRİTİK HATA ---');
+      debugPrint('Hata: $e');
+      debugPrint('Stack Trace: $st');
       if (mounted) {
         setState(() {
-          _testQuestions = loadedTestQuestions;
+          _error = "Test başlatılamadı: $e";
           _isLoadingData = false;
         });
       }
-
-      if (widget.previousSessionId == null && _testQuestions.isNotEmpty) {
-        _questionTimer.start();
-      }
-
-    } catch (e, st) {
-      debugPrint('--- SORU YÜKLENİRKEN HATA ---\nHata: $e\nStack Trace:\n$st');
-      if (mounted) setState(() {
-        _error = 'Sorular yüklenirken bir hata oluştu. Lütfen tekrar deneyin.';
-        _isLoadingData = false;
-      });
     }
   }
 
-  Future<void> _checkAdminStatus() async {
-    final isAdmin = await _profileViewModel.isAdmin();
-    if (mounted) setState(() => _isAdmin = isAdmin);
+  Future<void> _loadNextQuestion() async {
+    if (_sessionId == null) {
+      debugPrint('--- HATA: _sessionId NULL, SORU YÜKLENEMEZ ---');
+      return;
+    }
+
+    debugPrint('--- SONRAKİ SORU YÜKLENİYOR (sessionId: $_sessionId) ---');
+    try {
+      final client = Supabase.instance.client;
+      
+      debugPrint('--- RPC get_active_question_v2 ÇAĞRILIYOR ---');
+      final response = await client.rpc(
+        'get_active_question_v2',
+        params: {'p_session_id': _sessionId!},
+      );
+
+      debugPrint('--- RPC get_active_question_v2 YANITI: $response ---');
+
+      if (response == null) {
+        debugPrint('--- SORU KALMADI, TEST BİTİRİLİYOR ---');
+        await _finishTest();
+        return;
+      }
+
+      final question = Question.fromMap(response as Map<String, dynamic>);
+      
+      debugPrint('--- CEVAPLANMIŞ SORU SAYISI KONTROL EDİLİYOR ---');
+      final answersResponse = await client
+          .from('test_session_answers')
+          .select('id')
+          .eq('test_session_id', _sessionId!);
+      
+      debugPrint('--- CEVAPLANMIŞ SORU SAYISI: ${(answersResponse as List).length} ---');
+
+      if (mounted) {
+        setState(() {
+          _currentTestQuestion = TestQuestion(question: question);
+          _answeredCount = (answersResponse).length;
+          _isLoadingData = false;
+          _error = null;
+        });
+        _questionTimer.reset();
+        _questionTimer.start();
+        debugPrint('--- SORU BAŞARIYLA EKRANA YANSITILDI (Question ID: ${question.id}) ---');
+      }
+    } catch (e, st) {
+      debugPrint('--- SORU YÜKLENİRKEN HATA ---');
+      debugPrint('Hata: $e');
+      debugPrint('Stack Trace: $st');
+      if (mounted) setState(() => _error = "Soru yüklenemedi: $e");
+    }
   }
 
-  void _checkAnswer(TestQuestion testQuestion) {
-    if (testQuestion.isChecked) return;
-    final userAnswer = testQuestion.userAnswer;
-    if (userAnswer == null) return;
+  Future<void> _checkAnswer() async {
+    final testQuestion = _currentTestQuestion;
+    if (testQuestion == null || testQuestion.isChecked || testQuestion.userAnswer == null) {
+      debugPrint('--- KONTROL İPTAL: Soru null, zaten işaretli veya cevap seçilmemiş ---');
+      return;
+    }
+
+    debugPrint('--- CEVAP KONTROL EDİLİYOR ---');
+    setState(() {
+      _isSavingAnswer = true;
+      _error = null;
+    });
 
     _questionTimer.stop();
     final int duration = _questionTimer.elapsed.inSeconds;
@@ -217,170 +176,185 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     final question = testQuestion.question;
 
     if (question.type == QuestionType.multiple_choice || question.type == QuestionType.true_false) {
-      final correctChoice = question.choices.firstWhere((c) => c.isCorrect).id;
-      isCorrect = (userAnswer == correctChoice);
+      final correctChoice = question.choices.firstWhereOrNull((c) => c.isCorrect);
+      isCorrect = (testQuestion.userAnswer == correctChoice?.id);
     } else if (question.type == QuestionType.fill_blank) {
-      if (userAnswer is Map<int, QuestionBlankOption?>) {
+      if (testQuestion.userAnswer is Map<int, QuestionBlankOption?>) {
         final correctOptionIds = question.blankOptions.where((opt) => opt.isCorrect).map((opt) => opt.id).toSet();
-        final userAnswerIds = userAnswer.values.whereNotNull().map((opt) => opt.id).toSet();
+        final userAnswerIds = (testQuestion.userAnswer as Map<int, QuestionBlankOption?>).values.whereNotNull().map((opt) => opt.id).toSet();
         isCorrect = const SetEquality().equals(userAnswerIds, correctOptionIds);
       }
     } else if (question.type == QuestionType.matching) {
-      final userMatches = userAnswer as Map<String, MatchingPair?>?;
-      if (userMatches != null && question.matchingPairs != null && userMatches.length == question.matchingPairs!.length && userMatches.values.every((v) => v != null)) {
+      final userMatches = testQuestion.userAnswer as Map<String, MatchingPair?>?;
+      if (userMatches != null && question.matchingPairs != null && userMatches.length == question.matchingPairs!.length) {
         final correctMatches = { for (var p in question.matchingPairs!) p.left_text: p.right_text };
-        isCorrect = userMatches.entries.every((entry) {
-          final leftText = entry.key;
-          final selectedRightText = entry.value?.right_text;
-          return correctMatches[leftText] == selectedRightText;
-        });
-      } else {
-        isCorrect = false;
+        isCorrect = userMatches.entries.every((entry) => correctMatches[entry.key] == entry.value?.right_text);
       }
     }
 
-    _saveUserAnswer(question, userAnswer, isCorrect, duration);
+    debugPrint('--- CEVAP SONUCU: ${isCorrect ? "DOĞRU" : "YANLIŞ"} (Süre: $duration sn) ---');
 
-    setState(() {
-      testQuestion.isChecked = true;
-      testQuestion.isCorrect = isCorrect;
-      if (isCorrect) _score += question.score;
-    });
+    try {
+      await _saveAnswer(isCorrect, duration);
+      debugPrint('--- CEVAP BAŞARIYLA KAYDEDİLDİ ---');
+      if (mounted) {
+        setState(() {
+          testQuestion.isChecked = true;
+          testQuestion.isCorrect = isCorrect;
+          if (isCorrect) _score += question.score;
+          _isSavingAnswer = false;
+        });
+      }
+    } catch (e, st) {
+      debugPrint('--- CEVAP KAYDEDİLİRKEN HATA OLUŞTU ---');
+      debugPrint('Hata: $e');
+      debugPrint('Stack Trace: $st');
+      if (mounted) {
+        setState(() {
+          _error = "Cevap kaydedilemedi: $e";
+          _isSavingAnswer = false;
+        });
+      }
+    }
   }
 
-  Future<void> _saveUserAnswer(Question question, dynamic userAnswer, bool isCorrect, int duration) async {
-    final userId = Supabase.instance.client.auth.currentUser?.id;
-    if (_sessionId == null || userId == null) return;
+  Future<void> _saveAnswer(bool isCorrect, int duration) async {
+    if (_sessionId == null || _currentTestQuestion == null) return;
+
+    final client = Supabase.instance.client;
+    final userId = client.auth.currentUser?.id;
+    final clientId = await _getOrCreateClientId();
+    final question = _currentTestQuestion!.question;
+    final userAnswer = _currentTestQuestion!.userAnswer;
 
     String? getUserAnswerAsText() {
       if (userAnswer is String) return userAnswer;
-      if (userAnswer is int) return userAnswer.toString();
-      if (userAnswer is bool) return userAnswer.toString();
-      return null;
+      return userAnswer?.toString();
     }
 
-    try {
-      await Supabase.instance.client.from('user_answers').insert({
-        'session_id': _sessionId,
-        'question_id': question.id,
-        'user_id': userId,
-        'selected_option_id': (question.type == QuestionType.multiple_choice || question.type == QuestionType.true_false) ? userAnswer : null,
-        'answer_text': getUserAnswerAsText(),
-        'is_correct': isCorrect,
-        'duration_seconds': duration,
-      });
-    } catch (e) {
-      debugPrint('--- CEVAP KAYDEDİLEMEDİ ---');
-      debugPrint('Hata: $e');
-    }
+    final dataToInsert = {
+      'test_session_id': _sessionId,
+      'question_id': question.id,
+      'user_id': userId,
+      'client_id': clientId,
+      'selected_option_id': (question.type == QuestionType.multiple_choice || question.type == QuestionType.true_false) ? userAnswer : null,
+      'answer_text': getUserAnswerAsText(),
+      'is_correct': isCorrect,
+      'duration_seconds': duration,
+    };
+
+    debugPrint('--- test_session_answers TABLOSUNA KAYIT ATILIYOR ---');
+    debugPrint('Veri: $dataToInsert');
+
+    final insertResponse = await client.from('test_session_answers').insert(dataToInsert).select();
+    debugPrint('--- INSERT YANITI: $insertResponse ---');
   }
 
-  void _submitQuiz() {
-    _completeTestSession();
-    setState(() => _showResults = true);
-  }
-
-  Future<void> _completeTestSession() async {
+  Future<void> _finishTest() async {
     if (_sessionId == null) return;
+    debugPrint('--- RPC finish_test_v2 ÇAĞRILIYOR (sessionId: $_sessionId) ---');
     try {
-      await Supabase.instance.client
-          .from('test_sessions')
-          .update({'completed_at': DateTime.now().toIso8601String()})
-          .eq('id', _sessionId!);
-    } catch (e) {
-      debugPrint('Test oturumu tamamlanamadı: $e');
+      await Supabase.instance.client.rpc('finish_test_v2', params: {'p_session_id': _sessionId!});
+      debugPrint('--- TEST BAŞARIYLA BİTİRİLDİ ---');
+      if (mounted) {
+        setState(() {
+          _isLoadingData = false;
+          _currentTestQuestion = null;
+        });
+      }
+    } catch (e, st) {
+      debugPrint('--- TEST BİTİRİLİRKEN HATA ---');
+      debugPrint('Hata: $e');
+      debugPrint('Stack Trace: $st');
     }
   }
 
-  String _getAppBarTitle() {
-    if (widget.weekNo != null) {
-      return 'Haftalık Test ${widget.testNumber}';
-    }
-    return 'Ünite Testi ${widget.testNumber}';
+  Future<bool> _onWillPop() async {
+    if (_sessionId == null || _currentTestQuestion == null) return true;
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Testten Çıkış'),
+        content: const Text('Testi bitirmeden çıkarsanız ilerlemeniz kaydedilecek. Daha sonra devam edebilirsiniz.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Hayır')),
+          TextButton(onPressed: () => Navigator.of(context).pop(true), child: const Text('Evet')),
+        ],
+      ),
+    ) ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_getAppBarTitle()),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Theme.of(context).primaryColor, Colors.blue.shade300],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Ünite Testi'),
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: Colors.white,
+          elevation: 0,
         ),
-        child: _isLoadingData 
-            ? const Center(child: CircularProgressIndicator(color: Colors.white))
-            : _buildBody(),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Theme.of(context).primaryColor, Colors.blue.shade300],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: _isLoadingData 
+              ? const Center(child: CircularProgressIndicator(color: Colors.white))
+              : _buildBody(),
+        ),
       ),
     );
   }
 
   Widget _buildBody() {
-    if (_error != null) return Center(child: Text(_error!, style: const TextStyle(color: Colors.white)));
-    if (_testQuestions.isEmpty) return const Center(child: Text('Bu test için soru bulunamadı.', style: TextStyle(color: Colors.white)));
-    if (_showResults) return _buildResultsView();
-
-    double progress = (_currentPage + 1) / _testQuestions.length;
-
     return SafeArea(
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Soru ${_currentPage + 1}/${_testQuestions.length}', style: const TextStyle(color: Colors.white, fontSize: 16)),
-                    Text('Puan: $_score', style: const TextStyle(color: Colors.white, fontSize: 16)),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: Colors.white.withOpacity(0.3),
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ],
+          if (_error != null) 
+            Container(
+              color: Colors.red.shade100,
+              padding: const EdgeInsets.all(8),
+              width: double.infinity,
+              child: SelectableText(_error!, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
             ),
-          ),
-          Expanded(
-            child: PageView.builder(
-              key: ValueKey(_testQuestions.hashCode),
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _testQuestions.length,
-              onPageChanged: (page) {
-                setState(() => _currentPage = page);
-                if (widget.previousSessionId == null) {
-                  _questionTimer.reset();
-                  _questionTimer.start();
-                }
-              },
-              itemBuilder: (context, index) {
-                final testQuestion = _testQuestions[index];
-                return _QuestionCard(
-                  key: ValueKey(testQuestion.question.id),
-                  testQuestion: testQuestion,
-                  onAnswered: (answer) => setState(() => testQuestion.userAnswer = answer),
-                  onCheck: () => _checkAnswer(testQuestion),
-                  isAdmin: _isAdmin,
-                  isReviewMode: widget.previousSessionId != null,
-                );
-              },
+          if (_currentTestQuestion == null) 
+            Expanded(child: _buildResultsView())
+          else ...[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Soru ${_answeredCount + 1}/$_totalQuestions', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                      Text('Puan: $_score', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  LinearProgressIndicator(
+                    value: (_answeredCount + 1) / _totalQuestions,
+                    backgroundColor: Colors.white.withOpacity(0.3),
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ],
+              ),
             ),
-          ),
-          _buildBottomNavBar(),
+            Expanded(
+              child: _QuestionCard(
+                key: ValueKey(_currentTestQuestion!.question.id),
+                testQuestion: _currentTestQuestion!,
+                onAnswered: (answer) => setState(() => _currentTestQuestion!.userAnswer = answer),
+              ),
+            ),
+            _buildBottomNavBar(),
+          ],
         ],
       ),
     );
@@ -391,15 +365,17 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Değerlendirme Tamamlandı!', style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 20),
-          Text('Puanınız: $_score', style: const TextStyle(fontSize: 48, color: Colors.amber, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 40),
+          const Icon(Icons.check_circle_outline, size: 100, color: Colors.white),
+          const SizedBox(height: 24),
+          const Text('Test Tamamlandı!', style: TextStyle(fontSize: 28, color: Colors.white, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          Text('Toplam Puan: $_score', style: const TextStyle(fontSize: 24, color: Colors.amber, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 48),
           ElevatedButton.icon(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.arrow_back),
-            label: const Text('Geri Dön'),
-            style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12)),
+            label: const Text('Üniteye Dön'),
+            style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16)),
           )
         ],
       ),
@@ -407,69 +383,35 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   }
 
   Widget _buildBottomNavBar() {
-    if (_testQuestions.isEmpty) return const SizedBox.shrink();
-    final bool isLastQuestion = _currentPage == _testQuestions.length - 1;
-    final bool isReviewMode = widget.previousSessionId != null;
-
-    if (isReviewMode) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (_currentPage > 0)
-              TextButton.icon(
-                onPressed: () => _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn),
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                label: const Text('Önceki', style: TextStyle(color: Colors.white)),
-              ),
-            const Spacer(),
-            if (!isLastQuestion)
-              ElevatedButton.icon(
-                onPressed: () => _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn),
-                label: const Text('Sonraki'),
-                icon: const Icon(Icons.arrow_forward),
-              )
-            else
-              ElevatedButton.icon(
-                onPressed: () => Navigator.of(context).pop(),
-                label: const Text('Bitir'),
-                icon: const Icon(Icons.check),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              ),
-          ],
-        ),
-      );
-    }
-
-    final testQuestion = _testQuestions[_currentPage];
-    final bool canCheck = testQuestion.userAnswer != null;
+    final testQuestion = _currentTestQuestion!;
     final bool isChecked = testQuestion.isChecked;
+    final bool canCheck = testQuestion.userAnswer != null;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (_currentPage > 0) TextButton.icon(
-            onPressed: () => _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn),
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            label: const Text('Önceki', style: TextStyle(color: Colors.white)),
-          ),
-          const Spacer(),
-          ElevatedButton(
-            onPressed: !isChecked
-                ? (canCheck ? () => _checkAnswer(testQuestion) : null)
-                : (isLastQuestion ? _submitQuiz : () => _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeIn)),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isChecked ? (isLastQuestion ? Colors.green : Theme.of(context).primaryColor) : Colors.amber,
-              foregroundColor: isChecked ? Colors.white : Colors.black,
-              padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            ),
-            child: Text(
-              !isChecked ? 'Kontrol Et' : (isLastQuestion ? 'Bitir' : 'Sonraki'),
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: (_isSavingAnswer) ? null : (!isChecked
+                  ? (canCheck ? _checkAnswer : null)
+                  : () {
+                      setState(() => _isLoadingData = true);
+                      _loadNextQuestion();
+                    }),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isChecked ? Colors.green : Colors.amber,
+                foregroundColor: isChecked ? Colors.white : Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              ),
+              child: _isSavingAnswer 
+                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
+                : Text(
+                    !isChecked ? 'Kontrol Et' : 'Sonraki Soru',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
             ),
           ),
         ],
@@ -481,17 +423,11 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 class _QuestionCard extends StatelessWidget {
   final TestQuestion testQuestion;
   final ValueChanged<dynamic> onAnswered;
-  final VoidCallback onCheck;
-  final bool isAdmin;
-  final bool isReviewMode;
 
   const _QuestionCard({
     super.key,
     required this.testQuestion,
     required this.onAnswered,
-    required this.onCheck,
-    required this.isAdmin,
-    required this.isReviewMode,
   });
 
   @override
@@ -505,46 +441,25 @@ class _QuestionCard extends StatelessWidget {
       elevation: 8,
       shadowColor: Colors.black.withOpacity(0.3),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (question.type != QuestionType.fill_blank)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 30.0),
-                    child: Text(question.text, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-                  ),
-                if (question.type != QuestionType.fill_blank) const Divider(height: 32),
-                Expanded(child: _buildAnswerArea(context)),
-                if (isChecked) _buildFeedback(context, isCorrect),
-              ],
-            ),
-          ),
-          if (isAdmin)
-            Positioned(
-              top: 8,
-              right: 8,
-              child: IconButton(
-                icon: const Icon(Icons.delete_forever, color: Colors.red),
-                onPressed: () {}, // Silme fonksiyonu buraya gelecek
-                tooltip: 'Soruyu Sil',
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (question.type != QuestionType.fill_blank)
+              Text(question.text, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+            if (question.type != QuestionType.fill_blank) const Divider(height: 32),
+            Expanded(child: _buildAnswerArea(context)),
+            if (isChecked) ...[
+              const SizedBox(height: 16),
+              Text(
+                isCorrect ? 'Doğru!' : 'Yanlış!',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: isCorrect ? Colors.green : Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
               ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeedback(BuildContext context, bool isCorrect) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        isCorrect ? 'Doğru!' : 'Yanlış!',
-        textAlign: TextAlign.center,
-        style: TextStyle(color: isCorrect ? Colors.green : Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -558,22 +473,19 @@ class _QuestionCard extends StatelessWidget {
         return _FillBlankWithOptionsBody(
           testQuestion: testQuestion,
           onAnswered: onAnswered,
-          isReviewMode: isReviewMode,
         );
       case QuestionType.matching:
         return _MatchingQuestionBody(
           testQuestion: testQuestion,
           onAnswered: onAnswered,
-          isReviewMode: isReviewMode,
         );
       default:
-        return const Center(child: Text('Bu soru tipi henüz desteklenmiyor.'));
+        return const Center(child: Text('Soru tipi desteklenmiyor.'));
     }
   }
 
   Widget _buildMultipleChoice(BuildContext context) {
     final question = testQuestion.question;
-    final userAnswer = testQuestion.userAnswer;
     final isChecked = testQuestion.isChecked;
 
     return ListView.separated(
@@ -581,7 +493,7 @@ class _QuestionCard extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final choice = question.choices[index];
-        bool isSelected = (userAnswer == choice.id);
+        bool isSelected = (testQuestion.userAnswer == choice.id);
         Color? borderColor;
         Icon? trailingIcon;
 
@@ -589,7 +501,7 @@ class _QuestionCard extends StatelessWidget {
           if (choice.isCorrect) {
             borderColor = Colors.green;
             trailingIcon = const Icon(Icons.check_circle, color: Colors.green);
-          } else if (isSelected && !choice.isCorrect) {
+          } else if (isSelected) {
             borderColor = Colors.red;
             trailingIcon = const Icon(Icons.cancel, color: Colors.red);
           }
@@ -598,7 +510,7 @@ class _QuestionCard extends StatelessWidget {
         }
 
         return GestureDetector(
-          onTap: isReviewMode ? null : () => onAnswered(choice.id),
+          onTap: isChecked ? null : () => onAnswered(choice.id),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -622,13 +534,8 @@ class _QuestionCard extends StatelessWidget {
 class _FillBlankWithOptionsBody extends StatefulWidget {
   final TestQuestion testQuestion;
   final ValueChanged<dynamic> onAnswered;
-  final bool isReviewMode;
 
-  const _FillBlankWithOptionsBody({
-    required this.testQuestion,
-    required this.onAnswered,
-    required this.isReviewMode,
-  });
+  const _FillBlankWithOptionsBody({required this.testQuestion, required this.onAnswered});
 
   @override
   _FillBlankWithOptionsBodyState createState() => _FillBlankWithOptionsBodyState();
@@ -642,25 +549,13 @@ class _FillBlankWithOptionsBodyState extends State<_FillBlankWithOptionsBody> {
   void initState() {
     super.initState();
     final question = widget.testQuestion.question;
-    final userAnswer = widget.testQuestion.userAnswer;
-
     final int blankCount = '______'.allMatches(question.text).length;
     _droppedAnswers = {for (var i = 0; i < blankCount; i++) i: null};
     _availableOptions = List.from(question.blankOptions);
-
-    if (userAnswer is Map<int, QuestionBlankOption?>) {
-       _droppedAnswers.addAll(userAnswer);
-       for (var answer in _droppedAnswers.values) {
-         if (answer != null) {
-           _availableOptions.removeWhere((opt) => opt.id == answer.id);
-         }
-       }
-    }
   }
 
   void _onDrop(int blankIndex, QuestionBlankOption option) {
-    if (widget.testQuestion.isChecked || widget.isReviewMode) return;
-
+    if (widget.testQuestion.isChecked) return;
     setState(() {
       final previousEntry = _droppedAnswers.entries.firstWhereOrNull((entry) => entry.value?.id == option.id);
       if (previousEntry != null) _droppedAnswers[previousEntry.key] = null;
@@ -682,30 +577,25 @@ class _FillBlankWithOptionsBodyState extends State<_FillBlankWithOptionsBody> {
     List<Widget> questionWidgets = [];
 
     for (int i = 0; i < questionParts.length; i++) {
-      questionWidgets.add(Text(questionParts[i], style: Theme.of(context).textTheme.headlineSmall));
+      questionWidgets.add(Text(questionParts[i], style: const TextStyle(fontSize: 18)));
       if (i < questionParts.length - 1) {
         final blankIndex = i;
         final droppedOption = _droppedAnswers[blankIndex];
         Color borderColor = Colors.grey.shade400;
-        Color backgroundColor = Colors.grey.shade100;
-        if (isChecked) {
-          borderColor = isCorrect ? Colors.green : Colors.red;
-          backgroundColor = isCorrect ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1);
-        }
+        if (isChecked) borderColor = isCorrect ? Colors.green : Colors.red;
+
         questionWidgets.add(
           DragTarget<QuestionBlankOption>(
             builder: (context, candidateData, rejectedData) {
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 margin: const EdgeInsets.symmetric(horizontal: 4.0),
                 decoration: BoxDecoration(
-                  border: Border.all(color: borderColor, width: 2),
-                  borderRadius: BorderRadius.circular(12),
-                  color: backgroundColor,
+                  border: Border(bottom: BorderSide(color: borderColor, width: 2)),
                 ),
                 child: Text(
                   droppedOption?.optionText ?? '...',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: droppedOption != null ? Theme.of(context).primaryColorDark : Colors.grey),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
                 ),
               );
             },
@@ -717,25 +607,20 @@ class _FillBlankWithOptionsBodyState extends State<_FillBlankWithOptionsBody> {
 
     return Column(
       children: [
-        Wrap(alignment: WrapAlignment.center, crossAxisAlignment: WrapCrossAlignment.center, runSpacing: 8, children: questionWidgets),
+        Wrap(alignment: WrapAlignment.center, crossAxisAlignment: WrapCrossAlignment.center, children: questionWidgets),
         const Spacer(),
-        if (!widget.isReviewMode) ...[
-          const Text('Seçenekleri boşluklara sürükleyin:', style: TextStyle(color: Colors.grey)),
-          const SizedBox(height: 16),
+        if (!isChecked)
           Wrap(
             spacing: 8.0,
             runSpacing: 8.0,
-            alignment: WrapAlignment.center,
             children: _availableOptions.map((option) {
               return Draggable<QuestionBlankOption>(
                 data: option,
-                feedback: Material(elevation: 4.0, child: Chip(label: Text(option.optionText), backgroundColor: Colors.amber.shade200)),
-                childWhenDragging: Chip(label: Text(option.optionText), backgroundColor: Colors.grey.shade300),
+                feedback: Material(child: Chip(label: Text(option.optionText))),
                 child: Chip(label: Text(option.optionText), backgroundColor: Colors.amber.shade100),
               );
             }).toList(),
           ),
-        ]
       ],
     );
   }
@@ -744,9 +629,8 @@ class _FillBlankWithOptionsBodyState extends State<_FillBlankWithOptionsBody> {
 class _MatchingQuestionBody extends StatefulWidget {
   final TestQuestion testQuestion;
   final ValueChanged<dynamic> onAnswered;
-  final bool isReviewMode;
 
-  const _MatchingQuestionBody({required this.testQuestion, required this.onAnswered, required this.isReviewMode});
+  const _MatchingQuestionBody({required this.testQuestion, required this.onAnswered});
 
   @override
   _MatchingQuestionBodyState createState() => _MatchingQuestionBodyState();
@@ -761,94 +645,75 @@ class _MatchingQuestionBodyState extends State<_MatchingQuestionBody> {
   void initState() {
     super.initState();
     final question = widget.testQuestion.question;
-    final userAnswer = widget.testQuestion.userAnswer;
-
     leftTexts = question.matchingPairs?.map((p) => p.left_text).toList() ?? [];
     shuffledRightPairs = List.from(question.matchingPairs ?? [])..shuffle();
-    userMatches = Map.from((userAnswer as Map?)?.cast<String, MatchingPair?>() ?? {});
-  }
-
-  void _handleDrop(String leftText, MatchingPair droppedPair) {
-    if (widget.testQuestion.isChecked || widget.isReviewMode) return;
-    setState(() {
-      final previousKey = userMatches.entries.firstWhereOrNull((entry) => entry.value?.id == droppedPair.id)?.key;
-      if (previousKey != null) {
-        userMatches[previousKey] = null;
-      }
-      userMatches[leftText] = droppedPair;
-      widget.onAnswered(userMatches);
-    });
+    userMatches = {};
   }
 
   @override
   Widget build(BuildContext context) {
-    final question = widget.testQuestion.question;
     final isChecked = widget.testQuestion.isChecked;
-
-    final availableRightPairs = shuffledRightPairs.where((pair) => !userMatches.values.any((matchedPair) => matchedPair?.id == pair.id)).toList();
-    final draggableOptions = availableRightPairs.map((pair) {
-      return Draggable<MatchingPair>(
-        data: pair,
-        feedback: Material(elevation: 4.0, child: Chip(label: Text(pair.right_text), backgroundColor: Colors.amber.shade200)),
-        childWhenDragging: Chip(label: Text(pair.right_text), backgroundColor: Colors.grey.shade300),
-        child: Chip(label: Text(pair.right_text), backgroundColor: Colors.amber.shade100),
-      );
-    }).toList();
-
-    final dropTargets = ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: leftTexts.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        final leftText = leftTexts[index];
-        final matchedPair = userMatches[leftText];
-        bool? isCorrect;
-        if (isChecked) {
-          final correctMatch = question.matchingPairs!.firstWhere((p) => p.left_text == leftText).right_text;
-          isCorrect = matchedPair?.right_text == correctMatch;
-        }
-
-        return DragTarget<MatchingPair>(
-          builder: (context, candidateData, rejectedData) {
-            return Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(12.0),
-                color: isChecked ? (isCorrect == true ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1)) : Colors.transparent,
-              ),
-              child: Row(
-                children: [
-                  Expanded(flex: 2, child: Padding(padding: const EdgeInsets.all(12.0), child: Text(leftText))),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      height: 48,
-                      decoration: BoxDecoration(
-                        border: Border(left: BorderSide(color: Colors.grey.shade300)),
-                        color: Colors.grey.shade100,
-                        borderRadius: const BorderRadius.horizontal(right: Radius.circular(11.0)),
-                      ),
-                      child: Center(child: Text(matchedPair?.right_text ?? '...', style: const TextStyle(fontWeight: FontWeight.bold))),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-          onAccept: (data) => _handleDrop(leftText, data),
-        );
-      },
-    );
 
     return Column(
       children: [
-        Expanded(child: dropTargets),
-        if (!widget.isReviewMode) ...[
+        Expanded(
+          child: ListView.separated(
+            itemCount: leftTexts.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (context, index) {
+              final leftText = leftTexts[index];
+              final matchedPair = userMatches[leftText];
+
+              return DragTarget<MatchingPair>(
+                builder: (context, candidateData, rejectedData) {
+                  return Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(child: Text(leftText)),
+                        const Icon(Icons.arrow_forward, size: 16, color: Colors.grey),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Center(child: Text(matchedPair?.right_text ?? '...', style: const TextStyle(fontWeight: FontWeight.bold))),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                onAccept: (data) {
+                  if (isChecked) return;
+                  setState(() {
+                    userMatches[leftText] = data;
+                    widget.onAnswered(Map<String, MatchingPair?>.from(userMatches));
+                  });
+                },
+              );
+            },
+          ),
+        ),
+        if (!isChecked) ...[
           const SizedBox(height: 16),
-          const Text('Seçenekleri kutulara sürükleyin:', style: TextStyle(color: Colors.grey)),
-          const SizedBox(height: 16),
-          Wrap(spacing: 8.0, runSpacing: 4.0, alignment: WrapAlignment.center, children: draggableOptions),
+          Wrap(
+            spacing: 8,
+            children: shuffledRightPairs.where((p) => !userMatches.values.contains(p)).map((pair) {
+              return Draggable<MatchingPair>(
+                data: pair,
+                feedback: Material(child: Chip(label: Text(pair.right_text))),
+                child: Chip(label: Text(pair.right_text), backgroundColor: Colors.amber.shade100),
+              );
+            }).toList(),
+          ),
         ]
       ],
     );

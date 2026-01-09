@@ -149,12 +149,14 @@ CREATE TABLE public.test_session_answers (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 test_session_id bigint NOT NULL,
 question_id bigint NOT NULL,
-user_id uuid NOT NULL,
+user_id uuid,
 selected_option_id bigint,
 user_answer_text text,
 is_correct boolean NOT NULL,
 duration_seconds integer,
 created_at timestamp with time zone NOT NULL DEFAULT now(),
+client_id uuid,
+answer_text text,
 CONSTRAINT test_session_answers_pkey PRIMARY KEY (id),
 CONSTRAINT test_session_answers_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id),
 CONSTRAINT test_session_answers_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
@@ -163,18 +165,20 @@ CREATE TABLE public.test_session_questions (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 test_session_id bigint NOT NULL,
 question_id bigint NOT NULL,
-order_no integer NOT NULL,
+order_no integer NOT NULL CHECK (order_no >= 1 AND order_no <= 10),
 created_at timestamp with time zone NOT NULL DEFAULT now(),
 CONSTRAINT test_session_questions_pkey PRIMARY KEY (id),
 CONSTRAINT fk_tsq_question FOREIGN KEY (question_id) REFERENCES public.questions(id)
 );
 CREATE TABLE public.test_sessions (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-user_id uuid NOT NULL,
+user_id uuid,
 unit_id bigint,
 created_at timestamp with time zone NOT NULL DEFAULT now(),
 completed_at timestamp with time zone,
 settings jsonb,
+question_ids ARRAY,
+client_id uuid NOT NULL,
 CONSTRAINT test_sessions_pkey PRIMARY KEY (id),
 CONSTRAINT test_sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
 CONSTRAINT test_sessions_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
@@ -271,4 +275,16 @@ updated_at timestamp with time zone DEFAULT now(),
 CONSTRAINT user_progress_pkey PRIMARY KEY (id),
 CONSTRAINT user_progress_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id),
 CONSTRAINT user_progress_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES public.topics(id)
+);
+CREATE TABLE public.user_question_stats (
+user_id uuid NOT NULL,
+question_id bigint NOT NULL,
+last_answer_correct boolean,
+last_answer_at timestamp with time zone,
+total_attempts integer NOT NULL DEFAULT 0,
+created_at timestamp with time zone NOT NULL DEFAULT now(),
+updated_at timestamp with time zone NOT NULL DEFAULT now(),
+CONSTRAINT user_question_stats_pkey PRIMARY KEY (user_id, question_id),
+CONSTRAINT user_question_stats_user_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+CONSTRAINT user_question_stats_question_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id)
 );

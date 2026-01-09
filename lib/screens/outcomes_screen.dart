@@ -1,4 +1,5 @@
 import 'package:egitim_uygulamasi/screens/questions_screen.dart';
+import 'package:egitim_uygulamasi/screens/practice_questions_screen.dart'; // YENİ EKRAN
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -302,6 +303,12 @@ class _WeekContentViewState extends State<WeekContentView> {
     _weekDataFuture = _fetchWeekData();
   }
 
+  void _refreshData() {
+    setState(() {
+      _weekDataFuture = _fetchWeekData();
+    });
+  }
+
   (DateTime, DateTime) _getWeekDateRange(int weekNo) {
     final schoolStart = DateTime(DateTime.now().month < 9 ? DateTime.now().year - 1 : DateTime.now().year, 9, 8);
     
@@ -329,11 +336,12 @@ class _WeekContentViewState extends State<WeekContentView> {
       final curriculumData = response as List;
       final firstItem = curriculumData.first;
       final topicId = firstItem['topic_id'];
+      final unitId = firstItem['unit_id'];
 
       final outcomes = curriculumData.map((item) => item['outcome_description'] as String).toSet().toList();
       final contents = curriculumData.expand((item) => (item['contents'] as List)).map((c) => TopicContent.fromJson(c)).toSet().toList();
       
-      int questionCount = 0;
+      Map<int, int> questionCountsByDifficulty = {};
       List<TestSummary> testSummaries = [];
 
       if (topicId != null) {
@@ -341,7 +349,7 @@ class _WeekContentViewState extends State<WeekContentView> {
         
         final results = await Future.wait([
           Supabase.instance.client.rpc(
-            'get_weekly_question_count',
+            'get_weekly_question_counts_by_difficulty',
             params: {'p_topic_id': topicId, 'p_week_no': widget.weekNo},
           ),
           if (userId != null)
@@ -351,7 +359,12 @@ class _WeekContentViewState extends State<WeekContentView> {
             )
         ]);
 
-        questionCount = results[0] as int;
+        final countsData = results[0] as List<dynamic>;
+        for (var item in countsData) {
+          final difficulty = item['difficulty'] is int ? item['difficulty'] as int : int.tryParse(item['difficulty'].toString()) ?? 0;
+          final count = item['question_count'] is int ? item['question_count'] as int : int.tryParse(item['question_count'].toString()) ?? 0;
+          questionCountsByDifficulty[difficulty] = count;
+        }
         
         if (results.length > 1 && results[1] != null) {
           final summaryData = results[1] as List<dynamic>;
@@ -363,9 +376,10 @@ class _WeekContentViewState extends State<WeekContentView> {
         'unit_title': firstItem['unit_title'],
         'topic_title': firstItem['topic_title'],
         'topic_id': topicId,
+        'unit_id': unitId,
         'outcomes': outcomes,
         'contents': contents,
-        'question_count': questionCount,
+        'question_counts_by_difficulty': questionCountsByDifficulty,
         'test_summaries': testSummaries,
       };
     } catch (e, st) {
@@ -388,18 +402,15 @@ class _WeekContentViewState extends State<WeekContentView> {
         final unitTitle = data['unit_title'] as String?;
         final topicTitle = data['topic_title'] as String?;
         final topicId = data['topic_id'] as int?;
+        final unitId = data['unit_id'] as int?;
         final outcomes = (data['outcomes'] as List<dynamic>?)?.cast<String>() ?? [];
         final contents = (data['contents'] as List<dynamic>?)?.cast<TopicContent>() ?? [];
-        final questionCount = data['question_count'] as int? ?? 0;
+        final questionCountsByDifficulty = (data['question_counts_by_difficulty'] as Map<int, int>?) ?? {};
         final testSummaries = (data['test_summaries'] as List<dynamic>?)?.cast<TestSummary>() ?? [];
         final (startDate, endDate) = _getWeekDateRange(widget.weekNo);
 
         return RefreshIndicator(
-          onRefresh: () async {
-            setState(() {
-              _weekDataFuture = _fetchWeekData();
-            });
-          },
+          onRefresh: () async => _refreshData(),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(16.0),
@@ -423,13 +434,18 @@ class _WeekContentViewState extends State<WeekContentView> {
                   ),
                 ),
                 ...contents.map((content) => _ContentCard(content: content)),
-                if (questionCount > 0 && topicId != null) ...[
+                if (topicId != null && topicTitle != null) ...[
                   const SizedBox(height: 16),
-                  _QuizCard(
+                  _PracticeCard(
                     topicId: topicId,
-                    questionCount: questionCount,
-                    weekNo: widget.weekNo,
-                    summaries: testSummaries,
+                    topicTitle: topicTitle,
+                  ),
+                ],
+                if (unitId != null) ...[
+                  const SizedBox(height: 16),
+                  _UnitQuizCard(
+                    unitId: unitId,
+                    onTestCompleted: _refreshData,
                   ),
                 ],
                 const SizedBox(height: 16),
@@ -576,25 +592,72 @@ class _ContentCard extends StatelessWidget {
   }
 }
 
-class _QuizCard extends StatelessWidget {
+class _PracticeCard extends StatelessWidget {
   final int topicId;
-  final int questionCount;
-  final int weekNo;
-  final List<TestSummary> summaries;
-  final int questionsPerTest = 10;
+  final String topicTitle;
 
-  const _QuizCard({
-    required this.topicId,
-    required this.questionCount,
-    required this.weekNo,
-    required this.summaries,
+  const _PracticeCard({required this.topicId, required this.topicTitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.only(top: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.psychology_outlined, color: Theme.of(context).primaryColor),
+                const SizedBox(width: 8),
+                Text('Konu Kavrama', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+              ],
+            ),
+            const Divider(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PracticeQuestionsScreen(
+                        topicId: topicId,
+                        topicTitle: topicTitle,
+                      ),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange.shade100,
+                  foregroundColor: Colors.orange.shade900,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                child: const Text('Alıştırmalara Başla', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _UnitQuizCard extends StatelessWidget {
+  final int unitId;
+  final VoidCallback onTestCompleted;
+
+  const _UnitQuizCard({
+    required this.unitId,
+    required this.onTestCompleted,
   });
 
   @override
   Widget build(BuildContext context) {
-    final totalTests = (questionCount / questionsPerTest).ceil();
-    final summaryMap = {for (var s in summaries) s.testNumber: s};
-
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(top: 16),
@@ -608,101 +671,33 @@ class _QuizCard extends StatelessWidget {
               children: [
                 Icon(Icons.quiz_outlined, color: Theme.of(context).primaryColor),
                 const SizedBox(width: 8),
-                Text('Haftalık Testler', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                Text('Ünite Testi', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
               ],
             ),
             const Divider(height: 24),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 2.5,
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => QuestionsScreen(unitId: unitId),
+                    ),
+                  );
+                  onTestCompleted();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                child: const Text('Teste Başla', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
-              itemCount: totalTests,
-              itemBuilder: (context, index) {
-                final testNumber = index + 1;
-                final summary = summaryMap[testNumber];
-
-                return _TestButton(
-                  topicId: topicId,
-                  testNumber: testNumber,
-                  questionsPerTest: questionsPerTest,
-                  weekNo: weekNo,
-                  summary: summary,
-                );
-              },
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _TestButton extends StatelessWidget {
-  final int topicId;
-  final int testNumber;
-  final int questionsPerTest;
-  final int weekNo;
-  final TestSummary? summary;
-
-  const _TestButton({
-    required this.topicId,
-    required this.testNumber,
-    required this.questionsPerTest,
-    required this.weekNo,
-    this.summary,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final localSummary = summary;
-    final bool isReviewMode = localSummary != null;
-
-    return ElevatedButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QuestionsScreen(
-              topicId: topicId,
-              testNumber: testNumber,
-              questionsPerTest: questionsPerTest,
-              weekNo: weekNo,
-              previousSessionId: localSummary?.lastSessionId,
-            ),
-          ),
-        ).then((_) {
-          (context as Element).markNeedsBuild();
-        });
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue.withOpacity(0.1),
-        foregroundColor: Colors.blue.shade800,
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Test $testNumber',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          if (localSummary != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              '${localSummary.correctCount}D / ${localSummary.incorrectCount}Y',
-              style: TextStyle(
-                fontSize: 12,
-                color: localSummary.correctCount >= localSummary.incorrectCount ? Colors.green : Colors.red,
-              ),
-            )
-          ]
-        ],
       ),
     );
   }

@@ -1,25 +1,7 @@
 import 'package:egitim_uygulamasi/screens/outcomes_screen.dart';
-import 'package:egitim_uygulamasi/models/lesson_model.dart';
 import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:egitim_uygulamasi/viewmodels/lesson_viewmodel.dart';
 import 'package:flutter/material.dart';
-
-// İkon isimlerini Flutter ikonlarına çevirmek için bir yardımcı map
-const Map<String, IconData> _iconMap = {
-  'calculate': Icons.calculate,
-  'science': Icons.science,
-  'book': Icons.book,
-  'translate': Icons.translate,
-  'history_edu': Icons.history_edu,
-  'public': Icons.public,
-  'church': Icons.church,
-  // Diğer ikonları buraya ekleyebilirsiniz
-};
-
-IconData _getIconFromString(String? iconName) {
-  if (iconName == null) return Icons.class_; // Varsayılan ikon
-  return _iconMap[iconName] ?? Icons.class_;
-}
 
 class LessonsScreen extends StatefulWidget {
   final Grade grade;
@@ -68,27 +50,32 @@ class _LessonsScreenState extends State<LessonsScreen> {
       return const Center(child: Text('Gösterilecek ders bulunamadı.'));
     }
 
-    return GridView.builder(
-      padding: const EdgeInsets.all(16.0),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        childAspectRatio: 1.0,
-      ),
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
       itemCount: _viewModel.lessons.length,
       itemBuilder: (context, index) {
         final lesson = _viewModel.lessons[index];
-        final color = Colors.primaries[(index + 2) % Colors.primaries.length].shade700;
-        final icon = _getIconFromString(lesson.icon);
 
         return Card(
-          elevation: 4.0,
-          color: color,
+          elevation: 2.0,
+          margin: const EdgeInsets.symmetric(vertical: 6.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
-          child: InkWell(
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+            leading: CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+              foregroundColor: Theme.of(context).primaryColor,
+              child: const Icon(Icons.book_outlined),
+            ),
+            title: Text(
+              lesson.name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
             onTap: () {
               Navigator.push(
                 context,
@@ -102,26 +89,6 @@ class _LessonsScreenState extends State<LessonsScreen> {
                 ),
               );
             },
-            borderRadius: BorderRadius.circular(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, size: 50, color: Colors.white),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    lesson.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ),
         );
       },

@@ -1,5 +1,6 @@
 // lib/screens/home_screen.dart
 
+import 'package:egitim_uygulamasi/screens/statistics_screen.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -147,13 +148,13 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: () => widget.onNavigate(3), // Profil sekmesi (index 3)
         ),
         _FeatureCard(
-          title: 'Yardım',
-          icon: Icons.help_outline,
-          color: Colors.purple,
+          title: 'İstatistiklerim',
+          icon: Icons.bar_chart_outlined,
+          color: Colors.red,
           onTap: () {
-            // Yardım için bir diyalog veya yeni bir sayfa gösterilebilir.
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Yardım menüsü yakında eklenecek.')),
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const StatisticsScreen()),
             );
           },
         ),

@@ -1,0 +1,8 @@
+name: Local DeepSeek
+version: 1.0.0
+schema: v1
+
+models:
+  - name: DeepSeek Coder (Ollama)
+    provider: ollama
+    model: deepseek-coder:6.7b

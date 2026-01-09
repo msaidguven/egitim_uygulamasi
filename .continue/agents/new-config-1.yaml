@@ -1,0 +1,19 @@
+{
+  "models": [
+    {
+      "title": "Qwen 2.5 Coder (Stable)",
+      "provider": "ollama",
+      "model": "qwen2.5-coder-2k",
+      "contextLength": 2048,
+      "temperature": 0.2
+    },
+    {
+      "title": "DeepSeek Coder (Backend)",
+      "provider": "ollama",
+      "model": "deepseek-coder:6.7b",
+      "contextLength": 2048,
+      "temperature": 0.2
+    }
+  ],
+  "defaultModel": "Qwen 2.5 Coder (Stable)"
+}
