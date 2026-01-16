@@ -18,6 +18,9 @@ BEGIN
     SELECT
         count(q.id)::int as total_q,
         count(uqs.question_id)::int as solved_q,
+        sum(uqs.total_attempts)::int as total_attempts,
+        sum(uqs.correct_attempts)::int as correct_attempts,
+        sum(uqs.wrong_attempts)::int as wrong_attempts,
         count(*) FILTER (WHERE uqs.last_answer_correct = true)::int as correct_q,
         count(*) FILTER (WHERE uqs.last_answer_correct = false)::int as incorrect_q
     INTO v_stats
@@ -45,9 +48,12 @@ BEGIN
         'unit_name', v_unit_name,
         'total_questions', v_stats.total_q,
         'solved_questions', v_stats.solved_q,
+        'total_attempts', COALESCE(v_stats.total_attempts, 0),
+        'correct_attempts', COALESCE(v_stats.correct_attempts, 0),
+        'wrong_attempts', COALESCE(v_stats.wrong_attempts, 0),
         'correct_count', v_stats.correct_q,
         'incorrect_count', v_stats.incorrect_q,
-        'unsolved_count', (v_stats.total_q - v_stats.solved_q),
+        'unsolved_count', (v_stats.total_q - COALESCE(v_stats.solved_q, 0)),
         'success_rate', CASE WHEN v_stats.solved_q > 0 THEN ROUND((v_stats.correct_q::numeric / v_stats.solved_q * 100), 1) ELSE 0 END,
         'active_session', CASE WHEN v_session.session_id IS NOT NULL THEN
             jsonb_build_object(

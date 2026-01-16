@@ -1,0 +1,4 @@
+-- MIGRATION 0057: İPTAL EDİLDİ.
+-- Bu dosyadaki fonksiyonlarda hatalı JOIN mantığı tespit edildi.
+-- Doğru ve güncel versiyonlar, `0058_create_final_home_screen_functions.sql` dosyasına taşınmıştır.
+-- Bu dosyanın içeriği, migration'ların sorunsuz çalışması için kasıtlı olarak boş bırakılmıştır.

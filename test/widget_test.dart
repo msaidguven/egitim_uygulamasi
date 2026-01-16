@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/main.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Riverpod'ı ekliyoruz
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -23,7 +24,8 @@ void main() {
   testWidgets('Uygulama açıldığında Giriş Yap ekranını gösterir', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const EgitimUygulamasi());
+    // ÇÖZÜM: Widget'ı ProviderScope ile sarmalıyoruz.
+    await tester.pumpWidget(const ProviderScope(child: EgitimUygulamasi()));
 
     // "Giriş Yap" başlığını ve butonunu bul.
     expect(

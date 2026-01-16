@@ -118,15 +118,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         return;
       }
       setState(() {
-        _previewQuestions = List<Map<String, dynamic>>.from(questions.map((q) {
-          if (q['question_type'] == 'matching') {
-            final pairs = (q['pairs'] as List?)?.map((p) {
-              return {'left_text': p['left_text'], 'right_text': p['right_text']};
-            }).toList();
-            return {...q, 'pairs': pairs};
-          }
-          return q;
-        }));
+        _previewQuestions = List<Map<String, dynamic>>.from(questions);
       });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Önizleme oluşturuldu.'),
@@ -147,7 +139,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
       return;
     }
 
-    Map<String, dynamic> questionsToSubmit;
+    Map<String, dynamic> payloadForSupabase;
 
     if (_showJsonInput) {
       if (_jsonController.text.isEmpty) {
@@ -155,8 +147,8 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         return;
       }
       try {
-        questionsToSubmit = jsonDecode(_jsonController.text);
-        if (questionsToSubmit['questions'] == null || (questionsToSubmit['questions'] as List).isEmpty) {
+        payloadForSupabase = jsonDecode(_jsonController.text);
+        if (payloadForSupabase['questions'] == null || (payloadForSupabase['questions'] as List).isEmpty) {
           _showError('JSON içeriğinde soru bulunamadı.');
           return;
         }
@@ -169,17 +161,18 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         _showError('Lütfen soru ekleyin.');
         return;
       }
-      questionsToSubmit = {'questions': _previewQuestions};
+      payloadForSupabase = {'questions': _previewQuestions};
     }
 
     setState(() => _isSubmitting = true);
 
     try {
+      // GEREKSİZ DÖNÜŞÜM KALDIRILDI. VERİ DOĞRUDAN GÖNDERİLİYOR.
       await Supabase.instance.client.rpc('bulk_create_questions', params: {
         'p_topic_id': _selectedTopic!.id,
         'p_usage_type': _usageType,
         'p_display_week': _usageType == 'weekly' ? int.tryParse(_displayWeekController.text) : null,
-        'p_questions_json': questionsToSubmit,
+        'p_questions_json': payloadForSupabase,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -196,7 +189,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
       debugPrint('------------------------------------');
       _showError(errorMessage);
     } catch (e, st) {
-      final errorMessage = 'Beklenmedik bir hata: $e';
+      final errorMessage = 'Beklenmedik bir hata veya dönüşüm hatası: $e';
       debugPrint('--- SORU EKLEME HATASI (GENEL) ---');
       debugPrint(errorMessage);
       debugPrint('Stack Trace:\n$st');
@@ -484,6 +477,16 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
     );
   }
 
+  String _getQuestionTypeName(int? typeId) {
+    switch (typeId) {
+      case 1: return 'Çoktan Seçmeli';
+      case 2: return 'Doğru / Yanlış';
+      case 3: return 'Boşluk Doldurma';
+      case 5: return 'Eşleştirme';
+      default: return 'Bilinmeyen Tip';
+    }
+  }
+
   Widget _buildPreview() {
     if (_previewQuestions.isEmpty) {
       return const Card(
@@ -508,6 +511,8 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         itemCount: _previewQuestions.length,
         itemBuilder: (context, index) {
           final q = _previewQuestions[index];
+          final typeId = q['question_type_id'];
+
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             elevation: 2,
@@ -516,7 +521,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
                 ListTile(
                   leading: CircleAvatar(child: Text((index + 1).toString())),
                   title: Text(q['question_text'] ?? 'Metin yok'),
-                  subtitle: Text(q['question_type'] ?? 'Tip yok'),
+                  subtitle: Text(_getQuestionTypeName(typeId)),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () {
@@ -526,7 +531,8 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
                     },
                   ),
                 ),
-                if (q['question_type'] == 'matching' && q['pairs'] != null)
+                // Eşleştirme (ID: 5)
+                if (typeId == 5 && q['pairs'] != null)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                     child: Column(
@@ -534,28 +540,30 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("• ${pair['left_text']}"),
-                            Text(pair['right_text']),
+                            Text("• ${pair['left_text'] ?? ''}"),
+                            Text(pair['right_text'] ?? ''),
                           ],
                         );
                       }).toList(),
                     ),
                   ),
-                if (q['question_type'] == 'multiple_choice' && q['choices'] != null)
+                // Çoktan Seçmeli veya D/Y (ID: 1 veya 2)
+                if ((typeId == 1 || typeId == 2) && q['choices'] != null)
                    Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: (q['choices'] as List).map<Widget>((choice) {
+                        final isCorrect = choice['is_correct'] ?? false;
                         return Row(
                           children: [
                             Icon(
-                              choice['is_correct'] ? Icons.check_circle : Icons.radio_button_unchecked,
-                              color: choice['is_correct'] ? Colors.green : Colors.grey,
+                              isCorrect ? Icons.check_circle : Icons.radio_button_unchecked,
+                              color: isCorrect ? Colors.green : Colors.grey,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
-                            Text(choice['text']),
+                            Expanded(child: Text(choice['text'] ?? 'Seçenek metni yok')),
                           ],
                         );
                       }).toList(),

@@ -3,6 +3,10 @@
 import 'package:egitim_uygulamasi/main.dart';
 import 'package:egitim_uygulamasi/models/profile_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Riverpod import'u
+
+// YENİ: ProfileViewModel'i sağlayan Riverpod provider'ı
+final profileViewModelProvider = ChangeNotifierProvider((ref) => ProfileViewModel());
 
 class ProfileViewModel extends ChangeNotifier {
   bool _isLoading = false;
@@ -20,8 +24,6 @@ class ProfileViewModel extends ChangeNotifier {
 
     try {
       final userId = supabase.auth.currentUser!.id;
-      // İlişkili tablolardan veri çekmek için sorguyu genişletiyoruz.
-      // Supabase, foreign key'leri otomatik olarak tanır.
       const query = '''
         *,
         grades ( id, name ),
@@ -46,12 +48,9 @@ class ProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Kullanıcının 'admin' rolüne sahip olup olmadığını kontrol eder.
-  /// Kullanıcı oturumu yoksa veya rol bilgisi alınamazsa `false` döner.
   Future<bool> isAdmin() async {
     try {
       if (supabase.auth.currentUser == null) return false;
-      // fetchProfile zaten rol bilgisini çektiği için _profile'ı kullanabiliriz.
       if (_profile == null) await fetchProfile();
       return _profile?.role == 'admin';
     } catch (e) {
@@ -68,8 +67,6 @@ class ProfileViewModel extends ChangeNotifier {
     try {
       final userId = supabase.auth.currentUser!.id;
       await supabase.from('profiles').update(data).eq('id', userId);
-
-      // Güncelleme sonrası en son veriyi çekmek için profili yeniden yükle.
       await fetchProfile();
       return true;
     } catch (e) {
@@ -86,7 +83,7 @@ class ProfileViewModel extends ChangeNotifier {
 
     try {
       await supabase.auth.signOut();
-      _profile = null; // Çıkış yapıldığında profili temizle
+      _profile = null;
     } catch (e) {
       _errorMessage = "Çıkış yapılırken bir hata oluştu: $e";
     }

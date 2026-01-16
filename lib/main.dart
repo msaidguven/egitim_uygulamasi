@@ -1,34 +1,37 @@
-// lib/main.dart
+// lib/main.dart (güncellenmiş hali)
 
-import 'dart:ui'; // PointerDeviceKind için gerekli
+import 'dart:ui';
 import 'package:egitim_uygulamasi/screens/reset_password_screen.dart';
 import 'package:egitim_uygulamasi/constants.dart';
 import 'package:egitim_uygulamasi/screens/auth_gate.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
-  // Flutter uygulamasının başlatılmadan önce diğer bağlamaların hazır olduğundan emin ol.
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Supabase'i başlat.
+  // Supabase'i başlat
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
-  runApp(const EgitimUygulamasi());
+
+  // Uygulamayı ProviderScope ile sarmala
+  runApp(const ProviderScope(child: EgitimUygulamasi()));
 }
 
 // Global Navigator Key
 final navigatorKey = GlobalKey<NavigatorState>();
 
-// --- YENİ: Web ve Masaüstü için Fare ile Kaydırmayı Etkinleştiren Sınıf ---
-// Bu sınıf, uygulamanın fare tekerleği veya trackpad ile de kaydırılabilmesini sağlar.
+// Custom Scroll Behavior
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.trackpad,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+  };
 }
+
+// ============================================
 
 class EgitimUygulamasi extends StatelessWidget {
   const EgitimUygulamasi({super.key});
@@ -37,22 +40,20 @@ class EgitimUygulamasi extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Eğitim Uygulaması',
-      navigatorKey: navigatorKey, // Navigator key'i ekliyoruz
-      
-      // --- YENİ: Özel kaydırma davranışını tüm uygulamaya uygula ---
+      navigatorKey: navigatorKey,
       scrollBehavior: MyCustomScrollBehavior(),
-
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        useMaterial3: true,
       ),
-      // Uygulama başlangıcını AuthGate ile yapıyoruz.
       home: const AuthGate(),
-      // İsimlendirilmiş rotaları tanımlıyoruz.
-      routes: {'/reset-password': (context) => const ResetPasswordScreen()},
+      routes: {
+        '/reset-password': (context) => const ResetPasswordScreen(),
+      },
     );
   }
 }
 
-// Supabase'e kolay erişim için bir kısayol.
+// Supabase'e kolay erişim
 final supabase = Supabase.instance.client;

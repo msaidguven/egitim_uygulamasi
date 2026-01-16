@@ -1,6 +1,7 @@
 import 'package:egitim_uygulamasi/main.dart';
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/models/unit_model.dart';
+import 'package:egitim_uygulamasi/screens/weekly_outcomes_screen.dart'; // Yeni ekran
 import 'package:egitim_uygulamasi/utils/html_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart' as flutter_html;
@@ -23,8 +24,8 @@ class _UnitDetailScreenState extends State<UnitDetailScreen> {
     _topicsFuture = _fetchTopicsAndContents();
   }
 
+  // Bu fonksiyon aynı kalabilir, sadece konuları listelemek için kullanılıyor.
   Future<List<Map<String, dynamic>>> _fetchTopicsAndContents() async {
-    // 1. Fetch approved, active topics for the unit.
     final topicsResponse = await supabase
         .from('topics')
         .select('id, title, order_no')
@@ -37,21 +38,18 @@ class _UnitDetailScreenState extends State<UnitDetailScreen> {
       return [];
     }
 
-    // 2. Fetch all contents for those topics.
     final contentsResponse = await supabase
         .from('topic_contents')
         .select('*')
         .inFilter('topic_id', topicsResponse.map((t) => t['id']).toList())
         .order('order_no');
 
-    // 3. Group contents by topic_id for efficient lookup.
     final Map<int, List<Map<String, dynamic>>> contentsByTopic = {};
     for (final c in contentsResponse) {
       contentsByTopic.putIfAbsent(c['topic_id'], () => []);
       contentsByTopic[c['topic_id']]!.add(c);
     }
 
-    // 4. Stitch the data together.
     final List<Map<String, dynamic>> topicsWithContent = [];
     for (final topic in topicsResponse) {
       topicsWithContent.add({
@@ -99,6 +97,37 @@ class _UnitDetailScreenState extends State<UnitDetailScreen> {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
+                    ),
+                  ),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.fitness_center),
+                          label: const Text('Alıştırma Yap'),
+                          onPressed: () {
+                            // Yeni ekrana yönlendir
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => WeeklyOutcomesScreen(
+                                  topicId: topic['id'],
+                                  topicTitle: topic['title'],
+                                ),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   children: contents.map((content) {

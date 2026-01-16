@@ -21,9 +21,11 @@ RETURNS TABLE (
     classical_answer TEXT
 )
 LANGUAGE plpgsql
+SECURITY DEFINER -- Mevcut kullanıcının kimliğine (auth.uid()) erişim için gerekli
 AS $$
 DECLARE
     v_offset INT;
+    current_user_id UUID := auth.uid();
 BEGIN
     -- Calculate the offset
     v_offset := (p_test_number - 1) * p_questions_per_test;
@@ -43,7 +45,7 @@ BEGIN
                         'id', qc.id,
                         'choice_text', qc.choice_text,
                         'is_correct', qc.is_correct
-                    )
+                    ) ORDER BY qc.id
                 )
                 FROM public.question_choices qc
                 WHERE qc.question_id = q.id
@@ -59,7 +61,7 @@ BEGIN
                         'option_text', qbo.option_text,
                         'is_correct', qbo.is_correct,
                         'order_no', qbo.order_no
-                    )
+                    ) ORDER BY qbo.order_no
                 )
                 FROM public.question_blank_options qbo
                 WHERE qbo.question_id = q.id
@@ -73,7 +75,7 @@ BEGIN
                         'id', qmp.id,
                         'left_text', qmp.left_text,
                         'right_text', qmp.right_text
-                    )
+                    ) ORDER BY qmp.order_no
                 )
                 FROM public.question_matching_pairs qmp
                 WHERE qmp.question_id = q.id
@@ -92,9 +94,12 @@ BEGIN
         public.question_types qt ON q.question_type_id = qt.id
     JOIN
         public.question_usages qu ON q.id = qu.question_id
+    LEFT JOIN
+        public.user_question_stats uqs ON q.id = uqs.question_id AND uqs.user_id = current_user_id
     WHERE
         qu.topic_id = p_topic_id
         AND qu.display_week = p_week_no
+        AND (uqs.user_id IS NULL OR uqs.next_review_at <= now()) -- Spaced Repetition Mantığı
     ORDER BY
         q.difficulty ASC, -- Order by difficulty: Easy -> Medium -> Hard
         q.id ASC

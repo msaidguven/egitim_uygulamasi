@@ -159,7 +159,8 @@ client_id uuid,
 answer_text text,
 CONSTRAINT test_session_answers_pkey PRIMARY KEY (id),
 CONSTRAINT test_session_answers_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id),
-CONSTRAINT test_session_answers_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+CONSTRAINT test_session_answers_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+CONSTRAINT test_session_answers_test_session_id_fkey FOREIGN KEY (test_session_id) REFERENCES public.test_sessions(id)
 );
 CREATE TABLE public.test_session_questions (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -168,7 +169,8 @@ question_id bigint NOT NULL,
 order_no integer NOT NULL CHECK (order_no >= 1 AND order_no <= 10),
 created_at timestamp with time zone NOT NULL DEFAULT now(),
 CONSTRAINT test_session_questions_pkey PRIMARY KEY (id),
-CONSTRAINT fk_tsq_question FOREIGN KEY (question_id) REFERENCES public.questions(id)
+CONSTRAINT fk_tsq_question FOREIGN KEY (question_id) REFERENCES public.questions(id),
+CONSTRAINT fk_tsq_test_session FOREIGN KEY (test_session_id) REFERENCES public.test_sessions(id)
 );
 CREATE TABLE public.test_sessions (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -179,9 +181,13 @@ completed_at timestamp with time zone,
 settings jsonb,
 question_ids ARRAY,
 client_id uuid NOT NULL,
+lesson_id bigint,
+grade_id bigint,
 CONSTRAINT test_sessions_pkey PRIMARY KEY (id),
 CONSTRAINT test_sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
-CONSTRAINT test_sessions_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
+CONSTRAINT test_sessions_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id),
+CONSTRAINT fk_test_sessions_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id),
+CONSTRAINT fk_test_sessions_grade FOREIGN KEY (grade_id) REFERENCES public.grades(id)
 );
 CREATE TABLE public.topic_content_weeks (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -218,6 +224,8 @@ CONSTRAINT topics_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
 CREATE TABLE public.unit_grades (
 unit_id bigint NOT NULL,
 grade_id bigint NOT NULL,
+end_week smallint,
+start_week integer,
 CONSTRAINT unit_grades_pkey PRIMARY KEY (unit_id, grade_id),
 CONSTRAINT unit_grades_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id),
 CONSTRAINT unit_grades_grade_id_fkey FOREIGN KEY (grade_id) REFERENCES public.grades(id)
@@ -264,17 +272,21 @@ CONSTRAINT user_answers_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users
 CREATE TABLE public.user_progress (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 user_id uuid NOT NULL,
-topic_id bigint NOT NULL,
-completed boolean NOT NULL DEFAULT false,
-completed_at timestamp with time zone,
+lesson_id bigint NOT NULL,
+grade_id bigint NOT NULL,
+week_no integer NOT NULL CHECK (week_no >= 1),
+declared_completed_at timestamp with time zone,
 progress_percentage integer NOT NULL DEFAULT 0 CHECK (progress_percentage >= 0 AND progress_percentage <= 100),
+success_rate numeric NOT NULL DEFAULT 0.00 CHECK (success_rate >= 0.00 AND success_rate <= 100.00),
+system_completed boolean NOT NULL DEFAULT false,
+system_completed_at timestamp with time zone,
 last_accessed_at timestamp with time zone DEFAULT now(),
-notes text,
 created_at timestamp with time zone DEFAULT now(),
 updated_at timestamp with time zone DEFAULT now(),
 CONSTRAINT user_progress_pkey PRIMARY KEY (id),
 CONSTRAINT user_progress_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.profiles(id),
-CONSTRAINT user_progress_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES public.topics(id)
+CONSTRAINT user_progress_lesson_id_fkey FOREIGN KEY (lesson_id) REFERENCES public.lessons(id),
+CONSTRAINT user_progress_grade_id_fkey FOREIGN KEY (grade_id) REFERENCES public.grades(id)
 );
 CREATE TABLE public.user_question_stats (
 user_id uuid NOT NULL,
@@ -284,7 +296,53 @@ last_answer_at timestamp with time zone,
 total_attempts integer NOT NULL DEFAULT 0,
 created_at timestamp with time zone NOT NULL DEFAULT now(),
 updated_at timestamp with time zone NOT NULL DEFAULT now(),
+correct_attempts integer NOT NULL DEFAULT 0,
+wrong_attempts integer NOT NULL DEFAULT 0,
+next_review_at timestamp with time zone,
 CONSTRAINT user_question_stats_pkey PRIMARY KEY (user_id, question_id),
 CONSTRAINT user_question_stats_user_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
 CONSTRAINT user_question_stats_question_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id)
+);
+CREATE TABLE public.user_unit_summary (
+user_id uuid NOT NULL,
+unit_id bigint NOT NULL,
+correct_count integer NOT NULL DEFAULT 0,
+wrong_count integer NOT NULL DEFAULT 0,
+last_updated_at timestamp with time zone DEFAULT now(),
+solved_question_count integer NOT NULL DEFAULT 0,
+CONSTRAINT user_unit_summary_pkey PRIMARY KEY (user_id, unit_id),
+CONSTRAINT user_unit_summary_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+CONSTRAINT user_unit_summary_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
+);
+CREATE TABLE public.user_weekly_question_progress (
+id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+user_id uuid NOT NULL,
+unit_id bigint NOT NULL,
+week_no integer NOT NULL,
+question_id bigint NOT NULL,
+is_correct boolean NOT NULL,
+answered_at timestamp with time zone NOT NULL DEFAULT now(),
+CONSTRAINT user_weekly_question_progress_pkey PRIMARY KEY (id),
+CONSTRAINT user_weekly_question_progress_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+CONSTRAINT user_weekly_question_progress_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id),
+CONSTRAINT user_weekly_question_progress_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id)
+);
+CREATE TABLE public.user_weekly_summary (
+user_id uuid NOT NULL,
+unit_id bigint NOT NULL,
+week_no integer NOT NULL,
+correct_count integer NOT NULL DEFAULT 0,
+wrong_count integer NOT NULL DEFAULT 0,
+last_updated_at timestamp with time zone DEFAULT now(),
+CONSTRAINT user_weekly_summary_pkey PRIMARY KEY (user_id, unit_id, week_no),
+CONSTRAINT user_weekly_summary_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+CONSTRAINT user_weekly_summary_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
+);
+CREATE TABLE public.weekly_question_counts (
+id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+unit_id bigint NOT NULL,
+week_no integer NOT NULL,
+total_questions integer NOT NULL DEFAULT 0,
+CONSTRAINT weekly_question_counts_pkey PRIMARY KEY (id),
+CONSTRAINT weekly_question_counts_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
 );

@@ -2,6 +2,42 @@
 
 import 'package:egitim_uygulamasi/models/question_blank_option.dart';
 
+// YENİ: Kullanıcının bir soruyla olan geçmişini tutan model
+class UserQuestionStats {
+  final int totalAttempts;
+  final int correctAttempts;
+  final int wrongAttempts;
+  final DateTime? lastAnswerAt;
+
+  UserQuestionStats({
+    required this.totalAttempts,
+    required this.correctAttempts,
+    required this.wrongAttempts,
+    this.lastAnswerAt,
+  });
+
+  factory UserQuestionStats.fromMap(Map<String, dynamic> map) {
+    return UserQuestionStats(
+      totalAttempts: map['total_attempts'] as int? ?? 0,
+      correctAttempts: map['correct_attempts'] as int? ?? 0,
+      wrongAttempts: map['wrong_attempts'] as int? ?? 0,
+      lastAnswerAt: map['last_answer_at'] != null
+          ? DateTime.parse(map['last_answer_at'] as String)
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'total_attempts': totalAttempts,
+      'correct_attempts': correctAttempts,
+      'wrong_attempts': wrongAttempts,
+      'last_answer_at': lastAnswerAt?.toIso8601String(),
+    };
+  }
+}
+
+
 enum QuestionType {
   multiple_choice,
   true_false,
@@ -26,6 +62,10 @@ enum QuestionType {
         return QuestionType.unknown;
     }
   }
+  
+  String toJson() => name;
+  static QuestionType fromJson(String json) => QuestionType.fromString(json);
+
 
   static QuestionType fromId(int? id) {
     switch (id) {
@@ -67,9 +107,17 @@ class QuestionChoice {
   factory QuestionChoice.fromJson(Map<String, dynamic> json) {
     return QuestionChoice(
       id: json['id'] as int? ?? 0,
-      text: json['option_text'] as String? ?? '',
+      text: json['option_text'] as String? ?? json['choice_text'] as String? ?? '',
       isCorrect: json['is_correct'] as bool? ?? false,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'choice_text': text,
+      'is_correct': isCorrect,
+    };
   }
 }
 
@@ -99,6 +147,14 @@ class MatchingPair {
       right_text: json['right_text'] as String? ?? '',
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'left_text': left_text,
+      'right_text': right_text,
+    };
+  }
 }
 
 class Question {
@@ -111,6 +167,7 @@ class Question {
   final List<QuestionBlankOption> blankOptions;
   final String? modelAnswer;
   final List<MatchingPair>? matchingPairs;
+  final UserQuestionStats? userStats; // YENİ: Kullanıcı istatistikleri alanı
 
   Question({
     required this.id,
@@ -122,6 +179,7 @@ class Question {
     this.blankOptions = const [],
     this.modelAnswer,
     this.matchingPairs,
+    this.userStats, // YENİ
   });
 
   factory Question.fromMap(Map<String, dynamic> map) {
@@ -156,6 +214,10 @@ class Question {
         modelAnswer = (map['question_classical'] as List).first['model_answer'] as String?;
     }
 
+    // YENİ: Gelen user_stats verisini parse et
+    final userStatsData = map['user_stats'] as Map<String, dynamic>?;
+    final userStats = userStatsData != null ? UserQuestionStats.fromMap(userStatsData) : null;
+
     return Question(
       id: map['id'] as int? ?? 0,
       text: map['question_text'] as String? ?? '',
@@ -166,39 +228,22 @@ class Question {
       blankOptions: blankOptionsList,
       modelAnswer: modelAnswer,
       matchingPairs: matchingPairsList,
+      userStats: userStats, // YENİ
     );
   }
 
-  factory Question.fromJson(Map<String, dynamic> json) {
-    final questionType = QuestionType.fromString(json['question_type_code'] as String?);
-
-    final choicesList = (json['options'] as List<dynamic>?)
-            ?.map((choiceJson) =>
-                QuestionChoice.fromJson(choiceJson as Map<String, dynamic>))
-            .toList() ??
-        [];
-
-    final blankOptionsList = (json['blanks'] as List<dynamic>?)
-            ?.map((blankJson) =>
-                QuestionBlankOption.fromMap(blankJson as Map<String, dynamic>))
-            .toList() ??
-        [];
-
-    final matchingPairsList = (json['matching_pairs'] as List<dynamic>?)
-            ?.map((pairJson) =>
-                MatchingPair.fromJson(pairJson as Map<String, dynamic>))
-            .toList();
-
-    return Question(
-      id: json['id'] as int? ?? 0,
-      text: json['question_text'] as String? ?? '',
-      difficulty: json['difficulty'] as int? ?? 1,
-      score: json['score'] as int? ?? 1,
-      type: questionType,
-      choices: choicesList,
-      blankOptions: blankOptionsList,
-      matchingPairs: matchingPairsList,
-      modelAnswer: null,
-    );
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'question_text': text,
+      'difficulty': difficulty,
+      'score': score,
+      'question_type_id': type.index + 1,
+      'question_choices': choices.map((c) => c.toMap()).toList(),
+      'question_blank_options': blankOptions.map((b) => b.toMap()).toList(),
+      'question_matching_pairs': matchingPairs?.map((p) => p.toMap()).toList(),
+      'question_classical': modelAnswer != null ? [{'model_answer': modelAnswer}] : null,
+      'user_stats': userStats?.toMap(),
+    };
   }
 }

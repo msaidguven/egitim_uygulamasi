@@ -1,3 +1,4 @@
+import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:flutter/foundation.dart';
 
 class TopicContent {
@@ -6,6 +7,7 @@ class TopicContent {
   final String title;
   final String content;
   final int order;
+  final List<Question> miniQuizQuestions; // YENİ ALAN
 
   TopicContent({
     this.id,
@@ -13,15 +15,23 @@ class TopicContent {
     required this.title,
     required this.content,
     required this.order,
+    this.miniQuizQuestions = const [], // YENİ ALAN
   });
 
   factory TopicContent.fromJson(Map<String, dynamic> json) {
+    // Gelen mini quiz sorularını güvenli bir şekilde parse et
+    final questionsData = json['mini_quiz_questions'] as List<dynamic>?;
+    final questions = questionsData != null
+        ? questionsData.map((q) => Question.fromMap(q as Map<String, dynamic>)).toList()
+        : <Question>[];
+
     return TopicContent(
       id: json['id'] as int?,
       topicId: json['topic_id'] as int?,
       title: json['title'] as String? ?? '',
       content: json['content'] as String? ?? '',
       order: json['order_no'] as int? ?? 0,
+      miniQuizQuestions: questions, // YENİ ALAN
     );
   }
 
@@ -32,6 +42,7 @@ class TopicContent {
       'title': title,
       'content': content,
       'order_no': order,
+      // toJson'a eklemek şimdilik gerekli değil, çünkü bu veriyi geri göndermiyoruz.
     };
   }
 
