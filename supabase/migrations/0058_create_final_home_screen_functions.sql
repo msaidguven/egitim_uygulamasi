@@ -1,4 +1,0 @@
--- MIGRATION 0058: İPTAL EDİLDİ.
--- Bu dosyadaki fonksiyonlarda da hatalı JOIN mantığı ve belirsiz sütun referansları tespit edildi.
--- Tüm ana sayfa fonksiyonlarının doğru ve nihai versiyonları, `0059_create_final_home_screen_functions.sql` dosyasına taşınmıştır.
--- Bu dosyanın içeriği, migration'ların sorunsuz çalışması için kasıtlı olarak boş bırakılmıştır.

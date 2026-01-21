@@ -1,7 +1,9 @@
 // lib/features/test/data/repositories/test_repository_impl.dart
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
+import 'package:egitim_uygulamasi/models/question_blank_option.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:egitim_uygulamasi/features/test/domain/repositories/test_repository.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
@@ -34,7 +36,7 @@ class TestRepositoryImpl implements TestRepository {
   Future<int> startTestSession({
     required TestMode testMode,
     required int unitId,
-    int? weekNo,
+    int? curriculumWeek,
     String? clientId,
     String? userId,
   }) async {
@@ -48,7 +50,7 @@ class TestRepositoryImpl implements TestRepository {
           params = {
             'p_user_id': userId,
             'p_unit_id': unitId,
-            'p_week_no': weekNo ?? 1,
+            'p_curriculum_week': curriculumWeek ?? 1,
             'p_client_id': clientId,
           };
           break;
@@ -183,29 +185,32 @@ class TestRepositoryImpl implements TestRepository {
     required int durationSeconds,
   }) async {
     try {
-      String? selectedOptionId;
-      String? answerText;
+      dynamic encodableAnswer = userAnswer;
 
-      // Soru tipine göre veriyi formatla
-      if (userAnswer is String) {
-        selectedOptionId = userAnswer;
-        answerText = userAnswer;
-      } else if (userAnswer is Map<int, dynamic>) {
-        // Boşluk doldurma için
-        final List<String> answers = [];
-        userAnswer.forEach((key, value) {
-          if (value != null) {
-            answers.add(value.toString());
-          }
-        });
-        answerText = answers.join('|');
-      } else if (userAnswer is Map<String, dynamic>) {
-        // Eşleştirme için
-        answerText = userAnswer.entries
-            .map((e) => '${e.key}:${e.value}')
-            .join('|');
-      } else {
-        answerText = userAnswer?.toString();
+      if (userAnswer is Map && userAnswer.values.isNotEmpty) {
+        final firstValue = userAnswer.values.first;
+
+        if (firstValue is MatchingPair) {
+          final Map<String, String> serializableMap = {};
+          userAnswer.forEach((key, value) {
+            if (key is String && value is MatchingPair) {
+              serializableMap[key] = value.right_text;
+            }
+          });
+          encodableAnswer = serializableMap;
+          log('TestRepositoryImpl.saveAnswer: MatchingPair answer converted to serializable map.');
+        }
+        else if (firstValue is QuestionBlankOption) {
+          final Map<String, String> serializableMap = {};
+          userAnswer.forEach((key, value) {
+            if (value is QuestionBlankOption) {
+              // HATA DÜZELTMESİ: 'value.text' yerine 'value.optionText' kullanıldı.
+              serializableMap[key.toString()] = value.optionText;
+            }
+          });
+          encodableAnswer = serializableMap;
+          log('TestRepositoryImpl.saveAnswer: QuestionBlankOption answer converted to serializable map.');
+        }
       }
 
       final dataToInsert = {
@@ -213,21 +218,21 @@ class TestRepositoryImpl implements TestRepository {
         'question_id': questionId,
         'user_id': userId,
         'client_id': clientId,
-        'selected_option_id': selectedOptionId,
-        'answer_text': answerText,
+        'answer_text': jsonEncode(encodableAnswer), // Dönüştürülmüş cevabı JSON olarak kodla
         'is_correct': isCorrect,
         'duration_seconds': durationSeconds,
         'created_at': DateTime.now().toIso8601String(),
       };
 
-      log('TestRepositoryImpl.saveAnswer: questionId=$questionId, isCorrect=$isCorrect, duration=$durationSeconds');
+      log('TestRepositoryImpl.saveAnswer: Inserting into test_session_answers with data: $dataToInsert');
 
       await _supabase.from('test_session_answers').insert(dataToInsert);
 
-      log('TestRepositoryImpl.saveAnswer: Cevap başarıyla kaydedildi');
+      log('TestRepositoryImpl.saveAnswer: Insert successful.');
+
     } catch (e, stackTrace) {
-      log('TestRepositoryImpl.saveAnswer ERROR: $e', error: e, stackTrace: stackTrace);
-      // Cevap kaydetme hatası kritik değil, devam edebiliriz
+      log('TestRepositoryImpl.saveAnswer: INSERT FAILED. Rethrowing error.', error: e, stackTrace: stackTrace);
+      rethrow;
     }
   }
 
@@ -262,14 +267,14 @@ class TestRepositoryImpl implements TestRepository {
   // Ek metod: Haftalık test için başlangıç
   Future<int> startWeeklyTest({
     required int unitId,
-    required int weekNo,
+    required int curriculumWeek,
     required String? userId,
     required String clientId,
   }) async {
     return await startTestSession(
       testMode: TestMode.weekly,
       unitId: unitId,
-      weekNo: weekNo,
+      curriculumWeek: curriculumWeek,
       userId: userId,
       clientId: clientId,
     );

@@ -9,6 +9,14 @@ id integer NOT NULL,
 name text NOT NULL UNIQUE,
 CONSTRAINT cities_pkey PRIMARY KEY (id)
 );
+CREATE TABLE public.curriculum_week_question_counts (
+id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+unit_id bigint NOT NULL,
+total_questions integer NOT NULL DEFAULT 0,
+curriculum_week integer,
+CONSTRAINT curriculum_week_question_counts_pkey PRIMARY KEY (id),
+CONSTRAINT weekly_question_counts_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
+);
 CREATE TABLE public.districts (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 name text NOT NULL,
@@ -43,6 +51,31 @@ created_at timestamp with time zone DEFAULT now(),
 is_active boolean NOT NULL DEFAULT true,
 slug text UNIQUE,
 CONSTRAINT lessons_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.number_compare_questions (
+id integer NOT NULL DEFAULT nextval('number_compare_questions_id_seq'::regclass),
+question_speech character varying NOT NULL,
+left_display character varying NOT NULL,
+left_speech character varying NOT NULL,
+right_display character varying NOT NULL,
+right_speech character varying NOT NULL,
+correct_side character varying NOT NULL CHECK (correct_side::text = ANY (ARRAY['left'::character varying, 'right'::character varying]::text[])),
+level smallint NOT NULL DEFAULT 1,
+is_active boolean NOT NULL DEFAULT true,
+created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+CONSTRAINT number_compare_questions_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.number_composition_questions (
+id integer NOT NULL DEFAULT nextval('number_composition_questions_id_seq'::regclass),
+question_speech character varying NOT NULL,
+correct_answer character varying NOT NULL,
+level smallint NOT NULL DEFAULT 1,
+is_active boolean NOT NULL DEFAULT true,
+created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+digits_count smallint,
+min_digit smallint DEFAULT 0,
+max_digit smallint DEFAULT 9,
+CONSTRAINT number_composition_questions_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.outcome_weeks (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -128,9 +161,9 @@ id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 question_id bigint NOT NULL,
 topic_id bigint NOT NULL,
 usage_type text NOT NULL CHECK (usage_type = ANY (ARRAY['weekly'::text, 'topic_end'::text])),
-display_week integer CHECK (display_week >= 1),
 created_at timestamp with time zone DEFAULT now(),
 order_no smallint NOT NULL DEFAULT 0,
+curriculum_week integer,
 CONSTRAINT question_usages_pkey PRIMARY KEY (id),
 CONSTRAINT fk_qu_question FOREIGN KEY (question_id) REFERENCES public.questions(id),
 CONSTRAINT fk_qu_topic FOREIGN KEY (topic_id) REFERENCES public.topics(id)
@@ -193,7 +226,7 @@ CREATE TABLE public.topic_content_weeks (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 topic_content_id bigint NOT NULL,
 created_at timestamp with time zone DEFAULT now(),
-display_week integer CHECK (display_week >= 1),
+curriculum_week integer,
 CONSTRAINT topic_content_weeks_pkey PRIMARY KEY (id),
 CONSTRAINT topic_content_weeks_topic_content_id_fkey FOREIGN KEY (topic_content_id) REFERENCES public.topic_contents(id)
 );
@@ -254,6 +287,16 @@ question_count integer NOT NULL DEFAULT 0,
 CONSTRAINT units_pkey PRIMARY KEY (id),
 CONSTRAINT fk_units_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id)
 );
+CREATE TABLE public.user_activity_weekly_summary (
+user_id uuid NOT NULL,
+activity_week integer NOT NULL,
+solved_question_count integer NOT NULL DEFAULT 0,
+correct_count integer NOT NULL DEFAULT 0,
+wrong_count integer NOT NULL DEFAULT 0,
+last_updated_at timestamp with time zone DEFAULT now(),
+CONSTRAINT user_activity_weekly_summary_pkey PRIMARY KEY (user_id, activity_week),
+CONSTRAINT fk_uaws_user FOREIGN KEY (user_id) REFERENCES auth.users(id)
+);
 CREATE TABLE public.user_answers (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 session_id bigint NOT NULL,
@@ -269,12 +312,24 @@ CONSTRAINT user_answers_session_id_fkey FOREIGN KEY (session_id) REFERENCES publ
 CONSTRAINT user_answers_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id),
 CONSTRAINT user_answers_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
 );
+CREATE TABLE public.user_curriculum_week_run_summary (
+user_id uuid NOT NULL,
+unit_id bigint NOT NULL,
+curriculum_week integer NOT NULL,
+run_no integer NOT NULL DEFAULT 1,
+correct_count integer NOT NULL DEFAULT 0,
+wrong_count integer NOT NULL DEFAULT 0,
+last_updated_at timestamp with time zone DEFAULT now(),
+CONSTRAINT user_curriculum_week_run_summary_pkey PRIMARY KEY (user_id, unit_id, curriculum_week, run_no),
+CONSTRAINT user_curriculum_week_run_summary_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id),
+CONSTRAINT user_curriculum_week_run_summary_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+);
 CREATE TABLE public.user_progress (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 user_id uuid NOT NULL,
 lesson_id bigint NOT NULL,
 grade_id bigint NOT NULL,
-week_no integer NOT NULL CHECK (week_no >= 1),
+curriculum_week integer NOT NULL CHECK (curriculum_week >= 1),
 declared_completed_at timestamp with time zone,
 progress_percentage integer NOT NULL DEFAULT 0 CHECK (progress_percentage >= 0 AND progress_percentage <= 100),
 success_rate numeric NOT NULL DEFAULT 0.00 CHECK (success_rate >= 0.00 AND success_rate <= 100.00),
@@ -318,31 +373,12 @@ CREATE TABLE public.user_weekly_question_progress (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 user_id uuid NOT NULL,
 unit_id bigint NOT NULL,
-week_no integer NOT NULL,
 question_id bigint NOT NULL,
 is_correct boolean NOT NULL,
 answered_at timestamp with time zone NOT NULL DEFAULT now(),
+curriculum_week integer,
 CONSTRAINT user_weekly_question_progress_pkey PRIMARY KEY (id),
 CONSTRAINT user_weekly_question_progress_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
 CONSTRAINT user_weekly_question_progress_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id),
 CONSTRAINT user_weekly_question_progress_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id)
-);
-CREATE TABLE public.user_weekly_summary (
-user_id uuid NOT NULL,
-unit_id bigint NOT NULL,
-week_no integer NOT NULL,
-correct_count integer NOT NULL DEFAULT 0,
-wrong_count integer NOT NULL DEFAULT 0,
-last_updated_at timestamp with time zone DEFAULT now(),
-CONSTRAINT user_weekly_summary_pkey PRIMARY KEY (user_id, unit_id, week_no),
-CONSTRAINT user_weekly_summary_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
-CONSTRAINT user_weekly_summary_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
-);
-CREATE TABLE public.weekly_question_counts (
-id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-unit_id bigint NOT NULL,
-week_no integer NOT NULL,
-total_questions integer NOT NULL DEFAULT 0,
-CONSTRAINT weekly_question_counts_pkey PRIMARY KEY (id),
-CONSTRAINT weekly_question_counts_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
 );

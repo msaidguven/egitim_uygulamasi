@@ -25,7 +25,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
   final _topicService = TopicService();
 
   // Controllers
-  final _displayWeekController = TextEditingController();
+  final _curriculumWeekController = TextEditingController();
   final _jsonController = TextEditingController();
 
   // State
@@ -52,7 +52,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
 
   @override
   void dispose() {
-    _displayWeekController.dispose();
+    _curriculumWeekController.dispose();
     _jsonController.dispose();
     super.dispose();
   }
@@ -171,7 +171,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
       await Supabase.instance.client.rpc('bulk_create_questions', params: {
         'p_topic_id': _selectedTopic!.id,
         'p_usage_type': _usageType,
-        'p_display_week': _usageType == 'weekly' ? int.tryParse(_displayWeekController.text) : null,
+        'p_curriculum_week': _usageType == 'weekly' ? int.tryParse(_curriculumWeekController.text) : null,
         'p_questions_json': payloadForSupabase,
       });
 
@@ -201,7 +201,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
   }
   
   void _resetForm() {
-    _displayWeekController.clear();
+    _curriculumWeekController.clear();
     _jsonController.clear();
     
     setState(() {
@@ -401,14 +401,14 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
           validator: (val) => val == null ? 'Lütfen kullanım tipi seçin.' : null,
           decoration: const InputDecoration(
             labelText: 'Kullanım Tipi',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 12),
         // Week
         if (_usageType == 'weekly')
           TextFormField(
-            controller: _displayWeekController,
+            controller: _curriculumWeekController,
             decoration: const InputDecoration(
               labelText: 'Hafta Numarası',
               border: OutlineInputBorder(),

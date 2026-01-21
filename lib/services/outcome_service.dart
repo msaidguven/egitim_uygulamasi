@@ -18,11 +18,11 @@ class OutcomeService {
 
   /// Fetches outcomes for a specific topic and week using the RPC.
   Future<List<Outcome>> getOutcomesForTopicAndWeek(
-      int gradeId, int lessonId, int topicId, int weekNo) async {
+      int gradeId, int lessonId, int topicId, int curriculumWeek) async {
     final response = await _client.rpc('get_weekly_curriculum', params: {
       'p_grade_id': gradeId,
       'p_lesson_id': lessonId,
-      'p_week_no': weekNo,
+      'p_curriculum_week': curriculumWeek,
     });
 
     // The RPC returns a list of all curriculum items for the week.

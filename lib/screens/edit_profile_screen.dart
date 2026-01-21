@@ -33,8 +33,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   CityInfo? _selectedCity;
   DistrictInfo? _selectedDistrict;
   GradeInfo? _selectedGrade;
-  
-  String? _avatarUrl; // Avatar URL'sini state içinde tutalım
+
+  String? _avatarUrl;
   bool _isUploading = false;
 
   bool _isLoading = true;
@@ -70,9 +70,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (widget.profile.grade != null) {
         _selectedGrade = _grades.firstWhere((g) => g.id == widget.profile.grade!.id, orElse: () => _grades.first);
       }
-
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Veriler yüklenemedi: $e')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Veriler yüklenemedi: $e'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -101,11 +109,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _pickAndUploadAvatar() async {
     setState(() => _isUploading = true);
     final picker = ImagePicker();
-    final imageFile = await picker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 300,
-      maxHeight: 300,
-    );
+    final imageFile = await picker.pickImage(source: ImageSource.gallery, maxWidth: 300, maxHeight: 300);
 
     if (imageFile == null) {
       setState(() => _isUploading = false);
@@ -118,21 +122,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
       final filePath = 'public/${_supabase.auth.currentUser!.id}/$fileName';
 
-      // Resmi Supabase Storage'a yükle
       await _supabase.storage.from('avatars').upload(filePath, file);
-
-      // Yüklenen resmin public URL'ini al
       final imageUrl = _supabase.storage.from('avatars').getPublicUrl(filePath);
 
-      // URL'i state'e ve veritabanına kaydet
-      setState(() {
-        _avatarUrl = imageUrl;
-      });
-      
+      setState(() => _avatarUrl = imageUrl);
       await _profileViewModel.updateProfile({'avatar_url': imageUrl});
-
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Resim yüklenemedi: $e'), backgroundColor: Colors.red));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Resim yüklenemedi: $e'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
     } finally {
       if (mounted) setState(() => _isUploading = false);
     }
@@ -140,7 +145,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     setState(() => _isSaving = true);
 
     final updates = {
@@ -150,7 +155,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       'grade_id': _selectedGrade?.id,
       'city_id': _selectedCity?.id,
       'district_id': _selectedDistrict?.id,
-      // avatar_url burada güncellenmiyor çünkü o anlık olarak _pickAndUploadAvatar içinde yapılıyor.
     };
 
     final success = await _profileViewModel.updateProfile(updates);
@@ -160,109 +164,511 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         SnackBar(
           content: Text(success ? 'Profil başarıyla güncellendi!' : 'Bir hata oluştu.'),
           backgroundColor: success ? Colors.green : Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
-      if (success) {
-        Navigator.of(context).pop(true);
-      }
+      if (success) Navigator.of(context).pop(true);
     }
+
     setState(() => _isSaving = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        body: Center(
+          child: CircularProgressIndicator(
+            color: primaryColor,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
         title: const Text('Profili Düzenle'),
-        actions: [
-          if (_isSaving) const Padding(padding: EdgeInsets.all(16.0), child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white))),
-          if (!_isSaving) IconButton(icon: const Icon(Icons.save), onPressed: _saveProfile),
-        ],
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: isDarkMode ? Colors.white : Colors.black,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Form(
-              key: _formKey,
-              child: ListView(
-                padding: const EdgeInsets.all(16.0),
-                children: [
-                  Center(
-                    child: Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundImage: _avatarUrl != null ? NetworkImage(_avatarUrl!) : null,
-                          child: _avatarUrl == null ? const Icon(Icons.person, size: 60) : null,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // Avatar Section
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isDarkMode ? Colors.grey[800]! : Colors.grey[200]!,
+                          width: 4,
                         ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: CircleAvatar(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            child: IconButton(
-                              icon: _isUploading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Icon(Icons.camera_alt, color: Colors.white),
-                              onPressed: _isUploading ? null : _pickAndUploadAvatar,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: _avatarUrl != null
+                          ? ClipOval(
+                        child: Image.network(
+                          _avatarUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return _buildDefaultAvatar(isDarkMode);
+                          },
+                        ),
+                      )
+                          : _buildDefaultAvatar(isDarkMode),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: _isUploading ? null : _pickAndUploadAvatar,
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isDarkMode ? Colors.black : Colors.white,
+                              width: 3,
                             ),
                           ),
+                          child: _isUploading
+                              ? Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                              : Icon(
+                            Icons.camera_alt_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
-                      ],
+                      ),
                     ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                Text(
+                  'Profil Fotoğrafı',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                   ),
-                  const SizedBox(height: 24),
-                  TextFormField(controller: _fullNameController, decoration: const InputDecoration(labelText: 'İsim Soyisim')),
-                  const SizedBox(height: 16),
-                  TextFormField(
+                ),
+
+                const SizedBox(height: 32),
+
+                // Full Name
+                _buildTextField(
+                  label: 'İsim Soyisim',
+                  controller: _fullNameController,
+                  icon: Icons.person_outline_rounded,
+                  isDarkMode: isDarkMode,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Lütfen isim ve soyisim girin';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                // Username (read-only)
+                Container(
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? Colors.grey[900] : Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextFormField(
                     controller: _usernameController,
                     readOnly: true,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                    ),
                     decoration: InputDecoration(
-                      labelText: 'Kullanıcı Adı (Değiştirilemez)',
-                      fillColor: Colors.grey.shade200,
-                      filled: true,
-                      border: const OutlineInputBorder(),
+                      labelText: 'Kullanıcı Adı',
+                      labelStyle: TextStyle(
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 18,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.alternate_email_rounded,
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                      suffixIcon: Icon(
+                        Icons.lock_outline,
+                        color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                        size: 16,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(controller: _aboutController, decoration: const InputDecoration(labelText: 'Hakkında'), maxLines: 3),
-                  const SizedBox(height: 16),
-                  TextFormField(controller: _schoolController, decoration: const InputDecoration(labelText: 'Okul Adı')),
-                  const SizedBox(height: 24),
-                  
-                  if (widget.profile.role == 'student') ...[
-                    DropdownButtonFormField<GradeInfo>(
-                      value: _selectedGrade,
-                      items: _grades.map((grade) => DropdownMenuItem(value: grade, child: Text(grade.name))).toList(),
-                      onChanged: (value) => setState(() => _selectedGrade = value),
-                      decoration: const InputDecoration(labelText: 'Sınıf', border: OutlineInputBorder()),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
+                ),
 
-                  DropdownButtonFormField<CityInfo>(
+                const SizedBox(height: 20),
+
+                // About
+                Container(
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? Colors.grey[900] : Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextFormField(
+                    controller: _aboutController,
+                    maxLines: 3,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Hakkında (İsteğe Bağlı)',
+                      labelStyle: TextStyle(
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 18,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.edit_note_outlined,
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // School
+                _buildTextField(
+                  label: 'Okul Adı',
+                  controller: _schoolController,
+                  icon: Icons.school_outlined,
+                  isDarkMode: isDarkMode,
+                ),
+
+                const SizedBox(height: 24),
+
+                // Grade (for students only)
+                if (widget.profile.role == 'student') ...[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? Colors.grey[900] : Colors.grey[50],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: DropdownButtonFormField<GradeInfo>(
+                      value: _selectedGrade,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: isDarkMode ? Colors.white : Colors.black,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: 'Sınıf',
+                        labelStyle: TextStyle(
+                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                          fontSize: 14,
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 18,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.class_outlined,
+                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        ),
+                      ),
+                      dropdownColor: isDarkMode ? Colors.grey[900] : Colors.white,
+                      items: _grades.map((grade) {
+                        return DropdownMenuItem<GradeInfo>(
+                          value: grade,
+                          child: Text(grade.name),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedGrade = value;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+
+                // City
+                Container(
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? Colors.grey[900] : Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: DropdownButtonFormField<CityInfo>(
                     value: _selectedCity,
-                    items: _cities.map((city) => DropdownMenuItem(value: city, child: Text(city.name))).toList(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Şehir',
+                      labelStyle: TextStyle(
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 18,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.location_city_outlined,
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                    dropdownColor: isDarkMode ? Colors.grey[900] : Colors.white,
+                    items: _cities.map((city) {
+                      return DropdownMenuItem<CityInfo>(
+                        value: city,
+                        child: Text(city.name),
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       if (value != null) {
-                        setState(() => _selectedCity = value);
+                        setState(() {
+                          _selectedCity = value;
+                        });
                         _fetchDistricts(value.id);
                       }
                     },
-                    decoration: const InputDecoration(labelText: 'İl', border: OutlineInputBorder()),
-                  ),
-                  const SizedBox(height: 16),
-
-                  DropdownButtonFormField<DistrictInfo>(
-                    value: _selectedDistrict,
-                    hint: Text(_selectedCity == null ? 'Önce bir il seçin' : 'İlçe seçin'),
-                    items: _districts.map((district) => DropdownMenuItem(value: district, child: Text(district.name))).toList(),
-                    onChanged: _selectedCity == null ? null : (value) => setState(() => _selectedDistrict = value),
-                    decoration: const InputDecoration(
-                      labelText: 'İlçe',
-                      border: OutlineInputBorder(),
+                    icon: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                     ),
                   ),
-                ],
-              ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // District
+                Container(
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? Colors.grey[900] : Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: DropdownButtonFormField<DistrictInfo>(
+                    value: _selectedDistrict,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'İlçe',
+                      labelStyle: TextStyle(
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 18,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.place_outlined,
+                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                    dropdownColor: isDarkMode ? Colors.grey[900] : Colors.white,
+                    items: _districts.map((district) {
+                      return DropdownMenuItem<DistrictInfo>(
+                        value: district,
+                        child: Text(district.name),
+                      );
+                    }).toList(),
+                    onChanged: _selectedCity == null ? null : (value) {
+                      setState(() {
+                        _selectedDistrict = value;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                    hint: Text(
+                      'Şehir seçiniz',
+                      style: TextStyle(
+                        color: isDarkMode ? Colors.grey[500] : Colors.grey[500],
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 40),
+
+                // Save Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _isSaving ? null : _saveProfile,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      elevation: 0,
+                      shadowColor: Colors.transparent,
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    child: _isSaving
+                        ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                        : const Text('Profili Kaydet'),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Cancel Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      side: BorderSide(
+                        color: isDarkMode ? Colors.grey[800]! : Colors.grey[300]!,
+                        width: 1,
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    child: const Text('İptal'),
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+              ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    required IconData icon,
+    required bool isDarkMode,
+    String? Function(String?)? validator,
+    bool obscureText = false,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDarkMode ? Colors.grey[900] : Colors.grey[50],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextFormField(
+        controller: controller,
+        style: TextStyle(
+          fontSize: 16,
+          color: isDarkMode ? Colors.white : Colors.black,
+        ),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+            fontSize: 14,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 18,
+          ),
+          prefixIcon: Icon(
+            icon,
+            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+          ),
+        ),
+        obscureText: obscureText,
+        validator: validator,
+      ),
+    );
+  }
+
+  Widget _buildDefaultAvatar(bool isDarkMode) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+      ),
+      child: Icon(
+        Icons.person_rounded,
+        size: 60,
+        color: Theme.of(context).colorScheme.primary,
+      ),
     );
   }
 }

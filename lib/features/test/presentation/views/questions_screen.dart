@@ -11,6 +11,16 @@ import 'package:egitim_uygulamasi/features/test/presentation/views/components/te
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_bottom_nav.dart';
 import 'package:egitim_uygulamasi/features/test/data/repositories/test_repository_impl.dart';
 
+// ========== YENİ CALLBACK TANIMI ==========
+typedef AnswerSaveCallback = Future<void> Function({
+  required int sessionId,
+  required int questionId,
+  required dynamic userAnswer,
+  required bool isCorrect,
+  required int duration,
+});
+// ==========================================
+
 // ========== RIVERPOD PROVIDER TANIMLARI ==========
 
 final clientIdProvider = FutureProvider<String>((ref) async {
@@ -44,12 +54,14 @@ class QuestionsScreen extends ConsumerStatefulWidget {
   final int unitId;
   final TestMode testMode;
   final int? sessionId;
+  final AnswerSaveCallback? onSave; // YENİ PARAMETRE
 
   const QuestionsScreen({
     super.key,
     required this.unitId,
     this.testMode = TestMode.normal,
     this.sessionId,
+    this.onSave, // YENİ PARAMETRE
   });
 
   @override
@@ -88,6 +100,11 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
 
       final viewModel = ref.read(testViewModelProvider.notifier);
 
+      // YENİ: onSave callback'ini ViewModel'e iletiyoruz.
+      if (widget.onSave != null) {
+        viewModel.setExternalSaveCallback(widget.onSave!);
+      }
+
       final userId = ref.read(userIdProvider);
       final clientIdAsync = await ref.read(clientIdProvider.future);
 
@@ -101,7 +118,6 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
 
       if (widget.sessionId != null) {
         debugPrint('Mevcut teste devam ediliyor: sessionId=${widget.sessionId}');
-        // DÜZELTME: resumeTest'e eksik olan userId ve clientId parametrelerini gönder.
         await viewModel.resumeTest(
           sessionId: widget.sessionId!,
           userId: userId,
@@ -111,12 +127,15 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
         debugPrint('Yeni test başlatılıyor: unitId=${widget.unitId}, testMode=${widget.testMode}');
         _isStartingNewTest = true;
 
+        // curriculumWeek'i arguments'tan al
+        final curriculumWeek = ModalRoute.of(context)?.settings.arguments as int?;
+
         await viewModel.startNewTest(
           testMode: widget.testMode,
           unitId: widget.unitId,
           userId: userId,
           clientId: clientIdAsync,
-          weekNo: widget.testMode == TestMode.weekly ? _getWeekNumber() : null,
+          curriculumWeek: widget.testMode == TestMode.weekly ? curriculumWeek : null,
         );
         _isStartingNewTest = false;
       }
@@ -134,13 +153,6 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
         });
       }
     }
-  }
-
-  int _getWeekNumber() {
-    final now = DateTime.now();
-    final janFirst = DateTime(now.year, 1, 1);
-    final daysPassed = now.difference(janFirst).inDays;
-    return (daysPassed / 7).floor() + 1;
   }
 
   void _refreshTest() async {

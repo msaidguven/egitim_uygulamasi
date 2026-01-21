@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:egitim_uygulamasi/screens/unit_summary_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,30 +13,42 @@ class StatisticsScreen extends StatefulWidget {
   State<StatisticsScreen> createState() => _StatisticsScreenState();
 }
 
-class _StatisticsScreenState extends State<StatisticsScreen> {
-  late Future<Map<String, dynamic>> _allStatsFuture;
+class _StatisticsScreenState extends State<StatisticsScreen> with WidgetsBindingObserver {
+  late Future<Map<String, dynamic>> _periodStatsFuture;
   late Future<Map<String, dynamic>> _activityFuture;
   late Future<List<Map<String, dynamic>>> _timeSeriesFuture;
-  late Future<Map<String, dynamic>> _detailedStatsFuture;
 
   final Map<String, String> _periodLabels = {
-    'all': 'Tüm Zamanlar',
     'daily': 'Bugün',
     'weekly': 'Bu Hafta',
     'monthly': 'Bu Ay',
+    'academic_year': 'Akademik Yıl',
   };
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadData();
   }
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshData();
+    }
+  }
+
   void _loadData() {
-    _allStatsFuture = _fetchAllPeriodStats();
+    _periodStatsFuture = _fetchPeriodStats();
     _activityFuture = _fetchActivityAndStreak();
     _timeSeriesFuture = _fetchTimeSeriesData();
-    _detailedStatsFuture = _fetchDetailedStats();
   }
 
   Future<void> _refreshData() async {
@@ -44,28 +57,76 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     });
   }
 
-  Future<Map<String, dynamic>> _fetchAllPeriodStats() async {
+  Future<Map<String, dynamic>> _fetchPeriodStats() async {
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null) throw Exception("İstatistikleri görmek için giriş yapmalısınız.");
 
-    final result = {};
-    final periods = ['all', 'daily', 'weekly', 'monthly'];
+    final result = <String, dynamic>{};
 
-    for (final period in periods) {
-      try {
-        final response = await Supabase.instance.client.rpc(
-          'get_user_statistics_v3',
-          params: {'p_user_id': user.id, 'p_period': period},
-        );
-        result[period] = response;
-      } catch (e) {
-        result[period] = {'error': e.toString()};
+    try {
+      final response = await Supabase.instance.client
+          .from('user_time_based_stats')
+          .select()
+          .eq('user_id', user.id);
+
+      final timeBasedStats = response as List;
+      final latestStats = <String, dynamic>{};
+
+      for (final stat in timeBasedStats) {
+        final periodType = stat['period_type'] as String;
+        if (!latestStats.containsKey(periodType) ||
+            DateTime.parse(stat['period_date']).isAfter(DateTime.parse(latestStats[periodType]['period_date']))) {
+          latestStats[periodType] = stat;
+        }
+      }
+
+      latestStats.forEach((period, stats) {
+        final total = (stats['total_questions'] as num?)?.toInt() ?? 0;
+        final correct = (stats['correct_answers'] as num?)?.toInt() ?? 0;
+        final incorrect = (stats['wrong_answers'] as num?)?.toInt() ?? 0;
+        final successRate = total > 0 ? (correct * 100 / total) : 0.0;
+
+        result[period] = {
+          'general_stats': {
+            'total_questions': total,
+            'correct_answers': correct,
+            'incorrect_answers': incorrect,
+            'success_rate': successRate,
+          }
+        };
+      });
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('Error fetching period stats: $e');
+        print(stackTrace);
+      }
+      final periods = ['daily', 'weekly', 'monthly', 'academic_year'];
+      for (var period in periods) {
+        if (!result.containsKey(period)) {
+          result[period] = {'error': e.toString()};
+        }
       }
     }
+    
+    try {
+        final detailedStats = await Supabase.instance.client.rpc(
+          'get_detailed_statistics',
+          params: {'p_user_id': user.id},
+        );
+        result['details'] = detailedStats;
 
-    return Map<String, dynamic>.from(result);
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('Error fetching detailed stats: $e');
+        print(stackTrace);
+      }
+      result['details'] = {'error': e.toString()};
+    }
 
+
+    return result;
   }
+
 
   Future<Map<String, dynamic>> _fetchActivityAndStreak() async {
     final user = Supabase.instance.client.auth.currentUser;
@@ -77,7 +138,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         params: {'p_user_id': user.id},
       );
       return response as Map<String, dynamic>;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('Error fetching activity and streak: $e');
+        print(stackTrace);
+      }
       return {'current_streak': 0, 'activity_dates': []};
     }
   }
@@ -92,60 +157,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         params: {'p_user_id': user.id, 'p_days': 7},
       );
       return (response as List).cast<Map<String, dynamic>>();
-    } catch (e) {
-      // Fallback: Eğer fonksiyon yoksa boş liste döndür
-      return _generateMockTimeSeriesData();
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('Error fetching time series data: $e');
+        print(stackTrace);
+      }
+      return []; // Hata durumunda boş liste döndür.
     }
-  }
-
-  Future<Map<String, dynamic>> _fetchDetailedStats() async {
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user == null) return {};
-
-    try {
-      final response = await Supabase.instance.client.from('user_question_stats')
-          .select('''
-          *,
-          questions!inner (
-            *,
-            topics!inner (
-              *,
-              units!inner (
-                *,
-                lessons!inner (*)
-              )
-            )
-          )
-        ''')
-          .eq('user_id', user.id)
-          .order('last_answer_at', ascending: false);
-
-      return {'raw_data': response};
-    } catch (e) {
-      return {'error': e.toString()};
-    }
-  }
-
-  List<Map<String, dynamic>> _generateMockTimeSeriesData() {
-    final now = DateTime.now();
-    final List<Map<String, dynamic>> data = [];
-
-    for (int i = 6; i >= 0; i--) {
-      final date = now.subtract(Duration(days: i));
-      final random = Random();
-      final total = random.nextInt(20) + 5;
-      final correct = random.nextInt(total);
-      final rate = total > 0 ? (correct * 100 / total) : 0;
-
-      data.add({
-        'date': date.toIso8601String(),
-        'total_questions': total,
-        'correct_answers': correct,
-        'success_rate': rate,
-      });
-    }
-
-    return data;
   }
 
   @override
@@ -167,7 +185,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         onRefresh: _refreshData,
         color: Colors.blue,
         child: FutureBuilder(
-          future: Future.wait([_allStatsFuture, _activityFuture, _timeSeriesFuture]),
+          future: Future.wait([_periodStatsFuture, _activityFuture, _timeSeriesFuture]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return _buildLoadingState();
@@ -180,28 +198,23 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             final allStats = snapshot.data![0] as Map<String, dynamic>;
             final activityData = snapshot.data![1] as Map<String, dynamic>;
             final timeSeriesData = snapshot.data![2] as List<Map<String, dynamic>>;
+            final detailedStats = allStats['details'];
 
             return ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                // Üst Bilgi Kartları
                 _buildHeaderCards(activityData),
                 const SizedBox(height: 20),
 
-                // Zaman Serisi Grafiği
                 _buildTimeSeriesChart(timeSeriesData),
                 const SizedBox(height: 20),
 
-                // Periyot Özetleri
                 _buildPeriodsSummary(allStats),
                 const SizedBox(height: 20),
-
-                // Dersler Grafiği
-                _buildLessonsChart(allStats['all']),
-                const SizedBox(height: 20),
-
-                // Detaylı İstatistikler
-                _buildDetailedStats(allStats['all']),
+                
+                if (detailedStats != null && detailedStats is Map && !detailedStats.containsKey('error')) ...[
+                  _buildLessonsChart(detailedStats),
+                ]
               ],
             );
           },
@@ -306,11 +319,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   Widget _buildTimeSeriesChart(List<Map<String, dynamic>> timeSeriesData) {
-    if (timeSeriesData.isEmpty || timeSeriesData.every((d) => (d['total_questions'] as int) == 0)) {
+    if (timeSeriesData.isEmpty || timeSeriesData.every((d) => (d['total_questions'] as int? ?? 0) == 0)) {
       return _buildPlaceholderChart('Son 7 güne ait veri bulunamadı');
     }
 
-    final chartData = timeSeriesData.where((d) => (d['total_questions'] as int) > 0).toList();
+    final chartData = timeSeriesData;
+    final maxQuestions = chartData.map((d) => d['total_questions'] as int? ?? 0).reduce(max);
+    final yAxisMax = maxQuestions == 0 ? 10.0 : (maxQuestions * 1.2); // Grafiğin üstünde boşluk bırak
+
+    final activeDays = chartData.where((d) => (d['total_questions'] as int? ?? 0) > 0).toList();
+    final averageQuestions = activeDays.isEmpty
+        ? 0.0
+        : activeDays.map((d) => d['total_questions'] as int).reduce((a, b) => a + b) / activeDays.length;
 
     return Container(
       decoration: BoxDecoration(
@@ -329,7 +349,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Son 7 Gün Performans Trendi',
+            'Son 7 Gün Soru Çözüm Trendi', // Başlık güncellendi
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -349,7 +369,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
-                  horizontalInterval: 25,
+                  horizontalInterval: yAxisMax / 4, // Y eksenini 4 aralığa böl
                   getDrawingHorizontalLine: (value) {
                     return FlLine(
                       color: Colors.grey.shade200,
@@ -367,16 +387,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       getTitlesWidget: (value, meta) {
                         if (value.toInt() < chartData.length) {
                           final date = DateTime.parse(chartData[value.toInt()]['date']);
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              DateFormat('dd/MM').format(date),
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.grey.shade600,
+                          if (value.toInt() % 2 == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                DateFormat('dd/MM').format(date),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.grey.shade600,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
                         }
                         return const Text('');
                       },
@@ -385,10 +407,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      interval: 25,
+                      interval: yAxisMax / 4, // Y eksenini 4 aralığa böl
                       getTitlesWidget: (value, meta) {
                         return Text(
-                          '${value.toInt()}%',
+                          value.toInt().toString(), // Yüzde işareti kaldırıldı
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.grey.shade600,
@@ -407,17 +429,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 minX: 0,
                 maxX: (chartData.length - 1).toDouble(),
                 minY: 0,
-                maxY: 100,
+                maxY: yAxisMax, // Dinamik Y ekseni
                 lineBarsData: [
                   LineChartBarData(
                     spots: chartData.asMap().entries.map((entry) {
                       final index = entry.key;
                       final data = entry.value;
-                      final rate = (data['success_rate'] as num).toDouble();
-                      return FlSpot(index.toDouble(), rate);
+                      final count = (data['total_questions'] as int?)?.toDouble() ?? 0.0; // Değer güncellendi
+                      return FlSpot(index.toDouble(), count);
                     }).toList(),
                     isCurved: true,
-                    color: Colors.blue.shade600,
+                    color: Colors.green.shade600, // Renk değiştirildi
                     barWidth: 4,
                     isStrokeCapRound: true,
                     dotData: const FlDotData(show: true),
@@ -425,8 +447,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       show: true,
                       gradient: LinearGradient(
                         colors: [
-                          Colors.blue.shade600.withOpacity(0.3),
-                          Colors.blue.shade600.withOpacity(0.1),
+                          Colors.green.shade600.withOpacity(0.3),
+                          Colors.green.shade600.withOpacity(0.1),
                         ],
                       ),
                     ),
@@ -439,12 +461,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildChartSummaryItem('Ortalama',
-                  '${(chartData.map((d) => d['success_rate'] as num).reduce((a, b) => a + b) / chartData.length).toStringAsFixed(1)}%'),
-              _buildChartSummaryItem('En Yüksek',
-                  '${chartData.map((d) => d['success_rate'] as num).reduce(max).toStringAsFixed(1)}%'),
+              _buildChartSummaryItem('Ortalama Soru', averageQuestions.toStringAsFixed(1)),
+              _buildChartSummaryItem('En Yüksek Soru', maxQuestions.toString()),
               _buildChartSummaryItem('Toplam Soru',
-                  '${chartData.fold<int>(0, (sum, d) => sum + (d['total_questions'] as int))}'),
+                  '${chartData.fold<int>(0, (sum, d) => sum + (d['total_questions'] as int? ?? 0))}'),
             ],
           ),
         ],
@@ -476,7 +496,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   Widget _buildPeriodsSummary(Map<String, dynamic> allStats) {
-    final periods = ['all', 'daily', 'weekly', 'monthly'];
+    final periods = ['daily', 'weekly', 'monthly', 'academic_year'];
 
     return Container(
       decoration: BoxDecoration(
@@ -517,11 +537,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               final period = periods[index];
               final stats = allStats[period];
 
-              if (stats is Map && stats.containsKey('error')) {
+              if (stats == null || (stats is Map && stats.containsKey('error'))) {
                 return _buildPeriodCard(period, 0, 0, 0, 0);
               }
 
-              final generalStats = stats['general_stats'] as Map<String, dynamic>;
+              final generalStats = stats['general_stats'] as Map<String, dynamic>?;
+              if (generalStats == null) {
+                return _buildPeriodCard(period, 0, 0, 0, 0);
+              }
+
               final successRate = (generalStats['success_rate'] as num?)?.toDouble() ?? 0;
               final total = (generalStats['total_questions'] as num?)?.toInt() ?? 0;
               final correct = (generalStats['correct_answers'] as num?)?.toInt() ?? 0;
@@ -537,10 +561,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   Widget _buildPeriodCard(String period, double successRate, int total, int correct, int incorrect) {
     final periodColors = {
-      'all': [Colors.purple.shade600, Colors.purple.shade300],
       'daily': [Colors.blue.shade600, Colors.blue.shade300],
       'weekly': [Colors.green.shade600, Colors.green.shade300],
       'monthly': [Colors.orange.shade600, Colors.orange.shade300],
+      'academic_year': [Colors.teal.shade600, Colors.teal.shade300],
     };
 
     final colors = periodColors[period] ?? [Colors.grey.shade600, Colors.grey.shade300];
@@ -640,17 +664,16 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Widget _buildLessonsChart(dynamic allData) {
-    if (allData is! Map || !allData.containsKey('lesson_stats')) {
+  Widget _buildLessonsChart(dynamic detailedData) {
+    if (detailedData is! Map || !detailedData.containsKey('lesson_stats')) {
       return _buildPlaceholderChart('Ders istatistikleri yüklenemedi');
     }
 
-    final lessonStats = allData['lesson_stats'] as List;
+    final lessonStats = detailedData['lesson_stats'] as List;
     if (lessonStats.isEmpty) {
       return _buildPlaceholderChart('Henüz ders istatistiği yok');
     }
 
-    // En iyi 5 ders
     final displayLessons = lessonStats.length > 5
         ? lessonStats.sublist(0, 5)
         : lessonStats;
@@ -689,7 +712,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 barTouchData: BarTouchData(
                   enabled: true,
                   touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (touchedSpot) => Colors.blue.shade800,
+                    tooltipPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Daha küçük padding
+                    tooltipRoundedRadius: 8, // Yuvarlatılmış köşeler
+                    getTooltipColor: (touchedSpot) => Colors.grey.withOpacity(0.8),
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      final value = rod.toY.round();
+                      return BarTooltipItem(
+                        '${value}%',
+                        const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 titlesData: FlTitlesData(
@@ -753,8 +788,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 barGroups: displayLessons.asMap().entries.map((entry) {
                   final index = entry.key;
                   final lesson = entry.value as Map<String, dynamic>;
-                  final rate = (lesson['success_rate'] as num).toDouble();
-                  final total = lesson['total_questions'] as int;
+                  final rate = (lesson['success_rate'] as num).round().toDouble(); // Değer yuvarlandı
 
                   return BarChartGroupData(
                     x: index,
@@ -775,220 +809,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   );
                 }).toList(),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailedStats(dynamic allData) {
-    if (allData is! Map) return const SizedBox();
-
-    final generalStats = allData['general_stats'] as Map<String, dynamic>? ?? {};
-    final weakestTopics = allData['weakest_topics'] as List? ?? [];
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Detaylı İstatistikler',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          if (weakestTopics.isNotEmpty) ...[
-            _buildSectionTitle('Geliştirilmesi Gereken Konular'),
-            const SizedBox(height: 12),
-            ...weakestTopics.map((topic) => _buildWeakTopicItem(topic as Map<String, dynamic>)).toList(),
-            const SizedBox(height: 20),
-          ],
-
-          _buildSectionTitle('Genel Özet'),
-          const SizedBox(height: 12),
-          _buildGeneralStatsGrid(generalStats),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Row(
-      children: [
-        Container(
-          width: 4,
-          height: 20,
-          decoration: BoxDecoration(
-            color: Colors.blue.shade600,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildWeakTopicItem(Map<String, dynamic> topic) {
-    final rate = (topic['success_rate'] as num).toDouble();
-    final unitId = topic['unit_id'] as int;
-    final topicName = topic['topic_name'] as String;
-    final totalQuestions = topic['total_questions'] as int;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UnitSummaryScreen(unitId: unitId),
-            ),
-          );
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: rate < 40 ? Colors.red.shade50 : Colors.orange.shade50,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: rate < 40 ? Colors.red.shade100 : Colors.orange.shade100,
-              width: 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                rate < 40 ? Icons.warning_amber_rounded : Icons.tips_and_updates_rounded,
-                color: rate < 40 ? Colors.red : Colors.orange,
-                size: 20,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  topicName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '%${rate.toStringAsFixed(1)}',
-                    style: TextStyle(
-                      color: _getSuccessColor(rate),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                  Text(
-                    '$totalQuestions soru',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGeneralStatsGrid(Map<String, dynamic> generalStats) {
-    final total = (generalStats['total_questions'] as num?)?.toInt() ?? 0;
-    final correct = (generalStats['correct_answers'] as num?)?.toInt() ?? 0;
-    final incorrect = (generalStats['incorrect_answers'] as num?)?.toInt() ?? 0;
-    final rate = (generalStats['success_rate'] as num?)?.toDouble() ?? 0;
-
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 1.7,
-      children: [
-        _buildStatTile('Toplam Soru', '$total', Icons.assignment, Colors.blue),
-        _buildStatTile('Doğru Cevaplar', '$correct', Icons.check_circle, Colors.green),
-        _buildStatTile('Yanlış Cevaplar', '$incorrect', Icons.cancel, Colors.red),
-        _buildStatTile('Başarı Oranı', '%${rate.toStringAsFixed(1)}', Icons.trending_up, _getSuccessColor(rate)),
-      ],
-    );
-  }
-
-  Widget _buildStatTile(String title, String value, IconData icon, Color color) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-                ),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ],
             ),
           ),
         ],

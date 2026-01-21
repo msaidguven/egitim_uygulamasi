@@ -1,142 +1,88 @@
-// lib/services/cache_service.dart
-
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Uygulamanın önbellek mekanizmasını yöneten servis.
 class CacheService {
-  static const _dashboardCacheKey = 'dashboard_cache';
-  static const _curriculumCachePrefix = 'curriculum_cache_';
-  static const _availableWeeksCachePrefix = 'available_weeks_cache_';
+  static const _cacheVersion = 2; // Önbellek sürümünü 2'ye yükselt
+  static const _cacheVersionKey = 'cache_version';
+  static const _availableWeeksPrefix = 'available_weeks_cache_';
+  static const _weeklyCurriculumPrefix = 'weekly_curriculum_cache_';
 
-  // --- Dashboard Cache ---
+  SharedPreferences? _prefs;
 
-  Future<void> saveDashboardData({
-    required int weekNo,
-    required List<Map<String, dynamic>> agendaData,
-    required List<Map<String, dynamic>> nextStepsData,
+  Future<void> _init() async {
+    if (_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+      final storedVersion = _prefs!.getInt(_cacheVersionKey) ?? 0;
+      if (storedVersion < _cacheVersion) {
+        await clearAll(); // Sürüm eskiyse tüm önbelleği temizle
+        await _prefs!.setInt(_cacheVersionKey, _cacheVersion);
+      }
+    }
+  }
+
+  Future<void> clearAll() async {
+    _prefs ??= await SharedPreferences.getInstance();
+    final keys = _prefs!.getKeys();
+    for (String key in keys) {
+      if (key.startsWith(_availableWeeksPrefix) || key.startsWith(_weeklyCurriculumPrefix)) {
+        await _prefs!.remove(key);
+      }
+    }
+  }
+
+  Future<List<dynamic>?> getAvailableWeeks({required int gradeId, required int lessonId}) async {
+    await _init();
+    final key = '$_availableWeeksPrefix${gradeId}_$lessonId';
+    final cachedData = _prefs!.getString(key);
+    if (cachedData != null) {
+      print('[CacheService] Available weeks for $key loaded from cache.');
+      return jsonDecode(cachedData) as List<dynamic>;
+    }
+    return null;
+  }
+
+  Future<void> saveAvailableWeeks({required int gradeId, required int lessonId, required List<dynamic> weeks}) async {
+    await _init();
+    final key = '$_availableWeeksPrefix${gradeId}_$lessonId';
+    await _prefs!.setString(key, jsonEncode(weeks));
+    print('[CacheService] Available weeks for $key saved to cache.');
+  }
+
+  Future<Map<String, dynamic>?> getWeeklyCurriculumData({
+    required int curriculumWeek,
+    required int lessonId,
+    required int gradeId,
   }) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final dataToCache = {
-        'week_no': weekNo,
-        'timestamp': DateTime.now().toIso8601String(),
-        'agenda': agendaData,
-        'next_steps': nextStepsData,
-      };
-      final encodedData = jsonEncode(dataToCache);
-      await prefs.setString(_dashboardCacheKey, encodedData);
-      debugPrint('[CacheService] Dashboard data for week $weekNo saved successfully.');
-    } catch (e) {
-      debugPrint('[CacheService] Error saving dashboard data: $e');
+    await _init();
+    final key = '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_$curriculumWeek';
+    final cachedData = _prefs!.getString(key);
+    if (cachedData != null) {
+      print('[CacheService] Weekly curriculum data for $key loaded from cache.');
+      return jsonDecode(cachedData) as Map<String, dynamic>;
     }
+    return null;
   }
-
-  Future<Map<String, dynamic>?> getDashboardData() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final cachedString = prefs.getString(_dashboardCacheKey);
-      if (cachedString == null || cachedString.isEmpty) return null;
-      final decodedData = jsonDecode(cachedString) as Map<String, dynamic>;
-      debugPrint('[CacheService] Dashboard data for week ${decodedData['week_no']} loaded from cache.');
-      return decodedData;
-    } catch (e) {
-      debugPrint('[CacheService] Error loading dashboard data: $e');
-      return null;
-    }
-  }
-
-  // --- Weekly Curriculum Cache ---
 
   Future<void> saveWeeklyCurriculumData({
-    required int weekNo,
+    required int curriculumWeek,
     required int lessonId,
     required int gradeId,
     required Map<String, dynamic> data,
   }) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final key = '$_curriculumCachePrefix${gradeId}_${lessonId}_$weekNo';
-      final encodedData = jsonEncode(data);
-      await prefs.setString(key, encodedData);
-      debugPrint('[CacheService] Curriculum data for $key saved successfully.');
-    } catch (e) {
-      debugPrint('[CacheService] Error saving curriculum data: $e');
-    }
+    await _init();
+    final key = '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_$curriculumWeek';
+    await _prefs!.setString(key, jsonEncode(data));
+    print('[CacheService] Weekly curriculum data for $key saved to cache.');
   }
 
-  Future<Map<String, dynamic>?> getWeeklyCurriculumData({
-    required int weekNo,
+  Future<void> clearWeeklyCurriculumData({
+    required int curriculumWeek,
     required int lessonId,
     required int gradeId,
   }) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final key = '$_curriculumCachePrefix${gradeId}_${lessonId}_$weekNo';
-      final cachedString = prefs.getString(key);
-      if (cachedString == null || cachedString.isEmpty) return null;
-      final decodedData = jsonDecode(cachedString) as Map<String, dynamic>;
-      debugPrint('[CacheService] Curriculum data for $key loaded from cache.');
-      return decodedData;
-    } catch (e) {
-      debugPrint('[CacheService] Error loading curriculum data: $e');
-      return null;
-    }
-  }
-
-  // --- Available Weeks Cache ---
-
-  Future<void> saveAvailableWeeks({
-    required int gradeId,
-    required int lessonId,
-    required List<dynamic> weeks,
-  }) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final key = '$_availableWeeksCachePrefix${gradeId}_$lessonId';
-      final encodedData = jsonEncode(weeks);
-      await prefs.setString(key, encodedData);
-      debugPrint('[CacheService] Available weeks for $key saved successfully.');
-    } catch (e) {
-      debugPrint('[CacheService] Error saving available weeks: $e');
-    }
-  }
-
-  Future<List<dynamic>?> getAvailableWeeks({
-    required int gradeId,
-    required int lessonId,
-  }) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final key = '$_availableWeeksCachePrefix${gradeId}_$lessonId';
-      final cachedString = prefs.getString(key);
-      if (cachedString == null || cachedString.isEmpty) return null;
-      final decodedData = jsonDecode(cachedString) as List<dynamic>;
-      debugPrint('[CacheService] Available weeks for $key loaded from cache.');
-      return decodedData;
-    } catch (e) {
-      debugPrint('[CacheService] Error loading available weeks: $e');
-      return null;
-    }
-  }
-
-  // --- General ---
-
-  Future<void> clearAllCache() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final keys = prefs.getKeys();
-      for (String key in keys) {
-        if (key.startsWith(_dashboardCacheKey) ||
-            key.startsWith(_curriculumCachePrefix) ||
-            key.startsWith(_availableWeeksCachePrefix)) {
-          await prefs.remove(key);
-        }
-      }
-      debugPrint('[CacheService] All relevant cache cleared.');
-    } catch (e) {
-      debugPrint('[CacheService] Error clearing all cache: $e');
-    }
+    await _init();
+    final key = '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_$curriculumWeek';
+    await _prefs!.remove(key);
+    print('[CacheService] Cleared cache for key: $key');
   }
 }

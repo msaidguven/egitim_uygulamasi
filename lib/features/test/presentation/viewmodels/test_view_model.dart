@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/domain/repositories/test_repository.dart';
+import 'package:egitim_uygulamasi/models/question_blank_option.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:collection/collection.dart';
-import 'package:egitim_uygulamasi/models/question_blank_option.dart';
+import 'package:flutter/foundation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart'; // AnswerSaveCallback için import
 
 class TestViewModel extends ChangeNotifier {
   final TestRepository _repository;
@@ -25,6 +27,7 @@ class TestViewModel extends ChangeNotifier {
   int _unitId = 0;
   String? _userId;
   String? _clientId;
+  AnswerSaveCallback? _externalSaveCallback; // YENİ: Dışarıdan gelen kaydetme fonksiyonu
 
   // Getters
   TestQuestion? get currentTestQuestion => _currentTestQuestion;
@@ -41,12 +44,18 @@ class TestViewModel extends ChangeNotifier {
 
   TestViewModel(this._repository);
 
+  // YENİ: Dışarıdan gelen callback'i ayarlamak için metot
+  void setExternalSaveCallback(AnswerSaveCallback callback) {
+    _externalSaveCallback = callback;
+    log('TestViewModel: Harici kaydetme fonksiyonu ayarlandı.');
+  }
+
   // ========== TEST BAŞLATMA METODLARI ==========
 
   Future<void> startNewTest({
     required TestMode testMode,
     required int unitId,
-    int? weekNo,
+    int? curriculumWeek,
     required String? userId,
     required String clientId,
   }) async {
@@ -75,7 +84,7 @@ class TestViewModel extends ChangeNotifier {
       _sessionId = await _repository.startTestSession(
         testMode: testMode,
         unitId: unitId,
-        weekNo: weekNo,
+        curriculumWeek: curriculumWeek,
         clientId: clientId,
         userId: userId,
       );
@@ -163,7 +172,6 @@ class TestViewModel extends ChangeNotifier {
     }
   }
 
-  // DÜZELTME: _prefetchRestOfQuestions artık cevaplanmış soruları filtreliyor.
   Future<void> _prefetchRestOfQuestions() async {
     if (_sessionId == null || _isPrefetching) return;
 
@@ -172,7 +180,6 @@ class TestViewModel extends ChangeNotifier {
     try {
       log('TestViewModel._prefetchRestOfQuestions: Başlıyor...');
 
-      // 1. Oturumdaki tüm soruları ve cevaplanmış soru ID'lerini aynı anda çek.
       final results = await Future.wait([
         _repository.getAllSessionQuestions(_sessionId!, _userId),
         _repository.getAnsweredQuestionIds(_sessionId!),
@@ -184,7 +191,6 @@ class TestViewModel extends ChangeNotifier {
       _totalQuestions = allQuestions.length;
       log('TestViewModel._prefetchRestOfQuestions: Toplam $totalQuestions soru bulundu. ${answeredQuestionIds.length} tanesi cevaplanmış.');
 
-      // 2. Hem mevcut soruyu hem de daha önce cevaplanmış soruları filtrele.
       final currentQuestionId = _currentTestQuestion?.question.id;
       _questionQueue = allQuestions
           .where((q) =>
@@ -268,14 +274,20 @@ class TestViewModel extends ChangeNotifier {
           return true;
 
         case QuestionType.matching:
-          if (testQuestion.userAnswer is! Map<String, dynamic>) return false;
-          final userMatches = testQuestion.userAnswer as Map<String, dynamic>;
+          if (testQuestion.userAnswer is! Map) return false;
+          final userMatches = testQuestion.userAnswer as Map;
 
           if (question.matchingPairs == null) return false;
+          if (userMatches.length != question.matchingPairs!.length) return false;
 
-          for (final pair in question.matchingPairs!) {
-            final userRightText = userMatches[pair.left_text];
-            if (userRightText?.toString() != pair.right_text) {
+          for (final correctPair in question.matchingPairs!) {
+            final userMatchedPair = userMatches[correctPair.left_text];
+
+            if (userMatchedPair is! MatchingPair) {
+              return false;
+            }
+
+            if (userMatchedPair.right_text != correctPair.right_text) {
               return false;
             }
           }
@@ -290,13 +302,16 @@ class TestViewModel extends ChangeNotifier {
     }
   }
 
+  // GÜNCELLENDİ: Hem dahili hem de harici kaydetme fonksiyonlarını çağırır.
   Future<void> _saveAnswer(bool isCorrect, int duration) async {
     if (_sessionId == null || _currentTestQuestion == null || _userId == null || _clientId == null) {
-      log('TestViewModel._saveAnswer: Kaydetme işlemi iptal edildi. Eksik bilgi var. SessionId: $_sessionId, UserId: $_userId');
+      log('TestViewModel._saveAnswer: Kaydetme işlemi iptal edildi. Eksik bilgi var. SessionId: $_sessionId, UserId: $_userId, ClientId: $_clientId');
       return;
     }
 
     try {
+      // 1. Her zaman dahili (repository) kaydetme fonksiyonunu çağır (test_session_answers tablosuna kayıt).
+      log('TestViewModel._saveAnswer: Dahili (repository) kaydetme fonksiyonu kullanılıyor (test_session_answers).');
       await _repository.saveAnswer(
         sessionId: _sessionId!,
         questionId: _currentTestQuestion!.question.id,
@@ -306,10 +321,40 @@ class TestViewModel extends ChangeNotifier {
         isCorrect: isCorrect,
         durationSeconds: duration,
       );
+      log('TestViewModel._saveAnswer: test_session_answers tablosuna kayıt başarıyla yapıldı.');
 
-      log('TestViewModel._saveAnswer: Cevap kaydedildi - questionId=${_currentTestQuestion!.question.id}, isCorrect=$isCorrect, duration=$duration');
+      // 2. Eğer harici bir kaydetme fonksiyonu varsa, onu da çağır (user_curriculum_week_run_summary tablosuna güncelleme).
+      if (_externalSaveCallback != null) {
+        log('TestViewModel._saveAnswer: Harici kaydetme fonksiyonu da çağrılıyor (user_curriculum_week_run_summary).');
+        await _externalSaveCallback!(
+          sessionId: _sessionId!,
+          questionId: _currentTestQuestion!.question.id,
+          userAnswer: _currentTestQuestion!.userAnswer,
+          isCorrect: isCorrect,
+          duration: duration,
+        );
+        log('TestViewModel._saveAnswer: Harici kaydetme fonksiyonu başarıyla tamamlandı.');
+      }
+      
+      log('TestViewModel._saveAnswer: Tüm kaydetme işlemleri tamamlandı.');
     } catch (e, stackTrace) {
-      log('TestViewModel._saveAnswer ERROR: $e', error: e, stackTrace: stackTrace);
+      // Hata mesajını konsola daha belirgin bir şekilde yazdır.
+      final errorMessage = "Cevap kaydedilirken bir hata oluştu.";
+      log('$errorMessage\nDETAYLAR: $e', error: e, stackTrace: stackTrace);
+      
+      // Kullanıcının isteği üzerine konsola yazdırma
+      debugPrint("**************************************************");
+      debugPrint("HATA: CEVAP KAYDEDİLEMEDİ");
+      debugPrint("**************************************************");
+      debugPrint("Oturum ID: $_sessionId");
+      debugPrint("Soru ID: ${_currentTestQuestion?.question.id}");
+      debugPrint("Hata Detayı: $e");
+      if (e is PostgrestException) {
+        debugPrint("Postgrest Mesajı: ${e.message}");
+        debugPrint("Postgrest Detayları: ${e.details}");
+        debugPrint("Postgrest İpucu: ${e.hint}");
+      }
+      debugPrint("**************************************************");
     }
   }
 
@@ -411,6 +456,7 @@ class TestViewModel extends ChangeNotifier {
     _unitId = 0;
     _userId = null;
     _clientId = null;
+    _externalSaveCallback = null; // reset'te bunu da temizle
     notifyListeners();
   }
 }

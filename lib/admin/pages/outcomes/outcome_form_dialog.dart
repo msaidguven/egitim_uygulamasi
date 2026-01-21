@@ -29,7 +29,7 @@ class _SmartContentFormPageState extends State<SmartContentFormPage> {
   // Controllers
   final _outcomesController = TextEditingController();
   final _multitextContentController = TextEditingController();
-  final _displayWeekController = TextEditingController(text: '1');
+  final _curriculumWeekController = TextEditingController(text: '1');
   final _totalPartController = TextEditingController(text: '1');
   final _newUnitController = TextEditingController();
   final _newTopicController = TextEditingController();
@@ -56,7 +56,7 @@ class _SmartContentFormPageState extends State<SmartContentFormPage> {
   void dispose() {
     _outcomesController.dispose();
     _multitextContentController.dispose();
-    _displayWeekController.dispose();
+    _curriculumWeekController.dispose();
     _totalPartController.dispose();
     _newUnitController.dispose();
     _newTopicController.dispose();
@@ -145,7 +145,7 @@ class _SmartContentFormPageState extends State<SmartContentFormPage> {
 
     try {
       // --- 1. Prepare Data ---
-      final displayWeek = int.parse(_displayWeekController.text.trim());
+      final curriculumWeek = int.parse(_curriculumWeekController.text.trim());
 
       final unitSelection = _unitSelectionMode == 'existing'
           ? {'type': 'existing', 'unit_id': _selectedUnitId}
@@ -168,7 +168,7 @@ class _SmartContentFormPageState extends State<SmartContentFormPage> {
         'p_lesson_id': widget.lessonId,
         'p_unit_selection': unitSelection,
         'p_topic_selection': topicSelection,
-        'p_display_week': displayWeek,
+        'p_curriculum_week': curriculumWeek,
         'p_outcomes_text': outcomeDescriptions,
         'p_content_text': contentText,
       });
@@ -248,7 +248,7 @@ class _SmartContentFormPageState extends State<SmartContentFormPage> {
               
               const SizedBox(height: 24),
               _buildSectionHeader('3. Haftalık Plan'),
-              _buildTextField(_displayWeekController, 'Hafta Numarası', isNumeric: true),
+              _buildTextField(_curriculumWeekController, 'Hafta Numarası', isNumeric: true),
 
               const SizedBox(height: 24),
               _buildSectionHeader('4. Kazanımlar'),

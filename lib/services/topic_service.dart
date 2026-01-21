@@ -65,15 +65,15 @@ class TopicService {
 
   // --- Topic Content Methods ---
 
-  /// Fetches topic contents for a specific topic and week using the new display_week logic.
+  /// Fetches topic contents for a specific topic and week using the new curriculum_week logic.
   Future<List<TopicContent>> getTopicContentsForTopicAndWeek(
-      int topicId, int weekNo) async {
+      int topicId, int curriculumWeek) async {
     final response = await _client
         .from('topic_contents')
         .select(
-            'id, topic_id, title, content, order_no, topic_content_weeks!inner(display_week)')
+            'id, topic_id, title, content, order_no, topic_content_weeks!inner(curriculum_week)')
         .eq('topic_id', topicId)
-        .eq('topic_content_weeks.display_week', weekNo)
+        .eq('topic_content_weeks.curriculum_week', curriculumWeek)
         .order('order_no', ascending: true);
 
     return response.map((map) => TopicContent.fromJson(map)).toList();
@@ -100,10 +100,10 @@ class TopicService {
 
   /// Assigns a week to a topic content.
   Future<void> createTopicContentWeek(
-      int topicContentId, int displayWeek) async {
+      int topicContentId, int curriculumWeek) async {
     await _client.from('topic_content_weeks').insert({
       'topic_content_id': topicContentId,
-      'display_week': displayWeek,
+      'curriculum_week': curriculumWeek,
     });
   }
 

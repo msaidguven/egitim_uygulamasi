@@ -48,7 +48,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   // Text Editing Controllers
   final _newUnitTitleController = TextEditingController();
   final _newTopicTitleController = TextEditingController();
-  final _displayWeekController = TextEditingController();
+  final _curriculumWeekController = TextEditingController();
   final _topicContentTitleController = TextEditingController();
   final _rawTopicContentController = TextEditingController();
 
@@ -62,7 +62,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   void dispose() {
     _newUnitTitleController.dispose();
     _newTopicTitleController.dispose();
-    _displayWeekController.dispose();
+    _curriculumWeekController.dispose();
     _topicContentTitleController.dispose();
     _rawTopicContentController.dispose();
     super.dispose();
@@ -140,12 +140,12 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       final lessonId = _selectedLesson!.id;
       final newUnitTitle = _newUnitTitleController.text.trim();
       final newTopicTitle = _newTopicTitleController.text.trim();
-      final displayWeek = int.tryParse(_displayWeekController.text.trim());
+      final curriculumWeek = int.tryParse(_curriculumWeekController.text.trim());
       final contentText = _rawTopicContentController.text.trim();
       final contentTitle = _topicContentTitleController.text.trim();
 
       // --- Validate data ---
-      if (displayWeek == null || displayWeek < 1) {
+      if (curriculumWeek == null || curriculumWeek < 1) {
         throw Exception('Geçerli bir hafta numarası girin.');
       }
       if (contentText.isEmpty) {
@@ -221,10 +221,10 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
 
       if (decodedContent is Map<String, dynamic> && decodedContent.containsKey('questions')) {
         // It's a JSON for questions, process it
-        await _processAndInsertQuestions(decodedContent, topicId, displayWeek);
+        await _processAndInsertQuestions(decodedContent, topicId, curriculumWeek);
       } else {
         // It's regular HTML content
-        await _insertTopicContent(topicId, contentTitle, contentText, displayWeek);
+        await _insertTopicContent(topicId, contentTitle, contentText, curriculumWeek);
       }
 
 
@@ -250,7 +250,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     }
   }
 
-  Future<void> _insertTopicContent(int topicId, String title, String content, int displayWeek) async {
+  Future<void> _insertTopicContent(int topicId, String title, String content, int curriculumWeek) async {
       final supabase = Supabase.instance.client;
       final orderNoRes = await supabase
           .from('topic_contents')
@@ -276,11 +276,11 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
 
       await supabase.from('topic_content_weeks').insert({
         'topic_content_id': newContentId,
-        'display_week': displayWeek,
+        'curriculum_week': curriculumWeek,
       });
   }
 
-  Future<void> _processAndInsertQuestions(Map<String, dynamic> data, int topicId, int displayWeek) async {
+  Future<void> _processAndInsertQuestions(Map<String, dynamic> data, int topicId, int curriculumWeek) async {
     final supabase = Supabase.instance.client;
     final questions = data['questions'] as List<dynamic>;
 
@@ -329,7 +329,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         'question_id': questionId,
         'topic_id': topicId,
         'usage_type': 'weekly',
-        'display_week': displayWeek,
+        'curriculum_week': curriculumWeek,
       });
     }
   }
@@ -339,7 +339,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     _formKey.currentState?.reset();
     _newUnitTitleController.clear();
     _newTopicTitleController.clear();
-    _displayWeekController.clear();
+    _curriculumWeekController.clear();
     _topicContentTitleController.clear();
     _rawTopicContentController.clear();
 
@@ -555,7 +555,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
 
   Widget _buildWeekSelector() {
     return TextFormField(
-      controller: _displayWeekController,
+      controller: _curriculumWeekController,
       decoration: const InputDecoration(labelText: 'Hafta Numarası', border: OutlineInputBorder()),
       keyboardType: TextInputType.number,
       validator: (val) => (val == null || int.tryParse(val.trim()) == null || int.parse(val.trim()) < 1) ? 'Geçerli bir hafta girin.' : null,

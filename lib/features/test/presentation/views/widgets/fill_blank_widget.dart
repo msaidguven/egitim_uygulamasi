@@ -16,6 +16,8 @@ class FillBlankWidget extends StatefulWidget {
 class _FillBlankWidgetState extends State<FillBlankWidget> {
   late Map<int, QuestionBlankOption?> _droppedAnswers;
   late List<QuestionBlankOption> _availableOptions;
+  int? _draggingBlankIndex;
+  QuestionBlankOption? _draggingBackOption;
 
   @override
   void initState() {
@@ -51,6 +53,31 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
     });
   }
 
+  void _startDragBack(int blankIndex) {
+    if (widget.testQuestion.isChecked) return;
+    setState(() {
+      _draggingBlankIndex = blankIndex;
+      _draggingBackOption = _droppedAnswers[blankIndex];
+    });
+  }
+
+  void _endDragBack(DraggableDetails details) {
+    if (_draggingBackOption != null && _draggingBlankIndex != null) {
+      _removeFromBlank(_draggingBlankIndex!);
+    }
+    setState(() {
+      _draggingBlankIndex = null;
+      _draggingBackOption = null;
+    });
+  }
+
+  void _cancelDragBack() {
+    setState(() {
+      _draggingBlankIndex = null;
+      _draggingBackOption = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final question = widget.testQuestion.question;
@@ -80,46 +107,80 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
           bgColor = Theme.of(context).primaryColor.withOpacity(0.1);
         }
 
+        // Sürüklenen boşluk için şeffaf görünüm
+        final isDraggingBack = _draggingBlankIndex == blankIndex;
+        final opacity = isDraggingBack ? 0.5 : 1.0;
+
         questionWidgets.add(
           DragTarget<QuestionBlankOption>(
             builder: (context, candidateData, rejectedData) {
-              return GestureDetector(
-                onTap: droppedOption != null ? () => _removeFromBlank(blankIndex) : null,
-                child: Container(
-                  width: 150,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  margin: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-                  decoration: BoxDecoration(
-                    color: bgColor,
-                    border: Border.all(
-                      color: borderColor,
-                      width: 2.5,
+              return droppedOption != null
+                  ? Draggable<QuestionBlankOption>(
+                data: droppedOption,
+                onDragStarted: () => _startDragBack(blankIndex),
+                onDragEnd: _endDragBack,
+                onDraggableCanceled: (velocity, offset) => _cancelDragBack(),
+                feedback: Material(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.red.shade400, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 3,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
                     child: Text(
-                      droppedOption?.optionText ?? '...',
-                      style: TextStyle(
+                      droppedOption.optionText,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: droppedOption != null
-                            ? Theme.of(context).primaryColor
-                            : Colors.grey.shade600,
+                        color: Colors.red,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
+                childWhenDragging: Opacity(
+                  opacity: 0.3,
+                  child: _buildBlankContainer(
+                    context,
+                    borderColor: Colors.grey.shade400,
+                    bgColor: Colors.grey.shade200,
+                    text: droppedOption.optionText,
+                  ),
+                ),
+                child: GestureDetector(
+                  onTap: () => _removeFromBlank(blankIndex),
+                  child: Opacity(
+                    opacity: opacity,
+                    child: _buildBlankContainer(
+                      context,
+                      borderColor: borderColor,
+                      bgColor: bgColor,
+                      text: droppedOption.optionText,
+                      showRemoveIcon: true,
+                    ),
+                  ),
+                ),
+              )
+                  : DragTarget<QuestionBlankOption>(
+                builder: (context, candidateData, rejectedData) {
+                  return GestureDetector(
+                    onTap: droppedOption != null ? () => _removeFromBlank(blankIndex) : null,
+                    child: _buildBlankContainer(
+                      context,
+                      borderColor: borderColor,
+                      bgColor: bgColor,
+                      text: '...',
+                    ),
+                  );
+                },
+                onAccept: (option) => _onDrop(blankIndex, option),
               );
             },
             onAccept: (option) => _onDrop(blankIndex, option),
@@ -156,12 +217,26 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                 Icon(Icons.info_outline, color: Colors.blue.shade700, size: 18),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    'Seçenekleri boşluklara sürükleyin. Yerleştirilen seçeneğe tıklayarak kaldırabilirsiniz.',
-                    style: TextStyle(
-                      color: Colors.blue.shade800,
-                      fontSize: 14,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Seçenekleri boşluklara sürükleyin.',
+                        style: TextStyle(
+                          color: Colors.blue.shade800,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Yerleştirilen seçeneğe tıklayarak veya tutup sürükleyerek kaldırabilirsiniz.',
+                        style: TextStyle(
+                          color: Colors.blue.shade800,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -275,6 +350,72 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                   ),
                 ),
               ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBlankContainer(
+      BuildContext context, {
+        required Color borderColor,
+        required Color bgColor,
+        required String text,
+        bool showRemoveIcon = false,
+      }) {
+    return Container(
+      width: 150,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+      decoration: BoxDecoration(
+        color: bgColor,
+        border: Border.all(
+          color: borderColor,
+          width: 2.5,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 3,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (showRemoveIcon && !widget.testQuestion.isChecked)
+            Icon(
+              Icons.drag_handle,
+              size: 16,
+              color: Theme.of(context).primaryColor.withOpacity(0.7),
+            ),
+          if (showRemoveIcon && !widget.testQuestion.isChecked)
+            const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: text != '...'
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey.shade600,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (showRemoveIcon && !widget.testQuestion.isChecked)
+            const SizedBox(width: 6),
+          if (showRemoveIcon && !widget.testQuestion.isChecked)
+            Icon(
+              Icons.touch_app,
+              size: 14,
+              color: Theme.of(context).primaryColor.withOpacity(0.7),
             ),
         ],
       ),

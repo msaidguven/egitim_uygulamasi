@@ -7,7 +7,7 @@ abstract class TestRepository {
   Future<int> startTestSession({
     required TestMode testMode,
     required int unitId,
-    int? weekNo,
+    int? curriculumWeek,
     String? clientId,
     String? userId,
   });

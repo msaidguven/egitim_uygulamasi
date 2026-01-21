@@ -1,4 +1,4 @@
-import 'package:egitim_uygulamasi/screens/questions_screen.dart';
+import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

@@ -17,6 +17,8 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
   late List<String> leftTexts;
   late List<MatchingPair> shuffledRightPairs;
   late Map<String, MatchingPair?> userMatches;
+  String? _draggingLeftText;
+  MatchingPair? _draggingBackPair;
 
   @override
   void initState() {
@@ -38,6 +40,31 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     });
   }
 
+  void _startDragBack(String leftText) {
+    if (widget.testQuestion.isChecked) return;
+    setState(() {
+      _draggingLeftText = leftText;
+      _draggingBackPair = userMatches[leftText];
+    });
+  }
+
+  void _endDragBack(DraggableDetails details) {
+    if (_draggingBackPair != null && _draggingLeftText != null) {
+      _removeMatch(_draggingLeftText!);
+    }
+    setState(() {
+      _draggingLeftText = null;
+      _draggingBackPair = null;
+    });
+  }
+
+  void _cancelDragBack() {
+    setState(() {
+      _draggingLeftText = null;
+      _draggingBackPair = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final isChecked = widget.testQuestion.isChecked;
@@ -48,141 +75,97 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.blue.shade200),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.info_outline, color: Colors.blue.shade700, size: 18),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Seçenekleri ifadelere sürükleyin. Yerleştirileni tıklayarak kaldırabilirsiniz.',
-                    style: TextStyle(
-                      color: Colors.blue.shade800,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: Text(
-              'Eşleştirilecek İfadeler:',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
-              ),
-            ),
-          ),
-
           ...List.generate(leftTexts.length, (index) {
             final leftText = leftTexts[index];
             final matchedPair = userMatches[leftText];
+            final isDraggingBack = _draggingLeftText == leftText;
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: DragTarget<MatchingPair>(
                 builder: (context, candidateData, rejectedData) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 28,
-                              height: 28,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '${index + 1}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                leftText,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black87,
-                                ),
-                              ),
+                  return matchedPair != null
+                      ? Draggable<MatchingPair>(
+                    data: matchedPair,
+                    onDragStarted: () => _startDragBack(leftText),
+                    onDragEnd: _endDragBack,
+                    onDraggableCanceled: (velocity, offset) => _cancelDragBack(),
+                    feedback: Material(
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: screenWidth * 0.8,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade100,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.red.shade400, width: 2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      GestureDetector(
-                        onTap: matchedPair != null ? () => _removeMatch(leftText) : null,
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                          decoration: BoxDecoration(
-                            color: matchedPair != null
-                                ? Theme.of(context).primaryColor.withOpacity(0.1)
-                                : Colors.grey.shade100,
-                            border: Border.all(
-                              color: matchedPair != null
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.grey.shade400,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
+                        child: Text(
+                          matchedPair.right_text,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.red,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (matchedPair != null)
-                                Icon(
-                                  Icons.check_circle_outline,
-                                  color: Theme.of(context).primaryColor,
-                                  size: 20,
-                                ),
-                              if (matchedPair != null) const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  matchedPair?.right_text ?? 'Seçenek sürükleyin...',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: matchedPair != null
-                                        ? Theme.of(context).primaryColor
-                                        : Colors.grey.shade600,
-                                    fontSize: 15,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ],
+                    ),
+                    childWhenDragging: Opacity(
+                      opacity: 0.3,
+                      child: _buildMatchContainer(
+                        index: index,
+                        leftText: leftText,
+                        matchedPair: matchedPair,
+                        isDraggingBack: true,
+                        screenWidth: screenWidth,
+                      ),
+                    ),
+                    child: GestureDetector(
+                      onTap: () => _removeMatch(leftText),
+                      child: Opacity(
+                        opacity: isDraggingBack ? 0.5 : 1.0,
+                        child: _buildMatchContainer(
+                          index: index,
+                          leftText: leftText,
+                          matchedPair: matchedPair,
+                          screenWidth: screenWidth,
+                        ),
+                      ),
+                    ),
+                  )
+                      : DragTarget<MatchingPair>(
+                    builder: (context, candidateData, rejectedData) {
+                      return _buildMatchContainer(
+                        index: index,
+                        leftText: leftText,
+                        matchedPair: null,
+                        screenWidth: screenWidth,
+                      );
+                    },
+                    onAccept: (data) {
+                      if (isChecked) return;
+                      setState(() {
+                        final existingEntry = userMatches.entries
+                            .firstWhereOrNull((entry) => entry.value?.right_text == data.right_text);
+                        if (existingEntry != null) {
+                          userMatches.remove(existingEntry.key);
+                        }
+
+                        userMatches[leftText] = data;
+                        widget.onAnswered(Map<String, MatchingPair?>.from(userMatches));
+                      });
+                    },
                   );
                 },
                 onAccept: (data) {
@@ -358,6 +341,123 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildMatchContainer({
+    required int index,
+    required String leftText,
+    required MatchingPair? matchedPair,
+    required double screenWidth,
+    bool isDraggingBack = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Center(
+                  child: Text(
+                    '${index + 1}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  leftText,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: matchedPair != null
+                ? Theme.of(context).primaryColor.withOpacity(0.1)
+                : Colors.grey.shade100,
+            border: Border.all(
+              color: matchedPair != null
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey.shade400,
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (matchedPair != null && !widget.testQuestion.isChecked)
+                Icon(
+                  Icons.drag_handle,
+                  color: Theme.of(context).primaryColor.withOpacity(0.7),
+                  size: 18,
+                ),
+              if (matchedPair != null && !widget.testQuestion.isChecked)
+                const SizedBox(width: 8),
+
+              if (matchedPair != null && !isDraggingBack)
+                Icon(
+                  Icons.check_circle_outline,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
+              if (matchedPair != null && !isDraggingBack)
+                const SizedBox(width: 8),
+
+              Expanded(
+                child: Text(
+                  matchedPair?.right_text ?? 'Seçenek sürükleyin...',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: matchedPair != null
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey.shade600,
+                    fontSize: 15,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+
+              if (matchedPair != null && !widget.testQuestion.isChecked)
+                const SizedBox(width: 8),
+              if (matchedPair != null && !widget.testQuestion.isChecked)
+                Icon(
+                  Icons.touch_app,
+                  size: 16,
+                  color: Theme.of(context).primaryColor.withOpacity(0.7),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -8,7 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class QuestionService {
   final _client = Supabase.instance.client;
 
-  Future<List<Question>> getQuestionsForWeek(int topicId, int weekNo) async {
+  Future<List<Question>> getQuestionsForWeek(int topicId, int curriculumWeek) async {
     try {
       // Adım 1: Haftaya ait soru ID'lerini al.
       final usageResponse = await _client
@@ -16,7 +16,7 @@ class QuestionService {
           .select('question_id')
           .eq('topic_id', topicId)
           .eq('usage_type', 'weekly')
-          .eq('display_week', weekNo);
+          .eq('curriculum_week', curriculumWeek);
 
       if (usageResponse.isEmpty) {
         return [];

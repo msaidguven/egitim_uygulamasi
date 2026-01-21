@@ -1,11 +1,13 @@
 // lib/screens/home_screen.dart
 
 import 'dart:ui';
+import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:egitim_uygulamasi/models/profile_model.dart';
 import 'package:egitim_uygulamasi/screens/anasinifi/compare_page.dart';
 import 'package:egitim_uygulamasi/screens/anasinifi/number_composition_page.dart';
+import 'package:egitim_uygulamasi/screens/lessons_screen.dart';
 import 'package:egitim_uygulamasi/screens/outcomes_screen.dart';
-import 'package:egitim_uygulamasi/screens/statistics_screen.dart';
+import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
 import 'package:egitim_uygulamasi/widgets/lesson_card.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -16,13 +18,13 @@ enum NextStepsDisplayState {
   expanded,
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final Function(int) onNavigate;
   final Profile? profile;
   final Future<void> Function() onRefresh;
   final List<Map<String, dynamic>>? agendaData;
   final List<Map<String, dynamic>>? nextStepsData;
-  final int currentWeek;
+  final int currentCurriculumWeek;
   final NextStepsDisplayState nextStepsState;
   final VoidCallback onToggleNextSteps;
   final VoidCallback onExpandNextSteps;
@@ -37,7 +39,7 @@ class HomeScreen extends StatelessWidget {
     required this.onRefresh,
     this.agendaData,
     this.nextStepsData,
-    this.currentWeek = 0,
+    this.currentCurriculumWeek = 0,
     required this.nextStepsState,
     required this.onToggleNextSteps,
     required this.onExpandNextSteps,
@@ -45,6 +47,30 @@ class HomeScreen extends StatelessWidget {
     required this.onRoleChanged,
     this.currentRole,
   });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final GradeViewModel _gradeViewModel = GradeViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.profile == null) {
+      _gradeViewModel.addListener(() {
+        if (mounted) setState(() {});
+      });
+      _gradeViewModel.fetchGrades();
+    }
+  }
+
+  @override
+  void dispose() {
+    _gradeViewModel.dispose();
+    super.dispose();
+  }
 
   void _showGameSelectionDialog(BuildContext context) {
     showModalBottomSheet(
@@ -84,9 +110,9 @@ class HomeScreen extends StatelessWidget {
                 child: Text(
                   'Anasınıfı Oyunları',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
                 ),
               ),
               Expanded(
@@ -224,11 +250,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isStudent = currentRole == 'student';
-    final bool isAdmin = profile?.role == 'admin';
+    final bool isStudent = widget.currentRole == 'student';
+    final bool isAdmin = widget.profile?.role == 'admin';
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -241,7 +266,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         child: RefreshIndicator(
-          onRefresh: onRefresh,
+          onRefresh: widget.onRefresh,
           color: Theme.of(context).primaryColor,
           backgroundColor: Colors.white,
           child: CustomScrollView(
@@ -249,23 +274,11 @@ class HomeScreen extends StatelessWidget {
               parent: AlwaysScrollableScrollPhysics(),
             ),
             slivers: [
-              // Başlık Alanı
-              SliverAppBar(
-                expandedHeight: 300.0,
-                collapsedHeight: 100.0,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                pinned: false,
-                floating: false,
-                snap: false,
-                flexibleSpace: _buildModernHeader(context, isAdmin),
+              SliverToBoxAdapter(
+                child: _buildModernHeader(context, isAdmin),
               ),
-
-              // İçerik
-              if (profile == null)
-                _buildLoadingShimmer()
-              else if (isStudent && agendaData == null)
-                _buildLoadingShimmer()
+              if (widget.profile == null)
+                _buildGuestContent(context)
               else if (isStudent)
                 _buildStudentContent(context)
               else
@@ -278,146 +291,341 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildModernHeader(BuildContext context, bool isAdmin) {
-    final isLoggedIn = profile != null;
-    final avatarUrl = profile?.avatarUrl;
-    final fullName = profile?.fullName;
+    final isLoggedIn = widget.profile != null;
+    final avatarUrl = widget.profile?.avatarUrl;
+    final fullName = widget.profile?.fullName;
     final initials = fullName != null && fullName.isNotEmpty
         ? fullName.substring(0, 1).toUpperCase()
         : '?';
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final top = constraints.biggest.height;
-        return Stack(
-          children: [
-            // Arka plan
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).primaryColor,
-                    Theme.of(context).primaryColor.withOpacity(0.9),
-                    Theme.of(context).primaryColor.withOpacity(0.8),
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 12,
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor.withOpacity(0.95),
+            Theme.of(context).primaryColor.withOpacity(0.85),
+          ],
+        ),
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(32),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).primaryColor.withOpacity(0.3),
+            blurRadius: 25,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Üst bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isLoggedIn ? 'Hoş geldin 👋' : 'Merhaba!',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.95),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                    if (isLoggedIn) ...[
+                      const SizedBox(height: 4),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: Text(
+                          fullName ?? 'Kullanıcı',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontWeight: FontWeight.w800,
+                            height: 1.1,
+                            letterSpacing: -0.5,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          maxLines: 2,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(top < 150 ? 0 : 30),
-                ),
-              ),
+                if (isAdmin)
+                  _buildAdminProfileMenu(context, avatarUrl, initials)
+                else if (isLoggedIn)
+                  _buildUserAvatar(avatarUrl, initials)
+                else
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white.withOpacity(0.2),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.person_outline_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+              ],
             ),
+          ),
 
-            // Dekoratif elementler
-            Positioned(
-              top: -50,
-              right: -50,
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.05),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 30,
-              left: -100,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.03),
-                ),
-              ),
-            ),
+          const SizedBox(height: 28),
 
-            // İçerik
-            Positioned.fill(
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-                        // Üst bar
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  isLoggedIn ? 'Hoş geldin' : 'Merhaba',
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                                if (isLoggedIn)
-                                  Text(
-                                    fullName ?? 'Kullanıcı',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      height: 1.2,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            if (isAdmin)
-                              _buildAdminProfileMenu(context, avatarUrl, initials)
-                            else
-                              _buildUserAvatar(avatarUrl, initials),
+          // Hafta gösterge kartı
+          if (isLoggedIn)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.15),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFF6C5CE7),
+                            const Color(0xFFA29BFE),
                           ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        const SizedBox(height: 20),
-                        // İstatistik kartları
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.calendar_month_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Eğitim Takvimi',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${widget.currentCurriculumWeek}. Hafta',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
                             children: [
-                              _buildStatCard(
-                                icon: Icons.calendar_today_rounded,
-                                value: '$currentWeek',
-                                label: 'Hafta',
-                                color: Colors.white,
-                                bgColor: Colors.white.withOpacity(0.2),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.menu_book_rounded,
+                                      color: Colors.white,
+                                      size: 14,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${widget.agendaData?.length ?? 0} ders',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const SizedBox(width: 12),
-                              _buildStatCard(
-                                icon: Icons.menu_book_rounded,
-                                value: '${agendaData?.length ?? 0}',
-                                label: 'Ders',
-                                color: const Color(0xFF00B894),
-                                bgColor: const Color(0xFF00B894).withOpacity(0.2),
-                              ),
-                              const SizedBox(width: 12),
-                              _buildStatCard(
-                                icon: Icons.school_rounded,
-                                value: profile?.grade?.name ?? '-',
-                                label: 'Sınıf',
-                                color: const Color(0xFFFD79A8),
-                                bgColor: const Color(0xFFFD79A8).withOpacity(0.2),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.school_rounded,
+                                      color: Colors.white,
+                                      size: 14,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      widget.profile?.grade?.name ?? '-',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.15),
                   ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Eğitime Başlayın',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Giriş yaparak kişisel öğrenme yolculuğunuza başlayın',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 14,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.login_rounded,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        );
-      },
+          const SizedBox(height: 24),
+          if (isLoggedIn)
+            Padding(
+              padding: const EdgeInsets.only(left: 24.0, bottom: 24),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildQuickStat(
+                      context: context,
+                      icon: Icons.trending_up_rounded,
+                      value: '${_calculateAverageSuccess().toStringAsFixed(0)}%',
+                      label: 'Ortalama Başarı',
+                      color: const Color(0xFF00B894),
+                    ),
+                    const SizedBox(width: 12),
+                    _buildQuickStat(
+                      context: context,
+                      icon: Icons.access_time_filled_rounded,
+                      value: '${_calculateTotalProgress().toStringAsFixed(0)}%',
+                      label: 'Tamamlanma',
+                      color: const Color(0xFF6C5CE7),
+                    ),
+                    const SizedBox(width: 12),
+                    _buildQuickStat(
+                      context: context,
+                      icon: Icons.emoji_events_rounded,
+                      value: '${_calculateCompletedLessons()}',
+                      label: 'Tamamlanan Ders',
+                      color: const Color(0xFFFD79A8),
+                    ),
+                    const SizedBox(width: 24), // Sağdan boşluk için
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -433,13 +641,13 @@ class HomeScreen extends StatelessWidget {
         if (value == 'show_games') {
           _showGameSelectionDialog(context);
         } else {
-          onRoleChanged(value);
+          widget.onRoleChanged(value);
         }
       },
       itemBuilder: (context) {
         return <PopupMenuEntry<String?>>[
           ...roles.map((roleData) {
-            final isSelected = (impersonatedRole ?? 'admin') == roleData['role'];
+            final isSelected = (widget.impersonatedRole ?? 'admin') == roleData['role'];
             return PopupMenuItem<String?>(
               value: roleData['role'],
               child: Row(
@@ -478,82 +686,131 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildUserAvatar(String? avatarUrl, String initials) {
     return Container(
-      width: 50,
-      height: 50,
+      width: 56,
+      height: 56,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(16),
         color: Colors.white.withOpacity(0.2),
-        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.4),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: avatarUrl != null && avatarUrl.isNotEmpty
           ? ClipRRect(
-        borderRadius: BorderRadius.circular(13),
-        child: Image.network(
-          avatarUrl,
-          fit: BoxFit.cover,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(
+              borderRadius: BorderRadius.circular(14),
+              child: Image.network(
+                avatarUrl,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.3),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation(Colors.white),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Center(
+                    child: Text(
+                      initials,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          : Center(
               child: Text(
                 initials,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-            );
-          },
-        ),
-      )
-          : Center(
-        child: Text(
-          initials,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+            ),
     );
   }
 
-  Widget _buildStatCard({
+  Widget _buildQuickStat({
+    required BuildContext context,
     required IconData icon,
     required String value,
     required String label,
     required Color color,
-    required Color bgColor,
   }) {
     return Container(
-      width: 100,
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        color: Colors.white.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+        ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: color, size: 28),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 20,
+              ),
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
-              fontSize: 12,
-            ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.8),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -571,7 +828,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               children: List.generate(
                 3,
-                    (index) => Container(
+                (index) => Container(
                   height: 120,
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
@@ -587,14 +844,58 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildGuestContent(BuildContext context) {
+    if (_gradeViewModel.isLoading) {
+      return _buildLoadingShimmer();
+    }
+
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate([
+          _buildSectionHeader(
+            context,
+            title: 'Mevcut Sınıflar',
+            subtitle: 'Uygulamada sunulan tüm sınıflar',
+            icon: Icons.school_rounded,
+            iconColor: Theme.of(context).primaryColor,
+          ),
+          const SizedBox(height: 16),
+          if (_gradeViewModel.grades.isEmpty)
+            _buildEmptyState(context)
+          else
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 1.0,
+              ),
+              itemCount: _gradeViewModel.grades.length,
+              itemBuilder: (context, index) {
+                final grade = _gradeViewModel.grades[index];
+                final color = _getGradientColor(index);
+                return _buildGradeCard(grade, color, index);
+              },
+            ),
+        ]),
+      ),
+    );
+  }
+
   Widget _buildStudentContent(BuildContext context) {
-    final hasNextSteps = nextStepsData != null && nextStepsData!.isNotEmpty;
+    if (widget.agendaData == null) {
+      return _buildLoadingShimmer();
+    }
+
+    final hasNextSteps = widget.nextStepsData != null && widget.nextStepsData!.isNotEmpty;
 
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
       sliver: SliverList(
         delegate: SliverChildListDelegate([
-          // Bu Hafta Bölümü
           _buildSectionHeader(
             context,
             title: 'Bu Haftanın Dersleri',
@@ -603,9 +904,7 @@ class HomeScreen extends StatelessWidget {
             iconColor: const Color(0xFF6C5CE7),
           ),
           const SizedBox(height: 16),
-          _buildDataView(context, agendaData, _buildAgendaList),
-
-          // Geçmiş Haftalar Bölümü
+          _buildDataView(context, widget.agendaData, _buildAgendaList),
           if (hasNextSteps) ...[
             const SizedBox(height: 32),
             _buildSectionHeader(
@@ -615,9 +914,9 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.history_rounded,
               iconColor: const Color(0xFF00B894),
               trailing: IconButton(
-                onPressed: onToggleNextSteps,
+                onPressed: widget.onToggleNextSteps,
                 icon: Icon(
-                  nextStepsState == NextStepsDisplayState.expanded
+                  widget.nextStepsState == NextStepsDisplayState.expanded
                       ? Icons.expand_less_rounded
                       : Icons.expand_more_rounded,
                   color: const Color(0xFF00B894),
@@ -625,17 +924,16 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            if (nextStepsState != NextStepsDisplayState.hidden)
+            if (widget.nextStepsState != NextStepsDisplayState.hidden)
               _buildDataView(
                 context,
-                nextStepsData,
-                    (ctx, data) {
-                  final displayData = nextStepsState == NextStepsDisplayState.expanded
+                widget.nextStepsData,
+                (ctx, data) {
+                  final displayData = widget.nextStepsState == NextStepsDisplayState.expanded
                       ? data
                       : data.take(3).toList();
                   final bool showMoreButton =
-                      nextStepsState == NextStepsDisplayState.collapsed &&
-                          data.length > 3;
+                      widget.nextStepsState == NextStepsDisplayState.collapsed && data.length > 3;
                   return _buildNextStepsList(
                     ctx,
                     displayData,
@@ -645,9 +943,7 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
           ],
-
-          // Motivasyon Mesajı
-          if (agendaData?.isEmpty ?? false) ...[
+          if (widget.agendaData?.isEmpty ?? false) ...[
             const SizedBox(height: 40),
             _buildMotivationCard(context),
           ],
@@ -661,7 +957,6 @@ class HomeScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
       sliver: SliverList(
         delegate: SliverChildListDelegate([
-          // Sınıflar Bölümü
           _buildSectionHeader(
             context,
             title: 'Sınıflarım',
@@ -695,13 +990,13 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildSectionHeader(
-      BuildContext context, {
-        required String title,
-        required String subtitle,
-        required IconData icon,
-        required Color iconColor,
-        Widget? trailing,
-      }) {
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color iconColor,
+    Widget? trailing,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -881,10 +1176,10 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildDataView(
-      BuildContext context,
-      List<Map<String, dynamic>>? data,
-      Widget Function(BuildContext, List<Map<String, dynamic>>) builder,
-      ) {
+    BuildContext context,
+    List<Map<String, dynamic>>? data,
+    Widget Function(BuildContext, List<Map<String, dynamic>>) builder,
+  ) {
     if (data == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -938,9 +1233,9 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildAgendaList(
-      BuildContext context,
-      List<Map<String, dynamic>> data,
-      ) {
+    BuildContext context,
+    List<Map<String, dynamic>> data,
+  ) {
     return Column(
       children: data.map((item) {
         return Padding(
@@ -953,17 +1248,16 @@ class HomeScreen extends StatelessWidget {
               successRate: (item['success_rate'] ?? 0.0).toDouble(),
               onTap: () => _navigateToOutcomes(context, item),
             ));
-        },
-      ).toList(),
+      }).toList(),
     );
   }
 
   Widget _buildNextStepsList(
-      BuildContext context,
-      List<Map<String, dynamic>> data,
-      bool showMoreButton,
-      int remainingCount,
-      ) {
+    BuildContext context,
+    List<Map<String, dynamic>> data,
+    bool showMoreButton,
+    int remainingCount,
+  ) {
     return Column(
       children: [
         ...data.map((item) {
@@ -973,19 +1267,18 @@ class HomeScreen extends StatelessWidget {
                 lessonId: item['lesson_id'] as int? ?? 0,
                 lessonName: item['lesson_name'],
                 topicTitle: item['topic_title'] ?? 'Genel Tekrar',
-                weekNo: item['week_no'],
+                curriculumWeek: item['curriculum_week'],
                 progress: (item['progress_percentage'] ?? 0.0).toDouble(),
                 successRate: (item['success_rate'] ?? 0.0).toDouble(),
                 onTap: () => _navigateToOutcomes(context, item),
                 isNextStep: true,
               ));
-          },
-        ).toList(),
+        }).toList(),
         if (showMoreButton)
           Padding(
             padding: const EdgeInsets.only(top: 16),
             child: GestureDetector(
-              onTap: onExpandNextSteps,
+              onTap: widget.onExpandNextSteps,
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -1084,9 +1377,9 @@ class HomeScreen extends StatelessWidget {
   }
 
   Future<void> _navigateToOutcomes(
-      BuildContext context,
-      Map<String, dynamic> data,
-      ) async {
+    BuildContext context,
+    Map<String, dynamic> data,
+  ) async {
     await Navigator.push(
       context,
       PageRouteBuilder(
@@ -1095,7 +1388,7 @@ class HomeScreen extends StatelessWidget {
           gradeId: data['grade_id'],
           lessonName: data['lesson_name'],
           gradeName: data['grade_name'],
-          initialWeek: data['week_no'] ?? currentWeek,
+          initialCurriculumWeek: data['curriculum_week'] ?? widget.currentCurriculumWeek,
         ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
@@ -1112,6 +1405,187 @@ class HomeScreen extends StatelessWidget {
         },
       ),
     );
-    onRefresh();
+    widget.onRefresh();
+  }
+
+  Widget _buildGradeCard(Grade grade, List<Color> colors, int index) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LessonsScreen(grade: grade),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: colors,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: colors[0].withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                top: -20,
+                right: -20,
+                child: Opacity(
+                  opacity: 0.1,
+                  child: Icon(
+                    Icons.school,
+                    size: 100,
+                    color: colors[1],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        _getIconForGrade(index),
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          grade.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Derslere git',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.9),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                bottom: 20,
+                right: 20,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Color> _getGradientColor(int index) {
+    final gradients = [
+      [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
+      [const Color(0xFF0EA5E9), const Color(0xFF3B82F6)],
+      [const Color(0xFF10B981), const Color(0xFF059669)],
+      [const Color(0xFFF59E0B), const Color(0xFFD97706)],
+      [const Color(0xFFEF4444), const Color(0xFFDC2626)],
+      [const Color(0xFF8B5CF6), const Color(0xFF7C3AED)],
+      [const Color(0xFFEC4899), const Color(0xFFDB2777)],
+      [const Color(0xFF14B8A6), const Color(0xFF0D9488)],
+    ];
+
+    return gradients[index % gradients.length];
+  }
+
+  IconData _getIconForGrade(int index) {
+    final icons = [
+      Icons.school,
+      Icons.book,
+      Icons.auto_stories,
+      Icons.cast_for_education,
+      Icons.menu_book,
+      Icons.science,
+      Icons.calculate,
+      Icons.language,
+    ];
+
+    return icons[index % icons.length];
+  }
+
+  double _calculateAverageSuccess() {
+    if (widget.agendaData == null || widget.agendaData!.isEmpty) return 0.0;
+
+    double totalSuccess = 0;
+    int count = 0;
+
+    for (final item in widget.agendaData!) {
+      final successRate = (item['success_rate'] ?? 0.0).toDouble();
+      if (successRate > 0) {
+        totalSuccess += successRate;
+        count++;
+      }
+    }
+
+    return count > 0 ? (totalSuccess / count) : 0.0;
+  }
+
+  double _calculateTotalProgress() {
+    if (widget.agendaData == null || widget.agendaData!.isEmpty) return 0.0;
+
+    double totalProgress = 0;
+
+    for (final item in widget.agendaData!) {
+      totalProgress += (item['progress_percentage'] ?? 0.0).toDouble();
+    }
+
+    return widget.agendaData!.isNotEmpty
+        ? (totalProgress / widget.agendaData!.length)
+        : 0.0;
+  }
+
+  int _calculateCompletedLessons() {
+    if (widget.agendaData == null) return 0;
+
+    return widget.agendaData!
+        .where((item) => (item['progress_percentage'] ?? 0.0).toDouble() >= 100.0)
+        .length;
   }
 }

@@ -9,6 +9,7 @@ import 'package:egitim_uygulamasi/screens/statistics_screen.dart';
 import 'package:egitim_uygulamasi/screens/tests_screen.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
+import 'package:egitim_uygulamasi/widgets/lesson_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,7 +70,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   List<Map<String, dynamic>>? _agendaData;
   List<Map<String, dynamic>>? _nextStepsData;
-  int _currentWeek = 0;
+  int _currentCurriculumWeek = 0;
   NextStepsDisplayState _nextStepsState = NextStepsDisplayState.hidden;
 
   String? _getCurrentRole(Profile? profile) {
@@ -94,7 +95,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _currentWeek = calculateCurrentAcademicWeek();
+      _currentCurriculumWeek = calculateCurrentAcademicWeek();
       if (Supabase.instance.client.auth.currentUser != null) {
         final profile = ref.read(profileViewModelProvider).profile;
         if (profile == null) {
@@ -140,55 +141,68 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   Future<void> _fetchDashboardData() async {
-    final newCurrentWeek = calculateCurrentAcademicWeek();
-    if (mounted) {
-      setState(() {
-        _currentWeek = newCurrentWeek;
-      });
-    }
+    if (!mounted) return;
 
     final user = Supabase.instance.client.auth.currentUser;
     final profile = ref.read(profileViewModelProvider).profile;
-    
-    final currentRole = _getCurrentRole(profile);
-    if (user == null || profile == null || profile.gradeId == null || currentRole != 'student') {
-      if(mounted) {
-        setState(() {
-          _agendaData = [];
-          _nextStepsData = [];
-        });
-      }
+    if (user == null || profile?.gradeId == null) {
+      setState(() {
+        _agendaData = [];
+        _nextStepsData = [];
+      });
       return;
     }
 
+    final newCurrentCurriculumWeek = calculateCurrentAcademicWeek();
+    setState(() {
+      _currentCurriculumWeek = newCurrentCurriculumWeek;
+    });
+
     try {
-      debugPrint("[Network] Fetching dashboard data for role '$currentRole' and week $newCurrentWeek...");
-      final agendaResponseFuture = Supabase.instance.client.rpc(
-        'get_current_week_agenda',
-        params: {'p_user_id': user.id, 'p_grade_id': profile.gradeId, 'p_week_no': newCurrentWeek},
-      );
+      final response = await Supabase.instance.client.rpc(
+        'get_weekly_dashboard_agenda',
+        params: {
+          'p_user_id': user.id,
+          'p_grade_id': profile!.gradeId,
+          'p_curriculum_week': _currentCurriculumWeek,
+        },
+      ) as List<dynamic>;
 
-      final nextStepsResponseFuture = Supabase.instance.client.rpc(
-        'get_all_next_steps_for_user',
-        params: {'p_user_id': user.id, 'p_grade_id': profile.gradeId, 'p_exclude_week_no': newCurrentWeek, 'p_current_academic_week': newCurrentWeek},
-      );
+      final processedData = response.map((item) {
+        final total = item['total_questions'] as int? ?? 0;
+        final solved = item['solved_questions'] as int? ?? 0;
+        final correct = item['correct_answers'] as int? ?? 0;
 
-      final responses = await Future.wait([agendaResponseFuture, nextStepsResponseFuture]);
+        final progress = total > 0 ? (solved / total) * 100 : 0.0;
+        final success = solved > 0 ? (correct / solved) * 100 : 0.0;
 
-      final newAgendaData = List<Map<String, dynamic>>.from(responses[0] as List);
-      final newNextStepsData = List<Map<String, dynamic>>.from(responses[1] as List);
-
-      debugPrint("[Network] Network fetch successful. Updating UI.");
+        return {
+          'lesson_id': item['lesson_id'],
+          'lesson_name': item['lesson_name'],
+          'progress_percentage': progress,
+          'success_rate': success,
+          'grade_id': item['grade_id'],
+          'grade_name': item['grade_name'],
+          'topic_title': item['current_topic_title'],
+          'curriculum_week': item['current_curriculum_week'],
+        };
+      }).toList();
 
       if (mounted) {
         setState(() {
-          _agendaData = newAgendaData;
-          _nextStepsData = newNextStepsData;
+          _agendaData = processedData;
+          _nextStepsData = []; // Bu bölüm şimdilik boş
         });
       }
     } catch (e) {
-      debugPrint("[Network] Network fetch FAILED. Error: $e");
       if (mounted) {
+        debugPrint('Error fetching dashboard data: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Veriler yüklenirken bir hata oluştu: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
         setState(() {
           _agendaData = [];
           _nextStepsData = [];
@@ -209,7 +223,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         onRefresh: _fetchDashboardData,
         agendaData: _agendaData,
         nextStepsData: _nextStepsData,
-        currentWeek: _currentWeek,
+        currentCurriculumWeek: _currentCurriculumWeek,
         nextStepsState: _nextStepsState,
         onToggleNextSteps: _toggleNextStepsSection,
         onExpandNextSteps: _expandNextSteps,
