@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/models/question_blank_option.dart';
+import 'package:egitim_uygulamasi/widgets/question_text.dart';
 
 class FillBlankWidget extends StatefulWidget {
   final TestQuestion testQuestion;
@@ -264,45 +265,55 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                   children: _availableOptions.map((option) {
                     return Draggable<QuestionBlankOption>(
                       data: option,
+
+                      // ================= FEEDBACK (sürüklerken görünen)
                       feedback: Material(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.amber.shade100,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.amber.shade400),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 6,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            option.optionText,
-                            style: const TextStyle(
+                        color: Colors.transparent,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.shade100,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.amber.shade400),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: QuestionText(
+                              text: option.optionText,
                               fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                              textColor: Colors.amber.shade900,
+                              fractionColor: Colors.amber.shade900,
+                              //enableFractions: question.unit.isMath,
                             ),
                           ),
                         ),
                       ),
+
+                      // ================= SÜRÜKLENİRKEN YERİ BOŞ KALSIN
                       childWhenDragging: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
                           color: Colors.grey.shade300,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
-                          option.optionText,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey.shade600,
-                          ),
+                        alignment: Alignment.center,
+                        child: QuestionText(
+                          text: option.optionText,
+                          fontSize: 16,
+                          textColor: Colors.grey.shade600,
+                          fractionColor: Colors.grey.shade600,
+                          //enableFractions: question.unit.isMath,
                         ),
                       ),
+
+                      // ================= NORMAL HAL
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
@@ -317,16 +328,17 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                             ),
                           ],
                         ),
-                        child: Text(
-                          option.optionText,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.amber.shade900,
-                          ),
+                        alignment: Alignment.center,
+                        child: QuestionText(
+                          text: option.optionText,
+                          fontSize: 16,
+                          textColor: Colors.amber.shade900,
+                          fractionColor: Colors.amber.shade900,
+                          //enableFractions: question.unit.isMath,
                         ),
                       ),
                     );
+
                   }).toList(),
                 ),
               ],

@@ -1,3 +1,4 @@
+import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:egitim_uygulamasi/providers.dart';
@@ -61,7 +62,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
       });
 
       final viewModel = ref.read(testViewModelProvider.notifier);
-      final userId = ref.read(userIdProvider);
+      final userProfile = ref.read(profileViewModelProvider).profile;
+      final userId = userProfile?.id;
+
       final clientIdAsync = await ref.read(clientIdProvider.future);
 
       if (clientIdAsync.isEmpty) {
@@ -71,9 +74,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
 
       final curriculumWeek = ModalRoute.of(context)?.settings.arguments as int?;
 
-      // MİSAFİR KULLANICI AKIŞI
       if (widget.sessionId == null && userId == null) {
-        // Haftalık misafir testi
         if (widget.testMode == TestMode.weekly) {
           debugPrint('QuestionsScreen: Yeni misafir haftalık testi başlatılıyor...');
           if (curriculumWeek == null) {
@@ -83,26 +84,20 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             unitId: widget.unitId,
             curriculumWeek: curriculumWeek,
           );
-        } 
-        // Ünite misafir testi
-        else if (widget.testMode == TestMode.normal) {
+        } else if (widget.testMode == TestMode.normal) {
           debugPrint('QuestionsScreen: Yeni misafir ünite testi başlatılıyor...');
           await viewModel.startGuestUnitTest(
             unitId: widget.unitId,
           );
         }
-      }
-      // KAYITLI KULLANICI - DEVAM EDEN TEST
-      else if (widget.sessionId != null) {
+      } else if (widget.sessionId != null) {
         debugPrint('QuestionsScreen: Mevcut teste devam ediliyor: sessionId=${widget.sessionId}');
         await viewModel.resumeTest(
           sessionId: widget.sessionId!,
           userId: userId,
           clientId: clientIdAsync,
         );
-      }
-      // KAYITLI KULLANICI - YENİ TEST
-      else {
+      } else {
         debugPrint('QuestionsScreen: Yeni test başlatılıyor: unitId=${widget.unitId}, testMode=${widget.testMode}, userId=$userId');
         _isStartingNewTest = true;
 
@@ -140,23 +135,19 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     }
   }
 
-  void _refreshTest() async {
-    debugPrint("QuestionsScreen: _refreshTest çağrıldı, test yenileniyor.");
-    ref.invalidate(testViewModelProvider);
-    await _initializeTest();
-  }
+  // _refreshTest metodu kaldırıldı.
 
   Future<bool> _onWillPop() async {
     debugPrint("QuestionsScreen: _onWillPop çağrıldı.");
     final viewModel = ref.read(testViewModelProvider);
-    final user = ref.read(userIdProvider);
+    final userProfile = ref.read(profileViewModelProvider).profile;
 
     if (_isStartingNewTest) {
       debugPrint("QuestionsScreen: _onWillPop - Yeni test başlatılırken geri gitme engellendi.");
       return false;
     }
 
-    if (user == null) {
+    if (userProfile == null) {
       debugPrint("QuestionsScreen: _onWillPop - Misafir kullanıcı, uyarı göstermeden çıkabilir.");
       return true;
     }
@@ -211,14 +202,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Colors.white,
           elevation: 0,
-          actions: [
-            if (!_isInitializing && viewModel.error == null && _initializationError == null)
-              IconButton(
-                icon: const Icon(Icons.refresh),
-                onPressed: _refreshTest,
-                tooltip: 'Yenile',
-              ),
-          ],
+          // actions listesi kaldırıldı.
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -366,7 +350,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
-                  onPressed: _refreshTest,
+                  onPressed: () => _initializeTest(), // Hata durumunda yeniden başlatma
                   icon: const Icon(Icons.refresh),
                   label: const Text('Tekrar Dene'),
                   style: ElevatedButton.styleFrom(
@@ -413,8 +397,8 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   }
 
   Widget _buildResultsView(TestViewModel viewModel) {
-    final user = ref.read(userIdProvider);
-    final bool isGuest = user == null;
+    final userProfile = ref.read(profileViewModelProvider).profile;
+    final bool isGuest = userProfile == null;
 
     return Center(
       child: Column(

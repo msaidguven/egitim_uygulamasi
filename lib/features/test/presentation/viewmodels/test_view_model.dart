@@ -439,6 +439,13 @@ class TestViewModel extends ChangeNotifier {
   }
 
   Future<void> finishTest() async {
+    // DÜZELTME: Test bitirilirken, eğer ekranda hala bir soru varsa,
+    // bu son sorunun da çözüldüğünü say.
+    if (_currentTestQuestion != null) {
+      _answeredCount++;
+      log('TestViewModel.finishTest: Son soru da sayıldı, yeni answeredCount=$_answeredCount');
+    }
+
     // Misafir testleri (sessionId == null ve userId == null) için veritabanı işlemi yapma
     if (_userId == null) {
       log('TestViewModel.finishTest: Misafir testi, veritabanı işlemi atlanıyor.');

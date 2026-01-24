@@ -5,6 +5,7 @@ import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:egitim_uygulamasi/models/profile_model.dart';
 import 'package:egitim_uygulamasi/screens/anasinifi/compare_page.dart';
 import 'package:egitim_uygulamasi/screens/anasinifi/number_composition_page.dart';
+import 'package:egitim_uygulamasi/screens/deneme/question_test_page.dart';
 import 'package:egitim_uygulamasi/screens/lessons_screen.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:egitim_uygulamasi/screens/outcomes_screen.dart';
@@ -653,6 +654,11 @@ class _HomeScreenState extends State<HomeScreen> {
       onSelected: (String? value) {
         if (value == 'show_games') {
           _showGameSelectionDialog(context);
+        } else if (value == 'question_test_page') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const QuestionTestPage()),
+          );
         } else {
           widget.onRoleChanged(value);
         }
@@ -688,6 +694,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 Icon(Icons.gamepad_rounded, color: Colors.grey),
                 SizedBox(width: 12),
                 Text('Anasınıfı Oyunları'),
+              ],
+            ),
+          ),
+          const PopupMenuDivider(),
+          PopupMenuItem<String?>(
+            value: 'question_test_page',
+            child: Row(
+              children: const [
+                Icon(Icons.science_outlined, color: Colors.grey),
+                SizedBox(width: 12),
+                Text('Deneme Sayfası'),
               ],
             ),
           ),

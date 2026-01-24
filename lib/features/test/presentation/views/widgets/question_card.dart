@@ -4,6 +4,7 @@ import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/multi
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/fill_blank_widget.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/matching_question_widget.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
+import 'package:egitim_uygulamasi/widgets/question_text.dart';
 
 class QuestionCard extends StatelessWidget {
   final TestQuestion testQuestion;
@@ -34,12 +35,12 @@ class QuestionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (question.type != QuestionType.fill_blank)
-                  Text(
-                    question.text,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
+                  QuestionText(
+                    text: question.text,
+                    fontSize: 18,
+                    textColor: Theme.of(context).textTheme.titleLarge?.color ?? Colors.black,
+                    fractionColor: Theme.of(context).colorScheme.primary,
+                    //enableFractions: question.unit.isMath, // veya question.questionTypeId == 1
                   ),
                 if (question.type != QuestionType.fill_blank)
                   const Divider(height: 32),

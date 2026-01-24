@@ -1,5 +1,6 @@
 import 'package:egitim_uygulamasi/providers.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
+import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -21,16 +22,16 @@ class StatisticsBundle {
 }
 
 // Providers
-final _periodStatsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
-  final userId = ref.watch(userIdProvider);
-  if (userId == null) return {};
+final _periodStatsProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
+  final user = ref.watch(profileViewModelProvider).profile;
+  if (user == null) return {};
 
   final result = <String, dynamic>{};
   try {
     final response = await Supabase.instance.client
         .from('user_time_based_stats')
         .select()
-        .eq('user_id', userId);
+        .eq('user_id', user.id);
     final timeBasedStats = response as List;
     final latestStats = <String, dynamic>{};
 
@@ -56,7 +57,7 @@ final _periodStatsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
   } catch (e) { /* Handle error */ }
   
   try {
-      final detailedStats = await Supabase.instance.client.rpc('get_detailed_statistics', params: {'p_user_id': userId});
+      final detailedStats = await Supabase.instance.client.rpc('get_detailed_statistics', params: {'p_user_id': user.id});
       result['details'] = detailedStats;
   } catch (e) {
     result['details'] = {'error': e.toString()};
@@ -64,29 +65,30 @@ final _periodStatsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
   return result;
 });
 
-final _activityProvider = FutureProvider<Map<String, dynamic>>((ref) async {
-  final userId = ref.watch(userIdProvider);
-  if (userId == null) return {'current_streak': 0, 'activity_dates': []};
+final _activityProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
+  final user = ref.watch(profileViewModelProvider).profile;
+  if (user == null) return {'current_streak': 0, 'activity_dates': []};
   try {
-    final response = await Supabase.instance.client.rpc('get_user_activity_and_streak_v2', params: {'p_user_id': userId});
+    final response = await Supabase.instance.client.rpc('get_user_activity_and_streak_v2', params: {'p_user_id': user.id});
     return response as Map<String, dynamic>;
   } catch (e) {
     return {'current_streak': 0, 'activity_dates': []};
   }
 });
 
-final _timeSeriesProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
-  final userId = ref.watch(userIdProvider);
-  if (userId == null) return [];
+final _timeSeriesProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  final user = ref.watch(profileViewModelProvider).profile;
+  if (user == null) return [];
   try {
-    final response = await Supabase.instance.client.rpc('get_time_series_stats_v2', params: {'p_user_id': userId, 'p_days': 7});
+    final response = await Supabase.instance.client.rpc('get_time_series_stats_v2', params: {'p_user_id': user.id, 'p_days': 7});
     return (response as List).cast<Map<String, dynamic>>();
   } catch (e) {
     return [];
   }
 });
 
-final statisticsBundleProvider = FutureProvider<StatisticsBundle>((ref) async {
+final statisticsBundleProvider = FutureProvider.autoDispose<StatisticsBundle>((ref) async {
+  // Bu provider artık sadece diğer provider'ların sonuçlarını birleştirir.
   final periodStats = await ref.watch(_periodStatsProvider.future);
   final activity = await ref.watch(_activityProvider.future);
   final timeSeries = await ref.watch(_timeSeriesProvider.future);
@@ -101,13 +103,20 @@ class StatisticsScreen extends ConsumerWidget {
     'daily': 'Bugün', 'weekly': 'Bu Hafta', 'monthly': 'Bu Ay', 'academic_year': 'Akademik Yıl',
   };
 
+  // DÜZELTİLMİŞ YENİLEME FONKSİYONU
   Future<void> _refreshData(WidgetRef ref) async {
-    ref.invalidate(statisticsBundleProvider);
+    // Veriyi çeken asıl kaynak provider'ları geçersiz kılıyoruz.
+    ref.invalidate(_periodStatsProvider);
+    ref.invalidate(_activityProvider);
+    ref.invalidate(_timeSeriesProvider);
+    
+    // `statisticsBundleProvider` bunları dinlediği için otomatik olarak güncellenecektir.
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userIdProvider);
+    // Ana kaynak olarak ProfileViewModel'i dinliyoruz.
+    final profileViewModel = ref.watch(profileViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -116,15 +125,34 @@ class StatisticsScreen extends ConsumerWidget {
         centerTitle: true,
         backgroundColor: Colors.white,
         actions: [
-          if (user != null)
+          // Sadece kullanıcı giriş yapmışsa ve yükleme devam etmiyorsa refresh butonu gösterilir.
+          if (profileViewModel.profile != null && !profileViewModel.isLoading)
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () => _refreshData(ref),
             ),
         ],
       ),
-      body: user == null ? _buildGuestStatistics(context) : _buildUserStatistics(ref),
+      // ProfileViewModel'in durumuna göre body'yi oluşturuyoruz.
+      body: _buildBody(context, ref, profileViewModel),
     );
+  }
+
+  Widget _buildBody(BuildContext context, WidgetRef ref, ProfileViewModel profileViewModel) {
+    if (profileViewModel.isLoading) {
+      return _buildLoadingState();
+    }
+
+    if (profileViewModel.errorMessage != null) {
+      return _buildErrorState(profileViewModel.errorMessage!, ref);
+    }
+    
+    if (profileViewModel.profile == null) {
+      return _buildGuestStatistics(context);
+    }
+
+    // Profil yüklendi, şimdi istatistikleri yükleyebiliriz.
+    return _buildUserStatistics(ref);
   }
 
   Widget _buildUserStatistics(WidgetRef ref) {

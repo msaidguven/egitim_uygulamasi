@@ -6,6 +6,43 @@ import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Riverpod import'u
+import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart'; // profileViewModelProvider için
+
+// Helper class to pass arguments to the family provider
+class OutcomesViewModelArgs {
+  final int lessonId;
+  final int gradeId;
+  final int? initialCurriculumWeek;
+
+  OutcomesViewModelArgs({
+    required this.lessonId,
+    required this.gradeId,
+    this.initialCurriculumWeek,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OutcomesViewModelArgs &&
+          runtimeType == other.runtimeType &&
+          lessonId == other.lessonId &&
+          gradeId == other.gradeId &&
+          initialCurriculumWeek == other.initialCurriculumWeek;
+
+  @override
+  int get hashCode => lessonId.hashCode ^ gradeId.hashCode ^ initialCurriculumWeek.hashCode;
+}
+
+// OutcomesViewModel'i sağlayan Riverpod family provider'ı
+final outcomesViewModelProvider = ChangeNotifierProvider.family<OutcomesViewModel, OutcomesViewModelArgs>(
+  (ref, args) => OutcomesViewModel(
+    ref, // Pass ref to the ViewModel
+    lessonId: args.lessonId,
+    gradeId: args.gradeId,
+    initialCurriculumWeek: args.initialCurriculumWeek,
+  ),
+);
 
 // _SuccessLevel sınıfını buraya taşıyoruz, çünkü ViewModel'ın iş mantığına dahil.
 class SuccessLevel {
@@ -68,8 +105,7 @@ class SuccessLevel {
   }
 }
 
-// _specialWeeks sabitini de ViewModel'a taşıyoruz veya ayrı bir model/servis katmanında tutabiliriz.
-// Şimdilik ViewModel'a taşıyalım.
+// _specialWeeks sabitini de ViewModel'a taşıyoruz, artık global değil.
 final List<Map<String, dynamic>> _specialWeeks = [
   {
     'grade_id': 5,
@@ -84,6 +120,7 @@ final List<Map<String, dynamic>> _specialWeeks = [
 
 
 class OutcomesViewModel extends ChangeNotifier {
+  final Ref _ref; // Riverpod Ref'i ekledik
   final int lessonId;
   final int gradeId;
   final int? initialCurriculumWeek;
@@ -133,7 +170,8 @@ class OutcomesViewModel extends ChangeNotifier {
 
   bool _disposed = false;
 
-  OutcomesViewModel({
+  OutcomesViewModel( // Constructor'ı güncelledik
+    this._ref, {
     required this.lessonId,
     required this.gradeId,
     this.initialCurriculumWeek,
@@ -287,8 +325,9 @@ class OutcomesViewModel extends ChangeNotifier {
     _safeNotifyListeners();
 
     try {
-      final user = Supabase.instance.client.auth.currentUser;
-      final isGuest = user == null;
+      // GÜNCELLEME: Kullanıcı profilini merkezi profileViewModelProvider'dan alıyoruz.
+      final userProfile = _ref.read(profileViewModelProvider).profile;
+      final isGuest = userProfile == null;
 
       if (!isGuest) {
         final cachedData = await _cacheService.getWeeklyCurriculumData(
@@ -307,7 +346,7 @@ class OutcomesViewModel extends ChangeNotifier {
       }
 
       final fullData = await _fetchNetworkDataWithoutCaching(curriculumWeek: curriculumWeek);
-      
+
       final contentToCache = Map<String, dynamic>.from(fullData);
       contentToCache.remove('mini_quiz_questions');
       _weekMainContents[curriculumWeek] = contentToCache;
@@ -324,9 +363,9 @@ class OutcomesViewModel extends ChangeNotifier {
       _weekQuestions[curriculumWeek] = (fullData['mini_quiz_questions'] as List? ?? [])
           .map((q) => Question.fromMap(q as Map<String, dynamic>))
           .toList();
-      
+
       _weekUnitIds[curriculumWeek] = _weekMainContents[curriculumWeek]?['unit_id'];
-      
+
       if (!isGuest) {
         await _loadWeeklyStats(curriculumWeek);
       }
@@ -346,11 +385,11 @@ class OutcomesViewModel extends ChangeNotifier {
   Future<void> _fetchDynamicData(int curriculumWeek) async {
     try {
       final fullData = await _fetchNetworkDataWithoutCaching(curriculumWeek: curriculumWeek);
-      
+
       _weekQuestions[curriculumWeek] = (fullData['mini_quiz_questions'] as List? ?? [])
           .map((q) => Question.fromMap(q as Map<String, dynamic>))
           .toList();
-      
+
       await _loadWeeklyStats(curriculumWeek);
 
     } catch (e) {
@@ -363,7 +402,9 @@ class OutcomesViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadWeeklyStats(int curriculumWeek) async {
-    final userId = Supabase.instance.client.auth.currentUser?.id;
+    // GÜNCELLEME: Kullanıcı ID'sini merkezi profileViewModelProvider'dan alıyoruz.
+    final userProfile = _ref.read(profileViewModelProvider).profile;
+    final userId = userProfile?.id;
     final currentUnitId = _weekUnitIds[curriculumWeek];
 
     if (userId == null || currentUnitId == null) {
@@ -388,7 +429,9 @@ class OutcomesViewModel extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _fetchNetworkDataWithoutCaching({required int curriculumWeek}) async {
-    final userId = Supabase.instance.client.auth.currentUser?.id;
+    // GÜNCELLEME: Kullanıcı ID'sini merkezi profileViewModelProvider'dan alıyoruz.
+    final userProfile = _ref.read(profileViewModelProvider).profile;
+    final userId = userProfile?.id;
 
     final response = await Supabase.instance.client.rpc(
       'get_weekly_curriculum',
@@ -423,7 +466,10 @@ class OutcomesViewModel extends ChangeNotifier {
   }
 
   void refreshCurrentWeekData(int curriculumWeek) async {
-    final user = Supabase.instance.client.auth.currentUser;
+    // GÜNCELLEME: Kullanıcı profilini merkezi profileViewModelProvider'dan alıyoruz.
+    final userProfile = _ref.read(profileViewModelProvider).profile;
+    final user = userProfile; // userProfile artık doğrudan Profile nesnesi veya null
+
     if (user != null) {
       await _cacheService.clearWeeklyCurriculumData(
         curriculumWeek: curriculumWeek,

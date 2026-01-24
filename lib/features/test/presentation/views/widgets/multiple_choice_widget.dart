@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
+import 'package:egitim_uygulamasi/widgets/question_text.dart';
 
 class MultipleChoiceWidget extends StatelessWidget {
   final TestQuestion testQuestion;
@@ -61,13 +62,13 @@ class MultipleChoiceWidget extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    choice.text,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                      color: isSelected ? Colors.black87 : Colors.black,
-                    ),
+
+                  child: QuestionText(
+                    text: choice.text,
+                    fontSize: 16,
+                    textColor: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black,
+                    fractionColor: Theme.of(context).colorScheme.primary,
+                    //enableFractions: question.unit.isMath,
                   ),
                 ),
                 if (trailingIcon != null) ...[

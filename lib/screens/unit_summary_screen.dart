@@ -1,97 +1,90 @@
 import 'dart:math';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
+import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 
-class UnitSummaryScreen extends StatefulWidget {
+// 1. FutureProvider'ı oluşturuyoruz.
+final unitSummaryProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, int>((ref, unitId) async {
+  final client = Supabase.instance.client;
+  // 2. Merkezi yerden profili dinliyoruz.
+  final userProfile = ref.watch(profileViewModelProvider).profile;
+  final userId = userProfile?.id;
+
+  if (userId == null) {
+    // Misafir kullanıcı için varsayılan bir yapı döndür.
+    final unitData = await client.from('units').select('title').eq('id', unitId).single();
+    return {
+      'unit_name': unitData['title'] ?? 'Ünite Testi',
+      'total_questions': 0,
+      'unique_solved_count': 0,
+      'correct_count': 0,
+      'incorrect_count': 0,
+      'success_rate': 0.0,
+      'active_session': null,
+      'available_question_count': 10, // Testi başlatma butonunu göstermek için
+      'is_guest': true, // Misafir durumunu belirtmek için flag
+    };
+  }
+
+  // Kayıtlı kullanıcı için veriyi çek.
+  final prefs = await SharedPreferences.getInstance();
+  final clientId = prefs.getString('client_id');
+
+  final response = await client.rpc(
+    'get_unit_summary',
+    params: {
+      'p_user_id': userId,
+      'p_unit_id': unitId,
+      'p_client_id': clientId,
+    },
+  );
+  
+  final summaryData = Map<String, dynamic>.from(response);
+  summaryData['is_guest'] = false; // Kayıtlı kullanıcı durumunu belirt.
+  return summaryData;
+});
+
+class UnitSummaryScreen extends ConsumerWidget {
   final int unitId;
 
   const UnitSummaryScreen({super.key, required this.unitId});
 
-  @override
-  State<UnitSummaryScreen> createState() => _UnitSummaryScreenState();
-}
-
-class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
-  late Future<Map<String, dynamic>> _summaryFuture;
-  Map<String, dynamic>? _summaryData;
-  bool _isGuest = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _summaryFuture = _loadSummary();
-  }
-
-  Future<Map<String, dynamic>> _loadSummary() async {
-    final client = Supabase.instance.client;
-    final userId = client.auth.currentUser?.id;
-
-    if (userId == null) {
-      setState(() {
-        _isGuest = true;
-      });
-      // Misafir kullanıcı için varsayılan bir yapı döndür,
-      // böylece arayüzde butonlar gösterilebilir.
-      final unitData = await client.from('units').select('title').eq('id', widget.unitId).single();
-      return {
-        'unit_name': unitData['title'] ?? 'Ünite Testi',
-        'total_questions': 0,
-        'unique_solved_count': 0,
-        'correct_count': 0,
-        'incorrect_count': 0,
-        'success_rate': 0.0,
-        'active_session': null,
-        'available_question_count': 10, // Testi başlatma butonunu göstermek için
-      };
-    }
-
-    final prefs = await SharedPreferences.getInstance();
-    final clientId = prefs.getString('client_id');
-
-    final response = await client.rpc(
-      'get_unit_summary',
-      params: {
-        'p_user_id': userId,
-        'p_unit_id': widget.unitId,
-        'p_client_id': clientId,
-      },
-    );
-    _summaryData = Map<String, dynamic>.from(response);
-    return _summaryData!;
-  }
-
-  void _refreshSummary() {
-    // Misafir kullanıcılar için yenileme işlemi yapmaya gerek yok.
-    if (_isGuest) return;
-    setState(() {
-      _summaryFuture = _loadSummary();
-    });
+  void _refreshSummary(WidgetRef ref) {
+    ref.invalidate(unitSummaryProvider(unitId));
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final summaryAsyncValue = ref.watch(unitSummaryProvider(unitId));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ünite Özeti'),
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
+        actions: [
+          summaryAsyncValue.whenData((data) {
+            if (data['is_guest'] == false) {
+              return IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () => _refreshSummary(ref),
+              );
+            }
+            return const SizedBox.shrink();
+          }).value ?? const SizedBox.shrink(),
+        ],
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: _summaryFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Hata: ${snapshot.error}'));
-          }
-
-          final data = snapshot.data!;
+      body: summaryAsyncValue.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Hata: $error')),
+        data: (data) {
+          final isGuest = data['is_guest'] as bool;
           final activeSession = data['active_session'];
           final hasIncorrect = (data['incorrect_count'] ?? 0) > 0;
           final totalQuestions = data['total_questions'] ?? 0;
@@ -100,94 +93,96 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
           final availableQuestionCount = data['available_question_count'] ?? 0;
           final questionsInNextSession = min(availableQuestionCount, 10);
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  data['unit_name'] ?? 'Ünite',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-
-                if (!_isGuest) ...[
-                  _buildProgressCircle(progress, data['success_rate']),
+          return RefreshIndicator(
+            onRefresh: () async => _refreshSummary(ref),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    data['unit_name'] ?? 'Ünite',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
                   const SizedBox(height: 24),
-                  if (activeSession != null) _buildActiveSessionCard(activeSession),
-                  _buildStatsGrid(data),
-                  const SizedBox(height: 32),
-                ] else ...[
-                  // Misafir için bilgilendirme kartı
-                  Card(
-                    color: Colors.blue.shade50,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Text(
-                        'İlerlemeni ve istatistiklerini görmek için giriş yapmalısın. Misafir testleri sadece göz atmak içindir ve kaydedilmez.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.blue.shade800, fontSize: 15),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                ],
 
-                // Kayıtlı kullanıcı için devam etme butonu
-                if (!_isGuest && activeSession != null)
-                  _buildButton(
-                    label: 'Teste Devam Et',
-                    icon: Icons.play_circle_fill,
-                    color: Colors.green.shade600,
-                    onPressed: () => _navigateToTest(
-                      testMode: TestMode.normal,
-                      sessionId: activeSession['id'],
-                    ),
-                  )
-                // Kayıtlı kullanıcı için yeni test butonu
-                else if (!_isGuest && availableQuestionCount > 0) ...[
-                  if (availableQuestionCount > 10) _buildInfoCard(availableQuestionCount),
-                  _buildButton(
-                    label: 'Teste Başla ($questionsInNextSession Soru)',
-                    icon: Icons.add_task,
-                    onPressed: () => _navigateToTest(testMode: TestMode.normal),
-                  ),
-                ]
-                // Misafir kullanıcı için test butonu
-                else if (_isGuest)
-                  _buildButton(
-                    label: 'Ünite Testine Göz At',
-                    icon: Icons.visibility,
-                    onPressed: () => _navigateToTest(testMode: TestMode.normal),
-                  ),
-
-                // Kayıtlı kullanıcı için tüm sorular bitti mesajı
-                if (!_isGuest && totalQuestions > 0 && uniqueSolved == totalQuestions)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                      child: Text(
-                        'Bu ünitedeki tüm soruları tamamladın. Tekrar zamanı gelen yeni soru bulunmuyor. Harika iş!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey.shade700,
-                          fontWeight: FontWeight.w500,
+                  if (!isGuest) ...[
+                    _buildProgressCircle(progress, data['success_rate']),
+                    const SizedBox(height: 24),
+                    if (activeSession != null) _buildActiveSessionCard(activeSession),
+                    _buildStatsGrid(data),
+                    const SizedBox(height: 32),
+                  ] else ...[
+                    Card(
+                      color: Colors.blue.shade50,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'İlerlemeni ve istatistiklerini görmek için giriş yapmalısın. Misafir testleri sadece göz atmak içindir ve kaydedilmez.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.blue.shade800, fontSize: 15),
                         ),
                       ),
                     ),
+                    const SizedBox(height: 32),
+                  ],
 
-                // Sadece kayıtlı kullanıcılar için yanlışları çöz butonu
-                if (!_isGuest)
-                  _buildButton(
-                    label: 'Sadece Yanlışları Çöz',
-                    icon: Icons.error_outline,
-                    color: Colors.orange.shade600,
-                    onPressed: hasIncorrect ? () => _navigateToTest(testMode: TestMode.wrongAnswers) : null,
-                  ),
+                  if (!isGuest && activeSession != null)
+                    _buildButton(
+                      context, // context'i geçiriyoruz
+                      label: 'Teste Devam Et',
+                      icon: Icons.play_circle_fill,
+                      color: Colors.green.shade600,
+                      onPressed: () => _navigateToTest(context, ref,
+                        testMode: TestMode.normal,
+                        sessionId: activeSession['id'],
+                        isGuest: isGuest,
+                      ),
+                    )
+                  else if (!isGuest && availableQuestionCount > 0) ...[
+                    if (availableQuestionCount > 10) _buildInfoCard(availableQuestionCount),
+                    _buildButton(
+                      context, // context'i geçiriyoruz
+                      label: 'Teste Başla ($questionsInNextSession Soru)',
+                      icon: Icons.add_task,
+                      onPressed: () => _navigateToTest(context, ref, testMode: TestMode.normal, isGuest: isGuest),
+                    ),
+                  ]
+                  else if (isGuest)
+                    _buildButton(
+                      context, // context'i geçiriyoruz
+                      label: 'Ünite Testine Göz At',
+                      icon: Icons.visibility,
+                      onPressed: () => _navigateToTest(context, ref, testMode: TestMode.normal, isGuest: isGuest),
+                    ),
 
-              ],
+                  if (!isGuest && totalQuestions > 0 && uniqueSolved == totalQuestions)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                        child: Text(
+                          'Bu ünitedeki tüm soruları tamamladın. Tekrar zamanı gelen yeni soru bulunmuyor. Harika iş!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+
+                  if (!isGuest)
+                    _buildButton(
+                      context, // context'i geçiriyoruz
+                      label: 'Sadece Yanlışları Çöz',
+                      icon: Icons.error_outline,
+                      color: Colors.orange.shade600,
+                      onPressed: hasIncorrect ? () => _navigateToTest(context, ref, testMode: TestMode.wrongAnswers, isGuest: isGuest) : null,
+                    ),
+                ],
+              ),
             ),
           );
         },
@@ -323,7 +318,8 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
     );
   }
 
-  Widget _buildButton({required String label, required IconData icon, Color? color, VoidCallback? onPressed}) {
+  // DÜZELTME: Metodun imzasına BuildContext eklendi.
+  Widget _buildButton(BuildContext context, {required String label, required IconData icon, Color? color, VoidCallback? onPressed}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: ElevatedButton.icon(
@@ -331,6 +327,7 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
         icon: Icon(icon),
         label: Text(label),
         style: ElevatedButton.styleFrom(
+          // DÜZELTME: `context` artık burada kullanılabilir.
           backgroundColor: color ?? Theme.of(context).primaryColor,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -341,18 +338,17 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
     );
   }
 
-  void _navigateToTest({required TestMode testMode, int? sessionId}) async {
-    // Misafir kullanıcı için sessionId her zaman null olmalı
-    final guestSessionId = _isGuest ? null : sessionId;
+  void _navigateToTest(BuildContext context, WidgetRef ref, {required TestMode testMode, int? sessionId, required bool isGuest}) async {
+    final guestSessionId = isGuest ? null : sessionId;
 
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => QuestionsScreen(
-        unitId: widget.unitId,
+        unitId: unitId,
         testMode: testMode,
         sessionId: guestSessionId,
       )),
     );
-    _refreshSummary();
+    _refreshSummary(ref);
   }
 }
