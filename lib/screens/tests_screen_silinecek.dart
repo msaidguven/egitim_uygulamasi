@@ -1,6 +1,6 @@
-// lib/screens/tests_screen.dart
+// lib/screens/tests_screen_silinecek.dart
 
-import 'package:egitim_uygulamasi/screens/lessons_for_grade_screen.dart';
+import 'package:egitim_uygulamasi/screens/lessons_for_grade_screen_silinecek.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

@@ -1,29 +1,33 @@
 // lib/screens/signup_screen.dart
 
+import 'package:egitim_uygulamasi/screens/home_screen.dart';
+import 'package:egitim_uygulamasi/screens/main_screen.dart';
+import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final AuthViewModel _viewModel = AuthViewModel();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _fullNameController = TextEditingController();
-  final _usernameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String? _selectedGender;
-  DateTime? _selectedDate;
+  int? _selectedGradeId;
+  List<Map<String, dynamic>> _grades = [];
 
   @override
   void initState() {
     super.initState();
+    _loadGrades();
     _viewModel.addListener(() {
       if (!mounted) return;
 
@@ -42,10 +46,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         );
       } else if (!_viewModel.isLoading) {
+        // Kullanıcı durumu değişti, ilgili provider'ları yenile.
+        ref.invalidate(profileViewModelProvider);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text(
-              'Kayıt başarılı! Giriş ekranına yönlendiriliyorsunuz...',
+              'Kayıt başarılı! Ana sayfaya yönlendiriliyorsunuz...',
             ),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
@@ -54,13 +61,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         );
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 1), () {
           if (mounted) {
-            Navigator.of(context).pop();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const MainScreen()),
+                  (Route<dynamic> route) => false,
+            );
           }
         });
       }
     });
+  }
+
+  Future<void> _loadGrades() async {
+    final grades = await _viewModel.getGrades();
+    if (mounted) {
+      setState(() {
+        _grades = grades;
+      });
+    }
   }
 
   @override
@@ -69,42 +89,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _fullNameController.dispose();
-    _usernameController.dispose();
     _viewModel.dispose();
     super.dispose();
   }
 
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
-      final username = _usernameController.text.trim();
-
-      final isTaken = await _viewModel.isUsernameTaken(username);
-
-      if (!mounted) return;
-
-      if (isTaken) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
-              'Bu kullanıcı adı zaten alınmış. Lütfen farklı bir kullanıcı adı seçin.',
-            ),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
-      } else {
-        await _viewModel.signUp(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-          fullName: _fullNameController.text.trim(),
-          username: username,
-          gender: _selectedGender!,
-          birthDate: _selectedDate,
-        );
-      }
+      await _viewModel.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        fullName: _fullNameController.text.trim(),
+        gradeId: _selectedGradeId,
+      );
     }
   }
 
@@ -120,37 +116,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Geri butonu
-              IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: isDarkMode ? Colors.white : Colors.black,
-                  size: 20,
-                ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Başlık bölümü
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // Başlık Bölümü (Geri butonu ve Başlık)
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  Text(
-                    'Hesap Oluşturun',
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 32,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: isDarkMode ? Colors.white : Colors.black,
+                        size: 20,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
                     ),
                   ),
-                  const SizedBox(height: 8),
                   Text(
-                    'Eğitim yolculuğunuza başlayın',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                      fontSize: 16,
+                    'Hesap Oluşturun',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -175,17 +161,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     const SizedBox(height: 20),
 
-                    // Kullanıcı Adı
-                    _buildTextField(
-                      label: 'Kullanıcı Adı',
-                      controller: _usernameController,
-                      icon: Icons.alternate_email_rounded,
-                      validator: (value) =>
-                      value!.isEmpty ? 'Lütfen bir kullanıcı adı girin' : null,
-                    ),
-
-                    const SizedBox(height: 20),
-
                     // E-posta
                     _buildTextField(
                       label: 'E-posta',
@@ -198,18 +173,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     const SizedBox(height: 20),
 
-                    // Cinsiyet
+                    // Sınıf
                     Container(
                       decoration: BoxDecoration(
                         color: isDarkMode
                             ? Colors.grey[900]
                             : Colors.grey[50],
                         borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isDarkMode ? Colors.grey[800]! : Colors.grey[300]!,
+                          width: 1,
+                        ),
                       ),
-                      child: DropdownButtonFormField<String>(
-                        value: _selectedGender,
+                      child: DropdownButtonFormField<int>(
+                        value: _selectedGradeId,
                         decoration: InputDecoration(
-                          labelText: 'Cinsiyet',
+                          labelText: 'Sınıf',
                           labelStyle: TextStyle(
                             color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                             fontSize: 14,
@@ -220,7 +199,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             vertical: 18,
                           ),
                           prefixIcon: Icon(
-                            Icons.transgender,
+                            Icons.school_outlined,
                             color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                           ),
                         ),
@@ -229,107 +208,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           color: isDarkMode ? Colors.white : Colors.black,
                         ),
                         hint: Text(
-                          'Seçiniz',
+                          'Sınıfınızı Seçin',
                           style: TextStyle(
                             color: isDarkMode ? Colors.grey[500] : Colors.grey[500],
                           ),
                         ),
                         dropdownColor: isDarkMode ? Colors.grey[900] : Colors.white,
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'female',
-                            child: Text('Kadın'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'male',
-                            child: Text('Erkek'),
-                          ),
-
-                        ],
+                        items: _grades.map<DropdownMenuItem<int>>((grade) {
+                          return DropdownMenuItem<int>(
+                            value: grade['id'] as int,
+                            child: Text(grade['name'] as String),
+                          );
+                        }).toList(),
                         onChanged: (value) {
                           setState(() {
-                            _selectedGender = value;
+                            _selectedGradeId = value;
                           });
                         },
                         validator: (value) =>
-                        value == null ? 'Lütfen cinsiyet seçin' : null,
+                        value == null ? 'Lütfen sınıfınızı seçin' : null,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
                           color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                         ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Doğum Tarihi
-                    Container(
-                      decoration: BoxDecoration(
-                        color: isDarkMode
-                            ? Colors.grey[900]
-                            : Colors.grey[50],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: TextFormField(
-                        readOnly: true,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: isDarkMode ? Colors.white : Colors.black,
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'Doğum Tarihi (İsteğe Bağlı)',
-                          labelStyle: TextStyle(
-                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                            fontSize: 14,
-                          ),
-                          hintText: _selectedDate == null
-                              ? 'Tarih seçmek için dokunun'
-                              : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                          hintStyle: TextStyle(
-                            color: isDarkMode ? Colors.grey[500] : Colors.grey[500],
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 18,
-                          ),
-                          prefixIcon: Icon(
-                            Icons.calendar_today_outlined,
-                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                          ),
-                          suffixIcon: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                          ),
-                        ),
-                        onTap: () async {
-                          final DateTime? picked = await showDatePicker(
-                            context: context,
-                            initialDate: _selectedDate ?? DateTime.now(),
-                            firstDate: DateTime(1920),
-                            lastDate: DateTime.now(),
-                            builder: (context, child) {
-                              return Theme(
-                                data: Theme.of(context).copyWith(
-                                  colorScheme: ColorScheme.light(
-                                    primary: Theme.of(context).colorScheme.primary,
-                                    onPrimary: Colors.white,
-                                    surface: isDarkMode ? Colors.grey[900]! : Colors.white,
-                                    onSurface: isDarkMode ? Colors.white : Colors.black,
-                                  ),
-                                  dialogBackgroundColor:
-                                  isDarkMode ? Colors.grey[900] : Colors.white,
-                                ),
-                                child: child!,
-                              );
-                            },
-                          );
-                          if (picked != null && picked != _selectedDate) {
-                            setState(() {
-                              _selectedDate = picked;
-                            });
-                          }
-                        },
                       ),
                     ),
 
@@ -520,6 +421,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       decoration: BoxDecoration(
         color: isDarkMode ? Colors.grey[900] : Colors.grey[50],
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDarkMode ? Colors.grey[800]! : Colors.grey[300]!,
+          width: 1,
+        ),
       ),
       child: TextFormField(
         controller: controller,

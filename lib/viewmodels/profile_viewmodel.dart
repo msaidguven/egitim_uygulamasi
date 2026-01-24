@@ -76,19 +76,4 @@ class ProfileViewModel extends ChangeNotifier {
       return false;
     }
   }
-
-  Future<void> signOut() async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      await supabase.auth.signOut();
-      _profile = null;
-    } catch (e) {
-      _errorMessage = "Çıkış yapılırken bir hata oluştu: $e";
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
 }

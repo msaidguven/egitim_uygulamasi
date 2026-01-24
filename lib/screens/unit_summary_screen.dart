@@ -18,6 +18,7 @@ class UnitSummaryScreen extends StatefulWidget {
 class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
   late Future<Map<String, dynamic>> _summaryFuture;
   Map<String, dynamic>? _summaryData;
+  bool _isGuest = false;
 
   @override
   void initState() {
@@ -28,6 +29,26 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
   Future<Map<String, dynamic>> _loadSummary() async {
     final client = Supabase.instance.client;
     final userId = client.auth.currentUser?.id;
+
+    if (userId == null) {
+      setState(() {
+        _isGuest = true;
+      });
+      // Misafir kullanıcı için varsayılan bir yapı döndür,
+      // böylece arayüzde butonlar gösterilebilir.
+      final unitData = await client.from('units').select('title').eq('id', widget.unitId).single();
+      return {
+        'unit_name': unitData['title'] ?? 'Ünite Testi',
+        'total_questions': 0,
+        'unique_solved_count': 0,
+        'correct_count': 0,
+        'incorrect_count': 0,
+        'success_rate': 0.0,
+        'active_session': null,
+        'available_question_count': 10, // Testi başlatma butonunu göstermek için
+      };
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final clientId = prefs.getString('client_id');
 
@@ -44,6 +65,8 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
   }
 
   void _refreshSummary() {
+    // Misafir kullanıcılar için yenileme işlemi yapmaya gerek yok.
+    if (_isGuest) return;
     setState(() {
       _summaryFuture = _loadSummary();
     });
@@ -89,17 +112,31 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                _buildProgressCircle(progress, data['success_rate']),
+                if (!_isGuest) ...[
+                  _buildProgressCircle(progress, data['success_rate']),
+                  const SizedBox(height: 24),
+                  if (activeSession != null) _buildActiveSessionCard(activeSession),
+                  _buildStatsGrid(data),
+                  const SizedBox(height: 32),
+                ] else ...[
+                  // Misafir için bilgilendirme kartı
+                  Card(
+                    color: Colors.blue.shade50,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        'İlerlemeni ve istatistiklerini görmek için giriş yapmalısın. Misafir testleri sadece göz atmak içindir ve kaydedilmez.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.blue.shade800, fontSize: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                ],
 
-                const SizedBox(height: 24),
-
-                if (activeSession != null) _buildActiveSessionCard(activeSession),
-
-                _buildStatsGrid(data),
-
-                const SizedBox(height: 32),
-
-                if (activeSession != null)
+                // Kayıtlı kullanıcı için devam etme butonu
+                if (!_isGuest && activeSession != null)
                   _buildButton(
                     label: 'Teste Devam Et',
                     icon: Icons.play_circle_fill,
@@ -109,7 +146,8 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
                       sessionId: activeSession['id'],
                     ),
                   )
-                else if (availableQuestionCount > 0) ...[
+                // Kayıtlı kullanıcı için yeni test butonu
+                else if (!_isGuest && availableQuestionCount > 0) ...[
                   if (availableQuestionCount > 10) _buildInfoCard(availableQuestionCount),
                   _buildButton(
                     label: 'Teste Başla ($questionsInNextSession Soru)',
@@ -117,7 +155,16 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
                     onPressed: () => _navigateToTest(testMode: TestMode.normal),
                   ),
                 ]
-                else if (totalQuestions > 0 && uniqueSolved == totalQuestions)
+                // Misafir kullanıcı için test butonu
+                else if (_isGuest)
+                  _buildButton(
+                    label: 'Ünite Testine Göz At',
+                    icon: Icons.visibility,
+                    onPressed: () => _navigateToTest(testMode: TestMode.normal),
+                  ),
+
+                // Kayıtlı kullanıcı için tüm sorular bitti mesajı
+                if (!_isGuest && totalQuestions > 0 && uniqueSolved == totalQuestions)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
                       child: Text(
@@ -131,12 +178,14 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
                       ),
                     ),
 
-                _buildButton(
-                  label: 'Sadece Yanlışları Çöz',
-                  icon: Icons.error_outline,
-                  color: Colors.orange.shade600,
-                  onPressed: hasIncorrect ? () => _navigateToTest(testMode: TestMode.wrongAnswers) : null,
-                ),
+                // Sadece kayıtlı kullanıcılar için yanlışları çöz butonu
+                if (!_isGuest)
+                  _buildButton(
+                    label: 'Sadece Yanlışları Çöz',
+                    icon: Icons.error_outline,
+                    color: Colors.orange.shade600,
+                    onPressed: hasIncorrect ? () => _navigateToTest(testMode: TestMode.wrongAnswers) : null,
+                  ),
 
               ],
             ),
@@ -293,12 +342,15 @@ class _UnitSummaryScreenState extends State<UnitSummaryScreen> {
   }
 
   void _navigateToTest({required TestMode testMode, int? sessionId}) async {
+    // Misafir kullanıcı için sessionId her zaman null olmalı
+    final guestSessionId = _isGuest ? null : sessionId;
+
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => QuestionsScreen(
         unitId: widget.unitId,
         testMode: testMode,
-        sessionId: sessionId,
+        sessionId: guestSessionId,
       )),
     );
     _refreshSummary();

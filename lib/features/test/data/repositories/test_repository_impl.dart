@@ -14,6 +14,70 @@ class TestRepositoryImpl implements TestRepository {
 
   TestRepositoryImpl() : _supabase = Supabase.instance.client;
 
+  @override
+  Future<List<Question>> startGuestTest({
+    required int unitId,
+    required int curriculumWeek,
+  }) async {
+    try {
+      log('TestRepositoryImpl.startGuestTest (weekly): unitId=$unitId, curriculumWeek=$curriculumWeek');
+
+      final response = await _supabase.rpc(
+        'start_guest_test',
+        params: {
+          'p_unit_id': unitId,
+          'p_type': 'weekly',
+          'p_curriculum_week': curriculumWeek,
+        },
+      );
+
+      if (response == null) {
+        log('TestRepositoryImpl.startGuestTest (weekly): Null response');
+        return [];
+      }
+      
+      final questions = (response as List)
+          .map((q) => Question.fromMap(q as Map<String, dynamic>))
+          .toList();
+
+      log('TestRepositoryImpl.startGuestTest (weekly): ${questions.length} misafir sorusu alındı');
+      return questions;
+    } catch (e, stackTrace) {
+      log('TestRepositoryImpl.startGuestTest (weekly) ERROR: $e', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Question>> startGuestUnitTest({required int unitId}) async {
+    try {
+      log('TestRepositoryImpl.startGuestUnitTest: unitId=$unitId');
+
+      final response = await _supabase.rpc(
+        'start_guest_test',
+        params: {
+          'p_unit_id': unitId,
+          'p_type': 'unit',
+        },
+      );
+
+      if (response == null) {
+        log('TestRepositoryImpl.startGuestUnitTest: Null response');
+        return [];
+      }
+      
+      final questions = (response as List)
+          .map((q) => Question.fromMap(q as Map<String, dynamic>))
+          .toList();
+
+      log('TestRepositoryImpl.startGuestUnitTest: ${questions.length} misafir sorusu alındı');
+      return questions;
+    } catch (e, stackTrace) {
+      log('TestRepositoryImpl.startGuestUnitTest ERROR: $e', error: e, stackTrace: stackTrace);
+      rethrow;
+    }
+  }
+
   // YENİ METOD: Cevaplanmış soru ID'lerini getirir.
   @override
   Future<Set<int>> getAnsweredQuestionIds(int sessionId) async {
@@ -64,7 +128,7 @@ class TestRepositoryImpl implements TestRepository {
           break;
         case TestMode.normal:
         default:
-          rpcName = 'start_test_v2';
+          rpcName = 'start_unit_test';
           params = {
             'p_client_id': clientId,
             'p_unit_id': unitId,
@@ -94,17 +158,30 @@ class TestRepositoryImpl implements TestRepository {
   @override
   Future<void> finishTestSession(int sessionId, TestMode testMode) async {
     try {
-      final rpcName = testMode == TestMode.weekly
-          ? 'finish_weekly_test'
-          : 'finish_test_v2';
+      log('--- TEST BİTİRİLİYOR --- Test Modu: $testMode');
+      log('TestRepositoryImpl.finishTestSession: public.finish_test_session RPC çağrılıyor, sessionId: $sessionId');
 
-      log('TestRepositoryImpl.finishTestSession: $rpcName, sessionId: $sessionId');
+      // Test modundan bağımsız olarak tek bir merkezi RPC çağrılıyor.
+      // Tüm özetleme/güncelleme mantığı veritabanı trigger'ları tarafından yönetilecek.
+      await _supabase.rpc('finish_test_session', params: {'p_session_id': sessionId});
 
-      await _supabase.rpc(rpcName, params: {'p_session_id': sessionId});
-
-      log('TestRepositoryImpl.finishTestSession: Session $sessionId başarıyla tamamlandı');
+      log('TestRepositoryImpl.finishTestSession: Session $sessionId başarıyla tamamlandı (merkezi RPC ile)');
     } catch (e, stackTrace) {
       log('TestRepositoryImpl.finishTestSession ERROR: $e', error: e, stackTrace: stackTrace);
+      // Hata mesajlarını konsola daha belirgin bir şekilde yazdır
+      log("**************************************************");
+      log("HATA: TEST BİTİRME RPC ÇAĞRISI BAŞARISIZ OLDU");
+      log("**************************************************");
+      log("Oturum ID: $sessionId");
+      log("Test Modu: $testMode");
+      log("Hata Detayı: $e");
+      log("Stack Trace: $stackTrace");
+      if (e is PostgrestException) {
+        log("Postgrest Mesajı: ${e.message}");
+        log("Postgrest Detayları: ${e.details}");
+        log("Postgrest İpucu: ${e.hint}");
+      }
+      log("**************************************************");
       rethrow;
     }
   }

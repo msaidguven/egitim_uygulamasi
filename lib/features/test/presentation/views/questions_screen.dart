@@ -1,67 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
+import 'package:egitim_uygulamasi/providers.dart';
 
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/viewmodels/test_view_model.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/question_card.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_progress_bar.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_bottom_nav.dart';
-import 'package:egitim_uygulamasi/features/test/data/repositories/test_repository_impl.dart';
-
-// ========== YENİ CALLBACK TANIMI ==========
-typedef AnswerSaveCallback = Future<void> Function({
-  required int sessionId,
-  required int questionId,
-  required dynamic userAnswer,
-  required bool isCorrect,
-  required int duration,
-});
-// ==========================================
-
-// ========== RIVERPOD PROVIDER TANIMLARI ==========
-
-final clientIdProvider = FutureProvider<String>((ref) async {
-  final prefs = await SharedPreferences.getInstance();
-  String? clientId = prefs.getString('client_id');
-
-  if (clientId == null) {
-    clientId = const Uuid().v4();
-    await prefs.setString('client_id', clientId);
-  }
-
-  return clientId;
-});
-
-final userIdProvider = Provider<String?>((ref) {
-  return Supabase.instance.client.auth.currentUser?.id;
-});
-
-final testRepositoryProvider = Provider<TestRepositoryImpl>((ref) {
-  return TestRepositoryImpl();
-});
-
-final testViewModelProvider = ChangeNotifierProvider.autoDispose<TestViewModel>((ref) {
-  final repository = ref.watch(testRepositoryProvider);
-  return TestViewModel(repository);
-});
-
-// =================================================
+import 'dart:async';
 
 class QuestionsScreen extends ConsumerStatefulWidget {
   final int unitId;
   final TestMode testMode;
   final int? sessionId;
-  final AnswerSaveCallback? onSave; // YENİ PARAMETRE
 
   const QuestionsScreen({
     super.key,
     required this.unitId,
     this.testMode = TestMode.normal,
     this.sessionId,
-    this.onSave, // YENİ PARAMETRE
   });
 
   @override
@@ -76,13 +33,13 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeTest();
-    });
+    debugPrint("QuestionsScreen: initState - Test başlatılıyor...");
+    Future.microtask(() => _initializeTest());
   }
 
   @override
   void dispose() {
+    debugPrint("QuestionsScreen: dispose - Ekran kapatılıyor ve TestViewModel sıfırlanıyor.");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         ref.read(testViewModelProvider.notifier).reset();
@@ -92,43 +49,66 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   }
 
   Future<void> _initializeTest() async {
+    debugPrint("QuestionsScreen: _initializeTest başladı.");
     try {
+      if (!mounted) {
+        debugPrint("QuestionsScreen: _initializeTest - Widget artık mount edilmemiş, işlem iptal edildi.");
+        return;
+      }
       setState(() {
         _isInitializing = true;
         _initializationError = null;
       });
 
       final viewModel = ref.read(testViewModelProvider.notifier);
-
-      // YENİ: onSave callback'ini ViewModel'e iletiyoruz.
-      if (widget.onSave != null) {
-        viewModel.setExternalSaveCallback(widget.onSave!);
-      }
-
       final userId = ref.read(userIdProvider);
       final clientIdAsync = await ref.read(clientIdProvider.future);
-
-      if (userId == null || userId.isEmpty) {
-        throw Exception('Kullanıcı girişi yapılmamış. Lütfen tekrar giriş yapın.');
-      }
 
       if (clientIdAsync.isEmpty) {
         throw Exception('Cihaz kimliği alınamadı.');
       }
+      debugPrint("QuestionsScreen: Client ID alındı: $clientIdAsync");
 
-      if (widget.sessionId != null) {
-        debugPrint('Mevcut teste devam ediliyor: sessionId=${widget.sessionId}');
+      final curriculumWeek = ModalRoute.of(context)?.settings.arguments as int?;
+
+      // MİSAFİR KULLANICI AKIŞI
+      if (widget.sessionId == null && userId == null) {
+        // Haftalık misafir testi
+        if (widget.testMode == TestMode.weekly) {
+          debugPrint('QuestionsScreen: Yeni misafir haftalık testi başlatılıyor...');
+          if (curriculumWeek == null) {
+            throw Exception("Haftalık misafir testi için hafta bilgisi bulunamadı.");
+          }
+          await viewModel.startGuestTest(
+            unitId: widget.unitId,
+            curriculumWeek: curriculumWeek,
+          );
+        } 
+        // Ünite misafir testi
+        else if (widget.testMode == TestMode.normal) {
+          debugPrint('QuestionsScreen: Yeni misafir ünite testi başlatılıyor...');
+          await viewModel.startGuestUnitTest(
+            unitId: widget.unitId,
+          );
+        }
+      }
+      // KAYITLI KULLANICI - DEVAM EDEN TEST
+      else if (widget.sessionId != null) {
+        debugPrint('QuestionsScreen: Mevcut teste devam ediliyor: sessionId=${widget.sessionId}');
         await viewModel.resumeTest(
           sessionId: widget.sessionId!,
           userId: userId,
           clientId: clientIdAsync,
         );
-      } else {
-        debugPrint('Yeni test başlatılıyor: unitId=${widget.unitId}, testMode=${widget.testMode}');
+      }
+      // KAYITLI KULLANICI - YENİ TEST
+      else {
+        debugPrint('QuestionsScreen: Yeni test başlatılıyor: unitId=${widget.unitId}, testMode=${widget.testMode}, userId=$userId');
         _isStartingNewTest = true;
 
-        // curriculumWeek'i arguments'tan al
-        final curriculumWeek = ModalRoute.of(context)?.settings.arguments as int?;
+        if (widget.testMode == TestMode.weekly) {
+          debugPrint("QuestionsScreen: Haftalık test için curriculumWeek: $curriculumWeek");
+        }
 
         await viewModel.startNewTest(
           testMode: widget.testMode,
@@ -140,37 +120,53 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
         _isStartingNewTest = false;
       }
 
-      debugPrint('Test başarıyla başlatıldı');
+      debugPrint('QuestionsScreen: Test başarıyla başlatıldı/devam ettirildi.');
     } catch (e, stackTrace) {
-      debugPrint('Test başlatma hatası: $e');
+      debugPrint('QuestionsScreen: Test başlatma sırasında bir hata oluştu: $e');
       debugPrint('Stack trace: $stackTrace');
 
-      _initializationError = e.toString();
+      if (mounted) {
+        setState(() {
+          _initializationError = e.toString();
+        });
+      }
     } finally {
       if (mounted) {
         setState(() {
           _isInitializing = false;
         });
+        debugPrint("QuestionsScreen: _initializeTest tamamlandı, _isInitializing false olarak ayarlandı.");
       }
     }
   }
 
   void _refreshTest() async {
+    debugPrint("QuestionsScreen: _refreshTest çağrıldı, test yenileniyor.");
     ref.invalidate(testViewModelProvider);
     await _initializeTest();
   }
 
   Future<bool> _onWillPop() async {
+    debugPrint("QuestionsScreen: _onWillPop çağrıldı.");
     final viewModel = ref.read(testViewModelProvider);
+    final user = ref.read(userIdProvider);
 
     if (_isStartingNewTest) {
+      debugPrint("QuestionsScreen: _onWillPop - Yeni test başlatılırken geri gitme engellendi.");
       return false;
     }
 
-    if (viewModel.sessionId == null || viewModel.currentTestQuestion == null) {
+    if (user == null) {
+      debugPrint("QuestionsScreen: _onWillPop - Misafir kullanıcı, uyarı göstermeden çıkabilir.");
       return true;
     }
 
+    if (viewModel.sessionId == null || viewModel.currentTestQuestion == null) {
+      debugPrint("QuestionsScreen: _onWillPop - Test oturumu veya soru yok, çıkış serbest.");
+      return true;
+    }
+
+    debugPrint("QuestionsScreen: _onWillPop - Kullanıcıya çıkış onayı gösteriliyor.");
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -205,6 +201,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(testViewModelProvider);
+    debugPrint("QuestionsScreen: build metodu çalıştı.");
 
     return WillPopScope(
       onWillPop: _onWillPop,
@@ -238,22 +235,27 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   }
 
   Widget _buildBody(TestViewModel viewModel) {
-    if (_isInitializing) {
+    if (_isInitializing || (viewModel.isLoading && viewModel.currentTestQuestion == null)) {
+      debugPrint("QuestionsScreen: _buildBody - Yükleme ekranı gösteriliyor.");
       return _buildLoadingView();
     }
 
     if (_initializationError != null) {
+      debugPrint("QuestionsScreen: _buildBody - Başlatma hatası ekranı gösteriliyor: $_initializationError");
       return _buildErrorView(_initializationError!, isInitializationError: true);
     }
 
     if (viewModel.error != null) {
+      debugPrint("QuestionsScreen: _buildBody - Test hatası ekranı gösteriliyor: ${viewModel.error}");
       return _buildErrorView(viewModel.error!, isInitializationError: false);
     }
 
     if (viewModel.currentTestQuestion == null) {
+      debugPrint("QuestionsScreen: _buildBody - Sonuç ekranı gösteriliyor.");
       return _buildResultsView(viewModel);
     }
 
+    debugPrint("QuestionsScreen: _buildBody - Soru kartı gösteriliyor: Soru ID ${viewModel.currentTestQuestion!.question.id}");
     return SafeArea(
       child: Column(
         children: [
@@ -267,6 +269,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
               key: ValueKey(viewModel.currentTestQuestion!.question.id),
               testQuestion: viewModel.currentTestQuestion!,
               onAnswered: (answer) {
+                debugPrint("QuestionsScreen: onAnswered - Kullanıcı cevap verdi.");
                 ref.read(testViewModelProvider.notifier).updateUserAnswer(answer);
               },
             ),
@@ -276,12 +279,15 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             canCheck: viewModel.currentTestQuestion!.userAnswer != null,
             isLastQuestion: viewModel.questionQueue.isEmpty,
             onCheckPressed: () {
+              debugPrint("QuestionsScreen: onCheckPressed - Cevap kontrol ediliyor.");
               ref.read(testViewModelProvider.notifier).checkAnswer();
             },
             onNextPressed: () {
+              debugPrint("QuestionsScreen: onNextPressed - Sonraki soruya geçiliyor.");
               ref.read(testViewModelProvider.notifier).nextQuestion();
             },
             onFinishPressed: () async {
+              debugPrint("QuestionsScreen: onFinishPressed - Test bitiriliyor.");
               await ref.read(testViewModelProvider.notifier).finishTest();
             },
           ),
@@ -407,38 +413,52 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   }
 
   Widget _buildResultsView(TestViewModel viewModel) {
+    final user = ref.read(userIdProvider);
+    final bool isGuest = user == null;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.check_circle_outline, size: 100, color: Colors.white),
+          Icon(isGuest ? Icons.check_circle_outline : Icons.celebration_rounded, size: 100, color: Colors.white),
           const SizedBox(height: 24),
-          const Text(
-            'Test Tamamlandı!',
-            style: TextStyle(fontSize: 28, color: Colors.white, fontWeight: FontWeight.bold),
+          Text(
+            isGuest ? 'Teste Göz Attın!' : 'Test Tamamlandı!',
+            style: const TextStyle(fontSize: 28, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          Text(
-            'Toplam Puan: ${viewModel.score}',
-            style: const TextStyle(fontSize: 24, color: Colors.amber, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          if (viewModel.totalQuestions > 0)
+          if (isGuest)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              child: Text(
+                'İlerlemeni kaydetmek ve istatistiklerini görmek için giriş yap.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.9)),
+              ),
+            )
+          else ...[
             Text(
-              'Başarı Oranı: ${((viewModel.score / viewModel.totalQuestions) * 100).toStringAsFixed(1)}%',
-              style: const TextStyle(fontSize: 18, color: Colors.white),
+              'Toplam Puan: ${viewModel.score}',
+              style: const TextStyle(fontSize: 24, color: Colors.amber, fontWeight: FontWeight.bold),
             ),
-          const SizedBox(height: 8),
-          if (viewModel.totalQuestions > 0)
-            Text(
-              'Çözülen Soru: ${viewModel.answeredCount}/${viewModel.totalQuestions}',
-              style: const TextStyle(fontSize: 16, color: Colors.white70),
-            ),
+            const SizedBox(height: 8),
+            if (viewModel.totalQuestions > 0)
+              Text(
+                'Başarı Oranı: ${((viewModel.score / viewModel.totalQuestions) * 100).toStringAsFixed(1)}%',
+                style: const TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            const SizedBox(height: 8),
+            if (viewModel.totalQuestions > 0)
+              Text(
+                'Çözülen Soru: ${viewModel.answeredCount}/${viewModel.totalQuestions}',
+                style: const TextStyle(fontSize: 16, color: Colors.white70),
+              ),
+          ],
           const SizedBox(height: 48),
           ElevatedButton.icon(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.arrow_back),
-            label: const Text('Üniteye Dön'),
+            label: Text(isGuest ? 'Geri Dön' : 'Üniteye Dön'),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               backgroundColor: Colors.white,

@@ -7,7 +7,6 @@ import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart'; // AnswerSaveCallback için import
 
 class TestViewModel extends ChangeNotifier {
   final TestRepository _repository;
@@ -27,7 +26,6 @@ class TestViewModel extends ChangeNotifier {
   int _unitId = 0;
   String? _userId;
   String? _clientId;
-  AnswerSaveCallback? _externalSaveCallback; // YENİ: Dışarıdan gelen kaydetme fonksiyonu
 
   // Getters
   TestQuestion? get currentTestQuestion => _currentTestQuestion;
@@ -44,13 +42,81 @@ class TestViewModel extends ChangeNotifier {
 
   TestViewModel(this._repository);
 
-  // YENİ: Dışarıdan gelen callback'i ayarlamak için metot
-  void setExternalSaveCallback(AnswerSaveCallback callback) {
-    _externalSaveCallback = callback;
-    log('TestViewModel: Harici kaydetme fonksiyonu ayarlandı.');
+  // ========== TEST BAŞLATMA METODLARI ==========
+
+  Future<void> startGuestUnitTest({
+    required int unitId,
+  }) async {
+    log('TestViewModel.startGuestUnitTest: unitId=$unitId');
+    _isLoading = true;
+    _error = null;
+    _testMode = TestMode.normal; // Misafir ünite testi
+    _unitId = unitId;
+    _userId = null; // Misafir
+    _sessionId = null; // Misafir testinde session ID olmaz
+    notifyListeners();
+
+    try {
+      final questions = await _repository.startGuestUnitTest(
+        unitId: unitId,
+      );
+
+      if (questions.isEmpty) {
+        throw Exception("Bu test için soru bulunamadı.");
+      }
+
+      _questionQueue = questions.map((q) => TestQuestion(question: q)).toList();
+      _totalQuestions = _questionQueue.length;
+      _currentTestQuestion = _questionQueue.removeAt(0); // İlk soruyu al
+
+      _isLoading = false;
+      _questionTimer.reset();
+      _questionTimer.start();
+      log('TestViewModel.startGuestUnitTest: Misafir ünite testi başarıyla başlatıldı. Toplam ${_totalQuestions} soru yüklendi.');
+      notifyListeners();
+    } catch (e, stackTrace) {
+      log('TestViewModel.startGuestUnitTest ERROR: $e', error: e, stackTrace: stackTrace);
+      _setError("Misafir ünite testi başlatılamadı: ${_getErrorMessage(e)}");
+    }
   }
 
-  // ========== TEST BAŞLATMA METODLARI ==========
+  Future<void> startGuestTest({
+    required int unitId,
+    required int curriculumWeek,
+  }) async {
+    log('TestViewModel.startGuestTest: unitId=$unitId, curriculumWeek=$curriculumWeek');
+    _isLoading = true;
+    _error = null;
+    _testMode = TestMode.weekly; // Misafir testi her zaman haftalık modda
+    _unitId = unitId;
+    _userId = null; // Misafir
+    _sessionId = null; // Misafir testinde session ID olmaz
+    notifyListeners();
+
+    try {
+      final questions = await _repository.startGuestTest(
+        unitId: unitId,
+        curriculumWeek: curriculumWeek,
+      );
+
+      if (questions.isEmpty) {
+        throw Exception("Bu test için soru bulunamadı.");
+      }
+
+      _questionQueue = questions.map((q) => TestQuestion(question: q)).toList();
+      _totalQuestions = _questionQueue.length;
+      _currentTestQuestion = _questionQueue.removeAt(0); // İlk soruyu al
+
+      _isLoading = false;
+      _questionTimer.reset();
+      _questionTimer.start();
+      log('TestViewModel.startGuestTest: Misafir testi başarıyla başlatıldı. Toplam ${_totalQuestions} soru yüklendi.');
+      notifyListeners();
+    } catch (e, stackTrace) {
+      log('TestViewModel.startGuestTest ERROR: $e', error: e, stackTrace: stackTrace);
+      _setError("Misafir testi başlatılamadı: ${_getErrorMessage(e)}");
+    }
+  }
 
   Future<void> startNewTest({
     required TestMode testMode,
@@ -59,6 +125,7 @@ class TestViewModel extends ChangeNotifier {
     required String? userId,
     required String clientId,
   }) async {
+    // Bu metot sadece kayıtlı kullanıcılar için. Misafirler resumeTest kullanır.
     if (userId == null || userId.isEmpty) {
       _setError("Kullanıcı kimliği bulunamadı. Lütfen tekrar giriş yapın.");
       return;
@@ -100,24 +167,26 @@ class TestViewModel extends ChangeNotifier {
 
   Future<void> resumeTest({
     required int sessionId,
-    required String? userId,
+    required String? userId, // Artık null olabilir
     required String clientId,
   }) async {
-    log('TestViewModel.resumeTest: sessionId=$sessionId');
+    log('TestViewModel.resumeTest: sessionId=$sessionId, userId=$userId');
 
     _isLoading = true;
     _error = null;
     _sessionId = sessionId;
-    _userId = userId;
+    _userId = userId; // userId null ise bu bir misafir testidir
     _clientId = clientId;
     notifyListeners();
 
     try {
-      final isValid = await _repository.resumeTestSession(sessionId);
-
-      if (!isValid) {
-        _setError("Bu test oturumu artık geçerli değil. Yeni bir test başlatın.");
-        return;
+      // Sadece kayıtlı kullanıcılar için oturum geçerliliğini kontrol et
+      if (userId != null) {
+        final isValid = await _repository.resumeTestSession(sessionId);
+        if (!isValid) {
+          _setError("Bu test oturumu artık geçerli değil. Yeni bir test başlatın.");
+          return;
+        }
       }
 
       await _fetchInitialQuestion();
@@ -146,6 +215,11 @@ class TestViewModel extends ChangeNotifier {
       log('TestViewModel._fetchInitialQuestion: answeredCount=$answeredCount, correctCount=$correctCount');
 
       if (questionData == null) {
+        // Eğer hiç soru cevaplanmadıysa ve ilk soru da null geldiyse, bu testte hiç soru yok demektir.
+        if (answeredCount == 0) {
+          log('TestViewModel._fetchInitialQuestion: Test için hiç soru bulunamadı.');
+          throw Exception('Bu test için soru bulunamadı.');
+        }
         log('TestViewModel._fetchInitialQuestion: Tüm sorular tamamlandı');
         await finishTest();
         return;
@@ -182,7 +256,7 @@ class TestViewModel extends ChangeNotifier {
 
       final results = await Future.wait([
         _repository.getAllSessionQuestions(_sessionId!, _userId),
-        _repository.getAnsweredQuestionIds(_sessionId!),
+        if (_userId != null) _repository.getAnsweredQuestionIds(_sessionId!) else Future.value(<int>{}),
       ]);
 
       final allQuestions = results[0] as List<Question>;
@@ -238,7 +312,10 @@ class TestViewModel extends ChangeNotifier {
 
     notifyListeners();
 
-    await _saveAnswer(isCorrect, duration);
+    // Sadece kayıtlı kullanıcıların cevaplarını kaydet
+    if (_userId != null) {
+      await _saveAnswer(isCorrect, duration);
+    }
   }
 
   bool _checkIfAnswerIsCorrect() {
@@ -302,15 +379,14 @@ class TestViewModel extends ChangeNotifier {
     }
   }
 
-  // GÜNCELLENDİ: Hem dahili hem de harici kaydetme fonksiyonlarını çağırır.
   Future<void> _saveAnswer(bool isCorrect, int duration) async {
+    // userId null ise (misafir ise) cevapları kaydetme.
     if (_sessionId == null || _currentTestQuestion == null || _userId == null || _clientId == null) {
-      log('TestViewModel._saveAnswer: Kaydetme işlemi iptal edildi. Eksik bilgi var. SessionId: $_sessionId, UserId: $_userId, ClientId: $_clientId');
+      log('TestViewModel._saveAnswer: Kaydetme işlemi iptal edildi. Eksik bilgi veya misafir kullanıcısı. SessionId: $_sessionId, UserId: $_userId, ClientId: $_clientId');
       return;
     }
 
     try {
-      // 1. Her zaman dahili (repository) kaydetme fonksiyonunu çağır (test_session_answers tablosuna kayıt).
       log('TestViewModel._saveAnswer: Dahili (repository) kaydetme fonksiyonu kullanılıyor (test_session_answers).');
       await _repository.saveAnswer(
         sessionId: _sessionId!,
@@ -322,27 +398,10 @@ class TestViewModel extends ChangeNotifier {
         durationSeconds: duration,
       );
       log('TestViewModel._saveAnswer: test_session_answers tablosuna kayıt başarıyla yapıldı.');
-
-      // 2. Eğer harici bir kaydetme fonksiyonu varsa, onu da çağır (user_curriculum_week_run_summary tablosuna güncelleme).
-      if (_externalSaveCallback != null) {
-        log('TestViewModel._saveAnswer: Harici kaydetme fonksiyonu da çağrılıyor (user_curriculum_week_run_summary).');
-        await _externalSaveCallback!(
-          sessionId: _sessionId!,
-          questionId: _currentTestQuestion!.question.id,
-          userAnswer: _currentTestQuestion!.userAnswer,
-          isCorrect: isCorrect,
-          duration: duration,
-        );
-        log('TestViewModel._saveAnswer: Harici kaydetme fonksiyonu başarıyla tamamlandı.');
-      }
-      
-      log('TestViewModel._saveAnswer: Tüm kaydetme işlemleri tamamlandı.');
     } catch (e, stackTrace) {
-      // Hata mesajını konsola daha belirgin bir şekilde yazdır.
       final errorMessage = "Cevap kaydedilirken bir hata oluştu.";
       log('$errorMessage\nDETAYLAR: $e', error: e, stackTrace: stackTrace);
       
-      // Kullanıcının isteği üzerine konsola yazdırma
       debugPrint("**************************************************");
       debugPrint("HATA: CEVAP KAYDEDİLEMEDİ");
       debugPrint("**************************************************");
@@ -380,21 +439,36 @@ class TestViewModel extends ChangeNotifier {
   }
 
   Future<void> finishTest() async {
-    if (_sessionId == null) return;
+    // Misafir testleri (sessionId == null ve userId == null) için veritabanı işlemi yapma
+    if (_userId == null) {
+      log('TestViewModel.finishTest: Misafir testi, veritabanı işlemi atlanıyor.');
+      _currentTestQuestion = null;
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
 
-    log('TestViewModel.finishTest: sessionId=$_sessionId, testMode=$_testMode');
+    if (sessionId == null) {
+      log('TestViewModel.finishTest: Oturum ID yok, veritabanı işlemi atlanıyor.');
+      _currentTestQuestion = null;
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
+    log('TestViewModel.finishTest: sessionId=$sessionId, testMode=$testMode');
 
     try {
-      await _repository.finishTestSession(_sessionId!, _testMode);
-
+      await _repository.finishTestSession(sessionId!, testMode);
       _currentTestQuestion = null;
       _isLoading = false;
 
-      log('TestViewModel.finishTest: Test başarıyla tamamlandı');
+      log('TestViewModel.finishTest: Test başarıyla tamamlandı (UserId: $_userId)');
 
       notifyListeners();
     } catch (e, stackTrace) {
       log('TestViewModel.finishTest ERROR: $e', error: e, stackTrace: stackTrace);
+      debugPrint('--- HATA DETAYI --- Stack Trace: $stackTrace');
       _error = "Test bitirilirken hata: ${_getErrorMessage(e)}";
       notifyListeners();
     }
@@ -456,7 +530,6 @@ class TestViewModel extends ChangeNotifier {
     _unitId = 0;
     _userId = null;
     _clientId = null;
-    _externalSaveCallback = null; // reset'te bunu da temizle
     notifyListeners();
   }
 }

@@ -17,9 +17,18 @@ abstract class TestRepository {
   // Soru işlemleri
   Future<Map<String, dynamic>> getNextQuestion(int sessionId, String? userId);
   Future<List<Question>> getAllSessionQuestions(int sessionId, String? userId);
-  
-  // YENİ: Cevaplanmış soru ID'lerini getiren metodun imzası eklendi.
   Future<Set<int>> getAnsweredQuestionIds(int sessionId);
+
+  // Misafir haftalık testi için soruları getiren metot
+  Future<List<Question>> startGuestTest({
+    required int unitId,
+    required int curriculumWeek,
+  });
+
+  // YENİ: Misafir ünite testi için soruları getiren metot
+  Future<List<Question>> startGuestUnitTest({
+    required int unitId,
+  });
 
   // Cevap işlemleri
   Future<void> saveAnswer({

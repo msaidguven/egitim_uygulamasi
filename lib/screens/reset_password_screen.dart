@@ -1,31 +1,40 @@
 // lib/screens/reset_password_screen.dart
 
+import 'package:egitim_uygulamasi/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
+class ResetPasswordScreen extends ConsumerStatefulWidget {
   const ResetPasswordScreen({super.key});
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  ConsumerState<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  final AuthViewModel _viewModel = AuthViewModel();
+class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isSuccess = false;
 
   @override
-  void initState() {
-    super.initState();
-    _viewModel.addListener(() {
-      if (!mounted) return;
-      setState(() {});
+  void dispose() {
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
-      final errorMessage = _viewModel.errorMessage;
-      if (errorMessage != null) {
+  Future<void> _updatePassword() async {
+    if (_formKey.currentState!.validate()) {
+      final viewModel = ref.read(authViewModelProvider.notifier);
+      final success = await viewModel.updatePassword(_passwordController.text.trim());
+      if (success && mounted) {
+        setState(() {
+          _isSuccess = true;
+        });
+      } else if (mounted) {
+        final errorMessage = viewModel.errorMessage ?? 'Bir hata oluştu.';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
@@ -36,29 +45,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             ),
           ),
         );
-      } else if (!_viewModel.isLoading && !_isSuccess) {
-        _isSuccess = true;
       }
-    });
-  }
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _viewModel.dispose();
-    super.dispose();
-  }
-
-  Future<void> _updatePassword() async {
-    if (_formKey.currentState!.validate()) {
-      await _viewModel.updatePassword(_passwordController.text.trim());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    // authViewModel'i dinleyerek isLoading durumunu al
+    final authViewModel = ref.watch(authViewModelProvider);
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
@@ -70,11 +65,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       ),
       body: _isSuccess
           ? _buildSuccessBody(isDarkMode)
-          : _buildFormBody(isDarkMode),
+          : _buildFormBody(isDarkMode, authViewModel.isLoading),
     );
   }
 
-  Widget _buildFormBody(bool isDarkMode) {
+  Widget _buildFormBody(bool isDarkMode, bool isLoading) {
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
@@ -266,7 +261,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: _viewModel.isLoading ? null : _updatePassword,
+                      onPressed: isLoading ? null : _updatePassword,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
@@ -280,8 +275,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      child: _viewModel.isLoading
-                          ? SizedBox(
+                      child: isLoading
+                          ? const SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
@@ -344,7 +339,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     width: 2,
                   ),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.check_rounded,
                   color: Colors.green,
                   size: 50,
@@ -383,7 +378,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () async {
-                    await _viewModel.signOut();
+                    await ref.read(authViewModelProvider.notifier).signOut(ref);
                     if (mounted) {
                       Navigator.of(context).popUntil((r) => r.isFirst);
                     }
@@ -413,7 +408,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 height: 56,
                 child: OutlinedButton(
                   onPressed: () async {
-                    await _viewModel.signOut();
+                    await ref.read(authViewModelProvider.notifier).signOut(ref);
                     if (mounted) {
                       Navigator.of(context).popUntil((r) => r.isFirst);
                     }

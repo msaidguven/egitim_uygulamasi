@@ -1,8 +1,10 @@
 // lib/viewmodels/auth_viewmodel.dart
 
 import 'dart:async';
+import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/main.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthViewModel extends ChangeNotifier {
@@ -11,6 +13,17 @@ class AuthViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+
+  Future<List<Map<String, dynamic>>> getGrades() async {
+    try {
+      final response = await supabase.from('grades').select('id, name').order('order_no', ascending: true);
+      return (response as List).map((grade) => {'id': grade['id'], 'name': grade['name']}).toList();
+    } catch (e) {
+      _errorMessage = 'Sınıflar yüklenirken bir hata oluştu.';
+      notifyListeners();
+      return [];
+    }
+  }
 
   Future<bool> signIn(String email, String password) async {
     return _handleAuth(() async {
@@ -22,9 +35,7 @@ class AuthViewModel extends ChangeNotifier {
     required String email,
     required String password,
     required String fullName,
-    required String username,
-    required String gender,
-    DateTime? birthDate,
+    int? gradeId,
   }) async {
     return _handleAuth(() async {
       // 1. Adım: Supabase Auth ile kullanıcıyı oluştur.
@@ -35,22 +46,21 @@ class AuthViewModel extends ChangeNotifier {
 
       // 2. Adım: Kullanıcı başarıyla oluşturulduysa, 'profiles' tablosuna ek bilgileri kaydet.
       if (res.user != null) {
-        // Supabase'de tarih formatı 'YYYY-MM-DD' olmalıdır.
-        final String? birthDateString = birthDate
-            ?.toIso8601String()
-            .split('T')
-            .first;
+        // Kullanıcı adı olarak e-postanın ilk bölümünü alalım (geçici çözüm)
+        final username = email.split('@').first;
 
         await supabase.from('profiles').insert({
           'id': res.user!.id, // Auth kullanıcısının ID'si ile eşleştir
           'full_name': fullName,
           'username': username,
-          'gender': gender,
-          'birth_date': birthDateString,
+          'grade_id': gradeId,
         });
+
+        // 3. Adım: Kayıt sonrası otomatik olarak oturum aç.
+        await supabase.auth.signInWithPassword(email: email, password: password);
+
       } else {
         // Beklenmedik bir durum, kullanıcı null geldi.
-        // _handleAuth bunu yakalayacaktır, ancak yine de bir istisna fırlatmak iyi bir pratiktir.
         throw const AuthException(
           'Kullanıcı oluşturulamadı. Lütfen tekrar deneyin.',
         );
@@ -70,24 +80,11 @@ class AuthViewModel extends ChangeNotifier {
     });
   }
 
-  /// Verilen kullanıcı adının veritabanında mevcut olup olmadığını kontrol eder.
-  Future<bool> isUsernameTaken(String username) async {
-    try {
-      final List<dynamic> data = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('username', username)
-          .limit(1);
-      // Eğer data listesi boş değilse, bu kullanıcı adı zaten var demektir.
-      return data.isNotEmpty;
-    } catch (e) {
-      // Bir hata oluşursa, işlemin devam etmesini engellemek için istisna fırlat.
-      throw Exception('Kullanıcı adı kontrol edilirken bir hata oluştu: $e');
-    }
-  }
-
-  Future<void> signOut() async {
+  Future<void> signOut(WidgetRef ref) async {
     await supabase.auth.signOut();
+    ref.invalidate(profileViewModelProvider);
+    // Oturuma bağlı diğer provider'lar da burada invalidate edilebilir.
+    // Örnek: ref.invalidate(anotherUserSpecificProvider);
   }
 
   Future<bool> _handleAuth(Future<void> Function() authFunction) async {

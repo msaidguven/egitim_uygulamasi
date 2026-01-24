@@ -114,7 +114,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           break;
         case TestMode.normal:
         default:
-          rpcName = 'start_test_v2';
+          rpcName = 'start_unit_test';
           params = {
             'p_client_id': clientId,
             'p_unit_id': widget.unitId,

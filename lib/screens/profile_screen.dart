@@ -4,123 +4,135 @@ import 'package:egitim_uygulamasi/admin/admin_auth_gate.dart';
 import 'package:egitim_uygulamasi/models/profile_model.dart';
 import 'package:egitim_uygulamasi/screens/admin/fix_true_false_screen.dart';
 import 'package:egitim_uygulamasi/screens/edit_profile_screen.dart';
+import 'package:egitim_uygulamasi/screens/login_screen.dart';
+import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfileScreen extends StatelessWidget {
+final authViewModelProvider = ChangeNotifierProvider((ref) => AuthViewModel());
+
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final viewModel = ProfileViewModel();
+  Widget build(BuildContext context, WidgetRef ref) {
+    // profileViewModelProvider'ı dinle
+    final profileViewModel = ref.watch(profileViewModelProvider);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    return ChangeNotifierProvider(
-      create: (_) => viewModel..fetchProfile(),
-      child: Consumer<ProfileViewModel>(
-        builder: (context, vm, child) {
-          final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    // Veri yüklenirken gösterilecek ekran
+    if (profileViewModel.isLoading && profileViewModel.profile == null) {
+      return Scaffold(
+        backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      );
+    }
 
-          if (vm.isLoading) {
-            return Scaffold(
-              backgroundColor: isDarkMode ? Colors.black : Colors.white,
-              body: Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.primary,
+    // Hata durumunda gösterilecek ekran
+    if (profileViewModel.errorMessage != null && profileViewModel.profile == null) {
+      return Scaffold(
+        backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline_rounded,
+                  color: Colors.red,
+                  size: 64,
                 ),
-              ),
-            );
-          }
-
-          if (vm.errorMessage != null) {
-            return Scaffold(
-              backgroundColor: isDarkMode ? Colors.black : Colors.white,
-              body: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline_rounded,
-                        color: Colors.red,
-                        size: 64,
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        vm.errorMessage!,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      ElevatedButton(
-                        onPressed: vm.fetchProfile,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text('Tekrar Dene'),
-                      ),
-                    ],
+                const SizedBox(height: 20),
+                Text(
+                  profileViewModel.errorMessage!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                   ),
                 ),
-              ),
-            );
-          }
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: () => ref.read(profileViewModelProvider.notifier).fetchProfile(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Tekrar Dene'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
-          if (vm.profile == null) {
-            return Scaffold(
-              backgroundColor: isDarkMode ? Colors.black : Colors.white,
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.person_off_rounded,
-                      color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
-                      size: 64,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Profil bulunamadı.',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                      ),
-                    ),
-                  ],
+    // Profil bulunamadığında gösterilecek ekran
+    if (profileViewModel.profile == null) {
+      return Scaffold(
+        backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.person_off_rounded,
+                color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                size: 64,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Profil bulunamadı veya yüklenemedi.',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                 ),
               ),
-            );
-          }
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => ref.read(profileViewModelProvider.notifier).fetchProfile(),
+                child: const Text('Yeniden Yükle'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
-          return _ProfileBody(profile: vm.profile!);
-        },
-      ),
-    );
+    // Profil verisi mevcutsa gösterilecek body
+    return _ProfileBody(profile: profileViewModel.profile!);
   }
 }
 
-class _ProfileBody extends StatefulWidget {
+class _ProfileBody extends ConsumerStatefulWidget {
   final Profile profile;
   const _ProfileBody({required this.profile});
 
   @override
-  State<_ProfileBody> createState() => __ProfileBodyState();
+  ConsumerState<_ProfileBody> createState() => __ProfileBodyState();
 }
 
-class __ProfileBodyState extends State<_ProfileBody> with SingleTickerProviderStateMixin {
+class __ProfileBodyState extends ConsumerState<_ProfileBody> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    // Verilerin taze olduğundan emin olmak için fetchProfile'i burada çağırabiliriz.
+    // Ancak bu, her profil ekranı açıldığında yeniden yükleme yapar.
+    // İsteğe bağlı olarak eklenebilir:
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   ref.read(profileViewModelProvider.notifier).fetchProfile();
+    // });
   }
 
   @override
@@ -142,9 +154,9 @@ class __ProfileBodyState extends State<_ProfileBody> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<ProfileViewModel>(context, listen: false);
+    // En güncel profil verisini almak için ref.watch kullanıyoruz.
+    final profile = ref.watch(profileViewModelProvider).profile ?? widget.profile;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final profile = widget.profile;
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
@@ -180,12 +192,12 @@ class __ProfileBodyState extends State<_ProfileBody> with SingleTickerProviderSt
                       ),
                     ).then((updated) {
                       if (updated == true) {
-                        vm.fetchProfile();
+                        ref.read(profileViewModelProvider.notifier).fetchProfile();
                       }
                     });
                   },
                 ),
-                _buildPopupMenu(context, vm),
+                _buildPopupMenu(context, ref, profile),
               ],
               flexibleSpace: _buildHeader(context, profile),
             ),
@@ -644,7 +656,7 @@ class __ProfileBodyState extends State<_ProfileBody> with SingleTickerProviderSt
     );
   }
 
-  PopupMenuButton _buildPopupMenu(BuildContext context, ProfileViewModel vm) {
+  PopupMenuButton _buildPopupMenu(BuildContext context, WidgetRef ref, Profile profile) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return PopupMenuButton(
@@ -658,7 +670,15 @@ class __ProfileBodyState extends State<_ProfileBody> with SingleTickerProviderSt
             MaterialPageRoute(builder: (_) => const FixTrueFalseScreen()),
           );
         } else if (value == 'logout') {
-          await vm.signOut();
+          // Merkezi signOut metodunu ref ile çağır
+          await ref.read(authViewModelProvider.notifier).signOut(ref);
+          // Ekran geçişlerini yönet
+          if (context.mounted) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (Route<dynamic> route) => false,
+            );
+          }
         }
       },
       icon: Icon(
@@ -666,7 +686,7 @@ class __ProfileBodyState extends State<_ProfileBody> with SingleTickerProviderSt
         color: isDarkMode ? Colors.white : Colors.black,
       ),
       itemBuilder: (context) => [
-        if (vm.profile?.role == 'admin') ...[
+        if (profile.role == 'admin') ...[
           PopupMenuItem(
             value: 'admin',
             child: ListTile(
@@ -704,11 +724,11 @@ class __ProfileBodyState extends State<_ProfileBody> with SingleTickerProviderSt
         PopupMenuItem(
           value: 'logout',
           child: ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.logout_rounded,
               color: Colors.red,
             ),
-            title: Text(
+            title: const Text(
               'Çıkış Yap',
               style: TextStyle(
                 fontWeight: FontWeight.w500,

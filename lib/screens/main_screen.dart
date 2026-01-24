@@ -6,7 +6,6 @@ import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:egitim_uygulamasi/screens/profile_screen.dart';
 import 'package:egitim_uygulamasi/screens/grades_screen.dart';
 import 'package:egitim_uygulamasi/screens/statistics_screen.dart';
-import 'package:egitim_uygulamasi/screens/tests_screen.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:egitim_uygulamasi/widgets/lesson_card.dart';
@@ -86,27 +85,35 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     _authStream = Supabase.instance.client.auth.onAuthStateChange;
     _authStream.listen((data) {
       if (mounted) {
-        setState(() => _impersonatedRole = null);
-        ref.read(profileViewModelProvider.notifier).fetchProfile().then((_) {
-          _fetchDashboardData();
-        });
-        setState(() {});
+        _initializeProfileAndData();
       }
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _currentCurriculumWeek = calculateCurrentAcademicWeek();
       if (Supabase.instance.client.auth.currentUser != null) {
-        final profile = ref.read(profileViewModelProvider).profile;
-        if (profile == null) {
-          ref.read(profileViewModelProvider.notifier).fetchProfile().then((_) {
-            _fetchDashboardData();
-          });
-        } else {
-          _fetchDashboardData();
-        }
+        _initializeProfileAndData();
       }
     });
+  }
+
+  Future<void> _initializeProfileAndData() async {
+    if (!mounted) return;
+
+    // Profil verisini getir.
+    await ref.read(profileViewModelProvider.notifier).fetchProfile();
+
+    if (mounted) {
+      final profile = ref.read(profileViewModelProvider).profile;
+      // Eğer kullanıcı admin ise ve taklit edilen bir rol yoksa, varsayılan olarak 'student' rolünü taklit et.
+      if (profile?.role == 'admin' && _impersonatedRole == null) {
+        setState(() {
+          _impersonatedRole = 'student';
+        });
+      }
+      // Dashboard verilerini getir.
+      _fetchDashboardData();
+    }
   }
 
   void _onItemTapped(int index) {
@@ -232,26 +239,36 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         currentRole: _getCurrentRole(profile),
       ),
       const GradesScreen(),
-      //const TestsScreen(),
-      isLoggedIn ? const StatisticsScreen() : const LoginPromptScreen(),
+      const StatisticsScreen(),
       isLoggedIn ? const ProfileScreen() : const LoginPromptScreen(),
     ];
 
-    return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: pages),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Ana Sayfa'),
-          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Dersler'),
-          //BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Testler'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'İstatistikler'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
+    return WillPopScope(
+      onWillPop: () async {
+        if (_selectedIndex != 0) {
+          setState(() {
+            _selectedIndex = 0;
+          });
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        body: IndexedStack(index: _selectedIndex, children: pages),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Ana Sayfa'),
+            BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Dersler'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.bar_chart), label: 'İstatistikler'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Theme.of(context).primaryColor,
+          unselectedItemColor: Colors.grey,
+        ),
       ),
     );
   }

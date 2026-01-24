@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:egitim_uygulamasi/services/cache_service.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
-import 'package:egitim_uygulamasi/models/question_model.dart'; // Question modelini import et
-import 'package:egitim_uygulamasi/models/topic_content.dart'; // TopicContent modelini import et
+import 'package:egitim_uygulamasi/models/question_model.dart';
+import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
-
 
 // _SuccessLevel sınıfını buraya taşıyoruz, çünkü ViewModel'ın iş mantığına dahil.
 class SuccessLevel {
@@ -113,7 +112,7 @@ class OutcomesViewModel extends ChangeNotifier {
   int _initialPageIndex = 0;
   int get initialPageIndex => _initialPageIndex;
 
-  // Haftaya özel verileri tutan haritalar
+  // Haftaya özel verileri tutan haritalar (ÖNBELLEK)
   final Map<int, Map<String, dynamic>> _weekMainContents = {};
   final Map<int, List<Question>> _weekQuestions = {};
   final Map<int, Map<String, dynamic>?> _weekStats = {};
@@ -121,14 +120,13 @@ class OutcomesViewModel extends ChangeNotifier {
   final Map<int, bool> _weekLoadingStatus = {};
   final Map<int, String> _weekErrorMessages = {};
 
-  // Mevcut haftanın verilerine erişim için getter'lar
-  Map<String, dynamic>? get currentWeekContent => _weekMainContents[_currentWeek];
-  List<Question>? get questions => _weekQuestions[_currentWeek];
-  Map<String, dynamic>? get weeklyStats => _weekStats[_currentWeek];
-  int? get unitId => _weekUnitIds[_currentWeek];
-  bool get isLoadingContent => _weekLoadingStatus[_currentWeek] ?? false;
-  bool get hasErrorContent => _weekErrorMessages.containsKey(_currentWeek);
-  String get contentErrorMessage => _weekErrorMessages[_currentWeek] ?? '';
+  // Belirli bir haftanın verilerine erişim için getter'lar
+  Map<String, dynamic>? getWeekContent(int week) => _weekMainContents[week];
+  List<Question>? getWeekQuestions(int week) => _weekQuestions[week];
+  Map<String, dynamic>? getWeekStats(int week) => _weekStats[week];
+  int? getWeekUnitId(int week) => _weekUnitIds[week];
+  bool isWeekLoading(int week) => _weekLoadingStatus[week] ?? false;
+  String? getWeekError(int week) => _weekErrorMessages[week];
 
   int? _currentWeek;
   int? get currentWeek => _currentWeek;
@@ -252,80 +250,87 @@ class OutcomesViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchWeekContent(int curriculumWeek) async {
-    _currentWeek = curriculumWeek;
-    _safeNotifyListeners();
+  void onPageChanged(int index) {
+    final weekData = _allWeeksData[index];
+    if (weekData['type'] == 'week') {
+      final curriculumWeek = weekData['curriculum_week'] as int;
+      _currentWeek = curriculumWeek;
+      _safeNotifyListeners();
 
-    // Mevcut, önceki ve sonraki haftaları önceden yükle
-    _prefetchWeek(curriculumWeek);
-    
-    final weekIndex = _allWeeksData.indexWhere((w) => w['curriculum_week'] == curriculumWeek);
-    if (weekIndex != -1) {
-      // Önceki haftayı yükle
-      if (weekIndex > 0) {
-        final prevWeek = _allWeeksData[weekIndex - 1];
-        if (prevWeek['type'] == 'week') {
-          _prefetchWeek(prevWeek['curriculum_week']);
-        }
-      }
-      // Sonraki haftayı yükle
-      if (weekIndex < _allWeeksData.length - 1) {
-        final nextWeek = _allWeeksData[weekIndex + 1];
-        if (nextWeek['type'] == 'week') {
-          _prefetchWeek(nextWeek['curriculum_week']);
-        }
-      }
+      _prefetchSurroundingWeeks(index);
     }
   }
 
-  Future<void> _prefetchWeek(int curriculumWeek) async {
-    // Zaten yüklendiyse veya yükleniyorsa tekrar deneme
+  void _prefetchSurroundingWeeks(int currentIndex) {
+    _fetchWeekContent(currentIndex);
+
+    if (currentIndex > 0) {
+      _fetchWeekContent(currentIndex - 1);
+    }
+    if (currentIndex < _allWeeksData.length - 1) {
+      _fetchWeekContent(currentIndex + 1);
+    }
+  }
+
+  Future<void> _fetchWeekContent(int index) async {
+    final weekData = _allWeeksData[index];
+    if (weekData['type'] != 'week') return;
+
+    final curriculumWeek = weekData['curriculum_week'] as int;
+
     if (_weekMainContents.containsKey(curriculumWeek) || (_weekLoadingStatus[curriculumWeek] ?? false)) {
       return;
     }
 
     _weekLoadingStatus[curriculumWeek] = true;
     _weekErrorMessages.remove(curriculumWeek);
-    // Sadece mevcut hafta için yükleme göstergesi göster
-    if (curriculumWeek == _currentWeek) {
-      _safeNotifyListeners();
-    }
+    _safeNotifyListeners();
 
     try {
-      final cachedData = await _cacheService.getWeeklyCurriculumData(
-        curriculumWeek: curriculumWeek,
-        lessonId: lessonId,
-        gradeId: gradeId,
-      );
+      final user = Supabase.instance.client.auth.currentUser;
+      final isGuest = user == null;
 
-      if (cachedData != null) {
-        _weekMainContents[curriculumWeek] = cachedData;
-        _weekUnitIds[curriculumWeek] = cachedData['unit_id'];
-        if (curriculumWeek == _currentWeek) {
-          _weekLoadingStatus[curriculumWeek] = false;
+      if (!isGuest) {
+        final cachedData = await _cacheService.getWeeklyCurriculumData(
+          curriculumWeek: curriculumWeek,
+          lessonId: lessonId,
+          gradeId: gradeId,
+        );
+
+        if (cachedData != null) {
+          _weekMainContents[curriculumWeek] = cachedData;
+          _weekUnitIds[curriculumWeek] = cachedData['unit_id'];
           _safeNotifyListeners();
+          await _fetchDynamicData(curriculumWeek);
+          return;
         }
-        await _fetchDynamicData(curriculumWeek);
-      } else {
-        final fullData = await _fetchFullDataFromNetwork(curriculumWeek: curriculumWeek);
-        
-        final contentToCache = Map<String, dynamic>.from(fullData);
-        contentToCache.remove('mini_quiz_questions');
-        _weekMainContents[curriculumWeek] = contentToCache;
+      }
+
+      final fullData = await _fetchNetworkDataWithoutCaching(curriculumWeek: curriculumWeek);
+      
+      final contentToCache = Map<String, dynamic>.from(fullData);
+      contentToCache.remove('mini_quiz_questions');
+      _weekMainContents[curriculumWeek] = contentToCache;
+
+      if (!isGuest) {
         await _cacheService.saveWeeklyCurriculumData(
           curriculumWeek: curriculumWeek,
           lessonId: lessonId,
           gradeId: gradeId,
           data: contentToCache,
         );
+      }
 
-        _weekQuestions[curriculumWeek] = (fullData['mini_quiz_questions'] as List? ?? [])
-            .map((q) => Question.fromMap(q as Map<String, dynamic>))
-            .toList();
-        
-        _weekUnitIds[curriculumWeek] = _weekMainContents[curriculumWeek]?['unit_id'];
+      _weekQuestions[curriculumWeek] = (fullData['mini_quiz_questions'] as List? ?? [])
+          .map((q) => Question.fromMap(q as Map<String, dynamic>))
+          .toList();
+      
+      _weekUnitIds[curriculumWeek] = _weekMainContents[curriculumWeek]?['unit_id'];
+      
+      if (!isGuest) {
         await _loadWeeklyStats(curriculumWeek);
       }
+
     } catch (e) {
       _weekErrorMessages[curriculumWeek] = e.toString();
       _weekMainContents.remove(curriculumWeek);
@@ -334,10 +339,7 @@ class OutcomesViewModel extends ChangeNotifier {
       _weekUnitIds.remove(curriculumWeek);
     } finally {
       _weekLoadingStatus[curriculumWeek] = false;
-      // Sadece mevcut hafta değiştiyse UI'ı güncelle
-      if (curriculumWeek == _currentWeek) {
-        _safeNotifyListeners();
-      }
+      _safeNotifyListeners();
     }
   }
 
@@ -356,9 +358,7 @@ class OutcomesViewModel extends ChangeNotifier {
       _weekQuestions.remove(curriculumWeek);
       _weekStats.remove(curriculumWeek);
     } finally {
-      if (curriculumWeek == _currentWeek) {
-        _safeNotifyListeners();
-      }
+      _safeNotifyListeners();
     }
   }
 
@@ -389,12 +389,11 @@ class OutcomesViewModel extends ChangeNotifier {
 
   Future<Map<String, dynamic>> _fetchNetworkDataWithoutCaching({required int curriculumWeek}) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
-    if (userId == null) throw Exception('Kullanıcı girişi gerekli.');
 
     final response = await Supabase.instance.client.rpc(
       'get_weekly_curriculum',
       params: {
-        'p_user_id': userId,
+        'p_user_id': userId, // userId null ise null olarak gönderilecek
         'p_grade_id': gradeId,
         'p_lesson_id': lessonId,
         'p_curriculum_week': curriculumWeek
@@ -423,30 +422,15 @@ class OutcomesViewModel extends ChangeNotifier {
     };
   }
 
-  Future<Map<String, dynamic>> _fetchFullDataFromNetwork({required int curriculumWeek}) async {
-    final userId = Supabase.instance.client.auth.currentUser?.id;
-    if (userId != null) {
-      try {
-        await Supabase.instance.client.rpc('mark_week_as_started', params: {
-          'p_user_id': userId,
-          'p_lesson_id': lessonId,
-          'p_grade_id': gradeId,
-          'p_curriculum_week': curriculumWeek
-        });
-      } catch (e) {
-        debugPrint("Error marking week as started: $e");
-      }
-    }
-    
-    return await _fetchNetworkDataWithoutCaching(curriculumWeek: curriculumWeek);
-  }
-
   void refreshCurrentWeekData(int curriculumWeek) async {
-    await _cacheService.clearWeeklyCurriculumData(
-      curriculumWeek: curriculumWeek,
-      lessonId: lessonId,
-      gradeId: gradeId,
-    );
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user != null) {
+      await _cacheService.clearWeeklyCurriculumData(
+        curriculumWeek: curriculumWeek,
+        lessonId: lessonId,
+        gradeId: gradeId,
+      );
+    }
     _weekMainContents.remove(curriculumWeek);
     _weekQuestions.remove(curriculumWeek);
     _weekStats.remove(curriculumWeek);
@@ -454,6 +438,9 @@ class OutcomesViewModel extends ChangeNotifier {
     _weekLoadingStatus.remove(curriculumWeek);
     _weekErrorMessages.remove(curriculumWeek);
 
-    await fetchWeekContent(curriculumWeek);
+    final index = _allWeeksData.indexWhere((w) => w['curriculum_week'] == curriculumWeek);
+    if (index != -1) {
+      await _fetchWeekContent(index);
+    }
   }
 }

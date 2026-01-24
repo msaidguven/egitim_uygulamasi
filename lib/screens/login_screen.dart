@@ -1,12 +1,15 @@
 // lib/screens/login_screen.dart
 
 import 'package:egitim_uygulamasi/screens/forgot_password_screen.dart';
+import 'package:egitim_uygulamasi/screens/main_screen.dart';
 import 'package:egitim_uygulamasi/screens/signup_screen.dart';
+import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   /// Giriş başarılı olduğunda sayfanın otomatik olarak kapanıp kapanmayacağını belirler.
   /// Varsayılan değer [true]'dur. AdminAuthGate gibi sayfa içinde gömülü kullanımlarda [false] yapılmalıdır.
   final bool shouldPopOnSuccess;
@@ -14,10 +17,10 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, this.shouldPopOnSuccess = true});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final AuthViewModel _viewModel = AuthViewModel();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -130,8 +133,17 @@ class _LoginScreenState extends State<LoginScreen> {
         // Başarılı girişte kimlik bilgilerini kaydet
         await _saveCredentials();
 
-        if (mounted && widget.shouldPopOnSuccess) {
-          Navigator.of(context).pop();
+        if (mounted) {
+          // Kullanıcı durumu değişti, ilgili provider'ları yenile.
+          ref.invalidate(profileViewModelProvider);
+
+          if (widget.shouldPopOnSuccess) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const MainScreen()),
+                  (Route<dynamic> route) => false,
+            );
+          }
         }
       } else {
         // Giriş başarısızsa kimlik bilgilerini temizle
