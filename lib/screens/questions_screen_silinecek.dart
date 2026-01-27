@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/models/question_blank_option.dart';
@@ -186,7 +184,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
       _prefetchRestOfQuestions();
 
-    } catch (e, st) {
+    } catch (e) {
       debugPrint('--- İLK SORU YÜKLENİRKEN HATA ---');
       if (mounted) setState(() => _error = "İlk soru yüklenemedi: $e");
     }
@@ -335,7 +333,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           _currentTestQuestion = null;
         });
       }
-    } catch (e, st) {
+    } catch (e) {
       debugPrint('--- TEST BİTİRİLİRKEN HATA ($widget.testMode): $e ---');
     }
   }
@@ -830,7 +828,7 @@ class _FillBlankWithOptionsBodyState extends State<_FillBlankWithOptionsBody> {
                 ),
               );
             },
-            onAccept: (option) => _onDrop(blankIndex, option),
+            onAcceptWithDetails: (option) => _onDrop(blankIndex, option),
           ),
         );
       }
@@ -1153,7 +1151,7 @@ class _MatchingQuestionBodyState extends State<_MatchingQuestionBody> {
                             ],
                           );
                         },
-                        onAccept: (data) {
+                        onAcceptWithDetails: (data) {
                           if (isChecked) return;
                           setState(() {
                             // Aynı seçenek başka bir yerde varsa kaldır

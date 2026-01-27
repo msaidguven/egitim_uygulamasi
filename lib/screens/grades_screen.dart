@@ -1,6 +1,5 @@
 // lib/screens/grades_screen.dart
 
-import 'package:egitim_uygulamasi/widgets/common/content_renderer.dart';
 import 'package:egitim_uygulamasi/screens/lessons_screen.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +41,7 @@ class _GradesScreenState extends State<GradesScreen> {
             colors: [
               Theme.of(context).colorScheme.primary.withOpacity(0.05),
               Theme.of(context).colorScheme.secondary.withOpacity(0.05),
-              Theme.of(context).colorScheme.background,
+              Theme.of(context).colorScheme.surface,
             ],
             stops: const [0.0, 0.4, 1.0],
           ),
@@ -213,8 +212,8 @@ class _GradesScreenState extends State<GradesScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Theme.of(context).colorScheme.background.withOpacity(0.9),
-                Theme.of(context).colorScheme.background.withOpacity(0.7),
+                Theme.of(context).colorScheme.surface.withOpacity(0.9),
+                Theme.of(context).colorScheme.surface.withOpacity(0.7),
               ],
             ),
             borderRadius: const BorderRadius.only(

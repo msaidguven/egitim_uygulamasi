@@ -56,7 +56,7 @@ Map<String, Style> getBaseHtmlStyle(BuildContext context) {
 
     // Table styles
     "table": Style(
-      backgroundColor: theme.colorScheme.surfaceVariant.withOpacity(0.2),
+      backgroundColor: theme.colorScheme.surfaceContainerHighest.withOpacity(0.2),
       border: Border.all(color: theme.dividerColor),
     ),
     "tr": Style(
@@ -64,7 +64,7 @@ Map<String, Style> getBaseHtmlStyle(BuildContext context) {
     ),
     "th": Style(
       padding: HtmlPaddings.all(8),
-      backgroundColor: theme.colorScheme.surfaceVariant,
+      backgroundColor: theme.colorScheme.surfaceContainerHighest,
       fontWeight: FontWeight.bold,
       textAlign: TextAlign.center,
     ),

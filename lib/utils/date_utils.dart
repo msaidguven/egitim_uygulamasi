@@ -13,63 +13,74 @@ final List<Map<String, dynamic>> academicBreaks = [
   {'after_week': 26, 'weeks': [{'type': 'break', 'title': 'Ara Tatil', 'duration': '2. DÖNEM ARA TATİLİ'}]},
 ];
 
-// lib/utils/date_utils.dart
+/// Haftanın durumunu tutan model
+class PeriodInfo {
+  final int academicWeek; // Veritabanı sorguları için hafta numarası
+  final bool isHoliday;   // Şu an tatil mi?
+  final String displayTitle; // Ekranda görünecek ana başlık
+  final String? displaySubtitle; // Ekranda görünecek alt başlık
 
-// ... (diğer kodlar aynı kalacak) ...
+  PeriodInfo({
+    required this.academicWeek,
+    required this.isHoliday,
+    required this.displayTitle,
+    this.displaySubtitle,
+  });
+}
 
-/// Mevcut akademik haftayı, tatilleri hesaba katarak hesaplar.
-int calculateCurrentAcademicWeek() {
+/// Mevcut tarihi analiz ederek detaylı dönem bilgisini döndürür.
+/// UI tarafında bunu kullanın.
+PeriodInfo getCurrentPeriodInfo() {
   final now = DateTime.now();
-  // Okul başlangıç tarihini mevcut akademik yıla göre belirle (Eylül ayını baz alarak).
-  final schoolStart = DateTime(now.month < 9 ? now.year - 1 : now.year, 9, 8);
+  // Okul başlangıç: 9 Eylül 2024 Pazartesi
+  final schoolStart = DateTime(now.month < 9 ? now.year - 1 : now.year, 9, 9);
+  
+  // Ham takvim haftası
+  int currentCalendarWeek = (now.difference(schoolStart).inDays / 7).floor() + 1;
 
-  // Okul başlangıcından bu yana geçen takvim haftası sayısı.
-  final calendarWeek = (now.difference(schoolStart).inDays / 7).floor() + 1;
-
-  // Geçmiş tatil haftalarının toplam sayısı.
   int weeksToSubtract = 0;
-  for (final breakInfo in academicBreaks) {
-    final int breakDuration = (breakInfo['weeks'] as List).length;
-    // Tatilin bittiği hafta numarası (bu haftadan sonra tatil bitmiş olur).
-    // Örneğin, after_week 9 ve duration 1 ise, tatil 10. haftadan sonra biter.
-    // after_week 18 ve duration 2 ise, tatil 20. haftadan sonra biter.
-    final int breakEndsAfterWeek = breakInfo['after_week'] + breakDuration;
 
-    // Eğer mevcut takvim haftası, tatilin tamamen bitiş haftasından sonraysa,
-    // o tatilin süresini çıkarılacak haftalara ekle.
-    if (calendarWeek > breakEndsAfterWeek) {
+  for (final breakInfo in academicBreaks) {
+    final int breakStartWeek = breakInfo['after_week'] as int;
+    final List weeks = breakInfo['weeks'] as List;
+    final int breakDuration = weeks.length;
+
+    int breakCalendarStart = breakStartWeek + 1 + weeksToSubtract;
+    int breakCalendarEnd = breakCalendarStart + breakDuration - 1;
+
+    // DURUM 1: Tatil İçindeyiz
+    if (currentCalendarWeek >= breakCalendarStart && currentCalendarWeek <= breakCalendarEnd) {
+      // Kaçıncı tatil haftası olduğunu bul (0-indexli)
+      int holidayIndex = currentCalendarWeek - breakCalendarStart;
+      var weekInfo = weeks[holidayIndex];
+      
+      return PeriodInfo(
+        academicWeek: breakStartWeek, // Tatil boyunca son akademik haftada kalır
+        isHoliday: true,
+        displayTitle: weekInfo['title'] ?? 'Tatil',
+        displaySubtitle: weekInfo['duration'] ?? '${holidayIndex + 1}. Hafta',
+      );
+    }
+
+    // DURUM 2: Tatil Geçti
+    if (currentCalendarWeek > breakCalendarEnd) {
       weeksToSubtract += breakDuration;
     }
   }
 
-  // Akademik hafta = Takvim haftası - Geçmiş tatil haftaları
-  return calendarWeek - weeksToSubtract;
+  // Tatil değilse normal akademik hafta
+  int academicWeek = currentCalendarWeek - weeksToSubtract;
+  if (academicWeek <= 0) academicWeek = 1;
+
+  return PeriodInfo(
+    academicWeek: academicWeek,
+    isHoliday: false,
+    displayTitle: '$academicWeek. Hafta',
+    displaySubtitle: 'Akademik Dönem',
+  );
 }
 
-
-
-/*
-
-/// Mevcut akademik haftayı, tatilleri hesaba katarak hesaplar.
+/// Geriye dönük uyumluluk için sadece int döndüren fonksiyon
 int calculateCurrentAcademicWeek() {
-  final now = DateTime.now();
-  // Okul başlangıç tarihini mevcut akademik yıla göre belirle (Eylül ayını baz alarak).
-  final schoolStart = DateTime(now.month < 9 ? now.year - 1 : now.year, 9, 8);
-
-  // Okul başlangıcından bu yana geçen takvim haftası sayısı.
-  final calendarWeek = (now.difference(schoolStart).inDays / 7).floor() + 1;
-
-  // Geçmiş tatil haftalarının toplam sayısı.
-  int weeksToSubtract = 0;
-  for (final breakInfo in academicBreaks) {
-    // Eğer mevcut takvim haftası, bir tatilin başlangıç haftasından sonraysa,
-    // o tatilin süresini çıkarılacak haftalara ekle.
-    if (calendarWeek > breakInfo['after_week']) {
-      weeksToSubtract += (breakInfo['weeks'] as List).length;
-    }
-  }
-
-  // Akademik hafta = Takvim haftası - Geçmiş tatil haftaları
-  return calendarWeek - weeksToSubtract;
+  return getCurrentPeriodInfo().academicWeek;
 }
-*/

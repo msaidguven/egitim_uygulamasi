@@ -1,13 +1,10 @@
-// lib/screens/outcomes/outcomes_viewmodel.dart
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:egitim_uygulamasi/services/cache_service.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
-import 'package:egitim_uygulamasi/models/topic_content.dart';
-import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // Riverpod import'u
-import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart'; // profileViewModelProvider için
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 
 // Helper class to pass arguments to the family provider
 class OutcomesViewModelArgs {
@@ -34,17 +31,15 @@ class OutcomesViewModelArgs {
   int get hashCode => lessonId.hashCode ^ gradeId.hashCode ^ initialCurriculumWeek.hashCode;
 }
 
-// OutcomesViewModel'i sağlayan Riverpod family provider'ı
 final outcomesViewModelProvider = ChangeNotifierProvider.family<OutcomesViewModel, OutcomesViewModelArgs>(
   (ref, args) => OutcomesViewModel(
-    ref, // Pass ref to the ViewModel
+    ref,
     lessonId: args.lessonId,
     gradeId: args.gradeId,
     initialCurriculumWeek: args.initialCurriculumWeek,
   ),
 );
 
-// _SuccessLevel sınıfını buraya taşıyoruz, çünkü ViewModel'ın iş mantığına dahil.
 class SuccessLevel {
   final int starCount;
   final String title;
@@ -105,7 +100,6 @@ class SuccessLevel {
   }
 }
 
-// _specialWeeks sabitini de ViewModel'a taşıyoruz, artık global değil.
 final List<Map<String, dynamic>> _specialWeeks = [
   {
     'grade_id': 5,
@@ -118,9 +112,8 @@ final List<Map<String, dynamic>> _specialWeeks = [
   },
 ];
 
-
 class OutcomesViewModel extends ChangeNotifier {
-  final Ref _ref; // Riverpod Ref'i ekledik
+  final Ref _ref;
   final int lessonId;
   final int gradeId;
   final int? initialCurriculumWeek;
@@ -128,9 +121,7 @@ class OutcomesViewModel extends ChangeNotifier {
 
   PageController? _pageController;
   PageController get pageController {
-    if (_pageController == null) {
-      _pageController = PageController(initialPage: _initialPageIndex);
-    }
+    _pageController ??= PageController(initialPage: _initialPageIndex);
     return _pageController!;
   }
 
@@ -149,7 +140,6 @@ class OutcomesViewModel extends ChangeNotifier {
   int _initialPageIndex = 0;
   int get initialPageIndex => _initialPageIndex;
 
-  // Haftaya özel verileri tutan haritalar (ÖNBELLEK)
   final Map<int, Map<String, dynamic>> _weekMainContents = {};
   final Map<int, List<Question>> _weekQuestions = {};
   final Map<int, Map<String, dynamic>?> _weekStats = {};
@@ -157,7 +147,6 @@ class OutcomesViewModel extends ChangeNotifier {
   final Map<int, bool> _weekLoadingStatus = {};
   final Map<int, String> _weekErrorMessages = {};
 
-  // Belirli bir haftanın verilerine erişim için getter'lar
   Map<String, dynamic>? getWeekContent(int week) => _weekMainContents[week];
   List<Question>? getWeekQuestions(int week) => _weekQuestions[week];
   Map<String, dynamic>? getWeekStats(int week) => _weekStats[week];
@@ -170,7 +159,7 @@ class OutcomesViewModel extends ChangeNotifier {
 
   bool _disposed = false;
 
-  OutcomesViewModel( // Constructor'ı güncelledik
+  OutcomesViewModel(
     this._ref, {
     required this.lessonId,
     required this.gradeId,
@@ -244,13 +233,20 @@ class OutcomesViewModel extends ChangeNotifier {
       processedWeeks.sort(
           (a, b) => (a['curriculum_week'] as int).compareTo(b['curriculum_week'] as int));
 
+      // TATİL HAFTALARINI EKLEME MANTIĞI
+      // Ters sıralama ile ekliyoruz ki indexler kaymasın.
       for (final breakInfo in academicBreaks.reversed) {
+        final int breakAfterWeek = breakInfo['after_week'] as int;
+        
+        // Hangi index'ten sonraya ekleneceğini bul
         int breakIndex = processedWeeks.indexWhere((week) =>
-            week['type'] == 'week' && week['curriculum_week'] == breakInfo['after_week']);
+            week['type'] == 'week' && week['curriculum_week'] == breakAfterWeek);
+        
         if (breakIndex != -1) {
           final breaks = (breakInfo['weeks'] as List)
               .map((b) => Map<String, dynamic>.from(b))
               .toList();
+          // Bulunan index'in bir sonrasına ekle
           processedWeeks.insertAll(breakIndex + 1, breaks);
         }
       }
@@ -267,16 +263,44 @@ class OutcomesViewModel extends ChangeNotifier {
 
       _allWeeksData = processedWeeks;
 
-      if (initialCurriculumWeek != null) {
+      // Başlangıç sayfasını belirle
+      final currentInfo = getCurrentPeriodInfo();
+      
+      // ÖNCELİK 1: Eğer şu an gerçek tarihte tatildeysek, parametreyi ez ve tatil kartını aç.
+      if (currentInfo.isHoliday) {
         _initialPageIndex = _allWeeksData.indexWhere((w) =>
-            w['type'] == 'week' && w['curriculum_week'] == initialCurriculumWeek);
+            w['type'] == 'break' &&
+            w['title'] == currentInfo.displayTitle &&
+            w['duration'] == currentInfo.displaySubtitle
+        );
+        
+        // Eğer tam eşleşme bulamazsa (isim farkı vs.), genel bir 'break' bulmaya çalış
+        if (_initialPageIndex == -1) {
+           _initialPageIndex = _allWeeksData.indexWhere((w) => w['type'] == 'break');
+        }
+      }
+      
+      // ÖNCELİK 2: Tatil değilse veya tatil kartı bulunamadıysa parametreyi kullan
+      if (_initialPageIndex == -1 || !currentInfo.isHoliday) {
+        if (initialCurriculumWeek != null) {
+          _initialPageIndex = _allWeeksData.indexWhere((w) =>
+              w['type'] == 'week' && w['curriculum_week'] == initialCurriculumWeek);
+        }
+        
+        // Parametre yoksa veya bulunamadıysa bugünü hesapla
+        if (_initialPageIndex == -1) {
+          int currentAcademicWeek = calculateCurrentAcademicWeek();
+          _initialPageIndex = _allWeeksData.indexWhere((w) =>
+              w['type'] == 'week' &&
+              w['curriculum_week'] == currentAcademicWeek);
+        }
+        
         if (_initialPageIndex == -1) _initialPageIndex = 0;
-      } else {
-        int currentAcademicWeek = calculateCurrentAcademicWeek();
-        _initialPageIndex = _allWeeksData.indexWhere((w) =>
-            w['type'] == 'week' &&
-            w['curriculum_week'] == currentAcademicWeek);
-        if (_initialPageIndex == -1) _initialPageIndex = 0;
+      }
+
+      // Sayfa kontrolcüsü zaten oluştuysa, onu yeni sayfaya zıplat
+      if (_pageController != null && _pageController!.hasClients) {
+        _pageController!.jumpToPage(_initialPageIndex);
       }
     } catch (e) {
       _hasErrorWeeks = true;
@@ -295,22 +319,13 @@ class OutcomesViewModel extends ChangeNotifier {
       _currentWeek = curriculumWeek;
       _safeNotifyListeners();
 
-      _prefetchSurroundingWeeks(index);
-    }
-  }
-
-  void _prefetchSurroundingWeeks(int currentIndex) {
-    _fetchWeekContent(currentIndex);
-
-    if (currentIndex > 0) {
-      _fetchWeekContent(currentIndex - 1);
-    }
-    if (currentIndex < _allWeeksData.length - 1) {
-      _fetchWeekContent(currentIndex + 1);
+      _fetchWeekContent(index);
     }
   }
 
   Future<void> _fetchWeekContent(int index) async {
+    if (index < 0 || index >= _allWeeksData.length) return;
+
     final weekData = _allWeeksData[index];
     if (weekData['type'] != 'week') return;
 
@@ -325,7 +340,6 @@ class OutcomesViewModel extends ChangeNotifier {
     _safeNotifyListeners();
 
     try {
-      // GÜNCELLEME: Kullanıcı profilini merkezi profileViewModelProvider'dan alıyoruz.
       final userProfile = _ref.read(profileViewModelProvider).profile;
       final isGuest = userProfile == null;
 
@@ -335,12 +349,11 @@ class OutcomesViewModel extends ChangeNotifier {
           lessonId: lessonId,
           gradeId: gradeId,
         );
-
         if (cachedData != null) {
           _weekMainContents[curriculumWeek] = cachedData;
           _weekUnitIds[curriculumWeek] = cachedData['unit_id'];
           _safeNotifyListeners();
-          await _fetchDynamicData(curriculumWeek);
+          await _fetchDynamicData(curriculumWeek, isGuest);
           return;
         }
       }
@@ -382,15 +395,30 @@ class OutcomesViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> _fetchDynamicData(int curriculumWeek) async {
+  Future<void> _fetchDynamicData(int curriculumWeek, bool isGuest) async {
     try {
-      final fullData = await _fetchNetworkDataWithoutCaching(curriculumWeek: curriculumWeek);
+      final response = await Supabase.instance.client.rpc(
+        'get_weekly_curriculum',
+        params: {
+          'p_user_id': isGuest ? null : _ref.read(profileViewModelProvider).profile?.id,
+          'p_grade_id': gradeId,
+          'p_lesson_id': lessonId,
+          'p_curriculum_week': curriculumWeek
+        },
+      );
 
-      _weekQuestions[curriculumWeek] = (fullData['mini_quiz_questions'] as List? ?? [])
-          .map((q) => Question.fromMap(q as Map<String, dynamic>))
-          .toList();
+      if (response != null && (response as List).isNotEmpty) {
+        final firstItem = response.first;
+        _weekQuestions[curriculumWeek] = (firstItem['mini_quiz_questions'] as List? ?? [])
+            .map((q) => Question.fromMap(q as Map<String, dynamic>))
+            .toList();
+      } else {
+        _weekQuestions[curriculumWeek] = [];
+      }
 
-      await _loadWeeklyStats(curriculumWeek);
+      if (!isGuest) {
+        await _loadWeeklyStats(curriculumWeek);
+      }
 
     } catch (e) {
       debugPrint('Error fetching dynamic data for week $curriculumWeek: $e');
@@ -402,7 +430,6 @@ class OutcomesViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadWeeklyStats(int curriculumWeek) async {
-    // GÜNCELLEME: Kullanıcı ID'sini merkezi profileViewModelProvider'dan alıyoruz.
     final userProfile = _ref.read(profileViewModelProvider).profile;
     final userId = userProfile?.id;
     final currentUnitId = _weekUnitIds[curriculumWeek];
@@ -429,14 +456,13 @@ class OutcomesViewModel extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _fetchNetworkDataWithoutCaching({required int curriculumWeek}) async {
-    // GÜNCELLEME: Kullanıcı ID'sini merkezi profileViewModelProvider'dan alıyoruz.
     final userProfile = _ref.read(profileViewModelProvider).profile;
     final userId = userProfile?.id;
 
     final response = await Supabase.instance.client.rpc(
       'get_weekly_curriculum',
       params: {
-        'p_user_id': userId, // userId null ise null olarak gönderilecek
+        'p_user_id': userId,
         'p_grade_id': gradeId,
         'p_lesson_id': lessonId,
         'p_curriculum_week': curriculumWeek
@@ -454,7 +480,7 @@ class OutcomesViewModel extends ChangeNotifier {
       'topic_title': firstItem['topic_title'],
       'topic_id': firstItem['topic_id'],
       'unit_id': firstItem['unit_id'],
-      'outcomes': (response as List)
+      'outcomes': (response)
           .map((item) => item['outcome_description'] as String)
           .toSet()
           .toList(),
@@ -466,9 +492,8 @@ class OutcomesViewModel extends ChangeNotifier {
   }
 
   void refreshCurrentWeekData(int curriculumWeek) async {
-    // GÜNCELLEME: Kullanıcı profilini merkezi profileViewModelProvider'dan alıyoruz.
     final userProfile = _ref.read(profileViewModelProvider).profile;
-    final user = userProfile; // userProfile artık doğrudan Profile nesnesi veya null
+    final user = userProfile;
 
     if (user != null) {
       await _cacheService.clearWeeklyCurriculumData(

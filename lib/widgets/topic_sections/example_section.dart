@@ -30,10 +30,10 @@ class ExampleSection extends StatelessWidget {
               children: [
                 Icon(Icons.lightbulb_outline, color: accentColor),
                 const SizedBox(width: 8),
-                if (content.title != null && content.title!.isNotEmpty)
+                if (content.title.isNotEmpty)
                   Expanded(
                     child: Text(
-                      content.title!,
+                      content.title,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: accentColor,

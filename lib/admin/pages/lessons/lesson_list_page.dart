@@ -72,14 +72,14 @@ class _LessonListPageState extends State<LessonListPage> {
       _lessons = []; // Yeni sınıf seçildiğinde eski listeyi temizle
     });
     if (grade != null) {
-      _loadLessonsForGrade(grade.id!);
+      _loadLessonsForGrade(grade.id);
     }
   }
 
   // Liste yenileme metodu
   void _refreshLessonList() {
     if (_selectedGrade != null) {
-      _loadLessonsForGrade(_selectedGrade!.id!);
+      _loadLessonsForGrade(_selectedGrade!.id);
     }
   }
 
@@ -177,7 +177,7 @@ class _LessonListPageState extends State<LessonListPage> {
         }
         final grades = snapshot.data ?? [];
         return DropdownButtonFormField<Grade>(
-          value: _selectedGrade,
+          initialValue: _selectedGrade,
           hint: const Text('Lütfen bir sınıf seçin'),
           onChanged: _onGradeSelected,
           items: grades.map((grade) {

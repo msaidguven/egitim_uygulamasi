@@ -413,7 +413,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     return _isLoadingGrades
         ? const Center(child: CircularProgressIndicator())
         : DropdownButtonFormField<Grade>(
-            value: _selectedGrade,
+            initialValue: _selectedGrade,
             hint: const Text('Sınıf Seçin'),
             onChanged: (grade) {
               if (grade == null) return;
@@ -436,7 +436,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
 
   Widget _buildLessonSelector() {
     return DropdownButtonFormField<Lesson>(
-      value: _selectedLesson,
+      initialValue: _selectedLesson,
       hint: const Text('Ders Seçin'),
       onChanged: _selectedGrade == null
           ? null
@@ -481,7 +481,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
           _isLoadingUnits
               ? const Center(child: CircularProgressIndicator())
               : DropdownButtonFormField<Unit>(
-                  value: _selectedUnit,
+                  initialValue: _selectedUnit,
                   hint: const Text('Mevcut Üniteyi Seçin'),
                   onChanged: !isEnabled ? null : (unit) {
                     if (unit == null) return;

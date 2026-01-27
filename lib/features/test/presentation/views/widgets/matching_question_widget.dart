@@ -8,7 +8,7 @@ class MatchingQuestionWidget extends StatefulWidget {
   final TestQuestion testQuestion;
   final ValueChanged<dynamic> onAnswered;
 
-  const MatchingQuestionWidget({
+  const MatchingQuestionWidget({super.key, 
     required this.testQuestion,
     required this.onAnswered,
   });
@@ -33,7 +33,6 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     userMatches = {};
   }
 
-  // Eşleşmeyi kaldırmak için kullanılan metod.
   void _removeMatch(String leftText) {
     if (widget.testQuestion.isChecked) return;
     setState(() {
@@ -45,7 +44,6 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     });
   }
 
-  // Bir eşleşmeyi yerinden geri sürüklemeye başlama işlemi.
   void _startDragBack(String leftText) {
     if (widget.testQuestion.isChecked) return;
     setState(() {
@@ -54,7 +52,6 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     });
   }
 
-  // Geri sürükleme işlemi bittiğinde çağrılır.
   void _endDragBack(DraggableDetails details) {
     if (_draggingBackPair != null && _draggingLeftText != null) {
       _removeMatch(_draggingLeftText!);
@@ -65,7 +62,6 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     });
   }
 
-  // Geri sürükleme işlemi iptal edildiğinde çağrılır.
   void _cancelDragBack() {
     setState(() {
       _draggingLeftText = null;
@@ -76,11 +72,9 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
   @override
   Widget build(BuildContext context) {
     final isChecked = widget.testQuestion.isChecked;
-    final question =
-        widget.testQuestion.question; // question değişkeni burada tanımlandı
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -92,368 +86,262 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: DragTarget<MatchingPair>(
-                builder: (context, candidateData, rejectedData) {
-                  return matchedPair != null
-                      ? Draggable<MatchingPair>(
-                          data: matchedPair,
-                          onDragStarted: () => _startDragBack(leftText),
-                          onDragEnd: _endDragBack,
-                          onDraggableCanceled: (velocity, offset) =>
-                              _cancelDragBack(),
-                          // Sürükleme sırasında parmağın altında görünecek widget.
-                          // Görünümü normal haliyle aynı olacak şekilde düzenlendi.
-                          feedback: Material(
-                            color: Colors.transparent,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).primaryColor.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 2,
-                                ),
-                              ),
-                              child: QuestionText(
-                                text: matchedPair.right_text,
-                                fontSize: 15,
-                                textColor: Theme.of(context).primaryColor,
-                                fractionColor: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                          ),
-                          childWhenDragging: Opacity(
-                            opacity: 0.3,
-                            child: _buildMatchContainer(
-                              index: index,
-                              leftText: leftText,
-                              matchedPair: matchedPair,
-                              isDraggingBack: true,
-                            ),
-                          ),
-                          child: GestureDetector(
-                            onTap: () => _removeMatch(leftText),
-                            child: Opacity(
-                              opacity: isDraggingBack ? 0.5 : 1.0,
-                              child: _buildMatchContainer(
-                                index: index,
-                                leftText: leftText,
-                                matchedPair: matchedPair,
-                              ),
-                            ),
-                          ),
-                        )
-                      : DragTarget<MatchingPair>(
-                          builder: (context, candidateData, rejectedData) {
-                            return _buildMatchContainer(
-                              index: index,
-                              leftText: leftText,
-                              matchedPair: null,
-                            );
-                          },
-                          onAccept: (data) {
-                            if (isChecked) return;
-                            setState(() {
-                              final existingEntry = userMatches.entries
-                                  .firstWhereOrNull(
-                                    (entry) =>
-                                        entry.value?.right_text ==
-                                        data.right_text,
-                                  );
-                              if (existingEntry != null) {
-                                userMatches.remove(existingEntry.key);
-                              }
-                              userMatches[leftText] = data;
-                              widget.onAnswered(
-                                Map<String, MatchingPair?>.from(userMatches),
-                              );
-                            });
-                          },
-                        );
-                },
-                onAccept: (data) {
+                onAcceptWithDetails: (details) {
                   if (isChecked) return;
+                  // DÜZELTME: details.data ile asıl veriye erişiyoruz
+                  final data = details.data;
                   setState(() {
                     final existingEntry = userMatches.entries.firstWhereOrNull(
-                      (entry) => entry.value?.right_text == data.right_text,
+                          (entry) => entry.value?.id == data.id,
                     );
                     if (existingEntry != null) {
                       userMatches.remove(existingEntry.key);
                     }
                     userMatches[leftText] = data;
-                    widget.onAnswered(
-                      Map<String, MatchingPair?>.from(userMatches),
-                    );
+                    widget.onAnswered(Map<String, MatchingPair?>.from(userMatches));
                   });
+                },
+                builder: (context, candidateData, rejectedData) {
+                  return matchedPair != null
+                      ? Draggable<MatchingPair>(
+                    data: matchedPair,
+                    onDragStarted: () => _startDragBack(leftText),
+                    onDragEnd: _endDragBack,
+                    onDraggableCanceled: (_, __) => _cancelDragBack(),
+                    feedback: Material(
+                      color: Colors.transparent,
+                      child: _buildDraggingFeedback(matchedPair.right_text),
+                    ),
+                    childWhenDragging: Opacity(
+                      opacity: 0.3,
+                      child: _buildMatchContainer(
+                        index: index,
+                        leftText: leftText,
+                        matchedPair: matchedPair,
+                        isDraggingBack: true,
+                      ),
+                    ),
+                    child: GestureDetector(
+                      onTap: () => _removeMatch(leftText),
+                      child: Opacity(
+                        opacity: isDraggingBack ? 0.5 : 1.0,
+                        child: _buildMatchContainer(
+                          index: index,
+                          leftText: leftText,
+                          matchedPair: matchedPair,
+                        ),
+                      ),
+                    ),
+                  )
+                      : _buildMatchContainer(
+                    index: index,
+                    leftText: leftText,
+                    matchedPair: null,
+                  );
                 },
               ),
             );
           }),
-          if (!isChecked) ...[
-            const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child: Text(
-                'Kullanılabilir Seçenekler:',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: Text(
-                      'Aşağıdaki seçenekleri yukarıdaki kutulara sürükleyin:',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: shuffledRightPairs
-                        .where((p) => !userMatches.values.contains(p))
-                        .map((pair) {
-                          return Draggable<MatchingPair>(
-                            data: pair,
-                            // Sürükleme sırasında görünecek olan widget.
-                            // Görünümü normal haliyle aynı olacak şekilde düzenlendi.
-                            feedback: Material(
-                              color: Colors.transparent,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                  vertical: 12,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.amber.shade100,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: Colors.amber.shade400,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: QuestionText(
-                                  text: pair.right_text,
-                                  fontSize: 15,
-                                  textColor: Colors.amber.shade900,
-                                  fractionColor: Colors.amber.shade900,
-                                ),
-                              ),
-                            ),
-                            childWhenDragging: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Opacity(
-                                opacity: 0.5,
-                                child: QuestionText(
-                                  text: pair.right_text,
-                                  fontSize: 15,
-                                  textColor: Colors.grey.shade600,
-                                  fractionColor: Colors.grey.shade600,
-                                ),
-                              ),
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.amber.shade100,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.amber.shade400,
-                                ),
-                              ),
-                              alignment: Alignment.center,
-                              child: QuestionText(
-                                text: pair.right_text,
-                                fontSize: 15,
-                                textColor: Colors.amber.shade900,
-                                fractionColor: Colors.amber.shade900,
-                              ),
-                            ),
-                          );
-                        })
-                        .toList(),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          const SizedBox(height: 10),
+          if (!isChecked) _buildOptionsPool(),
           if (userMatches.length == leftTexts.length && !isChecked)
-            Container(
-              margin: const EdgeInsets.only(top: 20),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.green.shade300),
-              ),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.check_circle,
-                      color: Colors.green.shade700,
-                      size: 24,
-                    ),
-                    const SizedBox(width: 10),
-                    Flexible(
-                      child: Text(
-                        'Tüm eşleştirmeler tamamlandı!',
-                        style: TextStyle(
-                          color: Colors.green.shade800,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            _buildCompletionStatus(),
         ],
       ),
     );
   }
 
+  // ... (Geri kalan kod aynı)
+  
   Widget _buildMatchContainer({
     required int index,
     required String leftText,
     required MatchingPair? matchedPair,
     bool isDraggingBack = false,
   }) {
-    final question =
-        widget.testQuestion.question; // question değişkeni burada da tanımlandı
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(14),
+    final isChecked = widget.testQuestion.isChecked;
+
+    // Doğruluk Kontrolü
+    bool isCorrectMatch = false;
+    if (matchedPair != null) {
+      final originalPair = widget.testQuestion.question.matchingPairs?.firstWhereOrNull(
+              (p) => p.left_text == leftText
+      );
+      isCorrectMatch = originalPair?.right_text == matchedPair.right_text;
+    }
+
+    // Stil Belirleme
+    Color rowBorderColor = Colors.grey.shade300;
+    Color rightBoxBgColor = Colors.grey.shade100;
+    Color rightBoxBorderColor = Colors.grey.shade300;
+    Color textColor = Colors.grey.shade600;
+
+    if (matchedPair != null) {
+      if (isChecked) {
+        // Kontrol edildikten sonra (Yeşil / Kırmızı)
+        rightBoxBgColor = isCorrectMatch ? Colors.green.shade50 : Colors.red.shade50;
+        rightBoxBorderColor = isCorrectMatch ? Colors.green : Colors.red;
+        textColor = isCorrectMatch ? Colors.green.shade900 : Colors.red.shade900;
+        rowBorderColor = rightBoxBorderColor.withOpacity(0.5);
+      } else {
+        // Yerleştirilmiş ama henüz kontrol edilmemiş (Mavi)
+        rightBoxBgColor = Colors.blue.shade50;
+        rightBoxBorderColor = Colors.blue;
+        textColor = Colors.blue.shade900;
+      }
+    }
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Sol Bölüm
+          Expanded(
+            flex: 5,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: rowBorderColor),
+                borderRadius: const BorderRadius.horizontal(left: Radius.circular(10)),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 11,
+                    backgroundColor: isChecked && matchedPair != null ? rightBoxBorderColor : Theme.of(context).primaryColor,
+                    child: Text('${index + 1}',
+                        style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(child: QuestionText(text: leftText, fontSize: 14)),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 1),
+          // Sağ Bölüm (Eşleşme Alanı)
+          Expanded(
+            flex: 4,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                color: rightBoxBgColor,
+                borderRadius: const BorderRadius.horizontal(right: Radius.circular(10)),
+                border: Border.all(
+                  color: rightBoxBorderColor,
+                  width: matchedPair != null ? 1.5 : 1.0,
                 ),
-                child: Center(
-                  child: Text(
-                    '${index + 1}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+              ),
+              alignment: Alignment.center,
+              child: (matchedPair != null && !isDraggingBack)
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                      isChecked ? (isCorrectMatch ? Icons.check_circle : Icons.cancel) : Icons.check_circle,
+                      size: 14,
+                      color: rightBoxBorderColor
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: QuestionText(
+                      text: matchedPair.right_text,
+                      fontSize: 13,
+                      textColor: textColor,
                     ),
                   ),
-                ),
+                ],
+              )
+                  : Text(
+                "Buraya bırakın",
+                style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: QuestionText(
-                  text: leftText,
-                  fontSize: 16,
-                  textColor: Colors.black87,
-                  fractionColor: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: matchedPair != null
-                ? Theme.of(context).primaryColor.withOpacity(0.1)
-                : Colors.grey.shade100,
-            border: Border.all(
-              color: matchedPair != null
-                  ? Theme.of(context).primaryColor
-                  : Colors.grey.shade400,
-              width: 2,
             ),
-            borderRadius: BorderRadius.circular(10),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (matchedPair != null && !widget.testQuestion.isChecked)
-                Icon(
-                  Icons.drag_handle,
-                  color: Theme.of(context).primaryColor.withOpacity(0.7),
-                  size: 18,
-                ),
-              if (matchedPair != null && !widget.testQuestion.isChecked)
-                const SizedBox(width: 8),
-              if (matchedPair != null && !isDraggingBack)
-                Icon(
-                  Icons.check_circle_outline,
-                  color: Theme.of(context).primaryColor,
-                  size: 20,
-                ),
-              if (matchedPair != null && !isDraggingBack)
-                const SizedBox(width: 8),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: QuestionText(
-                    text: matchedPair?.right_text ?? 'Seçenek sürükleyin...',
-                    fontSize: 15,
-                    textColor: matchedPair != null
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey.shade600,
-                    fractionColor: matchedPair != null
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey.shade600,
-                  ),
-                ),
-              ),
-              if (matchedPair != null && !widget.testQuestion.isChecked)
-                const SizedBox(width: 8),
-              if (matchedPair != null && !widget.testQuestion.isChecked)
-                Icon(
-                  Icons.touch_app,
-                  size: 16,
-                  color: Theme.of(context).primaryColor.withOpacity(0.7),
-                ),
-            ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOptionsPool() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Seçenekleri eşleştirin:',
+              style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.bold, fontSize: 13)),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: shuffledRightPairs
+                .where((p) => !userMatches.values.contains(p))
+                .map((pair) => Draggable<MatchingPair>(
+              data: pair,
+              feedback: Material(color: Colors.transparent, child: _buildDraggingFeedback(pair.right_text)),
+              childWhenDragging: Opacity(opacity: 0.3, child: _buildPoolItem(pair.right_text, isDragging: true)),
+              child: _buildPoolItem(pair.right_text),
+            ))
+                .toList(),
           ),
-        ),
-      ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPoolItem(String text, {bool isDragging = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: isDragging ? Colors.grey.shade200 : Colors.amber.shade100,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: isDragging ? Colors.grey.shade400 : Colors.amber.shade400),
+      ),
+      child: QuestionText(
+        text: text,
+        fontSize: 13,
+        textColor: isDragging ? Colors.grey.shade700 : Colors.amber.shade900,
+      ),
+    );
+  }
+
+  Widget _buildDraggingFeedback(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10)],
+      ),
+      child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 14, decoration: TextDecoration.none)),
+    );
+  }
+
+  Widget _buildCompletionStatus() {
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.green.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.green.shade200),
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.check_circle, color: Colors.green, size: 20),
+          SizedBox(width: 8),
+          Text('Eşleştirme Tamamlandı', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 14)),
+        ],
+      ),
     );
   }
 }

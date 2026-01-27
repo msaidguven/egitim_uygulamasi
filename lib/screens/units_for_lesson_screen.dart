@@ -242,7 +242,7 @@ class _UnitsForLessonScreenState extends State<UnitsForLessonScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  '${widget.lessonName}',
+                  widget.lessonName,
                   style: TextStyle(
                     color: Colors.blue.shade700,
                     fontSize: 12,

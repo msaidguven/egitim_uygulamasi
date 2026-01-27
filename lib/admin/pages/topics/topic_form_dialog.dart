@@ -192,10 +192,11 @@ class _TopicFormPageState extends State<TopicFormPage> {
               FutureBuilder<List<Grade>>(
                 future: _gradesFuture,
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData)
+                  if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
+                  }
                   return DropdownButtonFormField<int>(
-                    value: _selectedGradeId,
+                    initialValue: _selectedGradeId,
                     decoration: const InputDecoration(labelText: 'Sınıf'),
                     items: snapshot.data!
                         .map(
@@ -222,7 +223,7 @@ class _TopicFormPageState extends State<TopicFormPage> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<int>(
-                  value: _selectedLessonId,
+                  initialValue: _selectedLessonId,
                   decoration: InputDecoration(
                     labelText: 'Ders',
                     enabled: _selectedGradeId != null && _lessons.isNotEmpty,
@@ -248,7 +249,7 @@ class _TopicFormPageState extends State<TopicFormPage> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<int>(
-                  value: _selectedUnitId,
+                  initialValue: _selectedUnitId,
                   decoration: InputDecoration(
                     labelText: 'Ünite',
                     enabled: _selectedLessonId != null && _units.isNotEmpty,

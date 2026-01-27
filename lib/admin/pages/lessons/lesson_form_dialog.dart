@@ -129,7 +129,7 @@ class _LessonFormDialogState extends State<LessonFormDialog> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return DropdownButtonFormField<int>(
-                  value: _selectedGradeId,
+                  initialValue: _selectedGradeId,
                   decoration: const InputDecoration(labelText: 'Sınıf'),
                   items: snapshot.data!
                       .map(

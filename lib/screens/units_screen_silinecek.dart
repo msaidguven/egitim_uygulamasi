@@ -22,7 +22,7 @@ class _UnitsScreenState extends State<UnitsScreen> {
   @override
   void initState() {
     super.initState();
-    _unitsFuture = _unitService.getUnitsForGradeAndLesson(widget.grade.id!, widget.lesson.id);
+    _unitsFuture = _unitService.getUnitsForGradeAndLesson(widget.grade.id, widget.lesson.id);
   }
 
   @override

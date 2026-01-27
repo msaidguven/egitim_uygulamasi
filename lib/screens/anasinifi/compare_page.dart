@@ -226,9 +226,9 @@ class _ComparePageState extends State<ComparePage> with SingleTickerProviderStat
   }) {
     Color? cardColor;
     if (isCorrect != null) {
-      if (isCorrect! && isThisCardCorrect) {
+      if (isCorrect && isThisCardCorrect) {
         cardColor = Colors.green;
-      } else if (!isCorrect! && !isThisCardCorrect) {
+      } else if (!isCorrect && !isThisCardCorrect) {
         cardColor = Colors.red;
       }
     }

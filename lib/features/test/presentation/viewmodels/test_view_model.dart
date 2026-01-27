@@ -72,7 +72,7 @@ class TestViewModel extends ChangeNotifier {
       _isLoading = false;
       _questionTimer.reset();
       _questionTimer.start();
-      log('TestViewModel.startGuestUnitTest: Misafir ünite testi başarıyla başlatıldı. Toplam ${_totalQuestions} soru yüklendi.');
+      log('TestViewModel.startGuestUnitTest: Misafir ünite testi başarıyla başlatıldı. Toplam $_totalQuestions soru yüklendi.');
       notifyListeners();
     } catch (e, stackTrace) {
       log('TestViewModel.startGuestUnitTest ERROR: $e', error: e, stackTrace: stackTrace);
@@ -110,7 +110,7 @@ class TestViewModel extends ChangeNotifier {
       _isLoading = false;
       _questionTimer.reset();
       _questionTimer.start();
-      log('TestViewModel.startGuestTest: Misafir testi başarıyla başlatıldı. Toplam ${_totalQuestions} soru yüklendi.');
+      log('TestViewModel.startGuestTest: Misafir testi başarıyla başlatıldı. Toplam $_totalQuestions soru yüklendi.');
       notifyListeners();
     } catch (e, stackTrace) {
       log('TestViewModel.startGuestTest ERROR: $e', error: e, stackTrace: stackTrace);
@@ -517,7 +517,7 @@ class TestViewModel extends ChangeNotifier {
     } else if (errorStr.contains('timeout') || errorStr.contains('time out')) {
       return 'Sunucuya bağlanılamıyor. Lütfen tekrar deneyin.';
     } else {
-      return errorStr.length > 100 ? errorStr.substring(0, 100) + '...' : errorStr;
+      return errorStr.length > 100 ? '${errorStr.substring(0, 100)}...' : errorStr;
     }
   }
 

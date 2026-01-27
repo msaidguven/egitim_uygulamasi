@@ -211,9 +211,9 @@ class _NumberCompositionPageState extends State<NumberCompositionPage> with Sing
                   : null,
             );
           },
-          onWillAccept: (data) => _answerSlots![index] == null,
-          onAccept: (data) {
-            _onNumberDrop(index, data);
+          onWillAcceptWithDetails: (data) => _answerSlots![index] == null,
+          onAcceptWithDetails: (details) {
+            _onNumberDrop(index, details.data);
           },
         );
       }),

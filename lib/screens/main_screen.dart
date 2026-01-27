@@ -8,8 +8,6 @@ import 'package:egitim_uygulamasi/screens/grades_screen.dart';
 import 'package:egitim_uygulamasi/screens/statistics_screen.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
-import 'package:egitim_uygulamasi/widgets/lesson_card.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

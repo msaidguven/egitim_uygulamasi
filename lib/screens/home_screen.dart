@@ -1,7 +1,7 @@
 // lib/screens/home_screen.dart
 
-import 'dart:ui';
 import 'package:egitim_uygulamasi/models/grade_model.dart';
+import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/models/profile_model.dart';
 import 'package:egitim_uygulamasi/screens/anasinifi/compare_page.dart';
 import 'package:egitim_uygulamasi/screens/anasinifi/number_composition_page.dart';
@@ -447,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Eğitim Takvimi',
+                            getCurrentPeriodInfo().displaySubtitle ?? 'Eğitim Takvimi',
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.9),
                               fontSize: 14,
@@ -456,7 +456,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '${widget.currentCurriculumWeek}. Hafta',
+                            getCurrentPeriodInfo().displayTitle,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 22,
@@ -1303,7 +1303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => _navigateToOutcomes(context, item),
                 isNextStep: true,
               ));
-        }).toList(),
+        }),
         if (showMoreButton)
           Padding(
             padding: const EdgeInsets.only(top: 16),

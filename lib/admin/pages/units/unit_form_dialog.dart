@@ -202,7 +202,7 @@ class _UnitFormPageState extends State<UnitFormPage> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   return DropdownButtonFormField<int>(
-                    value: _selectedGradeId,
+                    initialValue: _selectedGradeId,
                     decoration: const InputDecoration(labelText: 'Sınıf'),
                     items: snapshot.data!
                         .map(
@@ -228,7 +228,7 @@ class _UnitFormPageState extends State<UnitFormPage> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<Lesson>(
-                  value: _selectedLesson,
+                  initialValue: _selectedLesson,
                   decoration: InputDecoration(
                     labelText: 'Ders',
                     enabled: _selectedGradeId != null && _lessons.isNotEmpty,

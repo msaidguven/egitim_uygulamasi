@@ -1,17 +1,17 @@
 // lib/screens/forgot_password_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
+import 'package:egitim_uygulamasi/providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final AuthViewModel _viewModel = AuthViewModel();
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLinkSent = false;
@@ -19,40 +19,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    _viewModel.addListener(() {
-      if (!mounted) return;
-      setState(() {});
-
-      final errorMessage = _viewModel.errorMessage;
-      if (errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
-      } else if (!_viewModel.isLoading) {
-        setState(() {
-          _isLinkSent = true;
-        });
-      }
-    });
+    // Listen to ViewModel state changes using ref.listen manually or relying on direct calls.
+    // However, since we are not reusing the same viewmodel instance across screens for state that needs to survive,
+    // and this is just for sending an email, we might just want to check success in the method call.
+    // But to keep consistency with SignUpScreen pattern (if we want to use the ViewModel's state):
   }
 
   @override
   void dispose() {
     _emailController.dispose();
-    _viewModel.dispose();
     super.dispose();
   }
 
   Future<void> _sendResetLink() async {
     if (_formKey.currentState!.validate()) {
-      await _viewModel.sendPasswordReset(_emailController.text.trim());
+      await ref.read(authViewModelProvider).sendPasswordReset(_emailController.text.trim());
+      if (mounted) {
+        setState(() {
+           _isLinkSent = true;
+        });
+      }
     }
   }
 
@@ -209,7 +195,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: _viewModel.isLoading ? null : _sendResetLink,
+                      onPressed: ref.watch(authViewModelProvider).isLoading ? null : _sendResetLink,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
@@ -223,7 +209,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      child: _viewModel.isLoading
+                      child: ref.watch(authViewModelProvider).isLoading
                           ? SizedBox(
                         width: 20,
                         height: 20,

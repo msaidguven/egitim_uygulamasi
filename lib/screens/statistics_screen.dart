@@ -1,4 +1,3 @@
-import 'package:egitim_uygulamasi/providers.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -746,7 +745,7 @@ class StatisticsScreen extends ConsumerWidget {
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       final value = rod.toY.round();
                       return BarTooltipItem(
-                        '${value}%',
+                        '$value%',
                         const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

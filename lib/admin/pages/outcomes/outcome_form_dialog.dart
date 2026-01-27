@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:egitim_uygulamasi/models/topic_model.dart';
 import 'package:egitim_uygulamasi/models/unit_model.dart';
@@ -37,7 +36,7 @@ class _SmartContentFormPageState extends State<SmartContentFormPage> {
   // State
   List<Unit> _units = [];
   List<Topic> _topics = [];
-  List<Map<String, TextEditingController>> _videoControllers = [];
+  final List<Map<String, TextEditingController>> _videoControllers = [];
 
   String _unitSelectionMode = 'existing';
   String _topicSelectionMode = 'existing';
@@ -310,7 +309,7 @@ class _SmartContentFormPageState extends State<SmartContentFormPage> {
 
   Widget _buildUnitSelector() {
     return DropdownButtonFormField<int>(
-      value: _selectedUnitId,
+      initialValue: _selectedUnitId,
       hint: const Text('Mevcut bir ünite seçin...'),
       items: _units.map((u) => DropdownMenuItem(value: u.id, child: Text(u.title))).toList(),
       onChanged: (val) {

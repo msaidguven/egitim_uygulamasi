@@ -71,7 +71,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _selectedGrade = _grades.firstWhere((g) => g.id == widget.profile.grade!.id, orElse: () => _grades.first);
       }
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Veriler yüklenemedi: $e'),
           backgroundColor: Colors.red,
@@ -81,6 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ),
       );
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -128,7 +130,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() => _avatarUrl = imageUrl);
       await _profileViewModel.updateProfile({'avatar_url': imageUrl});
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Resim yüklenemedi: $e'),
           backgroundColor: Colors.red,
@@ -138,6 +141,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         ),
       );
+      }
     } finally {
       if (mounted) setState(() => _isUploading = false);
     }
@@ -399,7 +403,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: DropdownButtonFormField<GradeInfo>(
-                      value: _selectedGrade,
+                      initialValue: _selectedGrade,
                       style: TextStyle(
                         fontSize: 16,
                         color: isDarkMode ? Colors.white : Colors.black,
@@ -448,7 +452,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: DropdownButtonFormField<CityInfo>(
-                    value: _selectedCity,
+                    initialValue: _selectedCity,
                     style: TextStyle(
                       fontSize: 16,
                       color: isDarkMode ? Colors.white : Colors.black,
@@ -500,7 +504,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: DropdownButtonFormField<DistrictInfo>(
-                    value: _selectedDistrict,
+                    initialValue: _selectedDistrict,
                     style: TextStyle(
                       fontSize: 16,
                       color: isDarkMode ? Colors.white : Colors.black,

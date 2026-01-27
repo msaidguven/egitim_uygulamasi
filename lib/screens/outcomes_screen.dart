@@ -4,9 +4,6 @@ import 'package:egitim_uygulamasi/features/test/presentation/views/questions_scr
 import 'package:egitim_uygulamasi/screens/unit_summary_screen.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:egitim_uygulamasi/models/topic_content.dart';
@@ -34,14 +31,13 @@ class OutcomesScreen extends ConsumerWidget { // ConsumerWidget'a dönüştürü
 
   @override
   Widget build(BuildContext context, WidgetRef ref) { // WidgetRef eklendi
+    final viewModelArgs = OutcomesViewModelArgs(
+      lessonId: lessonId,
+      gradeId: gradeId,
+      initialCurriculumWeek: initialCurriculumWeek,
+    );
     // ViewModel'i ref.watch ile dinliyoruz.
-    final viewModel = ref.watch(outcomesViewModelProvider(
-      OutcomesViewModelArgs(
-        lessonId: lessonId,
-        gradeId: gradeId,
-        initialCurriculumWeek: initialCurriculumWeek,
-      ),
-    ));
+    final viewModel = ref.watch(outcomesViewModelProvider(viewModelArgs));
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
@@ -97,6 +93,7 @@ class OutcomesScreen extends ConsumerWidget { // ConsumerWidget'a dönüştürü
         ),
       )
           : PageView.builder(
+        physics: const BouncingScrollPhysics(), // ÖNERİ 1 UYGULANDI
         controller: viewModel.pageController,
         itemCount: viewModel.allWeeksData.length,
         onPageChanged: viewModel.onPageChanged,
@@ -129,15 +126,9 @@ class OutcomesScreen extends ConsumerWidget { // ConsumerWidget'a dönüştürü
           }
 
           return WeekContentView(
-            key: ValueKey(curriculumWeek),
+            key: ValueKey('week_content_$curriculumWeek'),
             curriculumWeek: curriculumWeek as int,
-            // ViewModel'i doğrudan geçmek yerine, provider'ı dinlemesini sağlayacağız.
-            // Bu, WeekContentView'in kendi başına reaktif olmasını sağlar.
-            args: OutcomesViewModelArgs(
-              lessonId: lessonId,
-              gradeId: gradeId,
-              initialCurriculumWeek: initialCurriculumWeek,
-            ),
+            args: viewModelArgs,
           );
         },
       ),
@@ -184,9 +175,9 @@ class _AppleStyleAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class WeekContentView extends ConsumerStatefulWidget { // ConsumerStatefulWidget'a dönüştürüldü
+class WeekContentView extends ConsumerStatefulWidget {
   final int curriculumWeek;
-  final OutcomesViewModelArgs args; // ViewModel'i bulmak için argümanlar
+  final OutcomesViewModelArgs args;
 
   const WeekContentView({
     super.key,
@@ -202,14 +193,20 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
   @override
   bool get wantKeepAlive => true;
 
+  late final (DateTime, DateTime) _weekDateRange; // ÖNERİ 4 UYGULANDI (Değişken tanımı)
+
   @override
   void initState() {
     super.initState();
+    // ÖNERİ 4 UYGULANDI (Hesaplama initState'e taşındı)
+    _weekDateRange = _getWeekDateRange(widget.curriculumWeek);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final viewModel = ref.read(outcomesViewModelProvider(widget.args));
         final index = viewModel.allWeeksData.indexWhere((w) => w['curriculum_week'] == widget.curriculumWeek);
         if (index != -1) {
+          // İlk yüklemede mevcut sayfanın verilerini getir
           if (viewModel.pageController.page?.round() == index) {
             viewModel.onPageChanged(index);
           }
@@ -240,26 +237,20 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
   Widget build(BuildContext context) {
     super.build(context);
 
-    final viewModel = ref.watch(outcomesViewModelProvider(widget.args));
-    final userProfile = ref.watch(profileViewModelProvider).profile; // Merkezi profili dinliyoruz
-    final isGuest = userProfile == null;
+    // Sadece bu widget'ın yeniden çizilmesini gerektiren verileri izle
+    final isLoading = ref.watch(outcomesViewModelProvider(widget.args).select((vm) => vm.isWeekLoading(widget.curriculumWeek) && vm.getWeekContent(widget.curriculumWeek) == null));
+    final error = ref.watch(outcomesViewModelProvider(widget.args).select((vm) => vm.getWeekError(widget.curriculumWeek)));
+    final data = ref.watch(outcomesViewModelProvider(widget.args).select((vm) => vm.getWeekContent(widget.curriculumWeek)));
+    final questions = ref.watch(outcomesViewModelProvider(widget.args).select((vm) => vm.getWeekQuestions(widget.curriculumWeek)));
+    final isGuest = ref.watch(profileViewModelProvider.select((p) => p.profile == null));
 
-    final snapshot = _WeekDataSnapshot(
-      isLoading: viewModel.isWeekLoading(widget.curriculumWeek),
-      error: viewModel.getWeekError(widget.curriculumWeek),
-      data: viewModel.getWeekContent(widget.curriculumWeek),
-      questions: viewModel.getWeekQuestions(widget.curriculumWeek),
-      weeklyStats: viewModel.getWeekStats(widget.curriculumWeek),
-      unitId: viewModel.getWeekUnitId(widget.curriculumWeek),
-    );
-
-    if (snapshot.isLoading && snapshot.data == null) {
+    if (isLoading) {
       return const Center(
         child: CircularProgressIndicator.adaptive(),
       );
     }
 
-    if (snapshot.error != null) {
+    if (error != null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -271,7 +262,7 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
             ),
             const SizedBox(height: 16),
             Text(
-              'Hata: ${snapshot.error}',
+              'Hata: $error',
               style: TextStyle(
                 color: Colors.grey.shade600,
               ),
@@ -281,7 +272,7 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
       );
     }
 
-    if (snapshot.data == null || snapshot.data!.isEmpty) {
+    if (data == null || data.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -303,19 +294,17 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
       );
     }
 
-    final data = snapshot.data!;
-    final (startDate, endDate) = _getWeekDateRange(widget.curriculumWeek);
+    final (startDate, endDate) = _weekDateRange; // ÖNERİ 4 UYGULANDI (Değişken kullanımı)
     final contents = (data['contents'] as List? ?? [])
         .map((c) => TopicContent.fromJson(c as Map<String, dynamic>))
         .toList();
 
     final isLastWeek = data['is_last_week_of_unit'] ?? false;
     final unitSummary = data['unit_summary'];
-    final unitId = snapshot.unitId ?? data['unit_id'];
+    final unitId = data['unit_id'];
 
     return RefreshIndicator.adaptive(
-      onRefresh: () async =>
-          viewModel.refreshCurrentWeekData(widget.curriculumWeek),
+      onRefresh: () async => ref.read(outcomesViewModelProvider(widget.args)).refreshCurrentWeekData(widget.curriculumWeek),
       child: CustomScrollView(
         slivers: [
           SliverPadding(
@@ -330,8 +319,7 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
                     endDate: endDate,
                     unitTitle: data['unit_title'],
                     topicTitle: data['topic_title'],
-                    stats: snapshot.weeklyStats,
-                    isGuest: isGuest,
+                    args: widget.args, // Pass args
                   ),
                   const SizedBox(height: 24),
                 ],
@@ -374,13 +362,13 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
               childCount: contents.length,
             ),
           ),
-          if (snapshot.questions != null && snapshot.questions!.isNotEmpty)
+          if (questions != null && questions.isNotEmpty)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
               sliver: SliverToBoxAdapter(
                 child: _AppleMiniQuiz(
-                  key: ValueKey(widget.curriculumWeek),
-                  questions: snapshot.questions!,
+                  key: ValueKey('mini_quiz_${widget.curriculumWeek}'),
+                  questions: questions,
                 ),
               ),
             ),
@@ -389,11 +377,9 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
               sliver: SliverToBoxAdapter(
                 child: _AppleWeeklySummaryCard(
-                  stats: snapshot.weeklyStats,
                   unitId: unitId,
                   curriculumWeek: widget.curriculumWeek,
-                  onRefresh: () =>
-                      viewModel.refreshCurrentWeekData(widget.curriculumWeek),
+                  args: widget.args, // Pass args
                   isGuest: isGuest,
                 ),
               ),
@@ -414,54 +400,13 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
   }
 }
 
-class _WeekDataSnapshot {
-  final bool isLoading;
-  final String? error;
-  final Map<String, dynamic>? data;
-  final List<Question>? questions;
-  final Map<String, dynamic>? weeklyStats;
-  final int? unitId;
-
-  _WeekDataSnapshot({
-    required this.isLoading,
-    this.error,
-    this.data,
-    this.questions,
-    this.weeklyStats,
-    this.unitId,
-  });
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _WeekDataSnapshot &&
-          runtimeType == other.runtimeType &&
-          isLoading == other.isLoading &&
-          error == other.error &&
-          data == other.data &&
-          questions == other.questions &&
-          weeklyStats == other.weeklyStats &&
-          unitId == other.unitId;
-
-  @override
-  int get hashCode =>
-      isLoading.hashCode ^
-      error.hashCode ^
-      data.hashCode ^
-      questions.hashCode ^
-      weeklyStats.hashCode ^
-      unitId.hashCode;
-}
-
-
-class _AppleWeekHeader extends StatelessWidget {
+class _AppleWeekHeader extends ConsumerWidget { // Converted to ConsumerWidget
   final int curriculumWeek;
   final DateTime startDate;
   final DateTime endDate;
   final String? unitTitle;
   final String? topicTitle;
-  final Map<String, dynamic>? stats;
-  final bool isGuest;
+  final OutcomesViewModelArgs args;
 
   const _AppleWeekHeader({
     required this.curriculumWeek,
@@ -469,11 +414,10 @@ class _AppleWeekHeader extends StatelessWidget {
     required this.endDate,
     this.unitTitle,
     this.topicTitle,
-    this.stats,
-    this.isGuest = false,
+    required this.args,
   });
 
-  Widget _buildStatusIndicator(BuildContext context) {
+  Widget _buildStatusIndicator(BuildContext context, Map<String, dynamic>? stats, bool isGuest) {
     final solved = isGuest ? 0 : stats?['solved_unique'] ?? 0;
     final total = isGuest ? 10 : stats?['total_questions'] ?? 0;
     final correctCount = isGuest ? 0 : stats?['correct_count'] ?? 0;
@@ -548,7 +492,11 @@ class _AppleWeekHeader extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch only the data this widget needs
+    final stats = ref.watch(outcomesViewModelProvider(args).select((vm) => vm.getWeekStats(curriculumWeek)));
+    final isGuest = ref.watch(profileViewModelProvider.select((p) => p.profile == null));
+
     final formattedStartDate = '${startDate.day} ${aylar[startDate.month - 1]}';
     final formattedEndDate =
         '${endDate.day} ${aylar[endDate.month - 1]} ${endDate.year}';
@@ -597,7 +545,7 @@ class _AppleWeekHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        _buildStatusIndicator(context),
+        _buildStatusIndicator(context, stats, isGuest),
       ],
     );
   }
@@ -772,10 +720,13 @@ class _AppleContentCard extends StatelessWidget {
               color: Colors.grey.shade200,
             ),
             const SizedBox(height: 16),
-            Html(
-              data: content.content,
-              extensions: const [TableHtmlExtension()],
-              style: newStyle,
+            // ÖNERİ 2 UYGULANDI
+            RepaintBoundary(
+              child: Html(
+                data: content.content,
+                extensions: const [TableHtmlExtension()],
+                style: newStyle,
+              ),
             ),
           ],
         ),
@@ -1282,18 +1233,16 @@ class _AppleQuizResults extends StatelessWidget {
   }
 }
 
-class _AppleWeeklySummaryCard extends ConsumerWidget { // ConsumerWidget'a dönüştürüldü
-  final Map<String, dynamic>? stats;
+class _AppleWeeklySummaryCard extends ConsumerWidget {
   final int unitId;
   final int curriculumWeek;
-  final VoidCallback onRefresh;
+  final OutcomesViewModelArgs args;
   final bool isGuest;
 
   const _AppleWeeklySummaryCard({
-    required this.stats,
     required this.unitId,
     required this.curriculumWeek,
-    required this.onRefresh,
+    required this.args,
     this.isGuest = false,
   });
 
@@ -1341,7 +1290,10 @@ class _AppleWeeklySummaryCard extends ConsumerWidget { // ConsumerWidget'a dön�
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { // WidgetRef eklendi
+  Widget build(BuildContext context, WidgetRef ref) {
+    final stats = ref.watch(outcomesViewModelProvider(args).select((vm) => vm.getWeekStats(curriculumWeek)));
+    final onRefresh = ref.read(outcomesViewModelProvider(args)).refreshCurrentWeekData;
+
     if (stats == null && !isGuest) {
       return Container(
         height: 200,
@@ -1409,7 +1361,7 @@ class _AppleWeeklySummaryCard extends ConsumerWidget { // ConsumerWidget'a dön�
             ),
           ),
         );
-        onRefresh();
+        onRefresh(curriculumWeek);
       };
     } else {
       buttonIcon = Icons.checklist_rtl_rounded;
@@ -1433,7 +1385,7 @@ class _AppleWeeklySummaryCard extends ConsumerWidget { // ConsumerWidget'a dön�
             ),
           ),
         );
-        onRefresh();
+        onRefresh(curriculumWeek);
       };
     }
 

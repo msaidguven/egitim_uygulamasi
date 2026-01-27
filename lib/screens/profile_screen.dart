@@ -10,7 +10,7 @@ import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final authViewModelProvider = ChangeNotifierProvider((ref) => AuthViewModel());
+import 'package:egitim_uygulamasi/providers.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -504,23 +504,42 @@ class __ProfileBodyState extends ConsumerState<_ProfileBody> with SingleTickerPr
                 width: 1,
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            child: Column(
               children: [
-                _StatItem(
-                  value: '24',
-                  label: 'Tamamlanan',
-                  isDarkMode: isDarkMode,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _StatItem(
+                      value: ref.watch(profileViewModelProvider).totalQuestionsSolved.toString(),
+                      label: 'Çözülen Soru',
+                      isDarkMode: isDarkMode,
+                    ),
+                    _StatItem(
+                      value: ref.watch(profileViewModelProvider).totalDurationFormatted,
+                      label: 'Toplam Süre',
+                      isDarkMode: isDarkMode,
+                    ),
+                  ],
                 ),
-                _StatItem(
-                  value: '85%',
-                  label: 'Başarı',
-                  isDarkMode: isDarkMode,
-                ),
-                _StatItem(
-                  value: '48h',
-                  label: 'Süre',
-                  isDarkMode: isDarkMode,
+                const SizedBox(height: 16),
+                Divider(height: 1, color: isDarkMode ? Colors.grey[800] : Colors.grey[200]),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _StatItem(
+                      value: ref.watch(profileViewModelProvider).totalCorrectAnswers.toString(),
+                      label: 'Doğru',
+                      isDarkMode: isDarkMode,
+                      valueColor: Colors.green, // Doğru için yeşil renk
+                    ),
+                    _StatItem(
+                      value: ref.watch(profileViewModelProvider).totalWrongAnswers.toString(),
+                      label: 'Yanlış',
+                      isDarkMode: isDarkMode,
+                      valueColor: Colors.red, // Yanlış için kırmızı renk
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -572,7 +591,7 @@ class __ProfileBodyState extends ConsumerState<_ProfileBody> with SingleTickerPr
                     ),
                     const Spacer(),
                     Text(
-                      '65%',
+                      '%${(ref.watch(profileViewModelProvider).progressPercentage * 100).toStringAsFixed(0)}',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -583,7 +602,7 @@ class __ProfileBodyState extends ConsumerState<_ProfileBody> with SingleTickerPr
                 ),
                 const SizedBox(height: 16),
                 LinearProgressIndicator(
-                  value: 0.65,
+                  value: ref.watch(profileViewModelProvider).progressPercentage,
                   backgroundColor: isDarkMode ? Colors.grey[800] : Colors.grey[300],
                   color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(8),
@@ -883,11 +902,13 @@ class _StatItem extends StatelessWidget {
   final String value;
   final String label;
   final bool isDarkMode;
+  final Color? valueColor;
 
   const _StatItem({
     required this.value,
     required this.label,
     required this.isDarkMode,
+    this.valueColor,
   });
 
   @override
@@ -899,7 +920,7 @@ class _StatItem extends StatelessWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
-            color: Theme.of(context).colorScheme.primary,
+            color: valueColor ?? Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(height: 4),

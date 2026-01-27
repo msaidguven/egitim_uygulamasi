@@ -1,4 +1,4 @@
-package com.example.egitim_uygulamasi
+package com.elmasapp.egitim
 
 import io.flutter.embedding.android.FlutterActivity
 

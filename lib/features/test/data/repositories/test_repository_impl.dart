@@ -394,7 +394,7 @@ class TestRepositoryImpl implements TestRepository {
           .eq('id', sessionId)
           .maybeSingle();
 
-      return response as Map<String, dynamic>?;
+      return response;
     } catch (e) {
       log('TestRepositoryImpl.getSessionDetails ERROR: $e');
       return null;

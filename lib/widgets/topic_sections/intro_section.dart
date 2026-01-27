@@ -27,7 +27,7 @@ class IntroSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (content.title != null && content.title.isNotEmpty) ...[
+            if (content.title.isNotEmpty) ...[
               Container(
                 width: double.infinity,
                 color: const Color(

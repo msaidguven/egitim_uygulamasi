@@ -8,7 +8,6 @@ import 'package:egitim_uygulamasi/admin/pages/outcomes/outcome_list_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/units/unit_list_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/smart_question_addition/smart_question_addition_page.dart'; // Add this
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AdminRoutes {

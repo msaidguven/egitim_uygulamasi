@@ -5,7 +5,7 @@ import 'package:egitim_uygulamasi/screens/main_screen.dart';
 import 'package:egitim_uygulamasi/screens/signup_screen.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
+import 'package:egitim_uygulamasi/providers.dart'; // Provider'lar için
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +21,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final AuthViewModel _viewModel = AuthViewModel();
+  // ViewModel'i artık Provider'dan alacağız, build içinde ref.watch ile.
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -37,23 +37,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void initState() {
     super.initState();
     _loadSavedCredentials();
-    _viewModel.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-      if (_viewModel.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_viewModel.errorMessage!),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
-      }
-    });
   }
 
   Future<void> _loadSavedCredentials() async {
@@ -118,43 +101,74 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _viewModel.dispose();
     super.dispose();
   }
 
   Future<void> _signIn() async {
     if (_formKey.currentState!.validate()) {
-      final success = await _viewModel.signIn(
+      // Provider üzerinden ViewModel'e erişim
+      final viewModel = ref.read(authViewModelProvider);
+      
+      final success = await viewModel.signIn(
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
 
-      if (success) {
-        // Başarılı girişte kimlik bilgilerini kaydet
-        await _saveCredentials();
+      _handleAuthResult(success, viewModel.errorMessage);
+    }
+  }
 
-        if (mounted) {
-          // Kullanıcı durumu değişti, ilgili provider'ları yenile.
-          ref.invalidate(profileViewModelProvider);
+  Future<void> _signInWithGoogle() async {
+    // Provider üzerinden ViewModel'e erişim
+    final viewModel = ref.read(authViewModelProvider);
+    
+    final success = await viewModel.signInWithGoogle();
+    _handleAuthResult(success, viewModel.errorMessage);
+  }
 
-          if (widget.shouldPopOnSuccess) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const MainScreen()),
-                  (Route<dynamic> route) => false,
-            );
-          }
+  Future<void> _handleAuthResult(bool success, String? errorMessage) async {
+    if (success) {
+      // Başarılı girişte kimlik bilgilerini kaydet
+      await _saveCredentials();
+
+      if (mounted) {
+        // Kullanıcı durumu değişti, ilgili provider'ları yenile.
+        ref.invalidate(profileViewModelProvider);
+
+        if (widget.shouldPopOnSuccess) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+                (Route<dynamic> route) => false,
+          );
         }
-      } else {
-        // Giriş başarısızsa kimlik bilgilerini temizle
-        await _clearCredentials();
       }
+    } else {
+      // Hata mesajını göster
+      if (mounted && errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      }
+      
+      // Başarısız girişse (ve normal girişse) kimlik bilgilerini temizleyebiliriz
+      // Google girişinde şifre olmadığı için bu adım şart değil ama zararı yok.
+      await _clearCredentials();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    // ViewModel'i izle (loading durumunu UI'da göstermek için)
+    final viewModel = ref.watch(authViewModelProvider);
 
     if (_isLoadingCredentials) {
       return Scaffold(
@@ -319,7 +333,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ),
                         const Spacer(),
-                        // Şifremi unuttum buraya da koyalım
+                        // Şifremi unuttum
                         TextButton(
                           onPressed: () {
                             Navigator.push(
@@ -352,7 +366,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       width: double.infinity,
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: _viewModel.isLoading ? null : _signIn,
+                        onPressed: viewModel.isLoading ? null : _signIn,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).colorScheme.primary,
                           foregroundColor: Colors.white,
@@ -366,7 +380,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        child: _viewModel.isLoading
+                        child: viewModel.isLoading
                             ? SizedBox(
                           width: 20,
                           height: 20,
@@ -452,96 +466,55 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               const SizedBox(height: 32),
 
-              // Google ile devam et butonu (yakında)
-              Column(
-                children: [
-                  // Buton
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        // Yakında mesajı göster
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text(
-                              'Google ile giriş özelliği yakında eklenecek!',
-                              style: TextStyle(fontWeight: FontWeight.w500),
-                            ),
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            duration: const Duration(seconds: 2),
+              // Google ile giriş butonu (Aktif)
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: OutlinedButton(
+                  onPressed: viewModel.isLoading ? null : _signInWithGoogle,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: isDarkMode ? Colors.white : Colors.black87,
+                    backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
+                    side: BorderSide(
+                      color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Image.network(
+                          'https://lh3.googleusercontent.com/COxitq8kCuVtIeQf2d4_2QwFfJ-420-9_i8D5l8vC3t2-T6_1_c8',
+                          height: 24,
+                          width: 24,
+                          errorBuilder: (context, error, stackTrace) => const Icon(
+                            Icons.g_mobiledata,
+                            color: Colors.blue,
+                            size: 32,
                           ),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.g_mobiledata,
-                        color: isDarkMode ? Colors.white : Colors.black,
-                        size: 24,
+                        ),
                       ),
-                      label: Text(
+                      const SizedBox(width: 12),
+                      Text(
                         'Google ile devam et',
                         style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: isDarkMode ? Colors.white : Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: isDarkMode ? Colors.white : Colors.black87,
                         ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        side: BorderSide(
-                          color: isDarkMode ? Colors.grey[800]! : Colors.grey[300]!,
-                          width: 1,
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-
-                  // Bilgilendirme metni
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: isDarkMode
-                          ? Colors.blue.withOpacity(0.1)
-                          : Colors.blue.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: isDarkMode
-                            ? Colors.blue.withOpacity(0.3)
-                            : Colors.blue.withOpacity(0.2),
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline_rounded,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            'Google ile giriş özelliği yakında eklenecektir',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: isDarkMode
-                                  ? Colors.blue[200]
-                                  : Colors.blue[700],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),

@@ -267,7 +267,7 @@ class _UnitListPageState extends State<UnitListPage> {
         }
         final grades = snapshot.data ?? [];
         return DropdownButtonFormField<Grade>(
-          value: _selectedGrade,
+          initialValue: _selectedGrade,
           hint: const Text('Lütfen bir sınıf seçin'),
           onChanged: _onGradeSelected,
           items: grades.map((grade) {
@@ -300,7 +300,7 @@ class _UnitListPageState extends State<UnitListPage> {
     }
 
     return DropdownButtonFormField<Lesson>(
-      value: _selectedLesson,
+      initialValue: _selectedLesson,
       hint: const Text('Lütfen bir ders seçin'),
       onChanged: _onLessonSelected,
       items: _lessons.map((lesson) {

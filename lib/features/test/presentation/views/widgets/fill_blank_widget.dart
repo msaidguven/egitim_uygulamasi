@@ -8,7 +8,7 @@ class FillBlankWidget extends StatefulWidget {
   final TestQuestion testQuestion;
   final ValueChanged<dynamic> onAnswered;
 
-  const FillBlankWidget({required this.testQuestion, required this.onAnswered});
+  const FillBlankWidget({super.key, required this.testQuestion, required this.onAnswered});
 
   @override
   _FillBlankWidgetState createState() => _FillBlankWidgetState();
@@ -32,10 +32,13 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
   void _onDrop(int blankIndex, QuestionBlankOption option) {
     if (widget.testQuestion.isChecked) return;
     setState(() {
-      final previousEntry = _droppedAnswers.entries.firstWhereOrNull((entry) => entry.value?.id == option.id);
+      final previousEntry = _droppedAnswers.entries
+          .firstWhereOrNull((entry) => entry.value?.id == option.id);
       if (previousEntry != null) _droppedAnswers[previousEntry.key] = null;
+
       final existingOption = _droppedAnswers[blankIndex];
       if (existingOption != null) _availableOptions.add(existingOption);
+
       _droppedAnswers[blankIndex] = option;
       _availableOptions.removeWhere((opt) => opt.id == option.id);
       widget.onAnswered(Map<int, QuestionBlankOption?>.from(_droppedAnswers));
@@ -91,7 +94,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
     for (int i = 0; i < questionParts.length; i++) {
       questionWidgets.add(Text(
         questionParts[i],
-        style: const TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18, height: 1.6),
       ));
 
       if (i < questionParts.length - 1) {
@@ -105,12 +108,10 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
           bgColor = isCorrect ? Colors.green.shade50 : Colors.red.shade50;
         } else if (droppedOption != null) {
           borderColor = Theme.of(context).primaryColor;
-          bgColor = Theme.of(context).primaryColor.withOpacity(0.1);
+          bgColor = Theme.of(context).primaryColor.withOpacity(0.05);
         }
 
-        // Sürüklenen boşluk için şeffaf görünüm
         final isDraggingBack = _draggingBlankIndex == blankIndex;
-        final opacity = isDraggingBack ? 0.5 : 1.0;
 
         questionWidgets.add(
           DragTarget<QuestionBlankOption>(
@@ -120,249 +121,72 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                 data: droppedOption,
                 onDragStarted: () => _startDragBack(blankIndex),
                 onDragEnd: _endDragBack,
-                onDraggableCanceled: (velocity, offset) => _cancelDragBack(),
+                onDraggableCanceled: (_, __) => _cancelDragBack(),
                 feedback: Material(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.red.shade400, width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      droppedOption.optionText,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
+                  color: Colors.transparent,
+                  child: _buildDraggingFeedback(droppedOption.optionText),
                 ),
                 childWhenDragging: Opacity(
                   opacity: 0.3,
                   child: _buildBlankContainer(
                     context,
-                    borderColor: Colors.grey.shade400,
-                    bgColor: Colors.grey.shade200,
+                    borderColor: Colors.grey.shade300,
+                    bgColor: Colors.grey.shade100,
                     text: droppedOption.optionText,
                   ),
                 ),
                 child: GestureDetector(
                   onTap: () => _removeFromBlank(blankIndex),
                   child: Opacity(
-                    opacity: opacity,
+                    opacity: isDraggingBack ? 0.5 : 1.0,
                     child: _buildBlankContainer(
                       context,
                       borderColor: borderColor,
                       bgColor: bgColor,
                       text: droppedOption.optionText,
-                      showRemoveIcon: true,
+                      isMatched: true,
                     ),
                   ),
                 ),
               )
                   : DragTarget<QuestionBlankOption>(
                 builder: (context, candidateData, rejectedData) {
-                  return GestureDetector(
-                    onTap: droppedOption != null ? () => _removeFromBlank(blankIndex) : null,
-                    child: _buildBlankContainer(
-                      context,
-                      borderColor: borderColor,
-                      bgColor: bgColor,
-                      text: '...',
-                    ),
+                  return _buildBlankContainer(
+                    context,
+                    borderColor: borderColor,
+                    bgColor: bgColor,
+                    text: '...',
                   );
                 },
-                onAccept: (option) => _onDrop(blankIndex, option),
+                onAcceptWithDetails: (details) => _onDrop(blankIndex, details.data),
               );
             },
-            onAccept: (option) => _onDrop(blankIndex, option),
+            onAcceptWithDetails: (details) => _onDrop(blankIndex, details.data),
           ),
         );
       }
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 12.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.all(8.0),
             child: Wrap(
               alignment: WrapAlignment.start,
               crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 2,
+              runSpacing: 12,
               children: questionWidgets,
             ),
           ),
-
-          const SizedBox(height: 24),
-
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.blue.shade200),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.info_outline, color: Colors.blue.shade700, size: 18),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Seçenekleri boşluklara sürükleyin.',
-                        style: TextStyle(
-                          color: Colors.blue.shade800,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Yerleştirilen seçeneğe tıklayarak veya tutup sürükleyerek kaldırabilirsiniz.',
-                        style: TextStyle(
-                          color: Colors.blue.shade800,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
           const SizedBox(height: 20),
-
-          if (!isChecked && _availableOptions.isNotEmpty)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Kullanılabilir Seçenekler:',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade700,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 10.0,
-                  runSpacing: 10.0,
-                  children: _availableOptions.map((option) {
-                    return Draggable<QuestionBlankOption>(
-                      data: option,
-
-                      // ================= FEEDBACK (sürüklerken görünen)
-                      feedback: Material(
-                        color: Colors.transparent,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.amber.shade100,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.amber.shade400),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: QuestionText(
-                              text: option.optionText,
-                              fontSize: 16,
-                              textColor: Colors.amber.shade900,
-                              fractionColor: Colors.amber.shade900,
-                              //enableFractions: question.unit.isMath,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // ================= SÜRÜKLENİRKEN YERİ BOŞ KALSIN
-                      childWhenDragging: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        alignment: Alignment.center,
-                        child: QuestionText(
-                          text: option.optionText,
-                          fontSize: 16,
-                          textColor: Colors.grey.shade600,
-                          fractionColor: Colors.grey.shade600,
-                          //enableFractions: question.unit.isMath,
-                        ),
-                      ),
-
-                      // ================= NORMAL HAL
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.amber.shade100,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.amber.shade400),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 3,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        alignment: Alignment.center,
-                        child: QuestionText(
-                          text: option.optionText,
-                          fontSize: 16,
-                          textColor: Colors.amber.shade900,
-                          fractionColor: Colors.amber.shade900,
-                          //enableFractions: question.unit.isMath,
-                        ),
-                      ),
-                    );
-
-                  }).toList(),
-                ),
-              ],
-            ),
-
-          if (!isChecked && _availableOptions.isEmpty)
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.green.shade300),
-              ),
-              child: Center(
-                child: Text(
-                  'Tüm seçenekler kullanıldı!',
-                  style: TextStyle(
-                    color: Colors.green.shade800,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
+          _buildInfoPanel(),
+          const SizedBox(height: 20),
+          if (!isChecked) _buildOptionsPool(),
+          if (isChecked) _buildCheckStatus(isCorrect),
         ],
       ),
     );
@@ -373,63 +197,136 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
         required Color borderColor,
         required Color bgColor,
         required String text,
-        bool showRemoveIcon = false,
+        bool isMatched = false,
       }) {
     return Container(
-      width: 150,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      margin: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+      constraints: const BoxConstraints(minWidth: 75), // Başlangıç genişliği artırıldı
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
+      margin: const EdgeInsets.symmetric(horizontal: 4.0),
       decoration: BoxDecoration(
         color: bgColor,
-        border: Border.all(
-          color: borderColor,
-          width: 2.5,
-        ),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 3,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: borderColor, width: 2),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (showRemoveIcon && !widget.testQuestion.isChecked)
-            Icon(
-              Icons.drag_handle,
-              size: 16,
-              color: Theme.of(context).primaryColor.withOpacity(0.7),
+          if (isMatched && !widget.testQuestion.isChecked) ...[
+            Icon(Icons.unfold_more, size: 14, color: Theme.of(context).primaryColor.withOpacity(0.5)),
+            const SizedBox(width: 4),
+          ],
+          // Metin render işlemi
+          text == '...'
+              ? Text('...', style: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.bold, fontSize: 18))
+              : QuestionText(
+            text: text,
+            fontSize: 16,
+            textColor: Theme.of(context).primaryColor,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOptionsPool() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: _availableOptions.map((option) {
+          return Draggable<QuestionBlankOption>(
+            data: option,
+            feedback: Material(
+              color: Colors.transparent,
+              child: _buildDraggingFeedback(option.optionText),
             ),
-          if (showRemoveIcon && !widget.testQuestion.isChecked)
-            const SizedBox(width: 6),
-          Expanded(
+            childWhenDragging: Opacity(
+                opacity: 0.3,
+                child: _buildPoolItem(option.optionText, isDragging: true)
+            ),
+            child: _buildPoolItem(option.optionText),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildPoolItem(String text, {bool isDragging = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: isDragging ? Colors.grey.shade200 : Colors.amber.shade100,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: isDragging ? Colors.grey.shade400 : Colors.amber.shade400),
+      ),
+      child: QuestionText(
+        text: text,
+        fontSize: 15,
+        textColor: isDragging ? Colors.grey.shade700 : Colors.amber.shade900,
+      ),
+    );
+  }
+
+  Widget _buildDraggingFeedback(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 8)],
+      ),
+      child: QuestionText(
+        text: text,
+        fontSize: 16,
+        textColor: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildInfoPanel() {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blue.shade100),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.info_outline, color: Colors.blue.shade700, size: 18),
+          const SizedBox(width: 8),
+          const Expanded(
             child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: text != '...'
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey.shade600,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              'Doğru seçenekleri boşluklara taşıyın.',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
           ),
-          if (showRemoveIcon && !widget.testQuestion.isChecked)
-            const SizedBox(width: 6),
-          if (showRemoveIcon && !widget.testQuestion.isChecked)
-            Icon(
-              Icons.touch_app,
-              size: 14,
-              color: Theme.of(context).primaryColor.withOpacity(0.7),
-            ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCheckStatus(bool isCorrect) {
+    return Container(
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isCorrect ? Colors.green.shade50 : Colors.red.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: isCorrect ? Colors.green.shade200 : Colors.red.shade200),
+      ),
+      child: Center(
+        child: Text(
+          isCorrect ? 'Tebrikler, doğru!' : 'Cevap yanlış, tekrar deneyin.',
+          style: TextStyle(color: isCorrect ? Colors.green.shade800 : Colors.red.shade800, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }

@@ -2,7 +2,6 @@
 
 import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:egitim_uygulamasi/models/lesson_model.dart';
-import 'package:egitim_uygulamasi/models/outcome_model.dart';
 import 'package:egitim_uygulamasi/models/topic_model.dart';
 import 'package:egitim_uygulamasi/models/unit_model.dart';
 import 'package:egitim_uygulamasi/services/grade_service.dart';
@@ -10,7 +9,6 @@ import 'package:egitim_uygulamasi/services/outcome_service.dart';
 import 'package:egitim_uygulamasi/services/topic_service.dart';
 import 'package:egitim_uygulamasi/main.dart'; // Supabase client için
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OutcomeListPage extends StatefulWidget {
   const OutcomeListPage({super.key});
@@ -95,7 +93,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const LinearProgressIndicator();
         return DropdownButtonFormField<int>(
-          value: _selectedGradeId,
+          initialValue: _selectedGradeId,
           hint: const Text('1. Sınıf Seçin'),
           onChanged: (value) {
             if (value != null) _onGradeSelected(value);
@@ -113,7 +111,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
 
   Widget _buildLessonSelector() {
     return DropdownButtonFormField<int>(
-      value: _selectedLessonId,
+      initialValue: _selectedLessonId,
       hint: const Text('2. Ders Seçin'),
       onChanged: _selectedGradeId == null
           ? null
@@ -131,7 +129,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
 
   Widget _buildUnitSelector() {
     return DropdownButtonFormField<int>(
-      value: _selectedUnitId,
+      initialValue: _selectedUnitId,
       hint: const Text('3. Ünite Seçin'),
       onChanged: _selectedLessonId == null
           ? null
@@ -232,11 +230,12 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
         ),
       );
     }
-    if (_isLoadingOutcomes)
+    if (_isLoadingOutcomes) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 32.0),
         child: Center(child: CircularProgressIndicator()),
       );
+    }
 
     return ListView.builder(
       shrinkWrap: true,
@@ -413,7 +412,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
               });
             },
           );
-        }).toList(),
+        }),
       ],
     );
   }

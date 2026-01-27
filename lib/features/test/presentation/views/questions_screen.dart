@@ -392,7 +392,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     } else if (error.contains('no questions') || error.contains('soru')) {
       return 'Bu ünitede çözülebilecek soru bulunamadı.';
     } else {
-      return 'Bir hata oluştu: ${error.length > 100 ? error.substring(0, 100) + '...' : error}';
+      return 'Bir hata oluştu: ${error.length > 100 ? '${error.substring(0, 100)}...' : error}';
     }
   }
 

@@ -1,13 +1,14 @@
-// lib/viewmodels/auth_viewmodel.dart
-
-import 'dart:async';
+import 'package:egitim_uygulamasi/repositories/auth_repository.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:egitim_uygulamasi/main.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthViewModel extends ChangeNotifier {
+  final AuthRepository _repository;
+  
+  AuthViewModel(this._repository);
+
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -16,8 +17,7 @@ class AuthViewModel extends ChangeNotifier {
 
   Future<List<Map<String, dynamic>>> getGrades() async {
     try {
-      final response = await supabase.from('grades').select('id, name').order('order_no', ascending: true);
-      return (response as List).map((grade) => {'id': grade['id'], 'name': grade['name']}).toList();
+      return await _repository.getGrades();
     } catch (e) {
       _errorMessage = 'Sınıflar yüklenirken bir hata oluştu.';
       notifyListeners();
@@ -25,9 +25,18 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
+  Future<bool> signInWithGoogle() async {
+    return _handleAuth(() async {
+      final response = await _repository.signInWithGoogle();
+      if (response.user != null) {
+        await _repository.maybeCreateProfileFromGoogle(response.user!);
+      }
+    });
+  }
+
   Future<bool> signIn(String email, String password) async {
     return _handleAuth(() async {
-      await supabase.auth.signInWithPassword(email: email, password: password);
+      await _repository.signIn(email: email, password: password);
     });
   }
 
@@ -38,53 +47,44 @@ class AuthViewModel extends ChangeNotifier {
     int? gradeId,
   }) async {
     return _handleAuth(() async {
-      // 1. Adım: Supabase Auth ile kullanıcıyı oluştur.
-      final AuthResponse res = await supabase.auth.signUp(
-        email: email,
-        password: password,
-      );
+      final AuthResponse res = await _repository.signUp(email: email, password: password);
 
-      // 2. Adım: Kullanıcı başarıyla oluşturulduysa, 'profiles' tablosuna ek bilgileri kaydet.
       if (res.user != null) {
-        // Kullanıcı adı olarak e-postanın ilk bölümünü alalım (geçici çözüm)
         final username = email.split('@').first;
-
-        await supabase.from('profiles').insert({
-          'id': res.user!.id, // Auth kullanıcısının ID'si ile eşleştir
-          'full_name': fullName,
-          'username': username,
-          'grade_id': gradeId,
-        });
-
-        // 3. Adım: Kayıt sonrası otomatik olarak oturum aç.
-        await supabase.auth.signInWithPassword(email: email, password: password);
-
-      } else {
-        // Beklenmedik bir durum, kullanıcı null geldi.
-        throw const AuthException(
-          'Kullanıcı oluşturulamadı. Lütfen tekrar deneyin.',
+        await _repository.createProfile(
+          userId: res.user!.id,
+          fullName: fullName,
+          username: username,
+          gradeId: gradeId,
         );
+        
+        // Kayıt sonrası otomatik giriş için tekrar şifre ile giriş yapmaya gerek yok,
+        // Supabase signUp sonrası otomatik oturum açabilir (email confirm kapalıysa).
+        // Ama emin olmak için:
+        if (res.session == null) {
+           await _repository.signIn(email: email, password: password);
+        }
+      } else {
+        throw const AuthException('Kullanıcı oluşturulamadı.');
       }
     });
   }
 
   Future<bool> sendPasswordReset(String email) async {
     return _handleAuth(() async {
-      await supabase.auth.resetPasswordForEmail(email);
+      await _repository.sendPasswordResetEmail(email);
     });
   }
 
   Future<bool> updatePassword(String newPassword) async {
     return _handleAuth(() async {
-      await supabase.auth.updateUser(UserAttributes(password: newPassword));
+      await _repository.updatePassword(newPassword);
     });
   }
 
   Future<void> signOut(WidgetRef ref) async {
-    await supabase.auth.signOut();
+    await _repository.signOut();
     ref.invalidate(profileViewModelProvider);
-    // Oturuma bağlı diğer provider'lar da burada invalidate edilebilir.
-    // Örnek: ref.invalidate(anotherUserSpecificProvider);
   }
 
   Future<bool> _handleAuth(Future<void> Function() authFunction) async {
@@ -98,8 +98,8 @@ class AuthViewModel extends ChangeNotifier {
     } on AuthException catch (e) {
       _errorMessage = e.message;
       return false;
-    } on PostgrestException catch (e) {
-      _errorMessage = 'Veritabanı hatası: ${e.message}';
+    } catch (e) {
+      _errorMessage = 'Beklenmedik bir hata: $e';
       return false;
     } finally {
       _isLoading = false;

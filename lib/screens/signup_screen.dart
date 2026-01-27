@@ -1,11 +1,11 @@
 // lib/screens/signup_screen.dart
 
-import 'package:egitim_uygulamasi/screens/home_screen.dart';
 import 'package:egitim_uygulamasi/screens/main_screen.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:egitim_uygulamasi/providers.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -15,7 +15,6 @@ class SignUpScreen extends ConsumerStatefulWidget {
 }
 
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
-  final AuthViewModel _viewModel = AuthViewModel();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -27,55 +26,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   void initState() {
     super.initState();
-    _loadGrades();
-    _viewModel.addListener(() {
-      if (!mounted) return;
-
-      setState(() {});
-
-      final errorMessage = _viewModel.errorMessage;
-      if (errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
-      } else if (!_viewModel.isLoading) {
-        // Kullanıcı durumu değişti, ilgili provider'ları yenile.
-        ref.invalidate(profileViewModelProvider);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
-              'Kayıt başarılı! Ana sayfaya yönlendiriliyorsunuz...',
-            ),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
-        Future.delayed(const Duration(seconds: 1), () {
-          if (mounted) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const MainScreen()),
-                  (Route<dynamic> route) => false,
-            );
-          }
-        });
-      }
+    // Load grades after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadGrades();
     });
   }
 
   Future<void> _loadGrades() async {
-    final grades = await _viewModel.getGrades();
+    final grades = await ref.read(authViewModelProvider).getGrades();
     if (mounted) {
       setState(() {
         _grades = grades;
@@ -89,13 +47,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _fullNameController.dispose();
-    _viewModel.dispose();
     super.dispose();
   }
 
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
-      await _viewModel.signUp(
+      await ref.read(authViewModelProvider).signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         fullName: _fullNameController.text.trim(),
@@ -186,7 +143,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         ),
                       ),
                       child: DropdownButtonFormField<int>(
-                        value: _selectedGradeId,
+                        initialValue: _selectedGradeId,
                         decoration: InputDecoration(
                           labelText: 'Sınıf',
                           labelStyle: TextStyle(
@@ -270,7 +227,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       width: double.infinity,
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: _viewModel.isLoading ? null : _signUp,
+                        onPressed: ref.watch(authViewModelProvider).isLoading ? null : _signUp,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).colorScheme.primary,
                           foregroundColor: Colors.white,
@@ -284,7 +241,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        child: _viewModel.isLoading
+                        child: ref.watch(authViewModelProvider).isLoading
                             ? SizedBox(
                           width: 20,
                           height: 20,
@@ -362,40 +319,63 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
                     const SizedBox(height: 32),
 
-                    // Sosyal medya butonları
-                    Column(
-                      children: [
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 52,
-                          child: OutlinedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.g_mobiledata,
-                              size: 24,
-                            ),
-                            label: Text(
-                              'Google ile kaydolun',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                color: isDarkMode ? Colors.white : Colors.black,
+                      // Sosyal medya butonları
+                      Column(
+                        children: [
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: OutlinedButton(
+                              onPressed: ref.watch(authViewModelProvider).isLoading ? null : _signUpWithGoogle,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: isDarkMode ? Colors.white : Colors.black87,
+                                backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
+                                side: BorderSide(
+                                  color: isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 0,
                               ),
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              side: BorderSide(
-                                color: isDarkMode ? Colors.grey[800]! : Colors.grey[300]!,
-                                width: 1,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Google Logosu (Network Image yerine güvenli olması için renkli G harfi veya asset varsa o kullanılır.
+                                  // Asset olmadığı için şık bir 'G' harfi tasarımı yapıyoruz.)
+                                  Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Image.network(
+                                      'https://lh3.googleusercontent.com/COxitq8kCuVtIeQf2d4_2QwFfJ-420-9_i8D5l8vC3t2-T6_1_c8', // Google 'G' logosu URL'i
+                                      height: 24,
+                                      width: 24,
+                                      errorBuilder: (context, error, stackTrace) => const Icon(
+                                        Icons.g_mobiledata,
+                                        color: Colors.blue,
+                                        size: 32,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Google ile devam et',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: isDarkMode ? Colors.white : Colors.black87,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -404,6 +384,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _signUpWithGoogle() async {
+    final success = await ref.read(authViewModelProvider).signInWithGoogle();
+    if (success && mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+            (route) => false,
+      );
+    } else if (mounted) {
+      final error = ref.read(authViewModelProvider).errorMessage;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error ?? 'Google ile kayıt başarısız oldu.')),
+      );
+    }
   }
 
   // Yardımcı metod: TextField widget'ı oluşturur

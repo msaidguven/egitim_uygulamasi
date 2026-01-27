@@ -15,12 +15,12 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
   final _difficultyController = TextEditingController(text: '5');
 
   // For matching questions
-  List<MapEntry<String, String>> _matchingPairs = [];
+  final List<MapEntry<String, String>> _matchingPairs = [];
   final _matchLeftTextController = TextEditingController();
   final _matchRightTextController = TextEditingController();
   
   // For multiple choice
-  List<Map<String, dynamic>> _choices = [];
+  final List<Map<String, dynamic>> _choices = [];
   final _choiceTextController = TextEditingController();
   bool _isCorrectChoice = false;
 
@@ -123,7 +123,7 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: _questionType,
+                initialValue: _questionType,
                 decoration: const InputDecoration(labelText: 'Soru Tipi', border: OutlineInputBorder()),
                 items: ['multiple_choice', 'matching', 'blank', 'classical']
                     .map((type) =>

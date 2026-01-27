@@ -34,9 +34,9 @@ class SummarySection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (content.title != null && content.title!.isNotEmpty) ...[
+              if (content.title.isNotEmpty) ...[
                 Text(
-                  content.title!,
+                  content.title,
                   style: theme.textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),

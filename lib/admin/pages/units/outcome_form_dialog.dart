@@ -4,7 +4,6 @@ import 'package:egitim_uygulamasi/models/lesson_model.dart';
 import 'package:egitim_uygulamasi/models/unit_model.dart';
 import 'package:egitim_uygulamasi/services/grade_service.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UnitOutcomeFormPage extends StatefulWidget {
   final Map<String, dynamic>? outcome; // Düzenleme için mevcut veri (opsiyonel)
@@ -339,10 +338,11 @@ class _UnitOutcomeFormPageState extends State<UnitOutcomeFormPage> {
                   FutureBuilder<List<Grade>>(
                     future: _gradesFuture,
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData)
+                      if (!snapshot.hasData) {
                         return const LinearProgressIndicator();
+                      }
                       return DropdownButtonFormField<int>(
-                        value: _selectedGradeId,
+                        initialValue: _selectedGradeId,
                         decoration: const InputDecoration(labelText: 'Sınıf'),
                         items: snapshot.data!
                             .map(
@@ -363,7 +363,7 @@ class _UnitOutcomeFormPageState extends State<UnitOutcomeFormPage> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<int>(
-                    value: _selectedLessonId,
+                    initialValue: _selectedLessonId,
                     decoration: const InputDecoration(labelText: 'Ders'),
                     items: _lessons
                         .map(
@@ -384,7 +384,7 @@ class _UnitOutcomeFormPageState extends State<UnitOutcomeFormPage> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<int>(
-                    value: _selectedUnitId,
+                    initialValue: _selectedUnitId,
                     decoration: const InputDecoration(labelText: 'Ünite'),
                     items: _units
                         .map(

@@ -102,13 +102,13 @@ class _TopicListPageState extends State<TopicListPage> {
   void _onGradeChanged(Grade? grade) {
     if (grade == null) return;
     setState(() => _selectedGrade = grade);
-    _loadLessons(grade.id!);
+    _loadLessons(grade.id);
   }
 
   void _onLessonChanged(Lesson? lesson) {
     if (lesson == null) return;
     setState(() => _selectedLesson = lesson);
-    _loadUnits(lesson.id, _selectedGrade!.id!);
+    _loadUnits(lesson.id, _selectedGrade!.id);
   }
 
   void _onUnitChanged(Unit? unit) {
@@ -159,10 +159,11 @@ class _TopicListPageState extends State<TopicListPage> {
         await _topicService.deleteTopic(id);
         _refreshTopics();
       } catch (e) {
-        if (mounted)
+        if (mounted) {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('Hata: $e')));
+        }
       }
     }
   }
@@ -232,10 +233,12 @@ class _TopicListPageState extends State<TopicListPage> {
       return FutureBuilder<List<T>>(
         future: itemsFutureOrList as Future<List<T>>,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting)
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          if (snapshot.hasError)
+          }
+          if (snapshot.hasError) {
             return Text('Veri yüklenemedi: ${snapshot.error}');
+          }
           return _buildActualDropdown<T>(
             snapshot.data ?? [],
             selectedValue,
@@ -269,15 +272,15 @@ class _TopicListPageState extends State<TopicListPage> {
     if (isLoading) return const Center(child: CircularProgressIndicator());
 
     return DropdownButtonFormField<T>(
-      value: selectedValue,
+      initialValue: selectedValue,
       hint: Text(hint),
       isExpanded: true,
       onChanged: enabled ? onChanged : null,
       items: items.map((item) {
         String text;
-        if (item is Grade)
+        if (item is Grade) {
           text = item.name;
-        else if (item is Lesson)
+        } else if (item is Lesson)
           text = item.name;
         else if (item is Unit)
           text = item.title;

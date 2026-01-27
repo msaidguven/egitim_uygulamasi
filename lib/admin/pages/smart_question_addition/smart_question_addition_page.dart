@@ -305,7 +305,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
       children: [
         // Grade
         DropdownButtonFormField<Grade>(
-          value: _selectedGrade,
+          initialValue: _selectedGrade,
           hint: const Text('Sınıf Seçin'),
           onChanged: (grade) {
             setState(() {
@@ -327,7 +327,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         const SizedBox(height: 12),
         // Lesson
         DropdownButtonFormField<Lesson>(
-          value: _selectedLesson,
+          initialValue: _selectedLesson,
           hint: const Text('Ders Seçin'),
           onChanged: _selectedGrade == null ? null : (lesson) {
             setState(() {
@@ -351,7 +351,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         const SizedBox(height: 12),
         // Unit
         DropdownButtonFormField<Unit>(
-          value: _selectedUnit,
+          initialValue: _selectedUnit,
           hint: const Text('Ünite Seçin'),
           onChanged: _selectedLesson == null ? null : (unit) {
             setState(() {
@@ -373,7 +373,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         const SizedBox(height: 12),
         // Topic
         DropdownButtonFormField<Topic>(
-          value: _selectedTopic,
+          initialValue: _selectedTopic,
           hint: const Text('Konu Seçin'),
           onChanged: _selectedUnit == null ? null : (topic) {
             setState(() => _selectedTopic = topic);
@@ -390,7 +390,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         const SizedBox(height: 12),
         // Usage Type
         DropdownButtonFormField<String>(
-          value: _usageType,
+          initialValue: _usageType,
           onChanged: (value) {
             setState(() => _usageType = value);
           },
@@ -401,7 +401,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
           validator: (val) => val == null ? 'Lütfen kullanım tipi seçin.' : null,
           decoration: const InputDecoration(
             labelText: 'Kullanım Tipi',
-            border: const OutlineInputBorder(),
+            border: OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 12),

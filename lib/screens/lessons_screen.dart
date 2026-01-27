@@ -27,7 +27,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
   }
 
   Future<void> _fetchData() async {
-    await _viewModel.fetchLessonsForGrade(widget.grade.id!);
+    await _viewModel.fetchLessonsForGrade(widget.grade.id);
   }
 
   @override
@@ -61,7 +61,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
-        foregroundColor: Theme.of(context).colorScheme.onBackground,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.pop(context),
@@ -490,7 +490,7 @@ class _LessonCard extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => OutcomesScreen(
-                                    gradeId: grade.id!,
+                                    gradeId: grade.id,
                                     lessonId: lessonId,
                                     gradeName: grade.name,
                                     lessonName: lessonName,
@@ -545,7 +545,7 @@ class _LessonCard extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => units_screen.UnitsForLessonScreen(
-                                    gradeId: grade.id!,
+                                    gradeId: grade.id,
                                     lessonId: lessonId,
                                     lessonName: lessonName,
                                   ),
