@@ -2,7 +2,7 @@
 
 import 'package:egitim_uygulamasi/models/question_model.dart';
 
-enum TestMode { normal, wrongAnswers, weekly }
+enum TestMode { normal, weekly }
 
 class TestQuestion {
   final Question question;
@@ -76,9 +76,9 @@ class TestQuestion {
   @override
   int get hashCode {
     return question.id.hashCode ^
-    (userAnswer?.hashCode ?? 0) ^
-    isChecked.hashCode ^
-    isCorrect.hashCode;
+        (userAnswer?.hashCode ?? 0) ^
+        isChecked.hashCode ^
+        isCorrect.hashCode;
   }
 
   @override

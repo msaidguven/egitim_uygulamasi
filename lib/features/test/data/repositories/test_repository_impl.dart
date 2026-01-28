@@ -131,14 +131,7 @@ class TestRepositoryImpl implements TestRepository {
             'p_client_id': clientId,
           };
           break;
-        case TestMode.wrongAnswers:
-          rpcName = 'start_wrong_answers_session';
-          params = {
-            'p_client_id': clientId,
-            'p_unit_id': unitId,
-            'p_user_id': userId,
-          };
-          break;
+
         case TestMode.normal:
         default:
           rpcName = 'start_unit_test';
@@ -445,20 +438,6 @@ class TestRepositoryImpl implements TestRepository {
       testMode: TestMode.weekly,
       unitId: unitId,
       curriculumWeek: curriculumWeek,
-      userId: userId,
-      clientId: clientId,
-    );
-  }
-
-  // Ek metod: Yanlışlar testi için başlangıç
-  Future<int> startWrongAnswersTest({
-    required int unitId,
-    required String? userId,
-    required String clientId,
-  }) async {
-    return await startTestSession(
-      testMode: TestMode.wrongAnswers,
-      unitId: unitId,
       userId: userId,
       clientId: clientId,
     );

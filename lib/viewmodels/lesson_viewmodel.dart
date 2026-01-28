@@ -23,6 +23,7 @@ class LessonViewModel extends ChangeNotifier {
           .from('lesson_grades')
           .select('lessons!inner(*)')
           .eq('grade_id', gradeId)
+          .eq('lessons.is_active', true)
           .order('order_no', referencedTable: 'lessons', ascending: true);
 
       _lessons = response

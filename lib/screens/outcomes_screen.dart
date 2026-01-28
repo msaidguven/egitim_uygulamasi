@@ -9,11 +9,12 @@ import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/html_style.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // Riverpod import'u
-import 'package:egitim_uygulamasi/screens/outcomes/outcomes_viewmodel.dart';
+import 'package:egitim_uygulamasi/viewmodels/outcomes_viewmodel.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart'; // profileViewModelProvider için
 
-class OutcomesScreen extends ConsumerWidget { // ConsumerWidget'a dönüştürüldü
+class OutcomesScreen extends ConsumerWidget {
+  // ConsumerWidget'a dönüştürüldü
   final int lessonId;
   final int gradeId;
   final String gradeName;
@@ -30,7 +31,8 @@ class OutcomesScreen extends ConsumerWidget { // ConsumerWidget'a dönüştürü
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { // WidgetRef eklendi
+  Widget build(BuildContext context, WidgetRef ref) {
+    // WidgetRef eklendi
     final viewModelArgs = OutcomesViewModelArgs(
       lessonId: lessonId,
       gradeId: gradeId,
@@ -46,92 +48,82 @@ class OutcomesScreen extends ConsumerWidget { // ConsumerWidget'a dönüştürü
         backgroundColor: Colors.white,
       ),
       body: viewModel.isLoadingWeeks
-          ? const Center(
-        child: CircularProgressIndicator.adaptive(),
-      )
+          ? const Center(child: CircularProgressIndicator.adaptive())
           : viewModel.hasErrorWeeks
           ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline_rounded,
-              size: 64,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Hata: ${viewModel.weeksErrorMessage}',
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 16,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    size: 64,
+                    color: Colors.grey.shade400,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Hata: ${viewModel.weeksErrorMessage}',
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      )
+            )
           : viewModel.allWeeksData.isEmpty
           ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.inbox_outlined,
-              size: 64,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Bu derse ait hafta bulunamadı.',
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 16,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.inbox_outlined,
+                    size: 64,
+                    color: Colors.grey.shade400,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Bu derse ait hafta bulunamadı.',
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      )
+            )
           : PageView.builder(
-        physics: const BouncingScrollPhysics(), // ÖNERİ 1 UYGULANDI
-        controller: viewModel.pageController,
-        itemCount: viewModel.allWeeksData.length,
-        onPageChanged: viewModel.onPageChanged,
-        itemBuilder: (context, index) {
-          final weekData = viewModel.allWeeksData[index];
-          if (weekData['type'] == 'social_activity') {
-            return _AppleStyleSocialActivityCard(
-              title: weekData['title'],
-            );
-          }
-          if (weekData['type'] == 'break') {
-            return _AppleStyleBreakCard(
-              title: weekData['title'],
-              duration: weekData['duration'],
-            );
-          }
-          if (weekData['type'] == 'special_content') {
-            return _AppleStyleSpecialContentCard(
-              title: weekData['title'],
-              content: weekData['content'],
-              icon: weekData['icon'],
-            );
-          }
+              physics: const BouncingScrollPhysics(), // ÖNERİ 1 UYGULANDI
+              controller: viewModel.pageController,
+              itemCount: viewModel.allWeeksData.length,
+              onPageChanged: viewModel.onPageChanged,
+              itemBuilder: (context, index) {
+                final weekData = viewModel.allWeeksData[index];
+                if (weekData['type'] == 'social_activity') {
+                  return _AppleStyleSocialActivityCard(
+                    title: weekData['title'],
+                  );
+                }
+                if (weekData['type'] == 'break') {
+                  return _AppleStyleBreakCard(
+                    title: weekData['title'],
+                    duration: weekData['duration'],
+                  );
+                }
+                if (weekData['type'] == 'special_content') {
+                  return _AppleStyleSpecialContentCard(
+                    title: weekData['title'],
+                    content: weekData['content'],
+                    icon: weekData['icon'],
+                  );
+                }
 
-          final curriculumWeek = weekData['curriculum_week'];
-          if (curriculumWeek == null) {
-            return _ErrorCard(
-              errorMessage: 'Hafta verisi bozuk',
-            );
-          }
+                final curriculumWeek = weekData['curriculum_week'];
+                if (curriculumWeek == null) {
+                  return _ErrorCard(errorMessage: 'Hafta verisi bozuk');
+                }
 
-          return WeekContentView(
-            key: ValueKey('week_content_$curriculumWeek'),
-            curriculumWeek: curriculumWeek as int,
-            args: viewModelArgs,
-          );
-        },
-      ),
+                return WeekContentView(
+                  key: ValueKey('week_content_$curriculumWeek'),
+                  curriculumWeek: curriculumWeek as int,
+                  args: viewModelArgs,
+                );
+              },
+            ),
     );
   }
 }
@@ -140,10 +132,7 @@ class _AppleStyleAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Color backgroundColor;
 
-  const _AppleStyleAppBar({
-    required this.title,
-    required this.backgroundColor,
-  });
+  const _AppleStyleAppBar({required this.title, required this.backgroundColor});
 
   @override
   Size get preferredSize => const Size.fromHeight(60);
@@ -166,10 +155,7 @@ class _AppleStyleAppBar extends StatelessWidget implements PreferredSizeWidget {
       scrolledUnderElevation: 1,
       surfaceTintColor: Colors.transparent,
       shape: const Border(
-        bottom: BorderSide(
-          color: Color(0xFFE5E5EA),
-          width: 0.5,
-        ),
+        bottom: BorderSide(color: Color(0xFFE5E5EA), width: 0.5),
       ),
     );
   }
@@ -189,11 +175,13 @@ class WeekContentView extends ConsumerStatefulWidget {
   ConsumerState<WeekContentView> createState() => _WeekContentViewState();
 }
 
-class _WeekContentViewState extends ConsumerState<WeekContentView> with AutomaticKeepAliveClientMixin {
+class _WeekContentViewState extends ConsumerState<WeekContentView>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  late final (DateTime, DateTime) _weekDateRange; // ÖNERİ 4 UYGULANDI (Değişken tanımı)
+  late final (DateTime, DateTime)
+  _weekDateRange; // ÖNERİ 4 UYGULANDI (Değişken tanımı)
 
   @override
   void initState() {
@@ -204,7 +192,9 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final viewModel = ref.read(outcomesViewModelProvider(widget.args));
-        final index = viewModel.allWeeksData.indexWhere((w) => w['curriculum_week'] == widget.curriculumWeek);
+        final index = viewModel.allWeeksData.indexWhere(
+          (w) => w['curriculum_week'] == widget.curriculumWeek,
+        );
         if (index != -1) {
           // İlk yüklemede mevcut sayfanın verilerini getir
           if (viewModel.pageController.page?.round() == index) {
@@ -238,16 +228,34 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
     super.build(context);
 
     // Sadece bu widget'ın yeniden çizilmesini gerektiren verileri izle
-    final isLoading = ref.watch(outcomesViewModelProvider(widget.args).select((vm) => vm.isWeekLoading(widget.curriculumWeek) && vm.getWeekContent(widget.curriculumWeek) == null));
-    final error = ref.watch(outcomesViewModelProvider(widget.args).select((vm) => vm.getWeekError(widget.curriculumWeek)));
-    final data = ref.watch(outcomesViewModelProvider(widget.args).select((vm) => vm.getWeekContent(widget.curriculumWeek)));
-    final questions = ref.watch(outcomesViewModelProvider(widget.args).select((vm) => vm.getWeekQuestions(widget.curriculumWeek)));
-    final isGuest = ref.watch(profileViewModelProvider.select((p) => p.profile == null));
+    final isLoading = ref.watch(
+      outcomesViewModelProvider(widget.args).select(
+        (vm) =>
+            vm.isWeekLoading(widget.curriculumWeek) &&
+            vm.getWeekContent(widget.curriculumWeek) == null,
+      ),
+    );
+    final error = ref.watch(
+      outcomesViewModelProvider(
+        widget.args,
+      ).select((vm) => vm.getWeekError(widget.curriculumWeek)),
+    );
+    final data = ref.watch(
+      outcomesViewModelProvider(
+        widget.args,
+      ).select((vm) => vm.getWeekContent(widget.curriculumWeek)),
+    );
+    final questions = ref.watch(
+      outcomesViewModelProvider(
+        widget.args,
+      ).select((vm) => vm.getWeekQuestions(widget.curriculumWeek)),
+    );
+    final isGuest = ref.watch(
+      profileViewModelProvider.select((p) => p.profile == null),
+    );
 
     if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
+      return const Center(child: CircularProgressIndicator.adaptive());
     }
 
     if (error != null) {
@@ -261,12 +269,7 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
               color: Colors.grey.shade400,
             ),
             const SizedBox(height: 16),
-            Text(
-              'Hata: $error',
-              style: TextStyle(
-                color: Colors.grey.shade600,
-              ),
-            ),
+            Text('Hata: $error', style: TextStyle(color: Colors.grey.shade600)),
           ],
         ),
       );
@@ -285,16 +288,15 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
             const SizedBox(height: 16),
             Text(
               '${widget.curriculumWeek}. hafta için içerik bulunamadı.',
-              style: TextStyle(
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(color: Colors.grey.shade600),
             ),
           ],
         ),
       );
     }
 
-    final (startDate, endDate) = _weekDateRange; // ÖNERİ 4 UYGULANDI (Değişken kullanımı)
+    final (startDate, endDate) =
+        _weekDateRange; // ÖNERİ 4 UYGULANDI (Değişken kullanımı)
     final contents = (data['contents'] as List? ?? [])
         .map((c) => TopicContent.fromJson(c as Map<String, dynamic>))
         .toList();
@@ -304,7 +306,9 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
     final unitId = data['unit_id'];
 
     return RefreshIndicator.adaptive(
-      onRefresh: () async => ref.read(outcomesViewModelProvider(widget.args)).refreshCurrentWeekData(widget.curriculumWeek),
+      onRefresh: () async => ref
+          .read(outcomesViewModelProvider(widget.args))
+          .refreshCurrentWeekData(widget.curriculumWeek),
       child: CustomScrollView(
         slivers: [
           SliverPadding(
@@ -336,31 +340,22 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: (data['outcomes'] as List)
-                        .map((outcome) => _AppleOutcomeTile(
-                      text: outcome as String,
-                    ))
+                        .map(
+                          (outcome) =>
+                              _AppleOutcomeTile(text: outcome as String),
+                        )
                         .toList(),
                   ),
                 ),
               ),
             ),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                return Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    20,
-                    index == 0 ? 12 : 0,
-                    20,
-                    12,
-                  ),
-                  child: _AppleContentCard(
-                    content: contents[index],
-                  ),
-                );
-              },
-              childCount: contents.length,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              return Padding(
+                padding: EdgeInsets.fromLTRB(20, index == 0 ? 12 : 0, 20, 12),
+                child: _AppleContentCard(content: contents[index]),
+              );
+            }, childCount: contents.length),
           ),
           if (questions != null && questions.isNotEmpty)
             SliverPadding(
@@ -400,7 +395,8 @@ class _WeekContentViewState extends ConsumerState<WeekContentView> with Automati
   }
 }
 
-class _AppleWeekHeader extends ConsumerWidget { // Converted to ConsumerWidget
+class _AppleWeekHeader extends ConsumerWidget {
+  // Converted to ConsumerWidget
   final int curriculumWeek;
   final DateTime startDate;
   final DateTime endDate;
@@ -417,14 +413,19 @@ class _AppleWeekHeader extends ConsumerWidget { // Converted to ConsumerWidget
     required this.args,
   });
 
-  Widget _buildStatusIndicator(BuildContext context, Map<String, dynamic>? stats, bool isGuest) {
+  Widget _buildStatusIndicator(
+    BuildContext context,
+    Map<String, dynamic>? stats,
+    bool isGuest,
+  ) {
     final solved = isGuest ? 0 : stats?['solved_unique'] ?? 0;
     final total = isGuest ? 10 : stats?['total_questions'] ?? 0;
     final correctCount = isGuest ? 0 : stats?['correct_count'] ?? 0;
     final wrongCount = isGuest ? 0 : stats?['wrong_count'] ?? 0;
     final totalAnswered = correctCount + wrongCount;
-    final successRate =
-    totalAnswered > 0 ? (correctCount / totalAnswered) * 100 : 0.0;
+    final successRate = totalAnswered > 0
+        ? (correctCount / totalAnswered) * 100
+        : 0.0;
 
     if (total == 0 && !isGuest) return const SizedBox.shrink();
 
@@ -480,11 +481,10 @@ class _AppleWeekHeader extends ConsumerWidget { // Converted to ConsumerWidget
           ),
           const SizedBox(height: 4),
           Text(
-            isGuest ? 'İlerlemenizi görmek için giriş yapın' : '$solved/$total soru çözüldü',
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey.shade600,
-            ),
+            isGuest
+                ? 'İlerlemenizi görmek için giriş yapın'
+                : '$solved/$total soru çözüldü',
+            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
           ),
         ],
       ),
@@ -494,8 +494,14 @@ class _AppleWeekHeader extends ConsumerWidget { // Converted to ConsumerWidget
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch only the data this widget needs
-    final stats = ref.watch(outcomesViewModelProvider(args).select((vm) => vm.getWeekStats(curriculumWeek)));
-    final isGuest = ref.watch(profileViewModelProvider.select((p) => p.profile == null));
+    final stats = ref.watch(
+      outcomesViewModelProvider(
+        args,
+      ).select((vm) => vm.getWeekStats(curriculumWeek)),
+    );
+    final isGuest = ref.watch(
+      profileViewModelProvider.select((p) => p.profile == null),
+    );
 
     final formattedStartDate = '${startDate.day} ${aylar[startDate.month - 1]}';
     final formattedEndDate =
@@ -539,8 +545,10 @@ class _AppleWeekHeader extends ConsumerWidget { // Converted to ConsumerWidget
                 ),
               ),
               const SizedBox(height: 20),
-              if (unitTitle != null) _buildHierarchyRow(Icons.folder_open_outlined, unitTitle!),
-              if (topicTitle != null) _buildHierarchyRow(Icons.article_outlined, topicTitle!),
+              if (unitTitle != null)
+                _buildHierarchyRow(Icons.folder_open_outlined, unitTitle!),
+              if (topicTitle != null)
+                _buildHierarchyRow(Icons.article_outlined, topicTitle!),
             ],
           ),
         ),
@@ -556,11 +564,7 @@ class _AppleWeekHeader extends ConsumerWidget { // Converted to ConsumerWidget
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            color: Colors.blue,
-            size: 20,
-          ),
+          Icon(icon, color: Colors.blue, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -608,19 +612,11 @@ class _AppleCollapsibleCard extends StatelessWidget {
         collapsedShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        leading: Icon(
-          icon,
-          color: Colors.blue,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        leading: Icon(icon, color: Colors.blue),
         title: Text(
           title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         children: [
           Padding(
@@ -654,10 +650,7 @@ class _AppleOutcomeTile extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
-                fontSize: 15,
-                height: 1.4,
-              ),
+              style: const TextStyle(fontSize: 15, height: 1.4),
             ),
           ),
         ],
@@ -698,10 +691,7 @@ class _AppleContentCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.article_rounded,
-                  color: Colors.blue,
-                ),
+                const Icon(Icons.article_rounded, color: Colors.blue),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -715,10 +705,7 @@ class _AppleContentCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            Container(
-              height: 1,
-              color: Colors.grey.shade200,
-            ),
+            Container(height: 1, color: Colors.grey.shade200),
             const SizedBox(height: 16),
             // ÖNERİ 2 UYGULANDI
             RepaintBoundary(
@@ -829,10 +816,7 @@ class _AppleMiniQuizState extends State<_AppleMiniQuiz> {
             padding: const EdgeInsets.all(20),
             child: Row(
               children: [
-                Icon(
-                  Icons.lightbulb_rounded,
-                  color: Colors.orange.shade700,
-                ),
+                Icon(Icons.lightbulb_rounded, color: Colors.orange.shade700),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -897,18 +881,11 @@ class _AppleQuizStartCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.quiz_rounded,
-            size: 56,
-            color: Colors.orange.shade700,
-          ),
+          Icon(Icons.quiz_rounded, size: 56, color: Colors.orange.shade700),
           const SizedBox(height: 20),
           const Text(
             'Konuyu Pekiştir',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           Text(
@@ -936,10 +913,7 @@ class _AppleQuizStartCard extends StatelessWidget {
               ),
               child: const Text(
                 'Testi Başlat',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -1007,7 +981,8 @@ class _AppleQuizContent extends StatelessWidget {
                     Expanded(
                       child: ListView.separated(
                         itemCount: question.choices.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 8),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 8),
                         itemBuilder: (context, choiceIndex) {
                           final choice = question.choices[choiceIndex];
                           bool isSelected = (selectedChoiceId == choice.id);
@@ -1059,9 +1034,7 @@ class _AppleQuizContent extends StatelessWidget {
                                       Expanded(
                                         child: Text(
                                           choice.text,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                          ),
+                                          style: const TextStyle(fontSize: 16),
                                         ),
                                       ),
                                       Icon(
@@ -1075,10 +1048,14 @@ class _AppleQuizContent extends StatelessWidget {
                             }
 
                             return GestureDetector(
-                              onTap: isChecked ? null : () => onAnswer(question, choice.id),
+                              onTap: isChecked
+                                  ? null
+                                  : () => onAnswer(question, choice.id),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: isSelected ? Colors.blue.shade50 : Colors.white,
+                                  color: isSelected
+                                      ? Colors.blue.shade50
+                                      : Colors.white,
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
                                     color: isSelected
@@ -1092,7 +1069,9 @@ class _AppleQuizContent extends StatelessWidget {
                                   choice.text,
                                   style: TextStyle(
                                     fontSize: 16,
-                                    fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w500
+                                        : FontWeight.normal,
                                   ),
                                 ),
                               ),
@@ -1145,8 +1124,9 @@ class _AppleQuizResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final correctAnswers = results.values.where((r) => r == true).length;
-    final successRate =
-    totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0.0;
+    final successRate = totalQuestions > 0
+        ? (correctAnswers / totalQuestions) * 100
+        : 0.0;
 
     Color getColor() {
       if (successRate == 100) return Colors.green;
@@ -1191,19 +1171,13 @@ class _AppleQuizResults extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             '(${successRate.toStringAsFixed(0)}% başarı)',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 12),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade700,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
           ),
           const SizedBox(height: 24),
           SizedBox(
@@ -1220,10 +1194,7 @@ class _AppleQuizResults extends StatelessWidget {
               ),
               child: const Text(
                 'Tekrar Dene',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -1253,19 +1224,12 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
       decoration: BoxDecoration(
         color: level.color.withAlpha(15),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: level.color.withAlpha(50),
-          width: 1,
-        ),
+        border: Border.all(color: level.color.withAlpha(50), width: 1),
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          Icon(
-            level.icon,
-            size: 32,
-            color: level.color,
-          ),
+          Icon(level.icon, size: 32, color: level.color),
           const SizedBox(height: 12),
           Text(
             level.title,
@@ -1279,10 +1243,7 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
           Text(
             level.message,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey.shade700,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
           ),
         ],
       ),
@@ -1291,8 +1252,14 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final stats = ref.watch(outcomesViewModelProvider(args).select((vm) => vm.getWeekStats(curriculumWeek)));
-    final onRefresh = ref.read(outcomesViewModelProvider(args)).refreshCurrentWeekData;
+    final stats = ref.watch(
+      outcomesViewModelProvider(
+        args,
+      ).select((vm) => vm.getWeekStats(curriculumWeek)),
+    );
+    final onRefresh = ref
+        .read(outcomesViewModelProvider(args))
+        .refreshCurrentWeekData;
 
     if (stats == null && !isGuest) {
       return Container(
@@ -1301,9 +1268,7 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Center(
-          child: CircularProgressIndicator.adaptive(),
-        ),
+        child: const Center(child: CircularProgressIndicator.adaptive()),
       );
     }
 
@@ -1312,10 +1277,12 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
     final correctCount = isGuest ? 0 : stats?['correct_count'] ?? 0;
     final wrongCount = isGuest ? 0 : stats?['wrong_count'] ?? 0;
     final activeSession = isGuest ? null : stats?['active_session'];
-    final allQuestionsSolved = totalQuestions > 0 && solvedUnique >= totalQuestions;
+    final allQuestionsSolved =
+        totalQuestions > 0 && solvedUnique >= totalQuestions;
 
-    final double progress =
-    totalQuestions > 0 ? solvedUnique / totalQuestions : 0.0;
+    final double progress = totalQuestions > 0
+        ? solvedUnique / totalQuestions
+        : 0.0;
     final double successRate = (correctCount + wrongCount) > 0
         ? correctCount / (correctCount + wrongCount)
         : 0.0;
@@ -1338,9 +1305,7 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
               testMode: TestMode.weekly,
               sessionId: null, // Misafir için sessionId null olmalı
             ),
-            settings: RouteSettings(
-              arguments: curriculumWeek,
-            ),
+            settings: RouteSettings(arguments: curriculumWeek),
           ),
         );
       };
@@ -1380,9 +1345,7 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
               testMode: TestMode.weekly,
               sessionId: null,
             ),
-            settings: RouteSettings(
-              arguments: curriculumWeek,
-            ),
+            settings: RouteSettings(arguments: curriculumWeek),
           ),
         );
         onRefresh(curriculumWeek);
@@ -1408,10 +1371,7 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
           children: [
             Text(
               'Haftalık Pekiştirme Testi',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             if (isGuest)
               Padding(
@@ -1428,10 +1388,7 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
                 children: [
                   Text(
                     'İlerleme',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
                   ),
                   Text(
                     '$solvedUnique / $totalQuestions Soru',
@@ -1477,9 +1434,7 @@ class _AppleWeeklySummaryCard extends ConsumerWidget {
                 child: Text(
                   'Bu hafta için henüz pekiştirme sorusu eklenmemiş.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600),
                 ),
               ),
             const SizedBox(height: 20),
@@ -1527,10 +1482,7 @@ class _AppleStatChip extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey.shade600,
-          ),
+          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
         ),
         const SizedBox(height: 6),
         Container(
@@ -1574,16 +1526,10 @@ class _AppleUnitCompletionCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.deepPurple.shade50,
-            Colors.blue.shade50,
-          ],
+          colors: [Colors.deepPurple.shade50, Colors.blue.shade50],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.deepPurple.shade100,
-          width: 1,
-        ),
+        border: Border.all(color: Colors.deepPurple.shade100, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -1686,10 +1632,7 @@ class _AppleStyleSocialActivityCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.teal.shade400,
-              Colors.teal.shade600,
-            ],
+            colors: [Colors.teal.shade400, Colors.teal.shade600],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -1705,11 +1648,7 @@ class _AppleStyleSocialActivityCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.celebration_rounded,
-                size: 80,
-                color: Colors.white,
-              ),
+              Icon(Icons.celebration_rounded, size: 80, color: Colors.white),
               const SizedBox(height: 24),
               Text(
                 title,
@@ -1742,10 +1681,7 @@ class _AppleStyleBreakCard extends StatelessWidget {
   final String title;
   final String duration;
 
-  const _AppleStyleBreakCard({
-    required this.title,
-    required this.duration,
-  });
+  const _AppleStyleBreakCard({required this.title, required this.duration});
 
   @override
   Widget build(BuildContext context) {
@@ -1756,10 +1692,7 @@ class _AppleStyleBreakCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.blueGrey.shade400,
-              Colors.blueGrey.shade600,
-            ],
+            colors: [Colors.blueGrey.shade400, Colors.blueGrey.shade600],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -1775,11 +1708,7 @@ class _AppleStyleBreakCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.beach_access_rounded,
-                size: 80,
-                color: Colors.white,
-              ),
+              Icon(Icons.beach_access_rounded, size: 80, color: Colors.white),
               const SizedBox(height: 24),
               Text(
                 title,
@@ -1840,11 +1769,7 @@ class _AppleStyleSpecialContentCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                icon,
-                size: 56,
-                color: Colors.blue,
-              ),
+              Icon(icon, size: 56, color: Colors.blue),
               const SizedBox(height: 20),
               Text(
                 title,
@@ -1855,10 +1780,7 @@ class _AppleStyleSpecialContentCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Container(
-                height: 1,
-                color: Colors.grey.shade200,
-              ),
+              Container(height: 1, color: Colors.grey.shade200),
               const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
@@ -1925,10 +1847,7 @@ class _ErrorCard extends StatelessWidget {
               Text(
                 'Lütfen yöneticinize bildirin',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
               ),
             ],
           ),

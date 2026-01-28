@@ -16,11 +16,7 @@ import 'package:egitim_uygulamasi/widgets/lesson_card.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-enum NextStepsDisplayState {
-  hidden,
-  collapsed,
-  expanded,
-}
+enum NextStepsDisplayState { hidden, collapsed, expanded }
 
 class HomeScreen extends StatefulWidget {
   final Function(int) onNavigate;
@@ -96,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 30,
                 offset: const Offset(0, -5),
               ),
@@ -118,9 +114,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   'Anasınıfı Oyunları',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ),
               Expanded(
@@ -192,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
         gradient: gradient,
         boxShadow: [
           BoxShadow(
-            color: gradient.colors.first.withOpacity(0.3),
+            color: gradient.colors.first.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -204,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
-          splashColor: Colors.white.withOpacity(0.2),
+          splashColor: Colors.white.withValues(alpha: 0.3),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Row(
@@ -213,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Icon(icon, color: Colors.white, size: 28),
@@ -236,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         subtitle,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 14,
                         ),
                       ),
@@ -282,8 +278,17 @@ class _HomeScreenState extends State<HomeScreen> {
               parent: AlwaysScrollableScrollPhysics(),
             ),
             slivers: [
+              SliverAppBar(
+                pinned: true,
+                backgroundColor: Theme.of(context).primaryColor,
+                elevation: 0,
+                expandedHeight: 120,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: _buildFixedUserInfo(context, isAdmin),
+                ),
+              ),
               SliverToBoxAdapter(
-                child: _buildModernHeader(context, isAdmin),
+                child: _buildScrollableHeaderCards(context, isAdmin),
               ),
               if (widget.profile == null)
                 _buildGuestContent(context)
@@ -298,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildModernHeader(BuildContext context, bool isAdmin) {
+  Widget _buildFixedUserInfo(BuildContext context, bool isAdmin) {
     final isLoggedIn = widget.profile != null;
     final avatarUrl = widget.profile?.avatarUrl;
     final fullName = widget.profile?.fullName;
@@ -307,9 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
         : '?';
 
     return Container(
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 12,
-      ),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -317,12 +320,93 @@ class _HomeScreenState extends State<HomeScreen> {
           colors: [
             Theme.of(context).primaryColor,
             Theme.of(context).primaryColor.withOpacity(0.95),
+          ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 12.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isLoggedIn ? 'Hoş geldin 👋' : 'Merhaba!',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.95),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                if (isLoggedIn) ...[
+                  const SizedBox(height: 4),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: Text(
+                      fullName ?? 'Kullanıcı',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 19,
+                        fontWeight: FontWeight.w800,
+                        height: 1.1,
+                        letterSpacing: -0.5,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 2,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            if (isAdmin)
+              _buildAdminProfileMenu(context, avatarUrl, initials)
+            else if (isLoggedIn)
+              _buildUserAvatar(avatarUrl, initials)
+            else
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white.withOpacity(0.2),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.3),
+                    width: 2,
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.person_outline_rounded,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScrollableHeaderCards(BuildContext context, bool isAdmin) {
+    final isLoggedIn = widget.profile != null;
+
+    return Container(
+      padding: const EdgeInsets.only(bottom: 24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Theme.of(context).primaryColor.withOpacity(0.85),
             Theme.of(context).primaryColor.withOpacity(0.85),
           ],
         ),
-        borderRadius: const BorderRadius.vertical(
-          bottom: Radius.circular(32),
-        ),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).primaryColor.withOpacity(0.3),
@@ -334,78 +418,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Üst bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      isLoggedIn ? 'Hoş geldin 👋' : 'Merhaba!',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.95),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                    if (isLoggedIn) ...[
-                      const SizedBox(height: 4),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        child: Text(
-                          fullName ?? 'Kullanıcı',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w800,
-                            height: 1.1,
-                            letterSpacing: -0.5,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          maxLines: 2,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                if (isAdmin)
-                  _buildAdminProfileMenu(context, avatarUrl, initials)
-                else if (isLoggedIn)
-                  _buildUserAvatar(avatarUrl, initials)
-                else
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.white.withOpacity(0.2),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.3),
-                        width: 2,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.person_outline_rounded,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 28),
-
           // Hafta gösterge kartı
           if (isLoggedIn)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -453,7 +469,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            getCurrentPeriodInfo().displaySubtitle ?? 'Eğitim Takvimi',
+                            getCurrentPeriodInfo().displaySubtitle ??
+                                'Eğitim Takvimi',
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.9),
                               fontSize: 14,
@@ -540,14 +557,16 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           else
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
                     );
                   },
                   borderRadius: BorderRadius.circular(20),
@@ -556,9 +575,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.15),
-                      ),
+                      border: Border.all(color: Colors.white.withOpacity(0.15)),
                     ),
                     child: Row(
                       children: [
@@ -611,7 +628,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 24),
           if (isLoggedIn)
             Padding(
-              padding: const EdgeInsets.only(left: 24.0, bottom: 24),
+              padding: const EdgeInsets.only(left: 24.0),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -619,7 +636,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildQuickStat(
                       context: context,
                       icon: Icons.trending_up_rounded,
-                      value: '${_calculateAverageSuccess().toStringAsFixed(0)}%',
+                      value:
+                          '${_calculateAverageSuccess().toStringAsFixed(0)}%',
                       label: 'Ortalama Başarı',
                       color: const Color(0xFF00B894),
                     ),
@@ -649,7 +667,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAdminProfileMenu(BuildContext context, String? avatarUrl, String initials) {
+  Widget _buildAdminProfileMenu(
+    BuildContext context,
+    String? avatarUrl,
+    String initials,
+  ) {
     final List<Map<String, dynamic>> roles = [
       {'label': 'Admin', 'role': 'admin'},
       {'label': 'Öğrenci', 'role': 'student'},
@@ -672,20 +694,25 @@ class _HomeScreenState extends State<HomeScreen> {
       itemBuilder: (context) {
         return <PopupMenuEntry<String?>>[
           ...roles.map((roleData) {
-            final isSelected = (widget.impersonatedRole ?? 'admin') == roleData['role'];
+            final isSelected =
+                (widget.impersonatedRole ?? 'admin') == roleData['role'];
             return PopupMenuItem<String?>(
               value: roleData['role'],
               child: Row(
                 children: [
                   Icon(
                     isSelected ? Icons.check_circle : Icons.circle_outlined,
-                    color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
+                    color: isSelected
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey,
                   ),
                   const SizedBox(width: 12),
                   Text(
                     roleData['label'],
                     style: TextStyle(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
                 ],
@@ -727,10 +754,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: Colors.white.withOpacity(0.2),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.4),
-          width: 2,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.4), width: 2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -803,9 +827,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.12),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.1),
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -817,13 +839,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: color.withOpacity(0.2),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Center(
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 20,
-              ),
-            ),
+            child: Center(child: Icon(icon, color: Colors.white, size: 20)),
           ),
           const SizedBox(width: 12),
           Column(
@@ -926,7 +942,8 @@ class _HomeScreenState extends State<HomeScreen> {
       return _buildLoadingShimmer();
     }
 
-    final hasNextSteps = widget.nextStepsData != null && widget.nextStepsData!.isNotEmpty;
+    final hasNextSteps =
+        widget.nextStepsData != null && widget.nextStepsData!.isNotEmpty;
 
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
@@ -969,23 +986,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
             if (widget.nextStepsState != NextStepsDisplayState.hidden)
-              _buildDataView(
-                context,
-                widget.nextStepsData,
-                (ctx, data) {
-                  final displayData = widget.nextStepsState == NextStepsDisplayState.expanded
-                      ? data
-                      : data.take(3).toList();
-                  final bool showMoreButton =
-                      widget.nextStepsState == NextStepsDisplayState.collapsed && data.length > 3;
-                  return _buildNextStepsList(
-                    ctx,
-                    displayData,
-                    showMoreButton,
-                    data.length - 3,
-                  );
-                },
-              ),
+              _buildDataView(context, widget.nextStepsData, (ctx, data) {
+                final displayData =
+                    widget.nextStepsState == NextStepsDisplayState.expanded
+                    ? data
+                    : data.take(3).toList();
+                final bool showMoreButton =
+                    widget.nextStepsState == NextStepsDisplayState.collapsed &&
+                    data.length > 3;
+                return _buildNextStepsList(
+                  ctx,
+                  displayData,
+                  showMoreButton,
+                  data.length - 3,
+                );
+              }),
           ],
           if (widget.agendaData?.isEmpty ?? false) ...[
             const SizedBox(height: 40),
@@ -1054,7 +1069,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildUnfinishedTests(BuildContext context, List<TestSession> sessions) {
+  Widget _buildUnfinishedTests(
+    BuildContext context,
+    List<TestSession> sessions,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1174,10 +1192,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => QuestionsScreen(
-          unitId: session.unitId!,
-          sessionId: session.id,
-        ),
+        builder: (context) =>
+            QuestionsScreen(unitId: session.unitId!, sessionId: session.id),
       ),
     ).then((_) {
       widget.onRefresh();
@@ -1323,10 +1339,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Text(
                     '$studentCount öğrenci',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade700,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
                   ),
                 ),
               ],
@@ -1437,11 +1450,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.menu_book_rounded,
-            size: 60,
-            color: Colors.grey.shade300,
-          ),
+          Icon(Icons.menu_book_rounded, size: 60, color: Colors.grey.shade300),
           const SizedBox(height: 20),
           Text(
             'Henüz ders yok',
@@ -1455,9 +1464,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             'Bu hafta için planlanmış ders bulunmuyor.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(color: Colors.grey.shade600),
           ),
         ],
       ),
@@ -1471,15 +1478,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: data.map((item) {
         return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: LessonCard(
-              lessonId: item['lesson_id'] as int? ?? 0,
-              lessonName: item['lesson_name'],
-              topicTitle: item['topic_title'] ?? 'Konu Belirtilmemiş',
-              progress: (item['progress_percentage'] ?? 0.0).toDouble(),
-              successRate: (item['success_rate'] ?? 0.0).toDouble(),
-              onTap: () => _navigateToOutcomes(context, item),
-            ));
+          padding: const EdgeInsets.only(bottom: 12),
+          child: LessonCard(
+            lessonId: item['lesson_id'] as int? ?? 0,
+            lessonName: item['lesson_name'],
+            topicTitle: item['topic_title'] ?? 'Konu Belirtilmemiş',
+            progress: (item['progress_percentage'] ?? 0.0).toDouble(),
+            successRate: (item['success_rate'] ?? 0.0).toDouble(),
+            onTap: () => _navigateToOutcomes(context, item),
+          ),
+        );
       }).toList(),
     );
   }
@@ -1494,17 +1502,18 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         ...data.map((item) {
           return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: LessonCard(
-                lessonId: item['lesson_id'] as int? ?? 0,
-                lessonName: item['lesson_name'],
-                topicTitle: item['topic_title'] ?? 'Genel Tekrar',
-                curriculumWeek: item['curriculum_week'],
-                progress: (item['progress_percentage'] ?? 0.0).toDouble(),
-                successRate: (item['success_rate'] ?? 0.0).toDouble(),
-                onTap: () => _navigateToOutcomes(context, item),
-                isNextStep: true,
-              ));
+            padding: const EdgeInsets.only(bottom: 12),
+            child: LessonCard(
+              lessonId: item['lesson_id'] as int? ?? 0,
+              lessonName: item['lesson_name'],
+              topicTitle: item['topic_title'] ?? 'Genel Tekrar',
+              curriculumWeek: item['curriculum_week'],
+              progress: (item['progress_percentage'] ?? 0.0).toDouble(),
+              successRate: (item['success_rate'] ?? 0.0).toDouble(),
+              onTap: () => _navigateToOutcomes(context, item),
+              isNextStep: true,
+            ),
+          );
         }),
         if (showMoreButton)
           Padding(
@@ -1595,10 +1604,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 4),
                 Text(
                   'Bu hafta için tüm derslerinizi tamamladınız. Başarılarınızı kutlayın!',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -1620,20 +1626,19 @@ class _HomeScreenState extends State<HomeScreen> {
           gradeId: data['grade_id'],
           lessonName: data['lesson_name'],
           gradeName: data['grade_name'],
-          initialCurriculumWeek: data['curriculum_week'] ?? widget.currentCurriculumWeek,
+          initialCurriculumWeek:
+              data['curriculum_week'] ?? widget.currentCurriculumWeek,
         ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
-          final tween = Tween(begin: begin, end: end).chain(
-            CurveTween(curve: curve),
-          );
+          final tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
           final offsetAnimation = animation.drive(tween);
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
+          return SlideTransition(position: offsetAnimation, child: child);
         },
       ),
     );
@@ -1643,9 +1648,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildGradeCard(Grade grade, List<Color> colors, int index) {
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -1679,11 +1682,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 right: -20,
                 child: Opacity(
                   opacity: 0.1,
-                  child: Icon(
-                    Icons.school,
-                    size: 100,
-                    color: colors[1],
-                  ),
+                  child: Icon(Icons.school, size: 100, color: colors[1]),
                 ),
               ),
               Padding(
@@ -1817,7 +1816,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (widget.agendaData == null) return 0;
 
     return widget.agendaData!
-        .where((item) => (item['progress_percentage'] ?? 0.0).toDouble() >= 100.0)
+        .where(
+          (item) => (item['progress_percentage'] ?? 0.0).toDouble() >= 100.0,
+        )
         .length;
   }
 }

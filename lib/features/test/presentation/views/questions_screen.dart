@@ -40,7 +40,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
 
   @override
   void dispose() {
-    debugPrint("QuestionsScreen: dispose - Ekran kapatılıyor ve TestViewModel sıfırlanıyor.");
+    debugPrint(
+      "QuestionsScreen: dispose - Ekran kapatılıyor ve TestViewModel sıfırlanıyor.",
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         ref.read(testViewModelProvider.notifier).reset();
@@ -53,7 +55,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     debugPrint("QuestionsScreen: _initializeTest başladı.");
     try {
       if (!mounted) {
-        debugPrint("QuestionsScreen: _initializeTest - Widget artık mount edilmemiş, işlem iptal edildi.");
+        debugPrint(
+          "QuestionsScreen: _initializeTest - Widget artık mount edilmemiş, işlem iptal edildi.",
+        );
         return;
       }
       setState(() {
@@ -76,33 +80,43 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
 
       if (widget.sessionId == null && userId == null) {
         if (widget.testMode == TestMode.weekly) {
-          debugPrint('QuestionsScreen: Yeni misafir haftalık testi başlatılıyor...');
+          debugPrint(
+            'QuestionsScreen: Yeni misafir haftalık testi başlatılıyor...',
+          );
           if (curriculumWeek == null) {
-            throw Exception("Haftalık misafir testi için hafta bilgisi bulunamadı.");
+            throw Exception(
+              "Haftalık misafir testi için hafta bilgisi bulunamadı.",
+            );
           }
           await viewModel.startGuestTest(
             unitId: widget.unitId,
             curriculumWeek: curriculumWeek,
           );
         } else if (widget.testMode == TestMode.normal) {
-          debugPrint('QuestionsScreen: Yeni misafir ünite testi başlatılıyor...');
-          await viewModel.startGuestUnitTest(
-            unitId: widget.unitId,
+          debugPrint(
+            'QuestionsScreen: Yeni misafir ünite testi başlatılıyor...',
           );
+          await viewModel.startGuestUnitTest(unitId: widget.unitId);
         }
       } else if (widget.sessionId != null) {
-        debugPrint('QuestionsScreen: Mevcut teste devam ediliyor: sessionId=${widget.sessionId}');
+        debugPrint(
+          'QuestionsScreen: Mevcut teste devam ediliyor: sessionId=${widget.sessionId}',
+        );
         await viewModel.resumeTest(
           sessionId: widget.sessionId!,
           userId: userId,
           clientId: clientIdAsync,
         );
       } else {
-        debugPrint('QuestionsScreen: Yeni test başlatılıyor: unitId=${widget.unitId}, testMode=${widget.testMode}, userId=$userId');
+        debugPrint(
+          'QuestionsScreen: Yeni test başlatılıyor: unitId=${widget.unitId}, testMode=${widget.testMode}, userId=$userId',
+        );
         _isStartingNewTest = true;
 
         if (widget.testMode == TestMode.weekly) {
-          debugPrint("QuestionsScreen: Haftalık test için curriculumWeek: $curriculumWeek");
+          debugPrint(
+            "QuestionsScreen: Haftalık test için curriculumWeek: $curriculumWeek",
+          );
         }
 
         await viewModel.startNewTest(
@@ -110,14 +124,18 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           unitId: widget.unitId,
           userId: userId,
           clientId: clientIdAsync,
-          curriculumWeek: widget.testMode == TestMode.weekly ? curriculumWeek : null,
+          curriculumWeek: widget.testMode == TestMode.weekly
+              ? curriculumWeek
+              : null,
         );
         _isStartingNewTest = false;
       }
 
       debugPrint('QuestionsScreen: Test başarıyla başlatıldı/devam ettirildi.');
     } catch (e, stackTrace) {
-      debugPrint('QuestionsScreen: Test başlatma sırasında bir hata oluştu: $e');
+      debugPrint(
+        'QuestionsScreen: Test başlatma sırasında bir hata oluştu: $e',
+      );
       debugPrint('Stack trace: $stackTrace');
 
       if (mounted) {
@@ -130,7 +148,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
         setState(() {
           _isInitializing = false;
         });
-        debugPrint("QuestionsScreen: _initializeTest tamamlandı, _isInitializing false olarak ayarlandı.");
+        debugPrint(
+          "QuestionsScreen: _initializeTest tamamlandı, _isInitializing false olarak ayarlandı.",
+        );
       }
     }
   }
@@ -143,46 +163,55 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     final userProfile = ref.read(profileViewModelProvider).profile;
 
     if (_isStartingNewTest) {
-      debugPrint("QuestionsScreen: _onWillPop - Yeni test başlatılırken geri gitme engellendi.");
+      debugPrint(
+        "QuestionsScreen: _onWillPop - Yeni test başlatılırken geri gitme engellendi.",
+      );
       return false;
     }
 
     if (userProfile == null) {
-      debugPrint("QuestionsScreen: _onWillPop - Misafir kullanıcı, uyarı göstermeden çıkabilir.");
+      debugPrint(
+        "QuestionsScreen: _onWillPop - Misafir kullanıcı, uyarı göstermeden çıkabilir.",
+      );
       return true;
     }
 
     if (viewModel.sessionId == null || viewModel.currentTestQuestion == null) {
-      debugPrint("QuestionsScreen: _onWillPop - Test oturumu veya soru yok, çıkış serbest.");
+      debugPrint(
+        "QuestionsScreen: _onWillPop - Test oturumu veya soru yok, çıkış serbest.",
+      );
       return true;
     }
 
-    debugPrint("QuestionsScreen: _onWillPop - Kullanıcıya çıkış onayı gösteriliyor.");
+    debugPrint(
+      "QuestionsScreen: _onWillPop - Kullanıcıya çıkış onayı gösteriliyor.",
+    );
     return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Testten Çıkış'),
-        content: const Text('Testi bitirmeden çıkarsanız ilerlemeniz kaydedilecek. Daha sonra devam edebilirsiniz.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Hayır'),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Testten Çıkış'),
+            content: const Text(
+              'Testi bitirmeden çıkarsanız ilerlemeniz kaydedilecek. Daha sonra devam edebilirsiniz.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Hayır'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Evet'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Evet'),
-          ),
-        ],
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
 
   String _getAppBarTitle() {
     switch (widget.testMode) {
       case TestMode.weekly:
         return 'Haftalık Test';
-      case TestMode.wrongAnswers:
-        return 'Yanlışlar Testi';
       case TestMode.normal:
       default:
         return 'Ünite Testi';
@@ -219,18 +248,26 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   }
 
   Widget _buildBody(TestViewModel viewModel) {
-    if (_isInitializing || (viewModel.isLoading && viewModel.currentTestQuestion == null)) {
+    if (_isInitializing ||
+        (viewModel.isLoading && viewModel.currentTestQuestion == null)) {
       debugPrint("QuestionsScreen: _buildBody - Yükleme ekranı gösteriliyor.");
       return _buildLoadingView();
     }
 
     if (_initializationError != null) {
-      debugPrint("QuestionsScreen: _buildBody - Başlatma hatası ekranı gösteriliyor: $_initializationError");
-      return _buildErrorView(_initializationError!, isInitializationError: true);
+      debugPrint(
+        "QuestionsScreen: _buildBody - Başlatma hatası ekranı gösteriliyor: $_initializationError",
+      );
+      return _buildErrorView(
+        _initializationError!,
+        isInitializationError: true,
+      );
     }
 
     if (viewModel.error != null) {
-      debugPrint("QuestionsScreen: _buildBody - Test hatası ekranı gösteriliyor: ${viewModel.error}");
+      debugPrint(
+        "QuestionsScreen: _buildBody - Test hatası ekranı gösteriliyor: ${viewModel.error}",
+      );
       return _buildErrorView(viewModel.error!, isInitializationError: false);
     }
 
@@ -239,7 +276,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
       return _buildResultsView(viewModel);
     }
 
-    debugPrint("QuestionsScreen: _buildBody - Soru kartı gösteriliyor: Soru ID ${viewModel.currentTestQuestion!.question.id}");
+    debugPrint(
+      "QuestionsScreen: _buildBody - Soru kartı gösteriliyor: Soru ID ${viewModel.currentTestQuestion!.question.id}",
+    );
     return SafeArea(
       child: Column(
         children: [
@@ -253,8 +292,12 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
               key: ValueKey(viewModel.currentTestQuestion!.question.id),
               testQuestion: viewModel.currentTestQuestion!,
               onAnswered: (answer) {
-                debugPrint("QuestionsScreen: onAnswered - Kullanıcı cevap verdi.");
-                ref.read(testViewModelProvider.notifier).updateUserAnswer(answer);
+                debugPrint(
+                  "QuestionsScreen: onAnswered - Kullanıcı cevap verdi.",
+                );
+                ref
+                    .read(testViewModelProvider.notifier)
+                    .updateUserAnswer(answer);
               },
             ),
           ),
@@ -263,15 +306,21 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             canCheck: viewModel.currentTestQuestion!.userAnswer != null,
             isLastQuestion: viewModel.questionQueue.isEmpty,
             onCheckPressed: () {
-              debugPrint("QuestionsScreen: onCheckPressed - Cevap kontrol ediliyor.");
+              debugPrint(
+                "QuestionsScreen: onCheckPressed - Cevap kontrol ediliyor.",
+              );
               ref.read(testViewModelProvider.notifier).checkAnswer();
             },
             onNextPressed: () {
-              debugPrint("QuestionsScreen: onNextPressed - Sonraki soruya geçiliyor.");
+              debugPrint(
+                "QuestionsScreen: onNextPressed - Sonraki soruya geçiliyor.",
+              );
               ref.read(testViewModelProvider.notifier).nextQuestion();
             },
             onFinishPressed: () async {
-              debugPrint("QuestionsScreen: onFinishPressed - Test bitiriliyor.");
+              debugPrint(
+                "QuestionsScreen: onFinishPressed - Test bitiriliyor.",
+              );
               await ref.read(testViewModelProvider.notifier).finishTest();
             },
           ),
@@ -285,10 +334,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(
-            color: Colors.white,
-            strokeWidth: 3,
-          ),
+          const CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
           const SizedBox(height: 20),
           Text(
             _isStartingNewTest ? 'Test başlatılıyor...' : 'Test yükleniyor...',
@@ -302,10 +348,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           if (_isStartingNewTest)
             const Text(
               'Lütfen bekleyin...',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.white70),
             ),
         ],
       ),
@@ -338,10 +381,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 _getUserFriendlyErrorMessage(error),
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
+                style: const TextStyle(fontSize: 16, color: Colors.white),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -350,13 +390,17 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
-                  onPressed: () => _initializeTest(), // Hata durumunda yeniden başlatma
+                  onPressed: () =>
+                      _initializeTest(), // Hata durumunda yeniden başlatma
                   icon: const Icon(Icons.refresh),
                   label: const Text('Tekrar Dene'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Theme.of(context).primaryColor,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 15),
@@ -385,7 +429,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   String _getUserFriendlyErrorMessage(String error) {
     if (error.contains('network') || error.contains('internet')) {
       return 'İnternet bağlantınızı kontrol edin. Sorunu çözdükten sonra tekrar deneyin.';
-    } else if (error.contains('auth') || error.contains('login') || error.contains('giriş')) {
+    } else if (error.contains('auth') ||
+        error.contains('login') ||
+        error.contains('giriş')) {
       return 'Oturumunuz sonlandırılmış. Lütfen tekrar giriş yapın.';
     } else if (error.contains('device') || error.contains('cihaz')) {
       return 'Cihaz kimliği alınamadı. Lütfen uygulamayı yeniden başlatın.';
@@ -404,11 +450,19 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(isGuest ? Icons.check_circle_outline : Icons.celebration_rounded, size: 100, color: Colors.white),
+          Icon(
+            isGuest ? Icons.check_circle_outline : Icons.celebration_rounded,
+            size: 100,
+            color: Colors.white,
+          ),
           const SizedBox(height: 24),
           Text(
             isGuest ? 'Teste Göz Attın!' : 'Test Tamamlandı!',
-            style: const TextStyle(fontSize: 28, color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 28,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 16),
           if (isGuest)
@@ -417,13 +471,20 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
               child: Text(
                 'İlerlemeni kaydetmek ve istatistiklerini görmek için giriş yap.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.white.withOpacity(0.9)),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white.withOpacity(0.9),
+                ),
               ),
             )
           else ...[
             Text(
               'Toplam Puan: ${viewModel.score}',
-              style: const TextStyle(fontSize: 24, color: Colors.amber, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontSize: 24,
+                color: Colors.amber,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             if (viewModel.totalQuestions > 0)

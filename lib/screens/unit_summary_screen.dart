@@ -9,45 +9,51 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 
 // 1. FutureProvider'ı oluşturuyoruz.
-final unitSummaryProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, int>((ref, unitId) async {
-  final client = Supabase.instance.client;
-  // 2. Merkezi yerden profili dinliyoruz.
-  final userProfile = ref.watch(profileViewModelProvider).profile;
-  final userId = userProfile?.id;
+final unitSummaryProvider = FutureProvider.autoDispose
+    .family<Map<String, dynamic>, int>((ref, unitId) async {
+      final client = Supabase.instance.client;
+      // 2. Merkezi yerden profili dinliyoruz.
+      final userProfile = ref.watch(profileViewModelProvider).profile;
+      final userId = userProfile?.id;
 
-  if (userId == null) {
-    // Misafir kullanıcı için varsayılan bir yapı döndür.
-    final unitData = await client.from('units').select('title').eq('id', unitId).single();
-    return {
-      'unit_name': unitData['title'] ?? 'Ünite Testi',
-      'total_questions': 0,
-      'unique_solved_count': 0,
-      'correct_count': 0,
-      'incorrect_count': 0,
-      'success_rate': 0.0,
-      'active_session': null,
-      'available_question_count': 10, // Testi başlatma butonunu göstermek için
-      'is_guest': true, // Misafir durumunu belirtmek için flag
-    };
-  }
+      if (userId == null) {
+        // Misafir kullanıcı için varsayılan bir yapı döndür.
+        final unitData = await client
+            .from('units')
+            .select('title')
+            .eq('id', unitId)
+            .single();
+        return {
+          'unit_name': unitData['title'] ?? 'Ünite Testi',
+          'total_questions': 0,
+          'unique_solved_count': 0,
+          'correct_count': 0,
+          'incorrect_count': 0,
+          'success_rate': 0.0,
+          'active_session': null,
+          'available_question_count':
+              10, // Testi başlatma butonunu göstermek için
+          'is_guest': true, // Misafir durumunu belirtmek için flag
+        };
+      }
 
-  // Kayıtlı kullanıcı için veriyi çek.
-  final prefs = await SharedPreferences.getInstance();
-  final clientId = prefs.getString('client_id');
+      // Kayıtlı kullanıcı için veriyi çek.
+      final prefs = await SharedPreferences.getInstance();
+      final clientId = prefs.getString('client_id');
 
-  final response = await client.rpc(
-    'get_unit_summary',
-    params: {
-      'p_user_id': userId,
-      'p_unit_id': unitId,
-      'p_client_id': clientId,
-    },
-  );
-  
-  final summaryData = Map<String, dynamic>.from(response);
-  summaryData['is_guest'] = false; // Kayıtlı kullanıcı durumunu belirt.
-  return summaryData;
-});
+      final response = await client.rpc(
+        'get_unit_summary',
+        params: {
+          'p_user_id': userId,
+          'p_unit_id': unitId,
+          'p_client_id': clientId,
+        },
+      );
+
+      final summaryData = Map<String, dynamic>.from(response);
+      summaryData['is_guest'] = false; // Kayıtlı kullanıcı durumunu belirt.
+      return summaryData;
+    });
 
 class UnitSummaryScreen extends ConsumerWidget {
   final int unitId;
@@ -69,14 +75,15 @@ class UnitSummaryScreen extends ConsumerWidget {
         elevation: 0,
         actions: [
           summaryAsyncValue.whenData((data) {
-            if (data['is_guest'] == false) {
-              return IconButton(
-                icon: const Icon(Icons.refresh),
-                onPressed: () => _refreshSummary(ref),
-              );
-            }
-            return const SizedBox.shrink();
-          }).value ?? const SizedBox.shrink(),
+                if (data['is_guest'] == false) {
+                  return IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () => _refreshSummary(ref),
+                  );
+                }
+                return const SizedBox.shrink();
+              }).value ??
+              const SizedBox.shrink(),
         ],
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -89,7 +96,9 @@ class UnitSummaryScreen extends ConsumerWidget {
           final hasIncorrect = (data['incorrect_count'] ?? 0) > 0;
           final totalQuestions = data['total_questions'] ?? 0;
           final uniqueSolved = data['unique_solved_count'] ?? 0;
-          final progress = totalQuestions > 0 ? uniqueSolved / totalQuestions : 0.0;
+          final progress = totalQuestions > 0
+              ? uniqueSolved / totalQuestions
+              : 0.0;
           final availableQuestionCount = data['available_question_count'] ?? 0;
           final questionsInNextSession = min(availableQuestionCount, 10);
 
@@ -103,7 +112,10 @@ class UnitSummaryScreen extends ConsumerWidget {
                 children: [
                   Text(
                     data['unit_name'] ?? 'Ünite',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 23,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -111,19 +123,25 @@ class UnitSummaryScreen extends ConsumerWidget {
                   if (!isGuest) ...[
                     _buildProgressCircle(progress, data['success_rate']),
                     const SizedBox(height: 24),
-                    if (activeSession != null) _buildActiveSessionCard(activeSession),
+                    if (activeSession != null)
+                      _buildActiveSessionCard(activeSession),
                     _buildStatsGrid(data),
                     const SizedBox(height: 32),
                   ] else ...[
                     Card(
                       color: Colors.blue.shade50,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Text(
                           'İlerlemeni ve istatistiklerini görmek için giriş yapmalısın. Misafir testleri sadece göz atmak içindir ve kaydedilmez.',
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.blue.shade800, fontSize: 15),
+                          style: TextStyle(
+                            color: Colors.blue.shade800,
+                            fontSize: 15,
+                          ),
                         ),
                       ),
                     ),
@@ -136,50 +154,58 @@ class UnitSummaryScreen extends ConsumerWidget {
                       label: 'Teste Devam Et',
                       icon: Icons.play_circle_fill,
                       color: Colors.green.shade600,
-                      onPressed: () => _navigateToTest(context, ref,
+                      onPressed: () => _navigateToTest(
+                        context,
+                        ref,
                         testMode: TestMode.normal,
                         sessionId: activeSession['id'],
                         isGuest: isGuest,
                       ),
                     )
                   else if (!isGuest && availableQuestionCount > 0) ...[
-                    if (availableQuestionCount > 10) _buildInfoCard(availableQuestionCount),
+                    if (availableQuestionCount > 10)
+                      _buildInfoCard(availableQuestionCount),
                     _buildButton(
                       context, // context'i geçiriyoruz
                       label: 'Teste Başla ($questionsInNextSession Soru)',
                       icon: Icons.add_task,
-                      onPressed: () => _navigateToTest(context, ref, testMode: TestMode.normal, isGuest: isGuest),
+                      onPressed: () => _navigateToTest(
+                        context,
+                        ref,
+                        testMode: TestMode.normal,
+                        isGuest: isGuest,
+                      ),
                     ),
-                  ]
-                  else if (isGuest)
+                  ] else if (isGuest)
                     _buildButton(
                       context, // context'i geçiriyoruz
                       label: 'Ünite Testine Göz At',
                       icon: Icons.visibility,
-                      onPressed: () => _navigateToTest(context, ref, testMode: TestMode.normal, isGuest: isGuest),
+                      onPressed: () => _navigateToTest(
+                        context,
+                        ref,
+                        testMode: TestMode.normal,
+                        isGuest: isGuest,
+                      ),
                     ),
 
-                  if (!isGuest && totalQuestions > 0 && uniqueSolved == totalQuestions)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                        child: Text(
-                          'Bu ünitedeki tüm soruları tamamladın. Tekrar zamanı gelen yeni soru bulunmuyor. Harika iş!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade700,
-                            fontWeight: FontWeight.w500,
-                          ),
+                  if (!isGuest &&
+                      totalQuestions > 0 &&
+                      uniqueSolved == totalQuestions)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 24.0,
+                      ),
+                      child: Text(
+                        'Bu ünitedeki tüm soruları tamamladın. Tekrar zamanı gelen yeni soru bulunmuyor. Harika iş!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-
-                  if (!isGuest)
-                    _buildButton(
-                      context, // context'i geçiriyoruz
-                      label: 'Sadece Yanlışları Çöz',
-                      icon: Icons.error_outline,
-                      color: Colors.orange.shade600,
-                      onPressed: hasIncorrect ? () => _navigateToTest(context, ref, testMode: TestMode.wrongAnswers, isGuest: isGuest) : null,
                     ),
                 ],
               ),
@@ -215,7 +241,10 @@ class UnitSummaryScreen extends ConsumerWidget {
                       text: '$availableCount soru',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const TextSpan(text: ' var. Testler 10 soruluk oturumlar halinde sunulur.'),
+                    const TextSpan(
+                      text:
+                          ' var. Testler 10 soruluk oturumlar halinde sunulur.',
+                    ),
                   ],
                 ),
               ),
@@ -239,14 +268,18 @@ class UnitSummaryScreen extends ConsumerWidget {
             '${(progress * 100).toStringAsFixed(0)}%',
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 36.0),
           ),
-          const Text("Tamamlandı", style: TextStyle(fontSize: 14.0))
+          const Text("Tamamlandı", style: TextStyle(fontSize: 14.0)),
         ],
       ),
       footer: Padding(
         padding: const EdgeInsets.only(top: 16.0),
         child: Text(
           'Genel Başarı Oranı: ${successRate.toStringAsFixed(1)}%',
-          style: TextStyle(fontWeight: FontWeight.bold, color: color, fontSize: 16),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: color,
+            fontSize: 16,
+          ),
         ),
       ),
       circularStrokeCap: CircularStrokeCap.round,
@@ -260,7 +293,10 @@ class UnitSummaryScreen extends ConsumerWidget {
     return Card(
       color: Colors.blue.shade50,
       margin: const EdgeInsets.only(bottom: 24),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: Colors.blue.shade200)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Colors.blue.shade200),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -269,13 +305,28 @@ class UnitSummaryScreen extends ConsumerWidget {
               children: [
                 const Icon(Icons.info_outline, color: Colors.blue),
                 const SizedBox(width: 8),
-                Text('Yarım Kalan Testin Var!', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue.shade900)),
+                Text(
+                  'Yarım Kalan Testin Var!',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade900,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
-            LinearProgressIndicator(value: progress, backgroundColor: Colors.white, color: Colors.blue, minHeight: 8, borderRadius: BorderRadius.circular(8)),
+            LinearProgressIndicator(
+              value: progress,
+              backgroundColor: Colors.white,
+              color: Colors.blue,
+              minHeight: 8,
+              borderRadius: BorderRadius.circular(8),
+            ),
             const SizedBox(height: 8),
-            Text('${session['total']} sorudan ${session['answered']} tanesini çözdün.', style: TextStyle(color: Colors.blue.shade800)),
+            Text(
+              '${session['total']} sorudan ${session['answered']} tanesini çözdün.',
+              style: TextStyle(color: Colors.blue.shade800),
+            ),
           ],
         ),
       ),
@@ -292,7 +343,11 @@ class UnitSummaryScreen extends ConsumerWidget {
       childAspectRatio: 2.0,
       children: [
         _statCard('Toplam Soru', data['total_questions'], Colors.blue),
-        _statCard('Çözülen (Benzersiz)', data['unique_solved_count'], Colors.purple),
+        _statCard(
+          'Çözülen (Benzersiz)',
+          data['unique_solved_count'],
+          Colors.purple,
+        ),
         _statCard('Doğru Cevap', data['correct_count'], Colors.green),
         _statCard('Yanlış Cevap', data['incorrect_count'], Colors.red),
       ],
@@ -310,16 +365,33 @@ class UnitSummaryScreen extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(value.toString(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+          Text(
+            value.toString(),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(label, style: TextStyle(fontSize: 12, color: labelColor), textAlign: TextAlign.center),
+          Text(
+            label,
+            style: TextStyle(fontSize: 12, color: labelColor),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
   }
 
   // DÜZELTME: Metodun imzasına BuildContext eklendi.
-  Widget _buildButton(BuildContext context, {required String label, required IconData icon, Color? color, VoidCallback? onPressed}) {
+  Widget _buildButton(
+    BuildContext context, {
+    required String label,
+    required IconData icon,
+    Color? color,
+    VoidCallback? onPressed,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: ElevatedButton.icon(
@@ -331,23 +403,33 @@ class UnitSummaryScreen extends ConsumerWidget {
           backgroundColor: color ?? Theme.of(context).primaryColor,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           elevation: 2,
         ),
       ),
     );
   }
 
-  void _navigateToTest(BuildContext context, WidgetRef ref, {required TestMode testMode, int? sessionId, required bool isGuest}) async {
+  void _navigateToTest(
+    BuildContext context,
+    WidgetRef ref, {
+    required TestMode testMode,
+    int? sessionId,
+    required bool isGuest,
+  }) async {
     final guestSessionId = isGuest ? null : sessionId;
 
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => QuestionsScreen(
-        unitId: unitId,
-        testMode: testMode,
-        sessionId: guestSessionId,
-      )),
+      MaterialPageRoute(
+        builder: (context) => QuestionsScreen(
+          unitId: unitId,
+          testMode: testMode,
+          sessionId: guestSessionId,
+        ),
+      ),
     );
     _refreshSummary(ref);
   }
