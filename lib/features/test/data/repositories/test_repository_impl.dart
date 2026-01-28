@@ -7,6 +7,7 @@ import 'package:egitim_uygulamasi/models/question_blank_option.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:egitim_uygulamasi/features/test/domain/repositories/test_repository.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
+import 'package:egitim_uygulamasi/features/test/data/models/test_session.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
 
 class TestRepositoryImpl implements TestRepository {
@@ -20,7 +21,9 @@ class TestRepositoryImpl implements TestRepository {
     required int curriculumWeek,
   }) async {
     try {
-      log('TestRepositoryImpl.startGuestTest (weekly): unitId=$unitId, curriculumWeek=$curriculumWeek');
+      log(
+        'TestRepositoryImpl.startGuestTest (weekly): unitId=$unitId, curriculumWeek=$curriculumWeek',
+      );
 
       final response = await _supabase.rpc(
         'start_guest_test',
@@ -35,15 +38,21 @@ class TestRepositoryImpl implements TestRepository {
         log('TestRepositoryImpl.startGuestTest (weekly): Null response');
         return [];
       }
-      
+
       final questions = (response as List)
           .map((q) => Question.fromMap(q as Map<String, dynamic>))
           .toList();
 
-      log('TestRepositoryImpl.startGuestTest (weekly): ${questions.length} misafir sorusu alındı');
+      log(
+        'TestRepositoryImpl.startGuestTest (weekly): ${questions.length} misafir sorusu alındı',
+      );
       return questions;
     } catch (e, stackTrace) {
-      log('TestRepositoryImpl.startGuestTest (weekly) ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestRepositoryImpl.startGuestTest (weekly) ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -55,25 +64,28 @@ class TestRepositoryImpl implements TestRepository {
 
       final response = await _supabase.rpc(
         'start_guest_test',
-        params: {
-          'p_unit_id': unitId,
-          'p_type': 'unit',
-        },
+        params: {'p_unit_id': unitId, 'p_type': 'unit'},
       );
 
       if (response == null) {
         log('TestRepositoryImpl.startGuestUnitTest: Null response');
         return [];
       }
-      
+
       final questions = (response as List)
           .map((q) => Question.fromMap(q as Map<String, dynamic>))
           .toList();
 
-      log('TestRepositoryImpl.startGuestUnitTest: ${questions.length} misafir sorusu alındı');
+      log(
+        'TestRepositoryImpl.startGuestUnitTest: ${questions.length} misafir sorusu alındı',
+      );
       return questions;
     } catch (e, stackTrace) {
-      log('TestRepositoryImpl.startGuestUnitTest ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestRepositoryImpl.startGuestUnitTest ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -87,8 +99,9 @@ class TestRepositoryImpl implements TestRepository {
           .select('question_id')
           .eq('test_session_id', sessionId);
 
-      final answeredQuestionIds =
-          (response as List).map((row) => row['question_id'] as int).toSet();
+      final answeredQuestionIds = (response as List)
+          .map((row) => row['question_id'] as int)
+          .toSet();
       return answeredQuestionIds;
     } catch (e) {
       log('getAnsweredQuestionIds ERROR: $e');
@@ -150,7 +163,11 @@ class TestRepositoryImpl implements TestRepository {
 
       return sessionId;
     } catch (e, stackTrace) {
-      log('TestRepositoryImpl.startTestSession ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestRepositoryImpl.startTestSession ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -159,15 +176,26 @@ class TestRepositoryImpl implements TestRepository {
   Future<void> finishTestSession(int sessionId, TestMode testMode) async {
     try {
       log('--- TEST BİTİRİLİYOR --- Test Modu: $testMode');
-      log('TestRepositoryImpl.finishTestSession: public.finish_test_session RPC çağrılıyor, sessionId: $sessionId');
+      log(
+        'TestRepositoryImpl.finishTestSession: public.finish_test_session RPC çağrılıyor, sessionId: $sessionId',
+      );
 
       // Test modundan bağımsız olarak tek bir merkezi RPC çağrılıyor.
       // Tüm özetleme/güncelleme mantığı veritabanı trigger'ları tarafından yönetilecek.
-      await _supabase.rpc('finish_test_session', params: {'p_session_id': sessionId});
+      await _supabase.rpc(
+        'finish_test_session',
+        params: {'p_session_id': sessionId},
+      );
 
-      log('TestRepositoryImpl.finishTestSession: Session $sessionId başarıyla tamamlandı (merkezi RPC ile)');
+      log(
+        'TestRepositoryImpl.finishTestSession: Session $sessionId başarıyla tamamlandı (merkezi RPC ile)',
+      );
     } catch (e, stackTrace) {
-      log('TestRepositoryImpl.finishTestSession ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestRepositoryImpl.finishTestSession ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       // Hata mesajlarını konsola daha belirgin bir şekilde yazdır
       log("**************************************************");
       log("HATA: TEST BİTİRME RPC ÇAĞRISI BAŞARISIZ OLDU");
@@ -187,9 +215,14 @@ class TestRepositoryImpl implements TestRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> getNextQuestion(int sessionId, String? userId) async {
+  Future<Map<String, dynamic>> getNextQuestion(
+    int sessionId,
+    String? userId,
+  ) async {
     try {
-      log('TestRepositoryImpl.getNextQuestion: sessionId=$sessionId, userId=$userId');
+      log(
+        'TestRepositoryImpl.getNextQuestion: sessionId=$sessionId, userId=$userId',
+      );
 
       final response = await _supabase.rpc(
         'get_next_question_v3',
@@ -197,28 +230,37 @@ class TestRepositoryImpl implements TestRepository {
       );
 
       if (response == null) {
-        log('TestRepositoryImpl.getNextQuestion: Null response - muhtemelen tüm sorular tamamlandı');
-        return {
-          'question': null,
-          'answered_count': 0,
-          'correct_count': 0,
-        };
+        log(
+          'TestRepositoryImpl.getNextQuestion: Null response - muhtemelen tüm sorular tamamlandı',
+        );
+        return {'question': null, 'answered_count': 0, 'correct_count': 0};
       }
 
       final result = response as Map<String, dynamic>;
-      log('TestRepositoryImpl.getNextQuestion: Soru alındı, questionId: ${result['question']?['id']}');
+      log(
+        'TestRepositoryImpl.getNextQuestion: Soru alındı, questionId: ${result['question']?['id']}',
+      );
 
       return result;
     } catch (e, stackTrace) {
-      log('TestRepositoryImpl.getNextQuestion ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestRepositoryImpl.getNextQuestion ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
 
   @override
-  Future<List<Question>> getAllSessionQuestions(int sessionId, String? userId) async {
+  Future<List<Question>> getAllSessionQuestions(
+    int sessionId,
+    String? userId,
+  ) async {
     try {
-      log('TestRepositoryImpl.getAllSessionQuestions: sessionId=$sessionId, userId=$userId');
+      log(
+        'TestRepositoryImpl.getAllSessionQuestions: sessionId=$sessionId, userId=$userId',
+      );
 
       final response = await _supabase.rpc(
         'get_all_session_questions',
@@ -232,21 +274,27 @@ class TestRepositoryImpl implements TestRepository {
 
       final questions = (response as List)
           .map((q) {
-        try {
-          return Question.fromMap(q as Map<String, dynamic>);
-        } catch (e) {
-          log('Question.fromMap ERROR: $e, data: $q');
-          return null;
-        }
-      })
+            try {
+              return Question.fromMap(q as Map<String, dynamic>);
+            } catch (e) {
+              log('Question.fromMap ERROR: $e, data: $q');
+              return null;
+            }
+          })
           .whereType<Question>()
           .toList();
 
-      log('TestRepositoryImpl.getAllSessionQuestions: ${questions.length} soru alındı');
+      log(
+        'TestRepositoryImpl.getAllSessionQuestions: ${questions.length} soru alındı',
+      );
 
       return questions;
     } catch (e, stackTrace) {
-      log('TestRepositoryImpl.getAllSessionQuestions ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestRepositoryImpl.getAllSessionQuestions ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return [];
     }
   }
@@ -275,9 +323,10 @@ class TestRepositoryImpl implements TestRepository {
             }
           });
           encodableAnswer = serializableMap;
-          log('TestRepositoryImpl.saveAnswer: MatchingPair answer converted to serializable map.');
-        }
-        else if (firstValue is QuestionBlankOption) {
+          log(
+            'TestRepositoryImpl.saveAnswer: MatchingPair answer converted to serializable map.',
+          );
+        } else if (firstValue is QuestionBlankOption) {
           final Map<String, String> serializableMap = {};
           userAnswer.forEach((key, value) {
             if (value is QuestionBlankOption) {
@@ -286,7 +335,9 @@ class TestRepositoryImpl implements TestRepository {
             }
           });
           encodableAnswer = serializableMap;
-          log('TestRepositoryImpl.saveAnswer: QuestionBlankOption answer converted to serializable map.');
+          log(
+            'TestRepositoryImpl.saveAnswer: QuestionBlankOption answer converted to serializable map.',
+          );
         }
       }
 
@@ -295,20 +346,27 @@ class TestRepositoryImpl implements TestRepository {
         'question_id': questionId,
         'user_id': userId,
         'client_id': clientId,
-        'answer_text': jsonEncode(encodableAnswer), // Dönüştürülmüş cevabı JSON olarak kodla
+        'answer_text': jsonEncode(
+          encodableAnswer,
+        ), // Dönüştürülmüş cevabı JSON olarak kodla
         'is_correct': isCorrect,
         'duration_seconds': durationSeconds,
         'created_at': DateTime.now().toIso8601String(),
       };
 
-      log('TestRepositoryImpl.saveAnswer: Inserting into test_session_answers with data: $dataToInsert');
+      log(
+        'TestRepositoryImpl.saveAnswer: Inserting into test_session_answers with data: $dataToInsert',
+      );
 
       await _supabase.from('test_session_answers').insert(dataToInsert);
 
       log('TestRepositoryImpl.saveAnswer: Insert successful.');
-
     } catch (e, stackTrace) {
-      log('TestRepositoryImpl.saveAnswer: INSERT FAILED. Rethrowing error.', error: e, stackTrace: stackTrace);
+      log(
+        'TestRepositoryImpl.saveAnswer: INSERT FAILED. Rethrowing error.',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -332,12 +390,47 @@ class TestRepositoryImpl implements TestRepository {
       final isCompleted = response['completed_at'] != null;
       final isValid = !isCompleted;
 
-      log('TestRepositoryImpl.resumeTestSession: Session $sessionId, isCompleted=$isCompleted, isValid=$isValid');
+      log(
+        'TestRepositoryImpl.resumeTestSession: Session $sessionId, isCompleted=$isCompleted, isValid=$isValid',
+      );
 
       return isValid;
     } catch (e, stackTrace) {
-      log('TestRepositoryImpl.resumeTestSession ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestRepositoryImpl.resumeTestSession ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
+    }
+  }
+
+  @override
+  Future<List<TestSession>> getUnfinishedSessions(String userId) async {
+    try {
+      final response = await _supabase
+          .from('test_sessions')
+          .select(
+            'id, user_id, unit_id, created_at, completed_at, settings, question_ids, client_id, lesson_id, grade_id, '
+            'units(title, lessons(name)), '
+            'lessons(name)',
+          )
+          .eq('user_id', userId)
+          .isFilter('completed_at', null)
+          .order('created_at', ascending: false)
+          .limit(10);
+
+      return (response as List)
+          .whereType<Map<String, dynamic>>()
+          .map((row) => TestSession.fromMap(row))
+          .toList();
+    } catch (e, stackTrace) {
+      log(
+        'TestRepositoryImpl.getUnfinishedSessions ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return <TestSession>[];
     }
   }
 
@@ -406,10 +499,7 @@ class TestRepositoryImpl implements TestRepository {
     try {
       final response = await _supabase.rpc(
         'get_user_unit_stats',
-        params: {
-          'p_user_id': userId,
-          'p_unit_id': unitId,
-        },
+        params: {'p_user_id': userId, 'p_unit_id': unitId},
       );
 
       return response as Map<String, dynamic>;

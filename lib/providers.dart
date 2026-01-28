@@ -1,4 +1,5 @@
 import 'package:egitim_uygulamasi/features/test/data/repositories/test_repository_impl.dart';
+import 'package:egitim_uygulamasi/features/test/data/models/test_session.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/viewmodels/test_view_model.dart';
 import 'package:egitim_uygulamasi/repositories/auth_repository.dart';
 import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
@@ -26,6 +27,11 @@ final userIdProvider = Provider<String?>((ref) {
   return Supabase.instance.client.auth.currentUser?.id;
 });
 
+// Auth State Change listener (provider invalidation için)
+final authStateProvider = StreamProvider<AuthState>((ref) {
+  return Supabase.instance.client.auth.onAuthStateChange;
+});
+
 // 3. Test Modülü Provider'ları
 final testRepositoryProvider = Provider<TestRepositoryImpl>((ref) {
   return TestRepositoryImpl();
@@ -34,6 +40,18 @@ final testRepositoryProvider = Provider<TestRepositoryImpl>((ref) {
 final testViewModelProvider = ChangeNotifierProvider.autoDispose<TestViewModel>((ref) {
   final repository = ref.watch(testRepositoryProvider);
   return TestViewModel(repository);
+});
+
+// Kullanıcının yarım kalan test oturumları
+final unfinishedSessionsProvider = FutureProvider<List<TestSession>>((ref) async {
+  // auth değişince yeniden fetch et
+  ref.watch(authStateProvider);
+
+  final userId = ref.watch(userIdProvider);
+  if (userId == null) return <TestSession>[];
+
+  final repository = ref.watch(testRepositoryProvider);
+  return repository.getUnfinishedSessions(userId);
 });
 
 // 4. Auth Modülü Provider'ları

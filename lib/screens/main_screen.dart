@@ -7,6 +7,8 @@ import 'package:egitim_uygulamasi/screens/profile_screen.dart';
 import 'package:egitim_uygulamasi/screens/grades_screen.dart';
 import 'package:egitim_uygulamasi/screens/statistics_screen.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
+import 'package:egitim_uygulamasi/providers.dart';
+import 'package:egitim_uygulamasi/features/test/data/models/test_session.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -216,16 +218,23 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     }
   }
 
+  Future<void> _refreshHome() async {
+    await _fetchDashboardData();
+    // HomeScreen'deki "Yarım Kalan Testler" listesini de yenile
+    ref.invalidate(unfinishedSessionsProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
     final profile = ref.watch(profileViewModelProvider).profile;
+    final unfinishedAsync = ref.watch(unfinishedSessionsProvider);
 
     final List<Widget> pages = <Widget>[
       HomeScreen(
         onNavigate: _onItemTapped,
         profile: profile,
-        onRefresh: _fetchDashboardData,
+        onRefresh: _refreshHome,
         agendaData: _agendaData,
         nextStepsData: _nextStepsData,
         currentCurriculumWeek: _currentCurriculumWeek,
@@ -235,6 +244,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         impersonatedRole: _impersonatedRole,
         onRoleChanged: _handleRoleChange,
         currentRole: _getCurrentRole(profile),
+        unfinishedSessions: unfinishedAsync.value ?? const <TestSession>[],
+        isUnfinishedSessionsLoading: unfinishedAsync.isLoading,
       ),
       const GradesScreen(),
       const StatisticsScreen(),

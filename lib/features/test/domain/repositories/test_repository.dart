@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
+import 'package:egitim_uygulamasi/features/test/data/models/test_session.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
 
 abstract class TestRepository {
@@ -43,4 +44,7 @@ abstract class TestRepository {
 
   // Oturum yönetimi
   Future<bool> resumeTestSession(int sessionId);
+
+  // Home: kullanıcının yarım kalan test oturumları
+  Future<List<TestSession>> getUnfinishedSessions(String userId);
 }
