@@ -1,7 +1,8 @@
 // lib/screens/units_for_lesson_screen.dart
 
-import 'package:egitim_uygulamasi/screens/outcomes_screen.dart';
-import 'package:egitim_uygulamasi/screens/units_for_lesson_screen.dart' as units_screen;
+import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen.dart';
+import 'package:egitim_uygulamasi/screens/units_for_lesson_screen.dart'
+    as units_screen;
 import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:egitim_uygulamasi/viewmodels/lesson_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -45,10 +46,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
           children: [
             Text(
               widget.grade.name,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             Text(
               'Dersler',
@@ -81,7 +79,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
               strokeWidth: 2,
               color: Theme.of(context).primaryColor,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 6),
             Text(
               'Dersler yükleniyor...',
               style: TextStyle(
@@ -117,7 +115,9 @@ class _LessonsScreenState extends State<LessonsScreen> {
                 _viewModel.errorMessage!,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.7),
                 ),
               ),
               const SizedBox(height: 24),
@@ -162,9 +162,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
     }
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFFFAFAFF),
-      ),
+      decoration: const BoxDecoration(color: Color(0xFFFAFAFF)),
       child: Stack(
         children: [
           // Sol üst köşe aksanı
@@ -177,10 +175,11 @@ class _LessonsScreenState extends State<LessonsScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
-                    colors: [
-                      const Color(0xFF6366F1).withOpacity(0.08),
-                      Colors.transparent,
-                    ]),
+                  colors: [
+                    const Color(0xFF6366F1).withOpacity(0.08),
+                    Colors.transparent,
+                  ],
+                ),
               ),
             ),
           ),
@@ -195,10 +194,11 @@ class _LessonsScreenState extends State<LessonsScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
-                    colors: [
-                      const Color(0xFF8B5CF6).withOpacity(0.05),
-                      Colors.transparent,
-                    ]),
+                  colors: [
+                    const Color(0xFF8B5CF6).withOpacity(0.05),
+                    Colors.transparent,
+                  ],
+                ),
               ),
             ),
           ),
@@ -215,12 +215,13 @@ class _LessonsScreenState extends State<LessonsScreen> {
                   bottomRight: Radius.circular(50),
                 ),
                 gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      const Color(0xFF6366F1).withOpacity(0.1),
-                      Colors.transparent,
-                    ]),
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    const Color(0xFF6366F1).withOpacity(0.1),
+                    Colors.transparent,
+                  ],
+                ),
               ),
             ),
           ),
@@ -233,10 +234,8 @@ class _LessonsScreenState extends State<LessonsScreen> {
                 height: 4,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                      colors: [
-                        Color(0xFF6366F1),
-                        Color(0xFF8B5CF6),
-                      ]),
+                    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                  ),
                 ),
               ),
 
@@ -286,7 +285,9 @@ class _LessonsScreenState extends State<LessonsScreen> {
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF6366F1).withOpacity(0.08),
+                                color: const Color(
+                                  0xFF6366F1,
+                                ).withOpacity(0.08),
                                 blurRadius: 25,
                                 offset: const Offset(0, 10),
                               ),
@@ -298,7 +299,9 @@ class _LessonsScreenState extends State<LessonsScreen> {
                                 width: 40,
                                 height: 40,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF6366F1).withOpacity(0.1),
+                                  color: const Color(
+                                    0xFF6366F1,
+                                  ).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Icon(
@@ -328,12 +331,13 @@ class _LessonsScreenState extends State<LessonsScreen> {
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       sliver: SliverGrid.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                          childAspectRatio: 0.75,
-                        ),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.75,
+                            ),
                         itemCount: _viewModel.lessons.length,
                         itemBuilder: (context, index) {
                           final lesson = _viewModel.lessons[index];
@@ -345,9 +349,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
                         },
                       ),
                     ),
-                    const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 60),
-                    ),
+                    const SliverPadding(padding: EdgeInsets.only(bottom: 60)),
                   ],
                 ),
               ),
@@ -408,15 +410,14 @@ class _LessonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final details = _getLessonDetails();
-    final colors = (details['colors'] as List<Color>?) ??
+    final colors =
+        (details['colors'] as List<Color>?) ??
         [Colors.grey.shade600, Colors.grey.shade800];
     final icon = (details['icon'] as IconData?) ?? Icons.book_outlined;
 
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
@@ -448,11 +449,7 @@ class _LessonCard extends StatelessWidget {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(
-                      icon,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                    child: Icon(icon, color: Colors.white, size: 20),
                   ),
                   const SizedBox(height: 12),
                   Text(
@@ -501,7 +498,9 @@ class _LessonCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 6),
+                                horizontal: 8,
+                                vertical: 6,
+                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
@@ -544,18 +543,21 @@ class _LessonCard extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => units_screen.UnitsForLessonScreen(
-                                    gradeId: grade.id,
-                                    lessonId: lessonId,
-                                    lessonName: lessonName,
-                                  ),
+                                  builder: (context) =>
+                                      units_screen.UnitsForLessonScreen(
+                                        gradeId: grade.id,
+                                        lessonId: lessonId,
+                                        lessonName: lessonName,
+                                      ),
                                 ),
                               );
                             },
                             borderRadius: BorderRadius.circular(8),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 6),
+                                horizontal: 8,
+                                vertical: 6,
+                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,

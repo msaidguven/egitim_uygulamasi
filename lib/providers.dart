@@ -9,6 +9,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:egitim_uygulamasi/main.dart'; // supabase için
 
+// 0. Main Screen Navigation
+final mainScreenIndexProvider = StateProvider<int>((ref) => 0);
+
 // 1. Client ID Provider
 final clientIdProvider = FutureProvider<String>((ref) async {
   final prefs = await SharedPreferences.getInstance();

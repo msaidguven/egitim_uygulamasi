@@ -1,7 +1,8 @@
 // lib/screens/main_screen.dart
 
 import 'package:egitim_uygulamasi/models/profile_model.dart';
-import 'package:egitim_uygulamasi/screens/home_screen.dart';
+import 'package:egitim_uygulamasi/screens/home/home_screen.dart';
+import 'package:egitim_uygulamasi/screens/home/models/home_models.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:egitim_uygulamasi/screens/profile_screen.dart';
 import 'package:egitim_uygulamasi/screens/grades_screen.dart';
@@ -13,8 +14,6 @@ import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-// NextStepsDisplayState enum'ı buradan kaldırıldı ve home_screen.dart'a taşındı.
 
 class LoginPromptScreen extends StatelessWidget {
   const LoginPromptScreen({super.key});
@@ -62,7 +61,6 @@ class MainScreen extends ConsumerStatefulWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  int _selectedIndex = 0;
   late final Stream<AuthState> _authStream;
 
   String? _impersonatedRole;
@@ -117,9 +115,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    ref.read(mainScreenIndexProvider.notifier).state = index;
   }
 
   void _toggleNextStepsSection() {
@@ -166,19 +162,26 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     });
 
     try {
-      final response = await Supabase.instance.client.rpc(
-        'get_weekly_dashboard_agenda',
-        params: {
-          'p_user_id': user.id,
-          'p_grade_id': profile!.gradeId,
-          'p_curriculum_week': _currentCurriculumWeek,
-        },
-      ) as List<dynamic>;
+      final response =
+          await Supabase.instance.client.rpc(
+                'get_weekly_dashboard_agenda',
+                params: {
+                  'p_user_id': user.id,
+                  'p_grade_id': profile!.gradeId,
+                  'p_curriculum_week': _currentCurriculumWeek,
+                },
+              )
+              as List<dynamic>;
 
       final processedData = response.map((item) {
         final total = item['total_questions'] as int? ?? 0;
         final solved = item['solved_questions'] as int? ?? 0;
         final correct = item['correct_answers'] as int? ?? 0;
+        final wrong = item['wrong_answers'] as int? ?? 0; // RPC'den geliyorsa
+        // Eğer RPC wrong_answers döndürmüyorsa, solved - correct olarak hesaplayabiliriz (basit mantık)
+        // Ancak RPC yapısını tam bilmediğimiz için solved - correct güvenli bir tahmin olabilir.
+        final calculatedWrong = solved - correct; 
+        final unsolved = total - solved;
 
         final progress = total > 0 ? (solved / total) * 100 : 0.0;
         final success = solved > 0 ? (correct / solved) * 100 : 0.0;
@@ -192,6 +195,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           'grade_name': item['grade_name'],
           'topic_title': item['current_topic_title'],
           'curriculum_week': item['current_curriculum_week'],
+          // Yeni eklenen istatistik alanları
+          'total_questions': total,
+          'correct_count': correct,
+          'wrong_count': calculatedWrong < 0 ? 0 : calculatedWrong,
+          'unsolved_count': unsolved < 0 ? 0 : unsolved,
         };
       }).toList();
 
@@ -226,6 +234,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = ref.watch(mainScreenIndexProvider);
     final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
     final profile = ref.watch(profileViewModelProvider).profile;
     final unfinishedAsync = ref.watch(unfinishedSessionsProvider);
@@ -254,25 +263,25 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        if (_selectedIndex != 0) {
-          setState(() {
-            _selectedIndex = 0;
-          });
+        if (selectedIndex != 0) {
+          ref.read(mainScreenIndexProvider.notifier).state = 0;
           return false;
         }
         return true;
       },
       child: Scaffold(
-        body: IndexedStack(index: _selectedIndex, children: pages),
+        body: IndexedStack(index: selectedIndex, children: pages),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Ana Sayfa'),
             BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Dersler'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.bar_chart), label: 'İstatistikler'),
+              icon: Icon(Icons.bar_chart),
+              label: 'İstatistikler',
+            ),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
           ],
-          currentIndex: _selectedIndex,
+          currentIndex: selectedIndex,
           onTap: _onItemTapped,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Theme.of(context).primaryColor,

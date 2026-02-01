@@ -175,7 +175,7 @@ class __ProfileBodyState extends ConsumerState<_ProfileBody> with SingleTickerPr
                   color: isDarkMode ? Colors.white : Colors.black,
                   size: 20,
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => ref.read(mainScreenIndexProvider.notifier).state = 0,
               ),
               actions: [
                 IconButton(

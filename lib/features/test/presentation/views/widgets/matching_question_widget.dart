@@ -8,7 +8,8 @@ class MatchingQuestionWidget extends StatefulWidget {
   final TestQuestion testQuestion;
   final ValueChanged<dynamic> onAnswered;
 
-  const MatchingQuestionWidget({super.key, 
+  const MatchingQuestionWidget({
+    super.key,
     required this.testQuestion,
     required this.onAnswered,
   });
@@ -92,52 +93,56 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
                   final data = details.data;
                   setState(() {
                     final existingEntry = userMatches.entries.firstWhereOrNull(
-                          (entry) => entry.value?.id == data.id,
+                      (entry) => entry.value?.id == data.id,
                     );
                     if (existingEntry != null) {
                       userMatches.remove(existingEntry.key);
                     }
                     userMatches[leftText] = data;
-                    widget.onAnswered(Map<String, MatchingPair?>.from(userMatches));
+                    widget.onAnswered(
+                      Map<String, MatchingPair?>.from(userMatches),
+                    );
                   });
                 },
                 builder: (context, candidateData, rejectedData) {
                   return matchedPair != null
                       ? Draggable<MatchingPair>(
-                    data: matchedPair,
-                    onDragStarted: () => _startDragBack(leftText),
-                    onDragEnd: _endDragBack,
-                    onDraggableCanceled: (_, __) => _cancelDragBack(),
-                    feedback: Material(
-                      color: Colors.transparent,
-                      child: _buildDraggingFeedback(matchedPair.right_text),
-                    ),
-                    childWhenDragging: Opacity(
-                      opacity: 0.3,
-                      child: _buildMatchContainer(
-                        index: index,
-                        leftText: leftText,
-                        matchedPair: matchedPair,
-                        isDraggingBack: true,
-                      ),
-                    ),
-                    child: GestureDetector(
-                      onTap: () => _removeMatch(leftText),
-                      child: Opacity(
-                        opacity: isDraggingBack ? 0.5 : 1.0,
-                        child: _buildMatchContainer(
+                          data: matchedPair,
+                          onDragStarted: () => _startDragBack(leftText),
+                          onDragEnd: _endDragBack,
+                          onDraggableCanceled: (_, __) => _cancelDragBack(),
+                          feedback: Material(
+                            color: Colors.transparent,
+                            child: _buildDraggingFeedback(
+                              matchedPair.right_text,
+                            ),
+                          ),
+                          childWhenDragging: Opacity(
+                            opacity: 0.3,
+                            child: _buildMatchContainer(
+                              index: index,
+                              leftText: leftText,
+                              matchedPair: matchedPair,
+                              isDraggingBack: true,
+                            ),
+                          ),
+                          child: GestureDetector(
+                            onTap: () => _removeMatch(leftText),
+                            child: Opacity(
+                              opacity: isDraggingBack ? 0.5 : 1.0,
+                              child: _buildMatchContainer(
+                                index: index,
+                                leftText: leftText,
+                                matchedPair: matchedPair,
+                              ),
+                            ),
+                          ),
+                        )
+                      : _buildMatchContainer(
                           index: index,
                           leftText: leftText,
-                          matchedPair: matchedPair,
-                        ),
-                      ),
-                    ),
-                  )
-                      : _buildMatchContainer(
-                    index: index,
-                    leftText: leftText,
-                    matchedPair: null,
-                  );
+                          matchedPair: null,
+                        );
                 },
               ),
             );
@@ -152,7 +157,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
   }
 
   // ... (Geri kalan kod aynı)
-  
+
   Widget _buildMatchContainer({
     required int index,
     required String leftText,
@@ -164,9 +169,8 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     // Doğruluk Kontrolü
     bool isCorrectMatch = false;
     if (matchedPair != null) {
-      final originalPair = widget.testQuestion.question.matchingPairs?.firstWhereOrNull(
-              (p) => p.left_text == leftText
-      );
+      final originalPair = widget.testQuestion.question.matchingPairs
+          ?.firstWhereOrNull((p) => p.left_text == leftText);
       isCorrectMatch = originalPair?.right_text == matchedPair.right_text;
     }
 
@@ -179,9 +183,13 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     if (matchedPair != null) {
       if (isChecked) {
         // Kontrol edildikten sonra (Yeşil / Kırmızı)
-        rightBoxBgColor = isCorrectMatch ? Colors.green.shade50 : Colors.red.shade50;
+        rightBoxBgColor = isCorrectMatch
+            ? Colors.green.shade50
+            : Colors.red.shade50;
         rightBoxBorderColor = isCorrectMatch ? Colors.green : Colors.red;
-        textColor = isCorrectMatch ? Colors.green.shade900 : Colors.red.shade900;
+        textColor = isCorrectMatch
+            ? Colors.green.shade900
+            : Colors.red.shade900;
         rowBorderColor = rightBoxBorderColor.withOpacity(0.5);
       } else {
         // Yerleştirilmiş ama henüz kontrol edilmemiş (Mavi)
@@ -203,15 +211,25 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: rowBorderColor),
-                borderRadius: const BorderRadius.horizontal(left: Radius.circular(10)),
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(10),
+                ),
               ),
               child: Row(
                 children: [
                   CircleAvatar(
                     radius: 11,
-                    backgroundColor: isChecked && matchedPair != null ? rightBoxBorderColor : Theme.of(context).primaryColor,
-                    child: Text('${index + 1}',
-                        style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                    backgroundColor: isChecked && matchedPair != null
+                        ? rightBoxBorderColor
+                        : Theme.of(context).primaryColor,
+                    child: Text(
+                      '${index + 1}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(child: QuestionText(text: leftText, fontSize: 14)),
@@ -227,7 +245,9 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
               padding: const EdgeInsets.symmetric(horizontal: 6),
               decoration: BoxDecoration(
                 color: rightBoxBgColor,
-                borderRadius: const BorderRadius.horizontal(right: Radius.circular(10)),
+                borderRadius: const BorderRadius.horizontal(
+                  right: Radius.circular(10),
+                ),
                 border: Border.all(
                   color: rightBoxBorderColor,
                   width: matchedPair != null ? 1.5 : 1.0,
@@ -236,27 +256,34 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
               alignment: Alignment.center,
               child: (matchedPair != null && !isDraggingBack)
                   ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                      isChecked ? (isCorrectMatch ? Icons.check_circle : Icons.cancel) : Icons.check_circle,
-                      size: 14,
-                      color: rightBoxBorderColor
-                  ),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: QuestionText(
-                      text: matchedPair.right_text,
-                      fontSize: 13,
-                      textColor: textColor,
-                    ),
-                  ),
-                ],
-              )
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          isChecked
+                              ? (isCorrectMatch
+                                    ? Icons.check_circle
+                                    : Icons.cancel)
+                              : Icons.check_circle,
+                          size: 14,
+                          color: rightBoxBorderColor,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: QuestionText(
+                            text: matchedPair.right_text,
+                            fontSize: 13,
+                            textColor: textColor,
+                          ),
+                        ),
+                      ],
+                    )
                   : Text(
-                "Buraya bırakın",
-                style: TextStyle(color: Colors.grey.shade400, fontSize: 11),
-              ),
+                      "Buraya bırakın",
+                      style: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontSize: 11,
+                      ),
+                    ),
             ),
           ),
         ],
@@ -276,20 +303,34 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Seçenekleri eşleştirin:',
-              style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.bold, fontSize: 13)),
+          Text(
+            'Seçenekleri eşleştirin:',
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+          ),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: shuffledRightPairs
                 .where((p) => !userMatches.values.contains(p))
-                .map((pair) => Draggable<MatchingPair>(
-              data: pair,
-              feedback: Material(color: Colors.transparent, child: _buildDraggingFeedback(pair.right_text)),
-              childWhenDragging: Opacity(opacity: 0.3, child: _buildPoolItem(pair.right_text, isDragging: true)),
-              child: _buildPoolItem(pair.right_text),
-            ))
+                .map(
+                  (pair) => Draggable<MatchingPair>(
+                    data: pair,
+                    feedback: Material(
+                      color: Colors.transparent,
+                      child: _buildDraggingFeedback(pair.right_text),
+                    ),
+                    childWhenDragging: Opacity(
+                      opacity: 0.3,
+                      child: _buildPoolItem(pair.right_text, isDragging: true),
+                    ),
+                    child: _buildPoolItem(pair.right_text),
+                  ),
+                )
                 .toList(),
           ),
         ],
@@ -303,7 +344,9 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
       decoration: BoxDecoration(
         color: isDragging ? Colors.grey.shade200 : Colors.amber.shade100,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: isDragging ? Colors.grey.shade400 : Colors.amber.shade400),
+        border: Border.all(
+          color: isDragging ? Colors.grey.shade400 : Colors.amber.shade400,
+        ),
       ),
       child: QuestionText(
         text: text,
@@ -321,7 +364,14 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
         borderRadius: BorderRadius.circular(10),
         boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10)],
       ),
-      child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 14, decoration: TextDecoration.none)),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          decoration: TextDecoration.none,
+        ),
+      ),
     );
   }
 
@@ -339,7 +389,14 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
         children: [
           Icon(Icons.check_circle, color: Colors.green, size: 20),
           SizedBox(width: 8),
-          Text('Eşleştirme Tamamlandı', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 14)),
+          Text(
+            'Eşleştirme Tamamlandı',
+            style: TextStyle(
+              color: Colors.green,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
         ],
       ),
     );

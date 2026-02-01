@@ -2,145 +2,212 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 final _lessonDetails = {
-  1: {'icon': Icons.calculate_rounded, 'gradient': [Color(0xFFFF8A65), Color(0xFFFF5252)]},
-  2: {'icon': Icons.translate_rounded, 'gradient': [Color(0xFF64B5F6), Color(0xFF42A5F5)]},
-  3: {'icon': Icons.science_rounded, 'gradient': [Color(0xFF81C784), Color(0xFF66BB6A)]},
-  4: {'icon': Icons.public_rounded, 'gradient': [Color(0xFFE57373), Color(0xFFEF5350)]},
-  5: {'icon': Icons.gavel_rounded, 'gradient': [Color(0xFFBA68C8), Color(0xFFAB47BC)]},
-  6: {'icon': Icons.language_rounded, 'gradient': [Color(0xFF4DB6AC), Color(0xFF26A69A)]},
+  1: {
+    'icon': Icons.calculate_rounded,
+    'gradient': [Color(0xFFFF8A65), Color(0xFFFF5252)],
+  },
+  2: {
+    'icon': Icons.translate_rounded,
+    'gradient': [Color(0xFF64B5F6), Color(0xFF42A5F5)],
+  },
+  3: {
+    'icon': Icons.science_rounded,
+    'gradient': [Color(0xFF81C784), Color(0xFF66BB6A)],
+  },
+  4: {
+    'icon': Icons.public_rounded,
+    'gradient': [Color(0xFFE57373), Color(0xFFEF5350)],
+  },
+  5: {
+    'icon': Icons.gavel_rounded,
+    'gradient': [Color(0xFFBA68C8), Color(0xFFAB47BC)],
+  },
+  6: {
+    'icon': Icons.language_rounded,
+    'gradient': [Color(0xFF4DB6AC), Color(0xFF26A69A)],
+  },
 };
 
 class LessonCard extends StatelessWidget {
   final int lessonId;
   final String lessonName;
   final String? topicTitle;
+  final String? gradeName; // Sınıf adı eklendi
   final int? curriculumWeek;
   final double progress;
   final double successRate;
   final VoidCallback onTap;
   final bool isNextStep;
+  
+  // İstatistikler
+  final int? totalQuestions;
+  final int? correctCount;
+  final int? wrongCount;
+  final int? unsolvedCount;
 
   const LessonCard({
     super.key,
     required this.lessonId,
     required this.lessonName,
     this.topicTitle,
+    this.gradeName,
     this.curriculumWeek,
     required this.progress,
     required this.successRate,
     required this.onTap,
     this.isNextStep = false,
+    this.totalQuestions,
+    this.correctCount,
+    this.wrongCount,
+    this.unsolvedCount,
   });
 
   @override
   Widget build(BuildContext context) {
-    final details = _lessonDetails[lessonId] ??
+    final details =
+        _lessonDetails[lessonId] ??
         {
           'icon': Icons.book_rounded,
-          'gradient': [Colors.grey, Colors.blueGrey],
+          'gradient': [Color(0xFF6366F1), Color(0xFF8B5CF6)],
         };
+
     final gradient = details['gradient'] as List<Color>;
     final icon = details['icon'] as IconData;
-    final score = ((progress * successRate) / 100).toInt();
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 190,
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            colors: gradient,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: gradient.last.withOpacity(0.4),
-              blurRadius: 18,
-              offset: const Offset(0, 10),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 14,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-            child: Padding(
-              padding: const EdgeInsets.all(18),
-              child: Column(
+        child: Column(
+          children: [
+            // Üst Kısım: İkon ve Başlıklar
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ÜST
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: Colors.white.withOpacity(0.25),
-                        child: Icon(icon, color: Colors.white, size: 22),
+                  // Renkli ikon alanı
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: gradient,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (isNextStep && curriculumWeek != null)
-                              Text(
-                                'Bu Hafta ($curriculumWeek. Hafta)',
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            const SizedBox(height: 2),
-                            Text(
-                              isNextStep ? (topicTitle ?? lessonName) : lessonName,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: gradient.first.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
-                      ),
-                      _ScoreBadge(score: score),
-                    ],
+                      ],
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 28),
                   ),
 
-                  const Spacer(),
+                  const SizedBox(width: 16),
 
-                  // ORTA - Dairesel Progress
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // Metin alanı
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Hiyerarşi: Sınıf -> Ders -> Konu
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            if (gradeName != null) ...[
+                              Text(
+                                gradeName!,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              Icon(Icons.chevron_right_rounded, size: 16, color: Colors.grey.shade400),
+                            ],
+                            Text(
+                              lessonName,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: gradient.first,
+                              ),
+                            ),
+                            if (topicTitle != null) ...[
+                              Icon(Icons.chevron_right_rounded, size: 16, color: Colors.grey.shade400),
+                              Text(
+                                topicTitle!,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey.shade800,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ],
+                        ),
+                        
+                        const SizedBox(height: 8),
+                        
+                        // Ana Başlık (Konu veya Ders)
+                        Text(
+                          topicTitle ?? lessonName,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black87,
+                            height: 1.2,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // İlerleme Yüzdesi (Dairesel)
+                  Column(
                     children: [
-                      _StatColumn(title: "İlerleme", value: "${progress.toInt()}%"),
-                      _StatColumn(title: "Başarı", value: "${successRate.toInt()}%"),
                       SizedBox(
-                        width: 48,
-                        height: 48,
+                        width: 40,
+                        height: 40,
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
                             CircularProgressIndicator(
                               value: progress / 100,
-                              strokeWidth: 5,
-                              backgroundColor: Colors.white.withOpacity(0.2),
-                              valueColor: const AlwaysStoppedAnimation(Colors.white),
+                              strokeWidth: 4,
+                              backgroundColor: Colors.grey.shade100,
+                              valueColor: AlwaysStoppedAnimation<Color>(gradient.last),
                             ),
                             Center(
                               child: Text(
                                 "${progress.toInt()}%",
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
                                   fontSize: 10,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.grey.shade800,
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -149,62 +216,84 @@ class LessonCard extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+            
+            // Alt Kısım: İstatistikler (Varsa)
+            if (totalQuestions != null && totalQuestions! > 0) ...[
+              Container(
+                height: 1,
+                color: Colors.grey.shade100,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  children: [
+                    // Toplam Soru
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '$totalQuestions Soru',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    
+                    // Doğru
+                    _buildStatItem(
+                      count: correctCount ?? 0,
+                      label: 'd',
+                      color: const Color(0xFF10B981), // Emerald
+                    ),
+                    const SizedBox(width: 12),
+                    
+                    // Yanlış
+                    _buildStatItem(
+                      count: wrongCount ?? 0,
+                      label: 'y',
+                      color: const Color(0xFFEF4444), // Red
+                    ),
+                    const SizedBox(width: 12),
+                    
+                    // Çözülmedi
+                    _buildStatItem(
+                      count: unsolvedCount ?? 0,
+                      label: 'boş',
+                      color: Colors.grey.shade400,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
   }
-}
 
-class _ScoreBadge extends StatelessWidget {
-  final int score;
-  const _ScoreBadge({required this.score});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.25),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.3)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.emoji_events_rounded, color: Colors.amber, size: 16),
-          const SizedBox(width: 4),
-          Text(
-            score.toString(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatColumn extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const _StatColumn({required this.title, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildStatItem({required int count, required String label, required Color color}) {
+    return Row(
       children: [
-        Text(title, style: const TextStyle(color: Colors.white70, fontSize: 11)),
-        const SizedBox(height: 2),
         Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
+          '$count',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: color,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            color: color.withOpacity(0.8),
           ),
         ),
       ],
