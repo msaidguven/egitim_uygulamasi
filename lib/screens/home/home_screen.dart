@@ -199,7 +199,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   data: (count) => count > 0
                       ? SrsAlertWidget(
                           questionCount: count,
-                          onReviewTap: _isStartingSrsTest ? null : _startSrsTest,
+                          onReviewTap: _isStartingSrsTest ? null : () => _startSrsTest(),
                         )
                       : const SizedBox.shrink(),
                   loading: () => const SizedBox.shrink(),
