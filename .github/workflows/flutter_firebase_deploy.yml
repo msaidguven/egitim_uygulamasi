@@ -16,18 +16,36 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.27.0'
           channel: 'stable'
+          cache: true
 
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Analyze code
+        run: flutter analyze --no-fatal-infos
+
       - name: Build web
         run: flutter build web --release
+        env:
+          CI: true
+
+      - name: Check Firebase config exists
+        run: |
+          if [ ! -f firebase.json ]; then
+            echo "firebase.json bulunamadi!"
+            exit 1
+          fi
+          if [ ! -f .firebaserc ]; then
+            echo ".firebaserc bulunamadi!"
+            exit 1
+          fi
 
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only hosting
+          args: deploy --only hosting --debug
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
