@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:egitim_uygulamasi/models/user_question_stats.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -53,7 +54,7 @@ class UserQuestionStatsService {
 
       return UserQuestionStats.fromJson(response);
     } catch (e) {
-      print('Error getting stats for question $questionId: $e');
+      debugPrint('Error getting stats for question $questionId: $e');
       rethrow;
     }
   }

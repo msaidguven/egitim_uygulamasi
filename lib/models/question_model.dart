@@ -123,36 +123,36 @@ class QuestionChoice {
 
 class MatchingPair {
   final int id;
-  final String left_text;
-  final String right_text;
+  final String leftText;
+  final String rightText;
 
   MatchingPair({
     required this.id,
-    required this.left_text,
-    required this.right_text,
+    required this.leftText,
+    required this.rightText,
   });
 
   factory MatchingPair.fromMap(Map<String, dynamic> map) {
     return MatchingPair(
       id: map['id'] as int? ?? 0,
-      left_text: map['left_text'] as String? ?? '',
-      right_text: map['right_text'] as String? ?? '',
+      leftText: map['left_text'] as String? ?? '',
+      rightText: map['right_text'] as String? ?? '',
     );
   }
 
   factory MatchingPair.fromJson(Map<String, dynamic> json) {
     return MatchingPair(
       id: json['id'] as int? ?? 0,
-      left_text: json['left_text'] as String? ?? '',
-      right_text: json['right_text'] as String? ?? '',
+      leftText: json['left_text'] as String? ?? '',
+      rightText: json['right_text'] as String? ?? '',
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'left_text': left_text,
-      'right_text': right_text,
+      'left_text': leftText,
+      'right_text': rightText,
     };
   }
 }

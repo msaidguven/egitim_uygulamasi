@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CacheService {
@@ -35,7 +36,7 @@ class CacheService {
     final key = '$_availableWeeksPrefix${gradeId}_$lessonId';
     final cachedData = _prefs!.getString(key);
     if (cachedData != null) {
-      print('[CacheService] Available weeks for $key loaded from cache.');
+      debugPrint('[CacheService] Available weeks for $key loaded from cache.');
       return jsonDecode(cachedData) as List<dynamic>;
     }
     return null;
@@ -45,7 +46,7 @@ class CacheService {
     await _init();
     final key = '$_availableWeeksPrefix${gradeId}_$lessonId';
     await _prefs!.setString(key, jsonEncode(weeks));
-    print('[CacheService] Available weeks for $key saved to cache.');
+    debugPrint('[CacheService] Available weeks for $key saved to cache.');
   }
 
   Future<Map<String, dynamic>?> getWeeklyCurriculumData({
@@ -57,7 +58,7 @@ class CacheService {
     final key = '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_$curriculumWeek';
     final cachedData = _prefs!.getString(key);
     if (cachedData != null) {
-      print('[CacheService] Weekly curriculum data for $key loaded from cache.');
+      debugPrint('[CacheService] Weekly curriculum data for $key loaded from cache.');
       return jsonDecode(cachedData) as Map<String, dynamic>;
     }
     return null;
@@ -72,7 +73,7 @@ class CacheService {
     await _init();
     final key = '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_$curriculumWeek';
     await _prefs!.setString(key, jsonEncode(data));
-    print('[CacheService] Weekly curriculum data for $key saved to cache.');
+    debugPrint('[CacheService] Weekly curriculum data for $key saved to cache.');
   }
 
   Future<void> clearWeeklyCurriculumData({
@@ -83,6 +84,6 @@ class CacheService {
     await _init();
     final key = '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_$curriculumWeek';
     await _prefs!.remove(key);
-    print('[CacheService] Cleared cache for key: $key');
+    debugPrint('[CacheService] Cleared cache for key: $key');
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import '../models/topic_content.dart';
 
 class TopicContentParser {
@@ -41,7 +42,7 @@ class TopicContentParser {
       } catch (e) {
         // In case of any other error during processing of a block,
         // print it and continue to the next block.
-        print('Error parsing content block: $e');
+        debugPrint('Error parsing content block: $e');
       }
     }
 

@@ -29,7 +29,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
   void initState() {
     super.initState();
     final question = widget.testQuestion.question;
-    leftTexts = question.matchingPairs?.map((p) => p.left_text).toList() ?? [];
+    leftTexts = question.matchingPairs?.map((p) => p.leftText).toList() ?? [];
     shuffledRightPairs = List.from(question.matchingPairs ?? [])..shuffle();
     userMatches = {};
   }
@@ -114,7 +114,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
                           feedback: Material(
                             color: Colors.transparent,
                             child: _buildDraggingFeedback(
-                              matchedPair.right_text,
+                              matchedPair.rightText,
                             ),
                           ),
                           childWhenDragging: Opacity(
@@ -170,8 +170,8 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     bool isCorrectMatch = false;
     if (matchedPair != null) {
       final originalPair = widget.testQuestion.question.matchingPairs
-          ?.firstWhereOrNull((p) => p.left_text == leftText);
-      isCorrectMatch = originalPair?.right_text == matchedPair.right_text;
+          ?.firstWhereOrNull((p) => p.leftText == leftText);
+      isCorrectMatch = originalPair?.rightText == matchedPair.rightText;
     }
 
     // Stil Belirleme
@@ -270,7 +270,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
                         const SizedBox(width: 4),
                         Expanded(
                           child: QuestionText(
-                            text: matchedPair.right_text,
+                            text: matchedPair.rightText,
                             fontSize: 13,
                             textColor: textColor,
                           ),
@@ -322,13 +322,13 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
                     data: pair,
                     feedback: Material(
                       color: Colors.transparent,
-                      child: _buildDraggingFeedback(pair.right_text),
+                      child: _buildDraggingFeedback(pair.rightText),
                     ),
                     childWhenDragging: Opacity(
                       opacity: 0.3,
-                      child: _buildPoolItem(pair.right_text, isDragging: true),
+                      child: _buildPoolItem(pair.rightText, isDragging: true),
                     ),
-                    child: _buildPoolItem(pair.right_text),
+                    child: _buildPoolItem(pair.rightText),
                   ),
                 )
                 .toList(),

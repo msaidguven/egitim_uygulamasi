@@ -312,7 +312,7 @@ class TestRepositoryImpl implements TestRepository {
           final Map<String, String> serializableMap = {};
           userAnswer.forEach((key, value) {
             if (key is String && value is MatchingPair) {
-              serializableMap[key] = value.right_text;
+              serializableMap[key] = value.rightText;
             }
           });
           encodableAnswer = serializableMap;

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -49,7 +50,7 @@ final weeksForTopicProvider =
   } catch (e) {
     // Hata durumunda konsola yazdır ve hatayı yeniden fırlat.
     // Riverpod bu hatayı yakalayıp AsyncValue.error durumuna geçirecektir.
-    print('Haftalık kazanımlar getirilirken hata: $e');
+    debugPrint('Haftalık kazanımlar getirilirken hata: $e');
     rethrow;
   }
 });
