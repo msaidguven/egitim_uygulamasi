@@ -30,11 +30,11 @@ class AuthRepository {
       _isGoogleSignInInitialized = true;
     }
 
-    // scopes (email, profile) default olarak gelir, ekstra scope gerekirse authorize kullanilir.
-    // authenticate metodu v7 ile geldi, signIn yerine gecti.
+    // Web'de signIn(), mobilde authenticate() kullanilir
     GoogleSignInAccount? googleUser;
     try {
-      googleUser = await GoogleSignIn.instance.authenticate();
+      // Once signIn() dene (web uyumlulugu)
+      googleUser = await GoogleSignIn.instance.signIn();
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
         throw const AuthException('Giriş işlemi iptal edildi.');
@@ -45,6 +45,10 @@ class AuthRepository {
       throw AuthException('Beklenmedik bir hata oluştu: $e');
     }
     
+    if (googleUser == null) {
+      throw const AuthException('Google kullanıcı bilgisi alınamadı.');
+    }
+
     final googleAuth = await googleUser.authentication;
     final idToken = googleAuth.idToken;
 
@@ -52,10 +56,8 @@ class AuthRepository {
       throw const AuthException('Google ID Token alınamadı.');
     }
 
-    // Google Sign In v7 change: accessToken is now retrieved via authorizationClient
-    final authClient = googleUser.authorizationClient;
-    final authz = await authClient.authorizationForScopes(['email', 'profile']);
-    final accessToken = authz?.accessToken;
+    // Google Sign In v7: accessToken authentication içinde geliyor artık
+    final accessToken = googleAuth.accessToken;
 
     if (accessToken == null) {
       throw const AuthException('Google Access Token alınamadı.');
