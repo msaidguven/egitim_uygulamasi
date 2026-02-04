@@ -98,13 +98,22 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           );
           await viewModel.startGuestUnitTest(unitId: widget.unitId);
         }
-      } else if (widget.sessionId != null) {
+      } else if (widget.sessionId != null && widget.testMode != TestMode.srs) {
         debugPrint(
           'QuestionsScreen: Mevcut teste devam ediliyor: sessionId=${widget.sessionId}',
         );
         await viewModel.resumeTest(
           sessionId: widget.sessionId!,
           userId: userId,
+          clientId: clientIdAsync,
+        );
+      } else if (widget.testMode == TestMode.srs && widget.sessionId != null) {
+        debugPrint(
+          'QuestionsScreen: SRS testi başlatılıyor: sessionId=${widget.sessionId}',
+        );
+        await viewModel.startSrsTest(
+          sessionId: widget.sessionId!,
+          userId: userId ?? '',
           clientId: clientIdAsync,
         );
       } else {
@@ -212,6 +221,8 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     switch (widget.testMode) {
       case TestMode.weekly:
         return 'Haftalık Test';
+      case TestMode.srs:
+        return 'Tekrar Testi';
       case TestMode.normal:
       default:
         return 'Ünite Testi';

@@ -1,7 +1,10 @@
 // lib/screens/home_screen.dart
 
+import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_session.dart';
+import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 import 'package:egitim_uygulamasi/models/profile_model.dart';
+import 'package:egitim_uygulamasi/providers.dart';
 import 'package:egitim_uygulamasi/screens/home/models/home_models.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/common_widgets.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/guest_content_view.dart';
@@ -16,8 +19,9 @@ import 'package:egitim_uygulamasi/screens/home/widgets/week_info_card.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/week_scroll_widget.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   final Function(int) onNavigate;
   final Profile? profile;
   final Future<void> Function() onRefresh;
@@ -52,11 +56,12 @@ class HomeScreen extends StatefulWidget {
   });
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final GradeViewModel _gradeViewModel = GradeViewModel();
+  bool _isStartingSrsTest = false;
 
   @override
   void initState() {
@@ -75,10 +80,71 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  Future<void> _startSrsTest() async {
+    if (_isStartingSrsTest) return;
+
+    setState(() {
+      _isStartingSrsTest = true;
+    });
+
+    try {
+      final userId = ref.read(userIdProvider);
+      final clientId = await ref.read(clientIdProvider.future);
+      final viewModel = ref.read(testViewModelProvider.notifier);
+
+      if (userId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Giriş yapmanız gerekiyor.')),
+        );
+        return;
+      }
+
+      // SRS test session oluştur
+      final sessionId = await ref.read(testRepositoryProvider).startSrsTestSession(
+        userId: userId,
+        clientId: clientId,
+      );
+
+      // ViewModel'de SRS testi başlat
+      await viewModel.startSrsTest(
+        sessionId: sessionId,
+        userId: userId,
+        clientId: clientId,
+      );
+
+      if (mounted) {
+        // Test ekranına git
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QuestionsScreen(
+              unitId: 0, // SRS testinde unitId yok
+              sessionId: sessionId,
+              testMode: TestMode.srs,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Tekrar testi başlatılırken hata: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isStartingSrsTest = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isStudent = widget.currentRole == 'student';
     final bool isAdmin = widget.profile?.role == 'admin';
+    final srsDueCountAsync = ref.watch(srsDueCountProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
@@ -129,12 +195,15 @@ class _HomeScreenState extends State<HomeScreen> {
             // 4. SRS Alert Widget (Sadece Öğrenciler)
             if (isStudent)
               SliverToBoxAdapter(
-                child: SrsAlertWidget(
-                  questionCount: 5,
-                  onReviewTap: () {
-                    // TODO: Navigate to review screen
-                    debugPrint('Review tapped');
-                  },
+                child: srsDueCountAsync.when(
+                  data: (count) => count > 0
+                      ? SrsAlertWidget(
+                          questionCount: count,
+                          onReviewTap: _isStartingSrsTest ? null : _startSrsTest,
+                        )
+                      : const SizedBox.shrink(),
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
                 ),
               ),
 

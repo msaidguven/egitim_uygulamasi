@@ -487,4 +487,56 @@ class TestRepositoryImpl implements TestRepository {
       return {};
     }
   }
+
+  // SRS: Zamanı gelen tekrar sorularının sayısını getir
+  @override
+  Future<int> getSrsDueCount(String userId) async {
+    try {
+      final response = await _supabase
+          .from('user_question_stats')
+          .select('question_id')
+          .eq('user_id', userId)
+          .lte('next_review_at', DateTime.now().toIso8601String());
+
+      return (response as List).length;
+    } catch (e) {
+      log('TestRepositoryImpl.getSrsDueCount ERROR: $e');
+      return 0;
+    }
+  }
+
+  // SRS: Tekrar testi başlat
+  @override
+  Future<int> startSrsTestSession({
+    required String userId,
+    required String clientId,
+  }) async {
+    try {
+      log('TestRepositoryImpl.startSrsTestSession: userId=$userId, clientId=$clientId');
+
+      final response = await _supabase.rpc(
+        'start_srs_test_session',
+        params: {
+          'p_user_id': userId,
+          'p_client_id': clientId,
+        },
+      );
+
+      if (response == null) {
+        throw Exception('RPC start_srs_test_session null döndü');
+      }
+
+      final sessionId = response as int;
+      log('TestRepositoryImpl.startSrsTestSession: Yeni sessionId = $sessionId');
+
+      return sessionId;
+    } catch (e, stackTrace) {
+      log(
+        'TestRepositoryImpl.startSrsTestSession ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
+  }
 }

@@ -47,4 +47,13 @@ abstract class TestRepository {
 
   // Home: kullanıcının yarım kalan test oturumları
   Future<List<TestSession>> getUnfinishedSessions(String userId);
+
+  // SRS: Zamanı gelen tekrar sorularının sayısını getir
+  Future<int> getSrsDueCount(String userId);
+
+  // SRS: Tekrar testi başlat
+  Future<int> startSrsTestSession({
+    required String userId,
+    required String clientId,
+  });
 }

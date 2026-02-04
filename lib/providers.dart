@@ -67,3 +67,16 @@ final authViewModelProvider = ChangeNotifierProvider<AuthViewModel>((ref) {
   final repository = ref.watch(authRepositoryProvider);
   return AuthViewModel(repository);
 });
+
+// 5. SRS (Spaced Repetition) Provider'ları
+// Zamanı gelen tekrar sorularının sayısı
+final srsDueCountProvider = FutureProvider<int>((ref) async {
+  // auth değişince yeniden fetch et
+  ref.watch(authStateProvider);
+
+  final userId = ref.watch(userIdProvider);
+  if (userId == null) return 0;
+
+  final repository = ref.watch(testRepositoryProvider);
+  return repository.getSrsDueCount(userId);
+});

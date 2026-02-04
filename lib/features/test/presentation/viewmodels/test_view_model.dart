@@ -44,6 +44,48 @@ class TestViewModel extends ChangeNotifier {
 
   // ========== TEST BAŞLATMA METODLARI ==========
 
+  // SRS (Spaced Repetition) test başlat
+  Future<void> startSrsTest({
+    required int sessionId,
+    required String userId,
+    required String clientId,
+  }) async {
+    log('TestViewModel.startSrsTest: sessionId=$sessionId, userId=$userId');
+    _isLoading = true;
+    _error = null;
+    _testMode = TestMode.srs;
+    _unitId = 0; // SRS testinde unitId yok
+    _userId = userId;
+    _clientId = clientId;
+    _sessionId = sessionId;
+    notifyListeners();
+
+    try {
+      // Tüm soruları getir
+      final questions = await _repository.getAllSessionQuestions(
+        sessionId,
+        userId,
+      );
+
+      if (questions.isEmpty) {
+        throw Exception("Tekrar için soru bulunamadı.");
+      }
+
+      _questionQueue = questions.map((q) => TestQuestion(question: q)).toList();
+      _totalQuestions = _questionQueue.length;
+      _currentTestQuestion = _questionQueue.removeAt(0); // İlk soruyu al
+
+      _isLoading = false;
+      _questionTimer.reset();
+      _questionTimer.start();
+      log('TestViewModel.startSrsTest: SRS testi başarıyla başlatıldı. Toplam $_totalQuestions soru yüklendi.');
+      notifyListeners();
+    } catch (e, stackTrace) {
+      log('TestViewModel.startSrsTest ERROR: $e', error: e, stackTrace: stackTrace);
+      _setError("SRS testi başlatılamadı: ${_getErrorMessage(e)}");
+    }
+  }
+
   Future<void> startGuestUnitTest({
     required int unitId,
   }) async {

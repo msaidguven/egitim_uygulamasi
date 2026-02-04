@@ -2,7 +2,7 @@
 
 import 'package:egitim_uygulamasi/models/question_model.dart';
 
-enum TestMode { normal, weekly }
+enum TestMode { normal, weekly, srs }
 
 class TestQuestion {
   final Question question;
