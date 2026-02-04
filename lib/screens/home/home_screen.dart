@@ -192,20 +192,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
 
-            // 4. SRS Alert Widget (Sadece Öğrenciler)
-            if (isStudent)
-              SliverToBoxAdapter(
-                child: srsDueCountAsync.when(
-                  data: (count) => count > 0
-                      ? SrsAlertWidget(
-                          questionCount: count,
-                          onReviewTap: _isStartingSrsTest ? null : () => _startSrsTest(),
-                        )
-                      : const SizedBox.shrink(),
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
+            // 4. SRS Alert Widget (Herkes - Veri geldiyse)
+            SliverToBoxAdapter(
+              child: srsDueCountAsync.when(
+                data: (count) => SrsAlertWidget(
+                  questionCount: count,
+                  onReviewTap: _isStartingSrsTest ? () {} : () => _startSrsTest(),
                 ),
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
               ),
+            ),
 
             // 5. Week Scroll Widget (Herkes) - GECICI OLARAK KAPATILDI
             // SliverToBoxAdapter(

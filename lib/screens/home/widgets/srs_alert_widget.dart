@@ -72,7 +72,9 @@ class SrsAlertWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '$questionCount soru için tekrar zamanı geldi. Bu soruları çözerek öğrenmeni pekiştir.',
+                  questionCount > 0 
+                      ? '$questionCount soru için tekrar zamanı geldi. Bu soruları çözerek öğrenmeni pekiştir.'
+                      : 'Şu an tekrar etmen gereken soru yok. Harikasın! Yeni konular öğrenmeye devam et.',
                   style: TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: 13,
@@ -81,27 +83,28 @@ class SrsAlertWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                SizedBox(
-                  height: 36,
-                  child: ElevatedButton(
-                    onPressed: onReviewTap,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: accentColor,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                if (questionCount > 0)
+                  SizedBox(
+                    height: 36,
+                    child: ElevatedButton(
+                      onPressed: onReviewTap,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: accentColor,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        textStyle: const TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      child: const Text('Şimdi Tekrar Et'),
                     ),
-                    child: const Text('Şimdi Tekrar Et'),
                   ),
-                ),
               ],
             ),
           ),

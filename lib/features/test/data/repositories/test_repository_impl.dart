@@ -519,6 +519,8 @@ class TestRepositoryImpl implements TestRepository {
         params: {
           'p_user_id': userId,
           'p_client_id': clientId,
+          'p_unit_id': null, // Global SRS
+          'p_question_limit': 10,
         },
       );
 
