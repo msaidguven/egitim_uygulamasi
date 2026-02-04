@@ -138,15 +138,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-            // 5. Week Scroll Widget (Herkes)
-            SliverToBoxAdapter(
-              child: WeekScrollWidget(
-                currentWeek: widget.currentCurriculumWeek,
-                onWeekSelected: (week) {
-                  debugPrint('Selected week: $week');
-                },
-              ),
-            ),
+            // 5. Week Scroll Widget (Herkes) - GECICI OLARAK KAPATILDI
+            // SliverToBoxAdapter(
+            //   child: WeekScrollWidget(
+            //     currentWeek: widget.currentCurriculumWeek,
+            //     onWeekSelected: (week) {
+            //       debugPrint('Selected week: $week');
+            //     },
+            //   ),
+            // ),
 
             // 6. Unfinished Tests Section (Sadece Üyeler/Öğrenciler)
             if (isStudent)
