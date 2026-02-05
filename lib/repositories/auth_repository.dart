@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,10 +19,17 @@ class AuthRepository {
 
   // Google ile Giriş Yap
   Future<AuthResponse> signInWithGoogle() async {
-    // NOT: Mobil uygulamalarda Google Sign-In için:
-    // 1. Android: google-services.json dosyası android/app/ altına konulmalı
-    // 2. iOS: GoogleService-Info.plist dosyası ios/Runner/ altına konulmalı
-    // 3. Firebase Console'da Authentication > Sign-in method > Google aktif olmalı
+    // Platform kontrolü: Web için farklı, mobil için farklı implementasyon
+    if (kIsWeb) {
+      return _signInWithGoogleWeb();
+    } else {
+      return _signInWithGoogleMobile();
+    }
+  }
+
+  // MOBIL (Android/iOS) için Google Sign-In
+  Future<AuthResponse> _signInWithGoogleMobile() async {
+    debugPrint('AuthRepository: Mobil Google Sign-In başlatılıyor...');
     
     try {
       // Google Sign-In instance'ını al
@@ -48,6 +56,8 @@ class AuthRepository {
         throw const AuthException('Google ID Token alınamadı.');
       }
 
+      debugPrint('AuthRepository: Mobil - ID Token alındı, Supabase giriş yapılıyor...');
+
       // Supabase ile giriş yap
       return _client.auth.signInWithIdToken(
         provider: OAuthProvider.google,
@@ -55,9 +65,53 @@ class AuthRepository {
         accessToken: accessToken,
       );
     } on PlatformException catch (e) {
-      // Platform hataları (Android/iOS özel hataları)
+      debugPrint('AuthRepository: Platform hatası: ${e.message}');
       throw AuthException('Platform hatası: ${e.message}');
     } catch (e) {
+      debugPrint('AuthRepository: Mobil giriş hatası: $e');
+      throw AuthException('Google girişi başarısız: $e');
+    }
+  }
+
+  // WEB için Google Sign-In
+  Future<AuthResponse> _signInWithGoogleWeb() async {
+    debugPrint('AuthRepository: Web Google Sign-In başlatılıyor...');
+    
+    // Web Client ID - Firebase Console'dan alınmalı
+    const webClientId = '910328493383-2om5bcoi1m645ukovjco5joqpjj74gh0.apps.googleusercontent.com';
+    
+    try {
+      // Google Sign-In initialize
+      await GoogleSignIn.instance.initialize(
+        serverClientId: webClientId,
+      );
+
+      // Web için authenticate kullan
+      final GoogleSignInAccount? googleUser = await GoogleSignIn.instance.authenticate(
+        scopeHint: ['email', 'profile'],
+      );
+      
+      if (googleUser == null) {
+        throw const AuthException('Giriş işlemi iptal edildi.');
+      }
+
+      // Web'de authentication direkt erişilebilir
+      final googleAuth = googleUser.authentication;
+      final String? idToken = googleAuth.idToken;
+
+      if (idToken == null) {
+        throw const AuthException('Google ID Token alınamadı.');
+      }
+
+      debugPrint('AuthRepository: Web - ID Token alındı, Supabase giriş yapılıyor...');
+
+      // Supabase ile giriş yap (web'de accessToken opsiyonel)
+      return _client.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+      );
+    } catch (e) {
+      debugPrint('AuthRepository: Web giriş hatası: $e');
       throw AuthException('Google girişi başarısız: $e');
     }
   }
