@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,62 +16,50 @@ class AuthRepository {
     return (response as List).map((grade) => {'id': grade['id'], 'name': grade['name']}).toList();
   }
 
-  static bool _isGoogleSignInInitialized = false;
-
   // Google ile Giriş Yap
   Future<AuthResponse> signInWithGoogle() async {
-    // DİKKAT: Buraya Google Cloud Console'dan aldığın 'Web Client ID'yi yapıştırmalısın.
-    // Android Client ID değil, WEB Client ID olmalı.
-    const webClientId = '910328493383-2om5bcoi1m645ukovjco5joqpjj74gh0.apps.googleusercontent.com';
-
-    if (!_isGoogleSignInInitialized) {
-      await GoogleSignIn.instance.initialize(
-        serverClientId: webClientId,
-      );
-      _isGoogleSignInInitialized = true;
-    }
-
-    // Yeni API: authenticate() kullan
-    GoogleSignInAccount? googleUser;
-    try {
-      googleUser = await GoogleSignIn.instance.authenticate(scopeHint: ['email', 'profile']);
-    } on GoogleSignInException catch (e) {
-      if (e.code == GoogleSignInExceptionCode.canceled) {
-        throw const AuthException('Giriş işlemi iptal edildi.');
-      } else {
-        throw AuthException('Google girişi başarısız: (${e.code}) ${e.description ?? ""}');
-      }
-    } catch (e) {
-      throw AuthException('Beklenmedik bir hata oluştu: $e');
-    }
+    // NOT: Mobil uygulamalarda Google Sign-In için:
+    // 1. Android: google-services.json dosyası android/app/ altına konulmalı
+    // 2. iOS: GoogleService-Info.plist dosyası ios/Runner/ altına konulmalı
+    // 3. Firebase Console'da Authentication > Sign-in method > Google aktif olmalı
     
-    if (googleUser == null) {
-      throw const AuthException('Google kullanıcı bilgisi alınamadı.');
-    }
-
-    // authentication artık Future değil - await kaldırıldı
-    final googleAuth = googleUser.authentication;
-    final idToken = googleAuth.idToken;
-
-    if (idToken == null) {
-      throw const AuthException('Google ID Token alınamadı.');
-    }
-
-    // accessToken gerekiyorsa, explicit scope authorization ile al
-    String? accessToken;
     try {
-      final authorization = await googleUser.authorizationClient.authorizeScopes(['email', 'profile']);
-      accessToken = authorization.accessToken;
-    } catch (_) {
-      // accessToken alınamadıysa null bırakabiliriz
-      accessToken = null;
-    }
+      // Google Sign-In instance'ını al
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
 
-    return _client.auth.signInWithIdToken(
-      provider: OAuthProvider.google,
-      idToken: idToken,
-      accessToken: accessToken,
-    );
+      // Önceki oturumu temizle (önemli!)
+      await googleSignIn.signOut();
+
+      // Google Sign-In başlat
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      
+      if (googleUser == null) {
+        throw const AuthException('Giriş işlemi iptal edildi.');
+      }
+
+      // Authentication bilgilerini al
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final String? idToken = googleAuth.idToken;
+      final String? accessToken = googleAuth.accessToken;
+
+      if (idToken == null) {
+        throw const AuthException('Google ID Token alınamadı.');
+      }
+
+      // Supabase ile giriş yap
+      return _client.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+    } on PlatformException catch (e) {
+      // Platform hataları (Android/iOS özel hataları)
+      throw AuthException('Platform hatası: ${e.message}');
+    } catch (e) {
+      throw AuthException('Google girişi başarısız: $e');
+    }
   }
 
   // Giriş yap
