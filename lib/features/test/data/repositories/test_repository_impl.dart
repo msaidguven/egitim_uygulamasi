@@ -492,13 +492,16 @@ class TestRepositoryImpl implements TestRepository {
   @override
   Future<int> getSrsDueCount(String userId) async {
     try {
-      final response = await _supabase
-          .from('user_question_stats')
-          .select('question_id')
-          .eq('user_id', userId)
-          .lte('next_review_at', DateTime.now().toIso8601String());
+      final response = await _supabase.rpc(
+        'get_srs_due_count',
+        params: {
+          'p_user_id': userId,
+          'p_unit_id': null, // Global SRS
+        },
+      );
 
-      return (response as List).length;
+      if (response == null) return 0;
+      return response as int;
     } catch (e) {
       log('TestRepositoryImpl.getSrsDueCount ERROR: $e');
       return 0;

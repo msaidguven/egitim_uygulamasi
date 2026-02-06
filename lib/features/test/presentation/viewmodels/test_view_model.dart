@@ -61,25 +61,14 @@ class TestViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Tüm soruları getir
-      final questions = await _repository.getAllSessionQuestions(
-        sessionId,
-        userId,
-      );
-
-      if (questions.isEmpty) {
-        throw Exception("Tekrar için soru bulunamadı.");
+      // Oturum geçerliliğini kontrol et
+      final isValid = await _repository.resumeTestSession(sessionId);
+      if (!isValid) {
+        _setError("Bu test oturumu artık geçerli değil. Yeni bir test başlatın.");
+        return;
       }
 
-      _questionQueue = questions.map((q) => TestQuestion(question: q)).toList();
-      _totalQuestions = _questionQueue.length;
-      _currentTestQuestion = _questionQueue.removeAt(0); // İlk soruyu al
-
-      _isLoading = false;
-      _questionTimer.reset();
-      _questionTimer.start();
-      log('TestViewModel.startSrsTest: SRS testi başarıyla başlatıldı. Toplam $_totalQuestions soru yüklendi.');
-      notifyListeners();
+      await _fetchInitialQuestion();
     } catch (e, stackTrace) {
       log('TestViewModel.startSrsTest ERROR: $e', error: e, stackTrace: stackTrace);
       _setError("SRS testi başlatılamadı: ${_getErrorMessage(e)}");

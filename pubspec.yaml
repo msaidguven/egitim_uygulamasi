@@ -47,7 +47,10 @@ dependencies:
 
 
   collection: any
-  google_sign_in: ^7.2.0
+
+  google_sign_in: ^6.2.1
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

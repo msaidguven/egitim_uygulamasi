@@ -8,7 +8,7 @@ class AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Uygulama her zaman alt menü yapısını içeren MainScreen ile başlasın.
+    // Uygulama direkt MainScreen ile başlar (login zorunlu değil)
     return const MainScreen();
   }
 }

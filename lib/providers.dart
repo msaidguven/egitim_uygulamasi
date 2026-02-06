@@ -40,7 +40,7 @@ final testRepositoryProvider = Provider<TestRepositoryImpl>((ref) {
   return TestRepositoryImpl();
 });
 
-final testViewModelProvider = ChangeNotifierProvider.autoDispose<TestViewModel>((ref) {
+final testViewModelProvider = ChangeNotifierProvider<TestViewModel>((ref) {
   final repository = ref.watch(testRepositoryProvider);
   return TestViewModel(repository);
 });

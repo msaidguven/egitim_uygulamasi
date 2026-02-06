@@ -20,6 +20,7 @@ DECLARE
     v_question_ids BIGINT[];
     v_lesson_id BIGINT;
     v_grade_id BIGINT;
+    v_limit INTEGER := LEAST(COALESCE(p_question_limit, 10), 10);
 BEGIN
     -- 1. Bu mod için zaten aktif bir test var mı diye kontrol et.
     SELECT id
@@ -64,7 +65,7 @@ BEGIN
         GROUP BY q.id
         ORDER BY
             RANDOM()
-        LIMIT LEAST(p_question_limit, 10)
+        LIMIT v_limit
     ) AS sub;
 
     -- Eğer çözülecek soru bulunamazsa, NULL döndür.
@@ -103,7 +104,7 @@ BEGIN
         v_question_ids,
         jsonb_build_object(
             'mode', 'srs',
-            'limit_requested', p_question_limit,
+            'limit_requested', v_limit,
             'status', 'active'
         )
     )

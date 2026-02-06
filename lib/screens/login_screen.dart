@@ -466,12 +466,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               const SizedBox(height: 32),
 
-              // Google ile giriş butonu (Aktif)
+              // Google ile giriş butonu
               SizedBox(
                 width: double.infinity,
                 height: 52,
-                child: OutlinedButton(
+                child: OutlinedButton.icon(
                   onPressed: viewModel.isLoading ? null : _signInWithGoogle,
+                  icon: viewModel.isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(
+                          Icons.g_mobiledata,
+                          color: Colors.blue,
+                          size: 28,
+                        ),
+                  label: Text(
+                    'Google ile devam et',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: isDarkMode ? Colors.white : Colors.black87,
+                    ),
+                  ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: isDarkMode ? Colors.white : Colors.black87,
                     backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
@@ -482,37 +501,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Image.network(
-                          'https://lh3.googleusercontent.com/COxitq8kCuVtIeQf2d4_2QwFfJ-420-9_i8D5l8vC3t2-T6_1_c8',
-                          height: 24,
-                          width: 24,
-                          errorBuilder: (context, error, stackTrace) => const Icon(
-                            Icons.g_mobiledata,
-                            color: Colors.blue,
-                            size: 32,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Google ile devam et',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: isDarkMode ? Colors.white : Colors.black87,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
