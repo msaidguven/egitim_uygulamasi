@@ -3,7 +3,7 @@
 import 'package:egitim_uygulamasi/screens/home/models/home_models.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/common_widgets.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen.dart';
-import 'package:egitim_uygulamasi/widgets/lesson_card.dart';
+import 'lesson_card.dart';
 import 'package:flutter/material.dart';
 
 class StudentContentView extends StatelessWidget {
@@ -90,6 +90,7 @@ class StudentContentView extends StatelessWidget {
             lessonName: item['lesson_name'],
             topicTitle: item['topic_title'] ?? 'Konu Belirtilmemiş',
             gradeName: item['grade_name'], // Sınıf adı
+            lessonIcon: item['lesson_icon'] as String?,
             progress: (item['progress_percentage'] ?? 0.0).toDouble(),
             successRate: (item['success_rate'] ?? 0.0).toDouble(),
             // İstatistikler
@@ -126,6 +127,7 @@ class StudentContentView extends StatelessWidget {
               topicTitle: item['topic_title'] ?? 'Genel Tekrar',
               gradeName: item['grade_name'], // Sınıf adı
               curriculumWeek: item['curriculum_week'],
+              lessonIcon: item['lesson_icon'] as String?,
               progress: (item['progress_percentage'] ?? 0.0).toDouble(),
               successRate: (item['success_rate'] ?? 0.0).toDouble(),
               // İstatistikler (Next steps için de varsa gösterilebilir)

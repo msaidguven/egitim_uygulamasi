@@ -14,7 +14,7 @@ import 'package:egitim_uygulamasi/screens/home/widgets/streak_card_widget.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/student_content_view.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/teacher_content_view.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/unfinished_tests_section.dart';
-import 'package:egitim_uygulamasi/screens/home/widgets/units_section_widget.dart';
+
 import 'package:egitim_uygulamasi/screens/home/widgets/week_info_card.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/week_scroll_widget.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
@@ -217,7 +217,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // 6. Unfinished Tests Section (Sadece Üyeler/Öğrenciler)
             if (isStudent)
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(
                   child: UnfinishedTestsSection(
                     unfinishedSessions: widget.unfinishedSessions,
@@ -227,10 +227,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
 
-            // 7. Units Section (Herkes)
-            const SliverToBoxAdapter(
-              child: UnitsSectionWidget(),
-            ),
+
 
             // Remaining Content Section
             if (widget.profile == null)
@@ -270,7 +267,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return SliverPadding(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
       sliver: SliverToBoxAdapter(
         child: StudentContentView(
           agendaData: widget.agendaData,

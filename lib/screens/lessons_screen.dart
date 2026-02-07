@@ -344,6 +344,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
                           return _LessonCard(
                             lessonId: lesson.id,
                             lessonName: lesson.name,
+                            lessonIcon: lesson.icon,
                             grade: widget.grade,
                           );
                         },
@@ -391,11 +392,13 @@ Map<int, Map<String, dynamic>> _lessonDetails = {
 class _LessonCard extends StatelessWidget {
   final int lessonId;
   final String lessonName;
+  final String? lessonIcon;
   final Grade grade;
 
   const _LessonCard({
     required this.lessonId,
     required this.lessonName,
+    this.lessonIcon,
     required this.grade,
   });
 
@@ -449,7 +452,14 @@ class _LessonCard extends StatelessWidget {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(icon, color: Colors.white, size: 20),
+                    child: lessonIcon != null 
+                        ? Center(
+                            child: Text(
+                              lessonIcon!,
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          )
+                        : Icon(icon, color: Colors.white, size: 20),
                   ),
                   const SizedBox(height: 12),
                   Text(

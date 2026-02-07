@@ -189,6 +189,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         return {
           'lesson_id': item['lesson_id'],
           'lesson_name': item['lesson_name'],
+          'lesson_icon': item['lesson_icon'],
           'progress_percentage': progress,
           'success_rate': success,
           'grade_id': item['grade_id'],

@@ -1,5 +1,6 @@
 // lib/screens/home/widgets/unfinished_tests_section.dart
 
+import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_session.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,7 @@ class UnfinishedTestsSection extends StatelessWidget {
         _buildSectionHeader(),
         const SizedBox(height: 16),
         SizedBox(
-          height: 120,
+          height: 160,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: 3,
@@ -89,7 +90,7 @@ class UnfinishedTestsSection extends StatelessWidget {
 
   Widget _buildTestsList(BuildContext context) {
     return SizedBox(
-      height: 120,
+      height: 160,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: unfinishedSessions!.length,
@@ -111,7 +112,7 @@ class UnfinishedTestsSection extends StatelessWidget {
           onTap: () => _resumeTest(context, session),
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -132,16 +133,22 @@ class UnfinishedTestsSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      session.lessonName ?? 'Ders',
+                      (session.unitId == null || session.unitId == 0)
+                          ? 'Tüm Dersler'
+                          : (session.lessonName ?? 'Ders'),
                       style: TextStyle(
                         fontSize: 11,
                         color: Colors.grey.shade600,
                         fontWeight: FontWeight.w500,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      session.unitName ?? 'Ünite',
+                      (session.unitId == null || session.unitId == 0)
+                          ? 'Genel Tekrar'
+                          : (session.unitName ?? 'Ünite'),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -186,13 +193,16 @@ class UnfinishedTestsSection extends StatelessWidget {
   }
 
   void _resumeTest(BuildContext context, TestSession session) {
-    if (session.unitId == null) return;
-
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            QuestionsScreen(unitId: session.unitId!, sessionId: session.id),
+        builder: (context) => QuestionsScreen(
+          unitId: session.unitId ?? 0,
+          sessionId: session.id,
+          testMode: (session.unitId == null || session.unitId == 0)
+              ? TestMode.srs
+              : TestMode.normal,
+        ),
       ),
     ).then((_) {
       onRefresh();

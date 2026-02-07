@@ -38,6 +38,7 @@ class LessonCard extends StatelessWidget {
   final double successRate;
   final VoidCallback onTap;
   final bool isNextStep;
+  final String? lessonIcon; // Veritabanından gelen emoji ikon
   
   // İstatistikler
   final int? totalQuestions;
@@ -56,6 +57,7 @@ class LessonCard extends StatelessWidget {
     required this.successRate,
     required this.onTap,
     this.isNextStep = false,
+    this.lessonIcon,
     this.totalQuestions,
     this.correctCount,
     this.wrongCount,
@@ -77,7 +79,7 @@ class LessonCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -116,7 +118,14 @@ class LessonCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Icon(icon, color: Colors.white, size: 28),
+                    child: lessonIcon != null 
+                        ? Center(
+                            child: Text(
+                              lessonIcon!,
+                              style: const TextStyle(fontSize: 28),
+                            ),
+                          )
+                        : Icon(icon, color: Colors.white, size: 28),
                   ),
 
                   const SizedBox(width: 16),
