@@ -7,9 +7,9 @@ class StreakCardWidget extends StatelessWidget {
 
   const StreakCardWidget({
     super.key,
-    this.streakCount = 12,
-    this.dailyGoal = 20,
-    this.currentProgress = 15,
+    required this.streakCount,
+    required this.dailyGoal,
+    required this.currentProgress,
   });
 
   @override

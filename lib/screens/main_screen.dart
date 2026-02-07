@@ -62,17 +62,20 @@ class MainScreen extends ConsumerStatefulWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen> {
   late final Stream<AuthState> _authStream;
-
   String? _impersonatedRole;
 
   List<Map<String, dynamic>>? _agendaData;
   List<Map<String, dynamic>>? _nextStepsData;
+  Map<String, dynamic>? _streakStats;
   int _currentCurriculumWeek = 0;
   NextStepsDisplayState _nextStepsState = NextStepsDisplayState.hidden;
 
+  bool _isFetchingDashboard = false;
+  DateTime? _lastFetchTime;
+
   String? _getCurrentRole(Profile? profile) {
-    if (profile?.role == 'admin' && _impersonatedRole != null) {
-      return _impersonatedRole;
+    if (profile?.role == 'admin') {
+      return _impersonatedRole ?? 'student'; // Admin için her zaman student varsayalım
     }
     return profile?.role;
   }
@@ -80,15 +83,16 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
+    _currentCurriculumWeek = calculateCurrentAcademicWeek();
+    
     _authStream = Supabase.instance.client.auth.onAuthStateChange;
     _authStream.listen((data) {
-      if (mounted) {
+      if (mounted && (data.event == AuthChangeEvent.signedIn || data.event == AuthChangeEvent.initialSession)) {
         _initializeProfileAndData();
       }
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _currentCurriculumWeek = calculateCurrentAcademicWeek();
       if (Supabase.instance.client.auth.currentUser != null) {
         _initializeProfileAndData();
       }
@@ -140,46 +144,66 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       _agendaData = null;
       _nextStepsData = null;
     });
-    _fetchDashboardData();
+    _fetchDashboardData(forceRefresh: true);
   }
 
-  Future<void> _fetchDashboardData() async {
+  Future<void> _fetchDashboardData({bool forceRefresh = false}) async {
     if (!mounted) return;
+
+    if (_isFetchingDashboard) {
+      debugPrint('Dashboard fetch skipped: already fetching');
+      return;
+    }
+
+    // Throttle: 10 saniye içinde tekrar çekme (force değilse)
+    if (!forceRefresh && _lastFetchTime != null && 
+        DateTime.now().difference(_lastFetchTime!) < const Duration(seconds: 10)) {
+      debugPrint('Dashboard fetch skipped: throttled');
+      return;
+    }
 
     final user = Supabase.instance.client.auth.currentUser;
     final profile = ref.read(profileViewModelProvider).profile;
+
     if (user == null || profile?.gradeId == null) {
+      debugPrint('Dashboard fetch skipped: Missing user or gradeId');
       setState(() {
-        _agendaData = [];
-        _nextStepsData = [];
+        _isFetchingDashboard = false;
+        _agendaData ??= [];
+        _nextStepsData ??= [];
       });
       return;
     }
 
-    final newCurrentCurriculumWeek = calculateCurrentAcademicWeek();
     setState(() {
-      _currentCurriculumWeek = newCurrentCurriculumWeek;
+      _isFetchingDashboard = true;
+      _currentCurriculumWeek = calculateCurrentAcademicWeek();
     });
 
     try {
-      final response =
-          await Supabase.instance.client.rpc(
-                'get_weekly_dashboard_agenda',
-                params: {
-                  'p_user_id': user.id,
-                  'p_grade_id': profile!.gradeId,
-                  'p_curriculum_week': _currentCurriculumWeek,
-                },
-              )
-              as List<dynamic>;
+      final results = await Future.wait([
+        Supabase.instance.client.rpc(
+          'get_weekly_dashboard_agenda',
+          params: {
+            'p_user_id': user.id,
+            'p_grade_id': profile!.gradeId,
+            'p_curriculum_week': _currentCurriculumWeek,
+          },
+        ),
+        Supabase.instance.client.rpc(
+          'get_user_daily_goal_stats',
+          params: {'p_user_id': user.id, 'p_goal': 40}
+        ),
+      ]);
+
+      final response = results[0] as List<dynamic>;
+      final streakResponse = results[1] as Map<String, dynamic>;
 
       final processedData = response.map((item) {
         final total = item['total_questions'] as int? ?? 0;
         final solved = item['solved_questions'] as int? ?? 0;
         final correct = item['correct_answers'] as int? ?? 0;
-        final wrong = item['wrong_answers'] as int? ?? 0; // RPC'den geliyorsa
-        // Eğer RPC wrong_answers döndürmüyorsa, solved - correct olarak hesaplayabiliriz (basit mantık)
-        // Ancak RPC yapısını tam bilmediğimiz için solved - correct güvenli bir tahmin olabilir.
+        
         final calculatedWrong = solved - correct; 
         final unsolved = total - solved;
 
@@ -196,7 +220,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           'grade_name': item['grade_name'],
           'topic_title': item['current_topic_title'],
           'curriculum_week': item['current_curriculum_week'],
-          // Yeni eklenen istatistik alanları
           'total_questions': total,
           'correct_count': correct,
           'wrong_count': calculatedWrong < 0 ? 0 : calculatedWrong,
@@ -207,28 +230,26 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       if (mounted) {
         setState(() {
           _agendaData = processedData;
+          _streakStats = streakResponse;
           _nextStepsData = []; // Bu bölüm şimdilik boş
+          _isFetchingDashboard = false;
+          _lastFetchTime = DateTime.now();
         });
       }
     } catch (e) {
       if (mounted) {
         debugPrint('Error fetching dashboard data: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Veriler yüklenirken bir hata oluştu: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
         setState(() {
-          _agendaData = [];
-          _nextStepsData = [];
+          _isFetchingDashboard = false;
+          _agendaData ??= [];
+          _nextStepsData ??= [];
         });
       }
     }
   }
 
   Future<void> _refreshHome() async {
-    await _fetchDashboardData();
+    await _fetchDashboardData(forceRefresh: true);
     // HomeScreen'deki "Yarım Kalan Testler" listesini de yenile
     ref.invalidate(unfinishedSessionsProvider);
   }
@@ -256,6 +277,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         currentRole: _getCurrentRole(profile),
         unfinishedSessions: unfinishedAsync.value ?? const <TestSession>[],
         isUnfinishedSessionsLoading: unfinishedAsync.isLoading,
+        streakStats: _streakStats,
       ),
       const GradesScreen(),
       const StatisticsScreen(),

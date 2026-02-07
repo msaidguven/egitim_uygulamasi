@@ -36,6 +36,7 @@ class HomeScreen extends ConsumerStatefulWidget {
   final String? currentRole;
   final List<TestSession>? unfinishedSessions;
   final bool isUnfinishedSessionsLoading;
+  final Map<String, dynamic>? streakStats;
 
   const HomeScreen({
     super.key,
@@ -53,6 +54,7 @@ class HomeScreen extends ConsumerStatefulWidget {
     this.currentRole,
     this.unfinishedSessions,
     this.isUnfinishedSessionsLoading = false,
+    this.streakStats,
   });
 
   @override
@@ -183,12 +185,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             // 3. Streak Card Widget (Sadece Üyeler/Öğrenciler)
-            if (isStudent)
-              const SliverToBoxAdapter(
+            if (isStudent && widget.streakStats != null)
+              SliverToBoxAdapter(
                 child: StreakCardWidget(
-                  streakCount: 12,
-                  dailyGoal: 20,
-                  currentProgress: 15,
+                  streakCount: widget.streakStats!['current_streak'] as int? ?? 0,
+                  dailyGoal: widget.streakStats!['daily_goal'] as int? ?? 40,
+                  currentProgress: widget.streakStats!['today_solved'] as int? ?? 0,
                 ),
               ),
 
