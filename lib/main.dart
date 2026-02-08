@@ -3,6 +3,8 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:egitim_uygulamasi/screens/reset_password_screen.dart';
+import 'package:egitim_uygulamasi/screens/login_screen.dart';
+import 'package:egitim_uygulamasi/screens/signup_screen.dart';
 import 'package:egitim_uygulamasi/constants.dart';
 import 'package:egitim_uygulamasi/screens/auth_gate.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +81,8 @@ class _EgitimUygulamasiState extends State<EgitimUygulamasi> {
       home: const AuthGate(),
       routes: {
         '/reset-password': (context) => const ResetPasswordScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const SignupScreen(),
       },
     );
   }

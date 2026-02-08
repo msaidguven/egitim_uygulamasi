@@ -192,23 +192,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Başlık bölümü
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // Başlık bölümü + geri butonu
+              Row(
                 children: [
-                  Text(
-                    'Hoş Geldiniz',
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 32,
+                  if (Navigator.of(context).canPop())
+                    IconButton(
+                      onPressed: () => Navigator.maybePop(context),
+                      icon: const Icon(Icons.arrow_back_rounded),
+                      tooltip: 'Geri',
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Hesabınıza giriş yapın',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                      fontSize: 16,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hoş Geldiniz',
+                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 32,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Hesabınıza giriş yapın',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
