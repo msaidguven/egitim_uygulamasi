@@ -10,9 +10,12 @@ import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:egitim_uygulamasi/utils/web_url.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  cleanAuthCallbackUrl();
 
   // Supabase'i başlat
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
