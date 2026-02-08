@@ -1,5 +1,6 @@
 import 'package:egitim_uygulamasi/main.dart';
 import 'package:egitim_uygulamasi/models/profile_model.dart';
+import 'package:egitim_uygulamasi/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -70,6 +71,26 @@ class ProfileViewModel extends ChangeNotifier {
             .maybeSingle();
       }
           
+      if (data == null) {
+        // Profil yoksa (ör. web OAuth sonrası) otomatik oluşturmayı dene
+        final fullName = user.userMetadata?['full_name'] ?? 'Google User';
+        final email = user.email ?? '';
+        final username = email.isNotEmpty ? email.split('@').first : 'user';
+
+        await supabase.from('profiles').insert({
+          'id': user.id,
+          'full_name': fullName,
+          'username': username,
+          'grade_id': defaultGoogleGradeId,
+        });
+
+        data = await supabase
+            .from('profiles')
+            .select(query)
+            .eq('id', user.id)
+            .maybeSingle();
+      }
+
       if (data == null) {
         _profile = null;
         _resetStats();

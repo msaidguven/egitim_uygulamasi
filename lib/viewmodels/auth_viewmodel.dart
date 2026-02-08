@@ -3,6 +3,7 @@ import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthViewModel extends ChangeNotifier {
   final AuthRepository _repository;
@@ -28,7 +29,11 @@ class AuthViewModel extends ChangeNotifier {
   Future<bool> signInWithGoogle({int? gradeId}) async {
     return _handleAuth(() async {
       final response = await _repository.signInWithGoogle();
-      final user = response.user;
+      if (kIsWeb) {
+        // OAuth redirect olacak; kullanıcı bilgisi dönüşte gelecektir.
+        return;
+      }
+      final user = response?.user;
       if (user != null) {
         await _repository.maybeCreateProfileFromGoogleWithGrade(user, gradeId);
       } else {

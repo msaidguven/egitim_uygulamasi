@@ -1,5 +1,6 @@
 import 'package:egitim_uygulamasi/constants.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -18,8 +19,16 @@ class AuthRepository {
   }
 
   // Google ile Giriş Yap
-  Future<AuthResponse> signInWithGoogle() async {
+  Future<AuthResponse?> signInWithGoogle() async {
     try {
+      if (kIsWeb) {
+        await _client.auth.signInWithOAuth(
+          OAuthProvider.google,
+          redirectTo: authRedirectUrl,
+        );
+        return null;
+      }
+
       final GoogleSignIn googleSignIn = GoogleSignIn(
         scopes: ['email', 'profile'],
         serverClientId: '910328493383-2om5bcoi1m645ukovjco5joqpjj74gh0.apps.googleusercontent.com',
