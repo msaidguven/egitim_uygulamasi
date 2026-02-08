@@ -6,6 +6,7 @@ import 'package:egitim_uygulamasi/screens/anasinifi/number_composition_page.dart
 import 'package:egitim_uygulamasi/screens/deneme/question_test_page.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeHeader extends StatelessWidget {
   final Profile? profile;
@@ -63,12 +64,24 @@ class HomeHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  isLoggedIn ? 'Hoş geldin' : 'Merhaba',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                if (isLoggedIn) ...[
+                  Text(
+                    'Hoş geldin',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                ],
+                SvgPicture.asset(
+                  'assets/images/logo.svg',
+                  height: 22,
+                  fit: BoxFit.contain,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
                   ),
                 ),
                 if (isLoggedIn) ...[
