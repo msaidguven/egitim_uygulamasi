@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- 1. Adımda Supabase'e girdiğiniz URL'i burada tanımlayın -->
-                <data android:scheme="com.elmasapp.egitim" android:host="login-callback" />
+                <data android:scheme="net.derstakip.egitim" android:host="login-callback" />
             </intent-filter>
 
         </activity>

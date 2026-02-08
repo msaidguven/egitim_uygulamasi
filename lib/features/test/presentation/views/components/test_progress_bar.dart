@@ -14,8 +14,10 @@ class TestProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isNarrow = MediaQuery.of(context).size.width < 700;
+
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(isNarrow ? 12.0 : 16.0),
       child: Column(
         children: [
           Row(
@@ -23,11 +25,17 @@ class TestProgressBar extends StatelessWidget {
             children: [
               Text(
                 'Soru $currentQuestion/$totalQuestions',
-                style: const TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isNarrow ? 14 : 16,
+                ),
               ),
               Text(
                 'Puan: $score',
-                style: const TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isNarrow ? 14 : 16,
+                ),
               ),
             ],
           ),

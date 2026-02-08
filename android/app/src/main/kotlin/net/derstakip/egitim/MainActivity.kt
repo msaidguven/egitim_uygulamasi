@@ -1,4 +1,4 @@
-package com.elmasapp.egitim
+package net.derstakip.egitim
 
 import io.flutter.embedding.android.FlutterActivity
 

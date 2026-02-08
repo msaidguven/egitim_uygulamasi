@@ -90,7 +90,9 @@ class QuestionText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scale = MediaQuery.textScaleFactorOf(context);
     return RichText(
+      textScaleFactor: scale,
       text: TextSpan(
         style: TextStyle(fontSize: fontSize, color: textColor),
         children: _parse(text),

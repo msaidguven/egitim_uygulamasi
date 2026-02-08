@@ -306,25 +306,29 @@ class TestRepositoryImpl implements TestRepository {
       dynamic encodableAnswer = userAnswer;
 
       if (userAnswer is Map && userAnswer.values.isNotEmpty) {
-        final firstValue = userAnswer.values.first;
+        final hasMatchingPair =
+            userAnswer.values.any((v) => v is MatchingPair);
+        final hasBlankOption =
+            userAnswer.values.any((v) => v is QuestionBlankOption);
 
-        if (firstValue is MatchingPair) {
-          final Map<String, String> serializableMap = {};
+        if (hasMatchingPair) {
+          final Map<String, String?> serializableMap = {};
           userAnswer.forEach((key, value) {
-            if (key is String && value is MatchingPair) {
-              serializableMap[key] = value.rightText;
+            if (key is String) {
+              serializableMap[key] =
+                  value is MatchingPair ? value.rightText : null;
             }
           });
           encodableAnswer = serializableMap;
           log(
             'TestRepositoryImpl.saveAnswer: MatchingPair answer converted to serializable map.',
           );
-        } else if (firstValue is QuestionBlankOption) {
-          final Map<String, String> serializableMap = {};
+        } else if (hasBlankOption) {
+          final Map<String, String?> serializableMap = {};
           userAnswer.forEach((key, value) {
-            if (value is QuestionBlankOption) {
-              // HATA DÜZELTMESİ: 'value.text' yerine 'value.optionText' kullanıldı.
-              serializableMap[key.toString()] = value.optionText;
+            if (key != null) {
+              serializableMap[key.toString()] =
+                  value is QuestionBlankOption ? value.optionText : null;
             }
           });
           encodableAnswer = serializableMap;

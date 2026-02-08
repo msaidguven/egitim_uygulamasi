@@ -16,12 +16,13 @@ class MultipleChoiceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final question = testQuestion.question;
     final isChecked = testQuestion.isChecked;
+    final isNarrow = MediaQuery.of(context).size.width < 700;
 
     final choices = testQuestion.shuffledChoices;
 
     return ListView.separated(
       itemCount: choices.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, __) => SizedBox(height: isNarrow ? 8 : 12),
       itemBuilder: (context, index) {
         final choice = choices[index];
         bool isSelected = (testQuestion.userAnswer == choice.id);
@@ -43,7 +44,10 @@ class MultipleChoiceWidget extends StatelessWidget {
         return GestureDetector(
           onTap: isChecked ? null : () => onAnswered(choice.id),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.symmetric(
+              horizontal: isNarrow ? 14 : 16,
+              vertical: isNarrow ? 12 : 16,
+            ),
             decoration: BoxDecoration(
               border: Border.all(
                 color: borderColor ?? Colors.grey.shade400,
@@ -67,7 +71,7 @@ class MultipleChoiceWidget extends StatelessWidget {
 
                   child: QuestionText(
                     text: choice.text,
-                    fontSize: 16,
+                    fontSize: isNarrow ? 15 : 16,
                     textColor: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black,
                     fractionColor: Theme.of(context).colorScheme.primary,
                     //enableFractions: question.unit.isMath,

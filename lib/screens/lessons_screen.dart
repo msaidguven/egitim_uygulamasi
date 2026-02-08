@@ -7,6 +7,7 @@ import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/viewmodels/lesson_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LessonsScreen extends StatefulWidget {
   final Grade grade;
@@ -241,124 +242,166 @@ class _LessonsScreenState extends State<LessonsScreen> {
               ),
 
               Expanded(
-                child: CustomScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-                      sliver: SliverToBoxAdapter(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Başlık
-                            Text(
-                              'Dersler',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w800,
-                                color: const Color(0xFF1E293B),
-                                height: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              widget.grade.name,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF64748B),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 32),
-                          ],
-                        ),
-                      ),
-                    ),
+                child: kIsWeb
+                    ? LayoutBuilder(
+                        builder: (context, constraints) {
+                          final maxWidth = constraints.maxWidth;
+                          final contentWidth =
+                              maxWidth > 1200 ? 1200.0 : maxWidth;
 
-                    // Bilgi kartı
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                      sliver: SliverToBoxAdapter(
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(
-                                  0xFF6366F1,
-                                ).withOpacity(0.08),
-                                blurRadius: 25,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: const Color(
-                                    0xFF6366F1,
-                                  ).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Icon(
-                                  Icons.info_outline_rounded,
-                                  color: const Color(0xFF6366F1),
-                                  size: 20,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Text(
-                                  'İstediğiniz derse tıklayarak konuları inceleyebilir veya test çözebilirsiniz.',
-                                  style: const TextStyle(
-                                    color: Color(0xFF475569),
-                                    fontSize: 14,
-                                    height: 1.5,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                          int crossAxisCount;
+                          double childAspectRatio;
 
-                    // Ders grid'i
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      sliver: SliverGrid.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.75,
+                          if (contentWidth >= 1100) {
+                            crossAxisCount = 4;
+                            childAspectRatio = 0.95;
+                          } else if (contentWidth >= 800) {
+                            crossAxisCount = 3;
+                            childAspectRatio = 0.85;
+                          } else {
+                            crossAxisCount = 2;
+                            childAspectRatio = 0.78;
+                          }
+
+                          return Align(
+                            alignment: Alignment.topCenter,
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 1200),
+                              child: _buildLessonsScroll(
+                                crossAxisCount: crossAxisCount,
+                                childAspectRatio: childAspectRatio,
+                              ),
                             ),
-                        itemCount: _viewModel.lessons.length,
-                        itemBuilder: (context, index) {
-                          final lesson = _viewModel.lessons[index];
-                          return _LessonCard(
-                            lessonId: lesson.id,
-                            lessonName: lesson.name,
-                            lessonIcon: lesson.icon,
-                            grade: widget.grade,
                           );
                         },
+                      )
+                    : _buildLessonsScroll(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.75,
                       ),
-                    ),
-                    const SliverPadding(padding: EdgeInsets.only(bottom: 60)),
-                  ],
-                ),
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLessonsScroll({
+    required int crossAxisCount,
+    required double childAspectRatio,
+  }) {
+    return CustomScrollView(
+      physics: const ClampingScrollPhysics(),
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Başlık
+                Text(
+                  'Dersler',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF1E293B),
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  widget.grade.name,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF64748B),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 32),
+              ],
+            ),
+          ),
+        ),
+
+        // Bilgi kartı
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+          sliver: SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(
+                      0xFF6366F1,
+                    ).withOpacity(0.08),
+                    blurRadius: 25,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: const Color(
+                        0xFF6366F1,
+                      ).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.info_outline_rounded,
+                      color: const Color(0xFF6366F1),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      'İstediğiniz derse tıklayarak konuları inceleyebilir veya test çözebilirsiniz.',
+                      style: const TextStyle(
+                        color: Color(0xFF475569),
+                        fontSize: 14,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // Ders grid'i
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          sliver: SliverGrid.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: childAspectRatio,
+            ),
+            itemCount: _viewModel.lessons.length,
+            itemBuilder: (context, index) {
+              final lesson = _viewModel.lessons[index];
+              return _LessonCard(
+                lessonId: lesson.id,
+                lessonName: lesson.name,
+                lessonIcon: lesson.icon,
+                grade: widget.grade,
+              );
+            },
+          ),
+        ),
+        const SliverPadding(padding: EdgeInsets.only(bottom: 60)),
+      ],
     );
   }
 }

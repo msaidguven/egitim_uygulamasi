@@ -1,8 +1,9 @@
 // lib/screens/grades_screen.dart
 
-import 'package:egitim_uygulamasi/screens/lessons_screen.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
+import 'package:egitim_uygulamasi/widgets/grade_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../models/grade_model.dart';
 
 class GradesScreen extends StatefulWidget {
@@ -319,219 +320,95 @@ class _GradesScreenState extends State<GradesScreen> {
 
         // Grid View
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.85,
-              ),
-              itemCount: _viewModel.grades.length,
-              itemBuilder: (context, index) {
-                final grade = _viewModel.grades[index];
-                return _buildGradeCard(grade, index);
-              },
-            ),
-          ),
+          child: kIsWeb
+              ? LayoutBuilder(
+                  builder: (context, constraints) {
+                    final maxWidth = constraints.maxWidth;
+                    final contentWidth =
+                        maxWidth > 1200 ? 1200.0 : maxWidth;
+
+                    int crossAxisCount;
+                    double childAspectRatio;
+
+                    if (contentWidth >= 1100) {
+                      crossAxisCount = 4;
+                      childAspectRatio = 1.05;
+                    } else if (contentWidth >= 800) {
+                      crossAxisCount = 3;
+                      childAspectRatio = 0.95;
+                    } else {
+                      crossAxisCount = 2;
+                      childAspectRatio = 0.9;
+                    }
+
+                    return Align(
+                      alignment: Alignment.topCenter,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1200),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                          child: GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: crossAxisCount,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: childAspectRatio,
+                            ),
+                            itemCount: _viewModel.grades.length,
+                            itemBuilder: (context, index) {
+                              final grade = _viewModel.grades[index];
+                              return GradeCard(
+                                grade: grade,
+                                index: index,
+                                variant: kIsWeb
+                                    ? GradeCardVariant.standard
+                                    : GradeCardVariant.compact,
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/lessons',
+                                    arguments: grade,
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                )
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.85,
+                    ),
+                    itemCount: _viewModel.grades.length,
+                    itemBuilder: (context, index) {
+                      final grade = _viewModel.grades[index];
+                      return GradeCard(
+                        grade: grade,
+                        index: index,
+                        variant: GradeCardVariant.compact,
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/lessons',
+                            arguments: grade,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
         ),
       ],
     );
   }
-
-  Widget _buildGradeCard(Grade grade, int index) {
-    final colors = _getGradientColor(index);
-
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LessonsScreen(grade: grade),
-            ),
-          );
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: colors,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: colors.first.withOpacity(0.25),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-                spreadRadius: -2,
-              ),
-            ],
-          ),
-          child: Stack(
-            children: [
-              // Background Pattern
-              Positioned(
-                top: -20,
-                right: -20,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.08),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: -30,
-                left: -30,
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.05),
-                  ),
-                ),
-              ),
-
-              // Content
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Icon with background
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        _getIconForGrade(index),
-                        color: Colors.white,
-                        size: 26,
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    // Grade Name
-                    Text(
-                      grade.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                        height: 1.2,
-                      ),
-                    ),
-
-
-                    const SizedBox(height: 16),
-
-                    // Action Button
-                    Container(
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Derslere Git',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Shine Effect
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 1,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.white.withOpacity(0.3),
-                        Colors.white.withOpacity(0),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<Color> _getGradientColor(int index) {
-    final gradients = [
-      [const Color(0xFF667EEA), const Color(0xFF764BA2)],
-      [const Color(0xFFF093FB), const Color(0xFFF5576C)],
-      [const Color(0xFF4FACFE), const Color(0xFF00F2FE)],
-      [const Color(0xFF43E97B), const Color(0xFF38F9D7)],
-      [const Color(0xFFFA709A), const Color(0xFFFEE140)],
-      [const Color(0xFF30CFD0), const Color(0xFF330867)],
-      [const Color(0xFFA8EDEA), const Color(0xFFFED6E3)],
-      [const Color(0xFF5EE7DF), const Color(0xFFB490CA)],
-    ];
-
-    return gradients[index % gradients.length];
-  }
-
-  IconData _getIconForGrade(int index) {
-    final icons = [
-      Icons.school_rounded,
-      Icons.book_rounded,
-      Icons.auto_stories_rounded,
-      Icons.cast_for_education_rounded,
-      Icons.menu_book_rounded,
-      Icons.science_rounded,
-      Icons.calculate_rounded,
-      Icons.language_rounded,
-    ];
-
-    return icons[index % icons.length];
-  }
-
-
 }

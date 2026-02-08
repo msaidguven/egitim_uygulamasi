@@ -10,8 +10,9 @@ import 'package:egitim_uygulamasi/screens/outcomes/widgets/special_cards_view.da
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/app_bar_view.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart'; // profileViewModelProvider için
 import 'package:egitim_uygulamasi/models/topic_content.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
-class OutcomesScreen extends ConsumerWidget {
+class OutcomesScreen extends ConsumerStatefulWidget {
   final int lessonId;
   final int gradeId;
   final String gradeName;
@@ -28,95 +29,157 @@ class OutcomesScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OutcomesScreen> createState() => _OutcomesScreenState();
+}
+
+class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
+  double _textScale = 1.0;
+  double get _maxScale => kIsWeb ? 4.0 : 1.3;
+
+  void _increaseTextScale() {
+    setState(() {
+      _textScale = (_textScale + 0.1).clamp(0.9, _maxScale);
+    });
+  }
+
+  void _decreaseTextScale() {
+    setState(() {
+      _textScale = (_textScale - 0.1).clamp(0.9, _maxScale);
+    });
+  }
+
+  List<Widget> _buildTextScaleActions() {
+    return [
+      TextButton(
+        onPressed: _decreaseTextScale,
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.black87,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+        ),
+        child: const Text(
+          'A-',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
+      ),
+      TextButton(
+        onPressed: _increaseTextScale,
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.black87,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+        ),
+        child: const Text(
+          'A+',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+      ),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final viewModelArgs = OutcomesViewModelArgs(
-      lessonId: lessonId,
-      gradeId: gradeId,
-      initialCurriculumWeek: initialCurriculumWeek,
+      lessonId: widget.lessonId,
+      gradeId: widget.gradeId,
+      initialCurriculumWeek: widget.initialCurriculumWeek,
     );
     final viewModel = ref.watch(outcomesViewModelProvider(viewModelArgs));
+    final mediaQuery = MediaQuery.of(context);
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppleStyleAppBar(
-        title: lessonName,
+        title: widget.lessonName,
         backgroundColor: Colors.white,
+        actions: _buildTextScaleActions(),
       ),
       body: viewModel.isLoadingWeeks
           ? const Center(child: CircularProgressIndicator.adaptive())
           : viewModel.hasErrorWeeks
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    size: 64,
-                    color: Colors.grey.shade400,
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline_rounded,
+                        size: 64,
+                        color: Colors.grey.shade400,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Hata: ${viewModel.weeksErrorMessage}',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Hata: ${viewModel.weeksErrorMessage}',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            )
-          : viewModel.allWeeksData.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.inbox_outlined,
-                    size: 64,
-                    color: Colors.grey.shade400,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Bu derse ait hafta bulunamadı.',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                  ),
-                ],
-              ),
-            )
-          : PageView.builder(
-              physics: const BouncingScrollPhysics(),
-              controller: viewModel.pageController,
-              itemCount: viewModel.allWeeksData.length,
-              onPageChanged: viewModel.onPageChanged,
-              itemBuilder: (context, index) {
-                final weekData = viewModel.allWeeksData[index];
-                if (weekData['type'] == 'social_activity') {
-                  return AppleStyleSocialActivityCard(title: weekData['title']);
-                }
-                if (weekData['type'] == 'break') {
-                  return AppleStyleBreakCard(
-                    title: weekData['title'],
-                    duration: weekData['duration'],
-                  );
-                }
-                if (weekData['type'] == 'special_content') {
-                  return AppleStyleSpecialContentCard(
-                    title: weekData['title'],
-                    content: weekData['content'],
-                    icon: weekData['icon'],
-                  );
-                }
+                )
+              : viewModel.allWeeksData.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.inbox_outlined,
+                            size: 64,
+                            color: Colors.grey.shade400,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Bu derse ait hafta bulunamadı.',
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : PageView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      controller: viewModel.pageController,
+                      itemCount: viewModel.allWeeksData.length,
+                      onPageChanged: viewModel.onPageChanged,
+                      itemBuilder: (context, index) {
+                        final weekData = viewModel.allWeeksData[index];
+                        if (weekData['type'] == 'social_activity') {
+                          return AppleStyleSocialActivityCard(
+                            title: weekData['title'],
+                          );
+                        }
+                        if (weekData['type'] == 'break') {
+                          return AppleStyleBreakCard(
+                            title: weekData['title'],
+                            duration: weekData['duration'],
+                          );
+                        }
+                        if (weekData['type'] == 'special_content') {
+                          return AppleStyleSpecialContentCard(
+                            title: weekData['title'],
+                            content: weekData['content'],
+                            icon: weekData['icon'],
+                          );
+                        }
 
-                final curriculumWeek = weekData['curriculum_week'];
-                if (curriculumWeek == null) {
-                  return ErrorCard(errorMessage: 'Hafta verisi bozuk');
-                }
+                        final curriculumWeek = weekData['curriculum_week'];
+                        if (curriculumWeek == null) {
+                          return ErrorCard(errorMessage: 'Hafta verisi bozuk');
+                        }
 
-                return WeekContentView(
-                  key: ValueKey('week_content_$curriculumWeek'),
-                  curriculumWeek: curriculumWeek as int,
-                  args: viewModelArgs,
-                );
-              },
-            ),
+                        return MediaQuery(
+                          data: mediaQuery.copyWith(
+                            textScaleFactor: _textScale,
+                          ),
+                          child: WeekContentView(
+                            key: ValueKey('week_content_$curriculumWeek'),
+                            curriculumWeek: curriculumWeek as int,
+                            args: viewModelArgs,
+                          ),
+                        );
+                      },
+                    ),
     );
   }
 }
@@ -162,6 +225,7 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
   Widget build(BuildContext context) {
     super.build(context);
 
+    final mediaQuery = MediaQuery.of(context);
     final isLoading = ref.watch(
       outcomesViewModelProvider(widget.args).select(
         (vm) =>
@@ -284,9 +348,12 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
               sliver: SliverToBoxAdapter(
-                child: MiniQuizView(
-                  key: ValueKey('mini_quiz_${widget.curriculumWeek}'),
-                  questions: questions,
+                child: MediaQuery(
+                  data: mediaQuery.copyWith(textScaleFactor: 1.0),
+                  child: MiniQuizView(
+                    key: ValueKey('mini_quiz_${widget.curriculumWeek}'),
+                    questions: questions,
+                  ),
                 ),
               ),
             ),
@@ -294,11 +361,14 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
               sliver: SliverToBoxAdapter(
-                child: WeeklyTestView(
-                  unitId: unitId,
-                  curriculumWeek: widget.curriculumWeek,
-                  args: widget.args,
-                  isGuest: isGuest,
+                child: MediaQuery(
+                  data: mediaQuery.copyWith(textScaleFactor: 1.0),
+                  child: WeeklyTestView(
+                    unitId: unitId,
+                    curriculumWeek: widget.curriculumWeek,
+                    args: widget.args,
+                    isGuest: isGuest,
+                  ),
                 ),
               ),
             ),
@@ -306,9 +376,12 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               sliver: SliverToBoxAdapter(
-                child: UnitTestView(
-                  unitSummary: unitSummary,
-                  unitId: data['unit_id']!,
+                child: MediaQuery(
+                  data: mediaQuery.copyWith(textScaleFactor: 1.0),
+                  child: UnitTestView(
+                    unitSummary: unitSummary,
+                    unitId: data['unit_id']!,
+                  ),
                 ),
               ),
             ),

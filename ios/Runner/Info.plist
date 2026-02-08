@@ -52,7 +52,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.elmasapp.egitim</string>
+				<string>net.derstakip.egitim</string>
 			</array>
 		</dict>
 	</array>

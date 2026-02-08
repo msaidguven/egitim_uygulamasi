@@ -26,6 +26,7 @@ class TestBottomNav extends StatelessWidget {
         ? 'Kontrol Et'
         : (isLastQuestion ? 'Testi Bitir' : 'Sonraki Soru');
     final String buttonText = isSaving ? 'Kaydediliyor...' : baseButtonText;
+    final bool isNarrow = MediaQuery.of(context).size.width < 700;
 
     final VoidCallback? onPressedAction = !isChecked
         ? (canCheck ? onCheckPressed : null)
@@ -34,7 +35,10 @@ class TestBottomNav extends StatelessWidget {
         isSaving ? null : onPressedAction;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: isNarrow ? 16.0 : 24.0,
+        vertical: isNarrow ? 16.0 : 24.0,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -44,12 +48,12 @@ class TestBottomNav extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: isChecked ? Colors.green : Colors.amber,
                 foregroundColor: isChecked ? Colors.white : Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: isNarrow ? 14 : 16),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 elevation: 4,
               ),
               child: isSaving
-                  ? const Row(
+                  ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
@@ -63,13 +67,19 @@ class TestBottomNav extends StatelessWidget {
                         SizedBox(width: 10),
                         Text(
                           'Kaydediliyor...',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: isNarrow ? 15 : 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     )
                   : Text(
                       buttonText,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: isNarrow ? 16 : 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
             ),
           ),

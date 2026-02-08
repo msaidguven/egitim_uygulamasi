@@ -9,6 +9,7 @@ import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/quest
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_progress_bar.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_bottom_nav.dart';
 import 'dart:async';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class QuestionsScreen extends ConsumerStatefulWidget {
   final int unitId;
@@ -31,6 +32,20 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   String? _initializationError;
   bool _isStartingNewTest = false;
   bool _didCleanup = false;
+  double _textScale = 1.0;
+  double get _maxScale => kIsWeb ? 4.0 : 1.3;
+
+  void _increaseTextScale() {
+    setState(() {
+      _textScale = (_textScale + 0.1).clamp(0.9, _maxScale);
+    });
+  }
+
+  void _decreaseTextScale() {
+    setState(() {
+      _textScale = (_textScale - 0.1).clamp(0.9, _maxScale);
+    });
+  }
 
   @override
   void initState() {
@@ -272,7 +287,30 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Colors.white,
           elevation: 0,
-          // actions listesi kaldırıldı.
+          actions: [
+            TextButton(
+              onPressed: _decreaseTextScale,
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+              ),
+              child: const Text(
+                'A-',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+            ),
+            TextButton(
+              onPressed: _increaseTextScale,
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+              ),
+              child: const Text(
+                'A+',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -321,54 +359,71 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
       "QuestionsScreen: _buildBody - Soru kartı gösteriliyor: Soru ID ${viewModel.currentTestQuestion!.question.id}",
     );
     return SafeArea(
-      child: Column(
-        children: [
-          TestProgressBar(
-            currentQuestion: viewModel.answeredCount + 1,
-            totalQuestions: viewModel.totalQuestions,
-            score: viewModel.score,
-          ),
-          Expanded(
-            child: QuestionCard(
-              key: ValueKey(viewModel.currentTestQuestion!.question.id),
-              testQuestion: viewModel.currentTestQuestion!,
-              onAnswered: (answer) {
-                debugPrint(
-                  "QuestionsScreen: onAnswered - Kullanıcı cevap verdi.",
-                );
-                ref
-                    .read(testViewModelProvider.notifier)
-                    .updateUserAnswer(answer);
-              },
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1100),
+              child: Column(
+                children: [
+                  TestProgressBar(
+                    currentQuestion: viewModel.answeredCount + 1,
+                    totalQuestions: viewModel.totalQuestions,
+                    score: viewModel.score,
+                  ),
+                  Expanded(
+                    child: MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                        textScaleFactor: _textScale,
+                      ),
+                      child: QuestionCard(
+                        key: ValueKey(
+                          viewModel.currentTestQuestion!.question.id,
+                        ),
+                        testQuestion: viewModel.currentTestQuestion!,
+                        onAnswered: (answer) {
+                          debugPrint(
+                            "QuestionsScreen: onAnswered - Kullanıcı cevap verdi.",
+                          );
+                          ref
+                              .read(testViewModelProvider.notifier)
+                              .updateUserAnswer(answer);
+                        },
+                      ),
+                    ),
+                  ),
+                  TestBottomNav(
+                    isChecked: viewModel.currentTestQuestion!.isChecked,
+                    canCheck: viewModel.currentTestQuestion!.userAnswer != null,
+                    isLastQuestion: viewModel.questionQueue.isEmpty,
+                    isSaving: viewModel.isSaving,
+                    onCheckPressed: () async {
+                      debugPrint(
+                        "QuestionsScreen: onCheckPressed - Cevap kontrol ediliyor.",
+                      );
+                      await ref.read(testViewModelProvider.notifier).checkAnswer();
+                      _refreshSrsDueCountIfNeeded();
+                    },
+                    onNextPressed: () {
+                      debugPrint(
+                        "QuestionsScreen: onNextPressed - Sonraki soruya geçiliyor.",
+                      );
+                      ref.read(testViewModelProvider.notifier).nextQuestion();
+                    },
+                    onFinishPressed: () async {
+                      debugPrint(
+                        "QuestionsScreen: onFinishPressed - Test bitiriliyor.",
+                      );
+                      await ref.read(testViewModelProvider.notifier).finishTest();
+                      _refreshSrsDueCountIfNeeded();
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          TestBottomNav(
-            isChecked: viewModel.currentTestQuestion!.isChecked,
-            canCheck: viewModel.currentTestQuestion!.userAnswer != null,
-            isLastQuestion: viewModel.questionQueue.isEmpty,
-            isSaving: viewModel.isSaving,
-            onCheckPressed: () async {
-              debugPrint(
-                "QuestionsScreen: onCheckPressed - Cevap kontrol ediliyor.",
-              );
-              await ref.read(testViewModelProvider.notifier).checkAnswer();
-              _refreshSrsDueCountIfNeeded();
-            },
-            onNextPressed: () {
-              debugPrint(
-                "QuestionsScreen: onNextPressed - Sonraki soruya geçiliyor.",
-              );
-              ref.read(testViewModelProvider.notifier).nextQuestion();
-            },
-            onFinishPressed: () async {
-              debugPrint(
-                "QuestionsScreen: onFinishPressed - Test bitiriliyor.",
-              );
-              await ref.read(testViewModelProvider.notifier).finishTest();
-              _refreshSrsDueCountIfNeeded();
-            },
-          ),
-        ],
+          );
+        },
       ),
     );
   }

@@ -304,7 +304,7 @@ class _AppleQuizStartCard extends StatelessWidget {
                 shadowColor: const Color(0xFF6366F1).withOpacity(0.4),
               ),
               child: const Text(
-                'Testi Başlat',
+                'Mini Quize Başla',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
@@ -352,7 +352,7 @@ class _AppleQuizContent extends StatelessWidget {
     int currentScore = correctCount * 20;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,7 +415,7 @@ class _AppleQuizContent extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 21),
+          const SizedBox(height: 14),
           Text(
             question.text,
             style: const TextStyle(
@@ -424,7 +424,7 @@ class _AppleQuizContent extends StatelessWidget {
               color: Color(0xFF1E293B),
             ),
           ),
-          const SizedBox(height: 27),
+          const SizedBox(height: 16),
           Column(
             children: question.choices.map((choice) {
               bool isSelected = (selectedChoiceId == choice.id);
@@ -455,7 +455,7 @@ class _AppleQuizContent extends StatelessWidget {
               }
 
               return Padding(
-                padding: const EdgeInsets.only(bottom: 5),
+                padding: const EdgeInsets.only(bottom: 4),
                 child: GestureDetector(
                   onTap: isChecked ? null : () => onAnswer(question, choice.id),
                   child: choiceWidget,
@@ -466,7 +466,7 @@ class _AppleQuizContent extends StatelessWidget {
           
           // Navigation Controls
           Padding(
-            padding: const EdgeInsets.only(top: 11),
+            padding: const EdgeInsets.only(top: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -541,7 +541,7 @@ class _AppleQuizContent extends StatelessWidget {
               ]
             : [],
       ),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
           Container(
@@ -596,7 +596,7 @@ class _AppleQuizContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor, width: 1.5),
       ),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
           Expanded(
@@ -716,7 +716,7 @@ class _AppleQuizResults extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+          const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
                   onPressed: onRetry,

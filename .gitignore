@@ -41,3 +41,6 @@ ios/Runner/GeneratedPluginRegistrant.*
 
 # VS Code
 .vscode/
+android/app/google-services.json
+*.jks
+.firebase/

@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 class AppleStyleAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Color backgroundColor;
+  final List<Widget>? actions;
 
-  const AppleStyleAppBar({required this.title, required this.backgroundColor});
+  const AppleStyleAppBar({
+    required this.title,
+    required this.backgroundColor,
+    this.actions,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(60);
@@ -24,6 +29,7 @@ class AppleStyleAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: Colors.black,
       elevation: 0,
       centerTitle: false,
+      actions: actions,
       scrolledUnderElevation: 1,
       surfaceTintColor: Colors.transparent,
       shape: const Border(

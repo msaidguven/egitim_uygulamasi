@@ -3,8 +3,10 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:egitim_uygulamasi/screens/reset_password_screen.dart';
+import 'package:egitim_uygulamasi/screens/lessons_screen.dart';
 import 'package:egitim_uygulamasi/constants.dart';
 import 'package:egitim_uygulamasi/screens/auth_gate.dart';
+import 'package:egitim_uygulamasi/models/grade_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -76,6 +78,30 @@ class _EgitimUygulamasiState extends State<EgitimUygulamasi> {
       home: const AuthGate(),
       routes: {
         '/reset-password': (context) => const ResetPasswordScreen(),
+      },
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/lessons':
+            final grade = settings.arguments as Grade?;
+            if (grade == null) {
+              return MaterialPageRoute(
+                builder: (context) => const Scaffold(
+                  body: Center(child: Text('Geçersiz ders bağlantısı')),
+                ),
+                settings: settings,
+              );
+            }
+            return MaterialPageRoute(
+              builder: (context) => LessonsScreen(grade: grade),
+              settings: settings,
+            );
+        }
+        return MaterialPageRoute(
+          builder: (context) => const Scaffold(
+            body: Center(child: Text('Sayfa bulunamadı')),
+          ),
+          settings: settings,
+        );
       },
     );
   }

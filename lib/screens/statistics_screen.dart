@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 // Data Models
 class StatisticsBundle {
@@ -123,9 +124,10 @@ class StatisticsScreen extends ConsumerWidget {
         elevation: 0,
         centerTitle: true,
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         actions: [
           // Sadece kullanıcı giriş yapmışsa ve yükleme devam etmiyorsa refresh butonu gösterilir.
-          if (profileViewModel.profile != null && !profileViewModel.isLoading)
+          if (profileViewModel.profile != null)
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () => _refreshData(ref),
@@ -165,7 +167,7 @@ class StatisticsScreen extends ConsumerWidget {
         error: (err, stack) => _buildErrorState(err.toString(), ref),
         data: (bundle) {
           final detailedStats = bundle.periodStats['details'];
-          return ListView(
+          final content = ListView(
             padding: const EdgeInsets.all(16),
             children: [
               _buildHeaderCards(bundle.activity),
@@ -174,10 +176,22 @@ class StatisticsScreen extends ConsumerWidget {
               const SizedBox(height: 20),
               _buildPeriodsSummary(bundle.periodStats),
               const SizedBox(height: 20),
-              if (detailedStats != null && detailedStats is Map && !detailedStats.containsKey('error')) ...[
+              if (detailedStats != null &&
+                  detailedStats is Map &&
+                  !detailedStats.containsKey('error')) ...[
                 _buildLessonsChart(detailedStats),
               ]
             ],
+          );
+
+          if (!kIsWeb) return content;
+
+          return Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1100),
+              child: content,
+            ),
           );
         },
       ),
@@ -185,7 +199,7 @@ class StatisticsScreen extends ConsumerWidget {
   }
 
   Widget _buildGuestStatistics(BuildContext context) {
-    return ListView(
+    final content = ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
         _buildHeaderCards({'current_streak': 0, 'activity_dates': []}),
@@ -248,6 +262,16 @@ class StatisticsScreen extends ConsumerWidget {
         const SizedBox(height: 20),
       ],
     );
+
+    if (!kIsWeb) return content;
+
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1100),
+        child: content,
+      ),
+    );
   }
 
   Widget _buildHeaderCards(Map<String, dynamic> activityData) {
@@ -259,38 +283,47 @@ class StatisticsScreen extends ConsumerWidget {
       return d.isAfter(DateTime.now().subtract(const Duration(days: 7)));
     }).length;
 
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatCard(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxWidth < 360;
+
+        final cards = [
+          _buildStatCard(
             title: '$streak',
             subtitle: 'Günlük Seri',
             icon: Icons.local_fire_department,
             color: Colors.orange,
             gradient: [Colors.orange.shade600, Colors.red.shade400],
+            compact: isCompact,
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildStatCard(
+          _buildStatCard(
             title: '$weekActivity/7',
             subtitle: 'Haftalık Aktivite',
             icon: Icons.calendar_today,
             color: Colors.blue,
             gradient: [Colors.blue.shade600, Colors.blue.shade400],
+            compact: isCompact,
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildStatCard(
+          _buildStatCard(
             title: '$activeDays',
             subtitle: 'Toplam Aktif Gün',
             icon: Icons.timeline,
             color: Colors.green,
             gradient: [Colors.green.shade600, Colors.teal.shade400],
+            compact: isCompact,
           ),
-        ),
-      ],
+        ];
+
+        return Row(
+          children: [
+            Expanded(child: cards[0]),
+            const SizedBox(width: 12),
+            Expanded(child: cards[1]),
+            const SizedBox(width: 12),
+            Expanded(child: cards[2]),
+          ],
+        );
+      },
     );
   }
 
@@ -300,6 +333,7 @@ class StatisticsScreen extends ConsumerWidget {
     required IconData icon,
     required Color color,
     required List<Color> gradient,
+    bool compact = false,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -318,12 +352,12 @@ class StatisticsScreen extends ConsumerWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(compact ? 10 : 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: Colors.white, size: 24),
-            const SizedBox(height: 8),
+            Icon(icon, color: Colors.white, size: compact ? 20 : 24),
+            SizedBox(height: compact ? 6 : 8),
             Text(
               title,
               style: const TextStyle(
@@ -336,7 +370,7 @@ class StatisticsScreen extends ConsumerWidget {
               subtitle,
               style: TextStyle(
                 color: Colors.white.withAlpha(230),
-                fontSize: 12,
+                fontSize: compact ? 11 : 12,
               ),
             ),
           ],
@@ -550,35 +584,71 @@ class StatisticsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.2,
-            ),
-            itemCount: periods.length,
-            itemBuilder: (context, index) {
-              final period = periods[index];
-              final stats = allStats[period];
+          LayoutBuilder(
+            builder: (context, constraints) {
+              int crossAxisCount;
+              double childAspectRatio;
 
-              if (stats == null || (stats is Map && stats.containsKey('error'))) {
-                return _buildPeriodCard(period, 0, 0, 0, 0);
+              if (kIsWeb) {
+                final width = constraints.maxWidth;
+                if (width >= 900) {
+                  crossAxisCount = 4;
+                  childAspectRatio = 1.3;
+                } else if (width >= 600) {
+                  crossAxisCount = 2;
+                  childAspectRatio = 1.2;
+                } else {
+                  crossAxisCount = 1;
+                  childAspectRatio = 1.6;
+                }
+              } else {
+                crossAxisCount = 2;
+                childAspectRatio = 1.2;
               }
 
-              final generalStats = stats['general_stats'] as Map<String, dynamic>?;
-              if (generalStats == null) {
-                return _buildPeriodCard(period, 0, 0, 0, 0);
-              }
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: childAspectRatio,
+                ),
+                itemCount: periods.length,
+                itemBuilder: (context, index) {
+                  final period = periods[index];
+                  final stats = allStats[period];
 
-              final successRate = (generalStats['success_rate'] as num?)?.toDouble() ?? 0;
-              final total = (generalStats['total_questions'] as num?)?.toInt() ?? 0;
-              final correct = (generalStats['correct_answers'] as num?)?.toInt() ?? 0;
-              final incorrect = (generalStats['incorrect_answers'] as num?)?.toInt() ?? 0;
+                  if (stats == null ||
+                      (stats is Map && stats.containsKey('error'))) {
+                    return _buildPeriodCard(period, 0, 0, 0, 0);
+                  }
 
-              return _buildPeriodCard(period, successRate, total, correct, incorrect);
+                  final generalStats =
+                      stats['general_stats'] as Map<String, dynamic>?;
+                  if (generalStats == null) {
+                    return _buildPeriodCard(period, 0, 0, 0, 0);
+                  }
+
+                  final successRate =
+                      (generalStats['success_rate'] as num?)?.toDouble() ?? 0;
+                  final total =
+                      (generalStats['total_questions'] as num?)?.toInt() ?? 0;
+                  final correct =
+                      (generalStats['correct_answers'] as num?)?.toInt() ?? 0;
+                  final incorrect =
+                      (generalStats['incorrect_answers'] as num?)?.toInt() ?? 0;
+
+                  return _buildPeriodCard(
+                    period,
+                    successRate,
+                    total,
+                    correct,
+                    incorrect,
+                  );
+                },
+              );
             },
           ),
         ],

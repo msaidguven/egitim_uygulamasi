@@ -22,33 +22,46 @@ class QuestionCard extends StatelessWidget {
     final isChecked = testQuestion.isChecked;
     final isCorrect = testQuestion.isCorrect;
     final stats = question.userStats;
+    final isNarrow = MediaQuery.of(context).size.width < 700;
+    final contentPadding = EdgeInsets.fromLTRB(
+      isNarrow ? 16 : 20,
+      isNarrow ? 32 : 40,
+      isNarrow ? 16 : 20,
+      isNarrow ? 16 : 20,
+    );
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(
+        horizontal: isNarrow ? 12 : 16,
+        vertical: isNarrow ? 6 : 8,
+      ),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
+            padding: contentPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (question.type != QuestionType.fill_blank)
                   QuestionText(
                     text: question.text,
-                    fontSize: 18,
+                    fontSize: isNarrow ? 17 : 18,
                     textColor: Theme.of(context).textTheme.titleLarge?.color ?? Colors.black,
                     fractionColor: Theme.of(context).colorScheme.primary,
                     //enableFractions: question.unit.isMath, // veya question.questionTypeId == 1
                   ),
                 if (question.type != QuestionType.fill_blank)
-                  const Divider(height: 32),
+                  Divider(height: isNarrow ? 24 : 32),
                 Expanded(child: _buildAnswerArea(context)),
                 if (isChecked) ...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: isNarrow ? 12 : 16),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: EdgeInsets.symmetric(
+                      vertical: isNarrow ? 8 : 10,
+                      horizontal: isNarrow ? 16 : 20,
+                    ),
                     decoration: BoxDecoration(
                       color: isCorrect ? Colors.green.shade50 : Colors.red.shade50,
                       borderRadius: BorderRadius.circular(12),
@@ -63,21 +76,21 @@ class QuestionCard extends StatelessWidget {
                         Icon(
                           isCorrect ? Icons.check_circle : Icons.cancel,
                           color: isCorrect ? Colors.green : Colors.red,
-                          size: 24,
+                          size: isNarrow ? 20 : 24,
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: isNarrow ? 6 : 8),
                         Text(
                           isCorrect ? 'Doğru!' : 'Yanlış!',
                           style: TextStyle(
                             color: isCorrect ? Colors.green : Colors.red,
-                            fontSize: 18,
+                            fontSize: isNarrow ? 16 : 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: isNarrow ? 6 : 8),
                 ],
               ],
             ),
