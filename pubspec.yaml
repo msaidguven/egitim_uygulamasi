@@ -10,7 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^2.0.10
 
   cupertino_icons: ^1.0.8
   supabase_flutter: ^2.10.3

@@ -6,7 +6,6 @@ import 'package:egitim_uygulamasi/screens/anasinifi/number_composition_page.dart
 import 'package:egitim_uygulamasi/screens/deneme/question_test_page.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeHeader extends StatelessWidget {
   final Profile? profile;
@@ -75,15 +74,7 @@ class HomeHeader extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                 ],
-                SvgPicture.asset(
-                  'assets/images/logo.svg',
-                  height: 22,
-                  fit: BoxFit.contain,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
-                ),
+                _LogoText(),
                 if (isLoggedIn) ...[
                   const SizedBox(height: 4),
                   SizedBox(
@@ -422,6 +413,41 @@ class HomeHeader extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LogoText extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) => const LinearGradient(
+        colors: [
+          Color(0xFF4F46E5),
+          Color(0xFF7C3AED),
+          Color(0xFFEC4899),
+        ],
+      ).createShader(bounds),
+      child: RichText(
+        text: const TextSpan(
+          text: 'Ders Takip',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+          ),
+          children: [
+            TextSpan(
+              text: '.net',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
       ),
     );
