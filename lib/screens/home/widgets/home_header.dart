@@ -56,17 +56,6 @@ class HomeHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (isLoggedIn) ...[
-                  Text(
-                    'Hoş geldin',
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                ],
                 _LogoText(),
                 if (isLoggedIn) ...[
                   const SizedBox(height: 4),
@@ -117,17 +106,17 @@ class HomeHeader extends StatelessWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.white.withOpacity(0.2),
-                    border: Border.all(color: Colors.white.withOpacity(0.3)),
-                  ),
-                  child: const Icon(
-                    Icons.person_outline_rounded,
-                    color: Colors.white,
-                    size: 24,
-                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                child: const Icon(
+                  Icons.person_outline_rounded,
+                  color: Color(0xFF64748B),
+                  size: 24,
                 ),
               ),
+            ),
           ],
         ),
       ),
@@ -217,12 +206,12 @@ class HomeHeader extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white.withOpacity(0.2),
-        border: Border.all(color: Colors.white.withOpacity(0.3)),
+        color: Colors.white,
+        border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
@@ -238,7 +227,7 @@ class HomeHeader extends StatelessWidget {
                     child: Text(
                       initials,
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFF0F172A),
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
@@ -251,7 +240,7 @@ class HomeHeader extends StatelessWidget {
               child: Text(
                 initials,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: Color(0xFF0F172A),
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),

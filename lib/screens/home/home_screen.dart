@@ -160,18 +160,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           slivers: [
             // 1. Header Section (Herkes)
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: const Color(0xFF6366F1),
-              elevation: 0,
-              expandedHeight: 110,
-              flexibleSpace: FlexibleSpaceBar(
-                background: HomeHeader(
-                  profile: widget.profile,
-                  isAdmin: isAdmin,
-                  onRoleChanged: widget.onRoleChanged,
-                  impersonatedRole: widget.impersonatedRole,
-                ),
+            SliverToBoxAdapter(
+              child: HomeHeader(
+                profile: widget.profile,
+                isAdmin: isAdmin,
+                onRoleChanged: widget.onRoleChanged,
+                impersonatedRole: widget.impersonatedRole,
               ),
             ),
 

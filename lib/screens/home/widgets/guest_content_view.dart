@@ -5,6 +5,7 @@ import 'package:egitim_uygulamasi/screens/home/widgets/common_widgets.dart';
 import 'package:egitim_uygulamasi/widgets/grade_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:egitim_uygulamasi/screens/lessons_screen.dart';
 
 class GuestContentView extends StatelessWidget {
   final List<Grade> grades;
@@ -66,10 +67,12 @@ class GuestContentView extends StatelessWidget {
                           index: index,
                           variant: GradeCardVariant.standard,
                           onTap: () {
-                            Navigator.pushNamed(
+                            Navigator.push(
                               context,
-                              '/lessons',
-                              arguments: grade,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    LessonsScreen(grade: grade),
+                              ),
                             );
                           },
                         );
@@ -96,10 +99,11 @@ class GuestContentView extends StatelessWidget {
                     index: index,
                     variant: GradeCardVariant.compact,
                     onTap: () {
-                      Navigator.pushNamed(
+                      Navigator.push(
                         context,
-                        '/lessons',
-                        arguments: grade,
+                        MaterialPageRoute(
+                          builder: (context) => LessonsScreen(grade: grade),
+                        ),
                       );
                     },
                   );

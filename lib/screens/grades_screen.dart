@@ -2,6 +2,7 @@
 
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
 import 'package:egitim_uygulamasi/widgets/grade_card.dart';
+import 'package:egitim_uygulamasi/screens/lessons_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../models/grade_model.dart';
@@ -365,10 +366,12 @@ class _GradesScreenState extends State<GradesScreen> {
                                     ? GradeCardVariant.standard
                                     : GradeCardVariant.compact,
                                 onTap: () {
-                                  Navigator.pushNamed(
+                                  Navigator.push(
                                     context,
-                                    '/lessons',
-                                    arguments: grade,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          LessonsScreen(grade: grade),
+                                    ),
                                   );
                                 },
                               );
@@ -397,10 +400,12 @@ class _GradesScreenState extends State<GradesScreen> {
                         index: index,
                         variant: GradeCardVariant.compact,
                         onTap: () {
-                          Navigator.pushNamed(
+                          Navigator.push(
                             context,
-                            '/lessons',
-                            arguments: grade,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  LessonsScreen(grade: grade),
+                            ),
                           );
                         },
                       );
