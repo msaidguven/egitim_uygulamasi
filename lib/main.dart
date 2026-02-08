@@ -82,7 +82,7 @@ class _EgitimUygulamasiState extends State<EgitimUygulamasi> {
       routes: {
         '/reset-password': (context) => const ResetPasswordScreen(),
         '/login': (context) => const LoginScreen(),
-        '/register': (context) => const SignupScreen(),
+        '/register': (context) => SignupScreen(),
       },
     );
   }
