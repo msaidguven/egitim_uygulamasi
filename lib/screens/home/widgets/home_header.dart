@@ -106,17 +106,17 @@ class HomeHeader extends StatelessWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey.shade200),
-                ),
-                child: const Icon(
-                  Icons.person_outline_rounded,
-                  color: Color(0xFF64748B),
-                  size: 24,
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: const Icon(
+                    Icons.person_outline_rounded,
+                    color: Color(0xFF64748B),
+                    size: 24,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -204,10 +204,12 @@ class HomeHeader extends StatelessWidget {
     return Container(
       width: 48,
       height: 48,
+      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-        border: Border.all(color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(14),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4F46E5), Color(0xFFEC4899)],
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
@@ -216,36 +218,34 @@ class HomeHeader extends StatelessWidget {
           ),
         ],
       ),
-      child: avatarUrl != null && avatarUrl.isNotEmpty
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(11),
-              child: Image.network(
-                avatarUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Center(
-                    child: Text(
-                      initials,
-                      style: const TextStyle(
-                        color: Color(0xFF0F172A),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            )
-          : Center(
-              child: Text(
-                initials,
-                style: const TextStyle(
-                  color: Color(0xFF0F172A),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          color: Colors.white,
+          child: avatarUrl != null && avatarUrl.isNotEmpty
+              ? Image.network(
+                  avatarUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return _avatarFallback(initials);
+                  },
+                )
+              : _avatarFallback(initials),
+        ),
+      ),
+    );
+  }
+
+  Widget _avatarFallback(String initials) {
+    return Center(
+      child: Text(
+        initials,
+        style: const TextStyle(
+          color: Color(0xFF0F172A),
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 
