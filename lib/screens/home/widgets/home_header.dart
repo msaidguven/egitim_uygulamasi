@@ -33,23 +33,16 @@ class HomeHeader extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16, bottom: 24),
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF6366F1), // Indigo
-            Color(0xFF8B5CF6), // Violet
-          ],
-        ),
+        color: Colors.white,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32),
           bottomRight: Radius.circular(32),
         ),
         boxShadow: [
           BoxShadow(
-            color: Color(0x406366F1),
-            blurRadius: 20,
-            offset: Offset(0, 10),
+            color: Color(0x14000000),
+            blurRadius: 16,
+            offset: Offset(0, 8),
           ),
         ],
       ),
@@ -67,9 +60,9 @@ class HomeHeader extends StatelessWidget {
                   Text(
                     'Hoş geldin',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.grey.shade700,
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -85,7 +78,7 @@ class HomeHeader extends StatelessWidget {
                       child: Text(
                         fullName ?? 'Kullanıcı',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Color(0xFF0F172A),
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
                           height: 1.2,
