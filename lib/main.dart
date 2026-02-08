@@ -1,5 +1,6 @@
 // lib/main.dart (güncellenmiş hali)
 
+import 'dart:async';
 import 'dart:ui';
 import 'package:egitim_uygulamasi/screens/reset_password_screen.dart';
 import 'package:egitim_uygulamasi/constants.dart';
@@ -33,8 +34,33 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
 
 // ============================================
 
-class EgitimUygulamasi extends StatelessWidget {
+class EgitimUygulamasi extends StatefulWidget {
   const EgitimUygulamasi({super.key});
+
+  @override
+  State<EgitimUygulamasi> createState() => _EgitimUygulamasiState();
+}
+
+class _EgitimUygulamasiState extends State<EgitimUygulamasi> {
+  late final StreamSubscription<AuthState> _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen(
+      (data) {
+        if (data.event == AuthChangeEvent.passwordRecovery) {
+          navigatorKey.currentState?.pushNamed('/reset-password');
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

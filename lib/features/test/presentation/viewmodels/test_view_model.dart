@@ -18,6 +18,7 @@ class TestViewModel extends ChangeNotifier {
   bool _isLoading = true;
   String? _error;
   int _score = 0;
+  bool _isSaving = false;
   int _answeredCount = 0;
   int _totalQuestions = 0;
   final Stopwatch _questionTimer = Stopwatch();
@@ -32,6 +33,7 @@ class TestViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   int get score => _score;
+  bool get isSaving => _isSaving;
   int get answeredCount => _answeredCount;
   int get totalQuestions => _totalQuestions;
   List<TestQuestion> get questionQueue => _questionQueue;
@@ -418,6 +420,8 @@ class TestViewModel extends ChangeNotifier {
     }
 
     try {
+      _isSaving = true;
+      notifyListeners();
       log('TestViewModel._saveAnswer: Dahili (repository) kaydetme fonksiyonu kullanılıyor (test_session_answers).');
       await _repository.saveAnswer(
         sessionId: _sessionId!,
@@ -445,6 +449,9 @@ class TestViewModel extends ChangeNotifier {
         debugPrint("Postgrest İpucu: ${e.hint}");
       }
       debugPrint("**************************************************");
+    } finally {
+      _isSaving = false;
+      notifyListeners();
     }
   }
 

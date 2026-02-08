@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 class SrsAlertWidget extends StatelessWidget {
   final int questionCount;
   final VoidCallback onReviewTap;
+  final bool showActionButton;
+  final String? guestMessage;
 
   const SrsAlertWidget({
     super.key,
     this.questionCount = 5,
     required this.onReviewTap,
+    this.showActionButton = true,
+    this.guestMessage,
   });
 
   @override
@@ -72,9 +76,12 @@ class SrsAlertWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  questionCount > 0 
-                      ? '$questionCount soru için tekrar zamanı geldi. Bu soruları çözerek öğrenmeni pekiştir.'
-                      : 'Şu an tekrar etmen gereken soru yok. Harikasın! Yeni konular öğrenmeye devam et.',
+                  showActionButton
+                      ? (questionCount > 0
+                          ? '$questionCount soru için tekrar zamanı geldi. Bu soruları çözerek öğrenmeni pekiştir.'
+                          : 'Şu an tekrar etmen gereken soru yok. Harikasın! Yeni konular öğrenmeye devam et.')
+                      : (guestMessage ??
+                          'Zamanı gelen soruları çözmek için giriş yapın.'),
                   style: TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: 13,
@@ -83,7 +90,7 @@ class SrsAlertWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                if (questionCount > 0)
+                if (showActionButton && questionCount > 0)
                   SizedBox(
                     height: 36,
                     child: ElevatedButton(

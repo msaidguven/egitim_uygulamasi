@@ -28,10 +28,10 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
   @override
   void initState() {
     super.initState();
-    final question = widget.testQuestion.question;
-    leftTexts = question.matchingPairs?.map((p) => p.leftText).toList() ?? [];
-    shuffledRightPairs = List.from(question.matchingPairs ?? [])..shuffle();
-    userMatches = {};
+    leftTexts = List.from(widget.testQuestion.shuffledMatchingLeftTexts);
+    shuffledRightPairs =
+        List.from(widget.testQuestion.shuffledMatchingPairsRight);
+    userMatches = {for (var left in leftTexts) left: null};
   }
 
   void _removeMatch(String leftText) {

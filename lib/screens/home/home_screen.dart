@@ -194,12 +194,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
 
-            // 4. SRS Alert Widget (Herkes - Veri geldiyse)
+            // 4. SRS Alert Widget (Herkes - buton sadece girişli öğrenciye)
             SliverToBoxAdapter(
               child: srsDueCountAsync.when(
                 data: (count) => SrsAlertWidget(
                   questionCount: count,
                   onReviewTap: _isStartingSrsTest ? () {} : () => _startSrsTest(),
+                  showActionButton: isStudent,
+                  guestMessage: 'Zamanı gelen soruları çözmek için giriş yapın.',
                 ),
                 loading: () => const SizedBox.shrink(),
                 error: (_, __) => const SizedBox.shrink(),
@@ -216,8 +218,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             //   ),
             // ),
 
-            // 6. Unfinished Tests Section (Sadece Üyeler/Öğrenciler)
-            if (isStudent)
+            // 6. Unfinished Tests Section (Giriş yapan herkes)
+            if (widget.profile != null)
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(

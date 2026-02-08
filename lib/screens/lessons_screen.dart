@@ -4,6 +4,7 @@ import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen.dart';
 import 'package:egitim_uygulamasi/screens/units_for_lesson_screen.dart'
     as units_screen;
 import 'package:egitim_uygulamasi/models/grade_model.dart';
+import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/viewmodels/lesson_viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -493,6 +494,7 @@ class _LessonCard extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
+                              final currentWeek = calculateCurrentAcademicWeek();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -501,6 +503,7 @@ class _LessonCard extends StatelessWidget {
                                     lessonId: lessonId,
                                     gradeName: grade.name,
                                     lessonName: lessonName,
+                                    initialCurriculumWeek: currentWeek,
                                   ),
                                 ),
                               );

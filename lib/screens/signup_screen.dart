@@ -4,6 +4,7 @@ import 'package:egitim_uygulamasi/screens/main_screen.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
+import 'package:egitim_uygulamasi/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:egitim_uygulamasi/providers.dart';
 
@@ -52,12 +53,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
-      await ref.read(authViewModelProvider).signUp(
+      final success = await ref.read(authViewModelProvider).signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         fullName: _fullNameController.text.trim(),
         gradeId: _selectedGradeId,
       );
+      if (!mounted) return;
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Kayıt başarılı. Ana sayfaya yönlendiriliyorsunuz.')),
+        );
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+          (route) => false,
+        );
+      } else {
+        final error = ref.read(authViewModelProvider).errorMessage;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error ?? 'Kayıt başarısız oldu.')),
+        );
+      }
     }
   }
 
@@ -387,7 +403,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Future<void> _signUpWithGoogle() async {
-    final success = await ref.read(authViewModelProvider).signInWithGoogle();
+    final gradeId = _selectedGradeId ?? defaultGoogleGradeId;
+    final success = await ref
+        .read(authViewModelProvider)
+        .signInWithGoogle(gradeId: gradeId);
     if (success && mounted) {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const MainScreen()),

@@ -6,6 +6,7 @@ import 'package:egitim_uygulamasi/screens/signup_screen.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/providers.dart'; // Provider'lar için
+import 'package:egitim_uygulamasi/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -122,7 +123,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // Provider üzerinden ViewModel'e erişim
     final viewModel = ref.read(authViewModelProvider);
     
-    final success = await viewModel.signInWithGoogle();
+    final success = await viewModel.signInWithGoogle(
+      gradeId: defaultGoogleGradeId,
+    );
     _handleAuthResult(success, viewModel.errorMessage);
   }
 

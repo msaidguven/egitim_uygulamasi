@@ -25,12 +25,12 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> signInWithGoogle() async {
+  Future<bool> signInWithGoogle({int? gradeId}) async {
     return _handleAuth(() async {
       final response = await _repository.signInWithGoogle();
       final user = response.user;
       if (user != null) {
-        await _repository.maybeCreateProfileFromGoogle(user);
+        await _repository.maybeCreateProfileFromGoogleWithGrade(user, gradeId);
       } else {
         throw const AuthException('Kullanıcı bilgisi alınamadı.');
       }

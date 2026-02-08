@@ -1,3 +1,4 @@
+import 'package:egitim_uygulamasi/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -72,6 +73,13 @@ class AuthRepository {
   }
 
   Future<void> maybeCreateProfileFromGoogle(User user) async {
+    return maybeCreateProfileFromGoogleWithGrade(user, null);
+  }
+
+  Future<void> maybeCreateProfileFromGoogleWithGrade(
+    User user,
+    int? gradeId,
+  ) async {
     try {
       final existingProfile = await _client
           .from('profiles')
@@ -89,7 +97,7 @@ class AuthRepository {
         userId: user.id,
         fullName: fullName,
         username: username,
-        gradeId: null,
+        gradeId: gradeId,
       );
     } catch (e) {
       throw AuthException('Profil oluşturulurken hata: $e');
@@ -97,7 +105,10 @@ class AuthRepository {
   }
 
   Future<void> sendPasswordResetEmail(String email) async {
-    await _client.auth.resetPasswordForEmail(email);
+    await _client.auth.resetPasswordForEmail(
+      email,
+      redirectTo: authRedirectUrl,
+    );
   }
 
   Future<void> updatePassword(String newPassword) async {

@@ -54,12 +54,31 @@ class ProfileViewModel extends ChangeNotifier {
         districts ( id, name )
       ''';
 
-      final data = await supabase
+      var data = await supabase
           .from('profiles')
           .select(query)
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
+
+      if (data == null) {
+        // Profil henüz oluşmadıysa kısa bir gecikmeyle bir kez daha dene
+        await Future.delayed(const Duration(milliseconds: 500));
+        data = await supabase
+            .from('profiles')
+            .select(query)
+            .eq('id', user.id)
+            .maybeSingle();
+      }
           
+      if (data == null) {
+        _profile = null;
+        _resetStats();
+        _errorMessage = null;
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+
       _profile = Profile.fromMap(data);
       
       // Profil geldikten sonra istatistikleri çek

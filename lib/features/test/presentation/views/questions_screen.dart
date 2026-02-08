@@ -30,6 +30,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   bool _isInitializing = true;
   String? _initializationError;
   bool _isStartingNewTest = false;
+  bool _didCleanup = false;
 
   @override
   void initState() {
@@ -39,15 +40,26 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   }
 
   @override
+  void deactivate() {
+    if (!_didCleanup) {
+      final userProfile = ref.read(profileViewModelProvider).profile;
+      if (userProfile != null) {
+        ref.invalidate(unfinishedSessionsProvider);
+      }
+      if (widget.testMode == TestMode.srs) {
+        ref.invalidate(srsDueCountProvider);
+      }
+      ref.read(testViewModelProvider.notifier).reset();
+      _didCleanup = true;
+    }
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     debugPrint(
       "QuestionsScreen: dispose - Ekran kapatılıyor ve TestViewModel sıfırlanıyor.",
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        ref.read(testViewModelProvider.notifier).reset();
-      }
-    });
     super.dispose();
   }
 
@@ -164,6 +176,12 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     }
   }
 
+  void _refreshSrsDueCountIfNeeded() {
+    if (widget.testMode == TestMode.srs) {
+      ref.invalidate(srsDueCountProvider);
+    }
+  }
+
   // _refreshTest metodu kaldırıldı.
 
   Future<bool> _onWillPop() async {
@@ -195,7 +213,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     debugPrint(
       "QuestionsScreen: _onWillPop - Kullanıcıya çıkış onayı gösteriliyor.",
     );
-    return await showDialog(
+    final shouldExit = await showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Testten Çıkış'),
@@ -215,6 +233,18 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           ),
         ) ??
         false;
+
+    if (shouldExit && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Devam etmek için kaydedildi.'),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+
+    return shouldExit;
   }
 
   String _getAppBarTitle() {
@@ -316,11 +346,13 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             isChecked: viewModel.currentTestQuestion!.isChecked,
             canCheck: viewModel.currentTestQuestion!.userAnswer != null,
             isLastQuestion: viewModel.questionQueue.isEmpty,
-            onCheckPressed: () {
+            isSaving: viewModel.isSaving,
+            onCheckPressed: () async {
               debugPrint(
                 "QuestionsScreen: onCheckPressed - Cevap kontrol ediliyor.",
               );
-              ref.read(testViewModelProvider.notifier).checkAnswer();
+              await ref.read(testViewModelProvider.notifier).checkAnswer();
+              _refreshSrsDueCountIfNeeded();
             },
             onNextPressed: () {
               debugPrint(
@@ -333,6 +365,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                 "QuestionsScreen: onFinishPressed - Test bitiriliyor.",
               );
               await ref.read(testViewModelProvider.notifier).finishTest();
+              _refreshSrsDueCountIfNeeded();
             },
           ),
         ],

@@ -1,4 +1,5 @@
 // lib/screens/main_screen.dart
+import 'dart:async';
 
 import 'package:egitim_uygulamasi/models/profile_model.dart';
 import 'package:egitim_uygulamasi/screens/home/home_screen.dart';
@@ -62,7 +63,9 @@ class MainScreen extends ConsumerStatefulWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen> {
   late final Stream<AuthState> _authStream;
+  late final StreamSubscription<AuthState> _authSubscription;
   String? _impersonatedRole;
+  String? _lastUserId;
 
   List<Map<String, dynamic>>? _agendaData;
   List<Map<String, dynamic>>? _nextStepsData;
@@ -86,9 +89,17 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     _currentCurriculumWeek = calculateCurrentAcademicWeek();
     
     _authStream = Supabase.instance.client.auth.onAuthStateChange;
-    _authStream.listen((data) {
-      if (mounted && (data.event == AuthChangeEvent.signedIn || data.event == AuthChangeEvent.initialSession)) {
+    _authSubscription = _authStream.listen((data) {
+      if (!mounted) return;
+      if (data.session?.user != null) {
+        _lastUserId = data.session!.user.id;
+      }
+      if (data.event == AuthChangeEvent.signedIn ||
+          data.event == AuthChangeEvent.initialSession) {
         _initializeProfileAndData();
+      } else if (data.event == AuthChangeEvent.signedOut) {
+        _handleSignedOut(showSnackBar: _lastUserId != null);
+        _lastUserId = null;
       }
     });
 
@@ -97,6 +108,52 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         _initializeProfileAndData();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    super.dispose();
+  }
+
+  void _handleSignedOut({required bool showSnackBar}) {
+    _resetLocalState();
+    _invalidateAuthDependentProviders();
+    if (showSnackBar) {
+      _showSignedOutSnackBar();
+    }
+  }
+
+  void _invalidateAuthDependentProviders() {
+    ref.invalidate(profileViewModelProvider);
+    ref.invalidate(unfinishedSessionsProvider);
+    ref.invalidate(srsDueCountProvider);
+    ref.read(mainScreenIndexProvider.notifier).state = 0;
+  }
+
+  void _resetLocalState() {
+    setState(() {
+      _impersonatedRole = null;
+      _agendaData = null;
+      _nextStepsData = null;
+      _streakStats = null;
+      _isFetchingDashboard = false;
+      _lastFetchTime = null;
+      _nextStepsState = NextStepsDisplayState.hidden;
+    });
+  }
+
+  void _showSignedOutSnackBar() {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    if (messenger == null) return;
+    messenger.clearSnackBars();
+    messenger.showSnackBar(
+      const SnackBar(
+        content: Text('Çıkış yapıldı.'),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   Future<void> _initializeProfileAndData() async {
@@ -256,6 +313,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(authStateProvider);
     final selectedIndex = ref.watch(mainScreenIndexProvider);
     final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
     final profile = ref.watch(profileViewModelProvider).profile;

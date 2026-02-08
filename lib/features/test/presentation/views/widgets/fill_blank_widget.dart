@@ -26,7 +26,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
     final question = widget.testQuestion.question;
     final int blankCount = '______'.allMatches(question.text).length;
     _droppedAnswers = {for (var i = 0; i < blankCount; i++) i: null};
-    _availableOptions = List.from(question.blankOptions);
+    _availableOptions = List.from(widget.testQuestion.shuffledBlankOptions);
   }
 
   void _onDrop(int blankIndex, QuestionBlankOption option) {

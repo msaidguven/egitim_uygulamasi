@@ -17,11 +17,13 @@ class MultipleChoiceWidget extends StatelessWidget {
     final question = testQuestion.question;
     final isChecked = testQuestion.isChecked;
 
+    final choices = testQuestion.shuffledChoices;
+
     return ListView.separated(
-      itemCount: question.choices.length,
+      itemCount: choices.length,
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final choice = question.choices[index];
+        final choice = choices[index];
         bool isSelected = (testQuestion.userAnswer == choice.id);
         Color? borderColor;
         Widget? trailingIcon;
