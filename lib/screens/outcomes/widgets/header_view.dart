@@ -17,11 +17,8 @@ class HeaderView extends ConsumerWidget {
   }) : super(key: key);
 
   (DateTime, DateTime) _getWeekDateRange(int curriculumWeek) {
-    final schoolStart = DateTime(
-      DateTime.now().month < 9 ? DateTime.now().year - 1 : DateTime.now().year,
-      9,
-      8,
-    );
+    final now = DateTime.now();
+    final schoolStart = getSchoolStartDate(now);
     int offsetInWeeks = 0;
     for (final breakInfo in academicBreaks) {
       if (curriculumWeek > breakInfo['after_week']) {

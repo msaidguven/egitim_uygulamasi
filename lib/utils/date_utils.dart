@@ -28,12 +28,19 @@ class PeriodInfo {
   });
 }
 
+/// Okul başlangıç tarihini döndürür (2025-2026 için 8 Eylül 2025 Pazartesi).
+DateTime getSchoolStartDate(DateTime now) {
+  // Akademik yıl Eylül başlar. Eylül öncesindeysek bir önceki yılın başlangıcı.
+  final int startYear = now.month < 9 ? now.year - 1 : now.year;
+  return DateTime(startYear, 9, 8);
+}
+
 /// Mevcut tarihi analiz ederek detaylı dönem bilgisini döndürür.
 /// UI tarafında bunu kullanın.
 PeriodInfo getCurrentPeriodInfo() {
   final now = DateTime.now();
-  // Okul başlangıç: 9 Eylül 2024 Pazartesi
-  final schoolStart = DateTime(now.month < 9 ? now.year - 1 : now.year, 9, 9);
+  // Okul başlangıç: 8 Eylül 2025 Pazartesi
+  final schoolStart = getSchoolStartDate(now);
   
   // Ham takvim haftası
   int currentCalendarWeek = (now.difference(schoolStart).inDays / 7).floor() + 1;
