@@ -459,16 +459,20 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.watch(testViewModelProvider);
+    final isWide = MediaQuery.of(context).size.width >= 900;
     debugPrint("QuestionsScreen: build metodu çalıştı.");
 
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_getAppBarTitle()),
+          title: isWide
+              ? _buildWideAppBarTitle(viewModel)
+              : Text(_getAppBarTitle()),
           backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Colors.white,
           elevation: 0,
+          bottom: isWide ? _buildWideAppBarBottom(viewModel) : null,
           actions: [
             TextButton(
               onPressed: _decreaseTextScale,
@@ -554,13 +558,14 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
               constraints: const BoxConstraints(maxWidth: 1280),
               child: Column(
                 children: [
-                  TestProgressBar(
-                    currentQuestion: viewModel.answeredCount + 1,
-                    totalQuestions: viewModel.totalQuestions,
-                    score: viewModel.score,
-                    remainingSeconds: _remainingSeconds,
-                    totalSeconds: viewModel.timeLimitSeconds,
-                  ),
+                  if (MediaQuery.of(context).size.width < 900)
+                    TestProgressBar(
+                      currentQuestion: viewModel.answeredCount + 1,
+                      totalQuestions: viewModel.totalQuestions,
+                      score: viewModel.score,
+                      remainingSeconds: _remainingSeconds,
+                      totalSeconds: viewModel.timeLimitSeconds,
+                    ),
                   Expanded(
                     child: MediaQuery(
                       data: MediaQuery.of(context).copyWith(
@@ -613,6 +618,83 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildWideAppBarTitle(TestViewModel viewModel) {
+    final currentQuestion = viewModel.currentTestQuestion == null
+        ? viewModel.answeredCount
+        : viewModel.answeredCount + 1;
+    final totalQuestions = viewModel.totalQuestions;
+    final remaining = _remainingSeconds;
+
+    return Row(
+      children: [
+        Text(
+          _getAppBarTitle(),
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(width: 16),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.18),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(
+            'Soru $currentQuestion/$totalQuestions',
+            style: const TextStyle(color: Colors.white, fontSize: 14),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: remaining <= 5
+                ? Colors.redAccent.withOpacity(0.25)
+                : Colors.white.withOpacity(0.18),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(
+            '00:${remaining.toString().padLeft(2, '0')}',
+            style: const TextStyle(color: Colors.white, fontSize: 14),
+          ),
+        ),
+      ],
+    );
+  }
+
+  PreferredSizeWidget _buildWideAppBarBottom(TestViewModel viewModel) {
+    final currentQuestion = viewModel.currentTestQuestion == null
+        ? viewModel.answeredCount
+        : viewModel.answeredCount + 1;
+    final totalQuestions = viewModel.totalQuestions;
+    final progressValue =
+        totalQuestions > 0 ? currentQuestion / totalQuestions : 0.0;
+    final timeProgressValue = viewModel.timeLimitSeconds > 0
+        ? _remainingSeconds / viewModel.timeLimitSeconds
+        : 0.0;
+
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(10),
+      child: Column(
+        children: [
+          LinearProgressIndicator(
+            value: progressValue.clamp(0.0, 1.0),
+            minHeight: 4,
+            backgroundColor: Colors.white.withOpacity(0.2),
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+          ),
+          LinearProgressIndicator(
+            value: timeProgressValue.clamp(0.0, 1.0),
+            minHeight: 4,
+            backgroundColor: Colors.white.withOpacity(0.12),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              _remainingSeconds <= 5 ? Colors.redAccent : Colors.lightBlueAccent,
+            ),
+          ),
+        ],
       ),
     );
   }

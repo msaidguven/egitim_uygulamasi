@@ -548,17 +548,24 @@ class TestViewModel extends ChangeNotifier {
   Future<void> handleTimeExpired() async {
     if (_currentTestQuestion == null || _currentTestQuestion!.isChecked) return;
 
+    _questionTimer.stop();
+    final duration = _questionTimer.elapsed.inSeconds;
+
     if (_currentTestQuestion!.userAnswer != null) {
       await checkAnswer();
       return;
     }
 
-    _questionTimer.stop();
     _currentTestQuestion = _currentTestQuestion!.copyWith(
       isChecked: true,
       isCorrect: false,
     );
     notifyListeners();
+
+    // Süre dolan soruyu (yanlış) olarak DB'ye kaydet
+    if (_userId != null) {
+      await _saveAnswer(false, duration);
+    }
   }
 
   void _setError(String message) {
