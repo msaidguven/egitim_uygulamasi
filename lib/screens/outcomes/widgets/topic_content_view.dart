@@ -42,7 +42,7 @@ class TopicContentView extends StatelessWidget {
       await Supabase.instance.client
           .from('topic_contents')
           .update(updateData)
-          .eq('id', content.id);
+          .eq('id', content.id!);
       onContentUpdated?.call();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('İçerik güncellendi.')),
