@@ -11,6 +11,7 @@ import 'package:egitim_uygulamasi/features/test/presentation/views/components/te
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuestionsScreen extends ConsumerStatefulWidget {
   final int unitId;
@@ -41,7 +42,12 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   int? _timeUpQuestionId;
   bool _isHypePlaying = false;
   final AudioPlayer _hypePlayer = AudioPlayer();
-  final bool _enableHypeAudio = false;
+  bool _soundEnabled = false;
+  bool _useBeepSound = true;
+  int? _lastBeepSecond;
+
+  static const String _prefSoundEnabled = 'test_timer_sound_enabled';
+  static const String _prefUseBeepSound = 'test_timer_use_beep';
 
   void _increaseTextScale() {
     setState(() {
@@ -59,6 +65,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   void initState() {
     super.initState();
     debugPrint("QuestionsScreen: initState - Test başlatılıyor...");
+    _loadSoundPrefs();
     _startTicker();
     Future.microtask(() => _initializeTest());
   }
@@ -88,6 +95,79 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     _stopHypeAudio();
     _hypePlayer.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadSoundPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _soundEnabled = prefs.getBool(_prefSoundEnabled) ?? false;
+      _useBeepSound = prefs.getBool(_prefUseBeepSound) ?? true;
+    });
+  }
+
+  Future<void> _saveSoundPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefSoundEnabled, _soundEnabled);
+    await prefs.setBool(_prefUseBeepSound, _useBeepSound);
+  }
+
+  void _showSoundSettings() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 42,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade400,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Süre uyarı sesi'),
+                    subtitle: const Text('Son 5 saniyede sesli uyarı'),
+                    value: _soundEnabled,
+                    onChanged: (value) {
+                      setModalState(() => _soundEnabled = value);
+                      setState(() => _soundEnabled = value);
+                      _saveSoundPrefs();
+                      if (!value) _stopHypeAudio();
+                    },
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Kısa bip kullan'),
+                    subtitle: const Text('Müzik yerine kısa bip sesi'),
+                    value: _useBeepSound,
+                    onChanged: _soundEnabled
+                        ? (value) {
+                            setModalState(() => _useBeepSound = value);
+                            setState(() => _useBeepSound = value);
+                            _saveSoundPrefs();
+                            _stopHypeAudio();
+                          }
+                        : null,
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   void _startTicker() {
@@ -126,9 +206,16 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
       }
 
       if (remaining <= 5 && remaining > 0) {
-        _playHypeAudio();
+        if (_soundEnabled) {
+          if (_useBeepSound) {
+            _playBeep(remaining);
+          } else {
+            _playHypeAudio();
+          }
+        }
       } else {
         _stopHypeAudio();
+        _lastBeepSecond = null;
       }
 
       if (remaining == 0 && _timeUpQuestionId != questionId) {
@@ -139,7 +226,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   }
 
   Future<void> _playHypeAudio() async {
-    if (!_enableHypeAudio || _isHypePlaying) return;
+    if (!_soundEnabled || _isHypePlaying) return;
     _isHypePlaying = true;
     try {
       await _hypePlayer.setReleaseMode(ReleaseMode.loop);
@@ -147,6 +234,16 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     } catch (_) {
       _isHypePlaying = false;
     }
+  }
+
+  Future<void> _playBeep(int remainingSeconds) async {
+    if (_lastBeepSecond == remainingSeconds) return;
+    _lastBeepSecond = remainingSeconds;
+    _isHypePlaying = false;
+    try {
+      await _hypePlayer.setReleaseMode(ReleaseMode.stop);
+      await _hypePlayer.play(AssetSource('audio/timer_beep.mp3'));
+    } catch (_) {}
   }
 
   Future<void> _stopHypeAudio() async {
@@ -395,6 +492,11 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
+            IconButton(
+              onPressed: _showSoundSettings,
+              icon: const Icon(Icons.volume_up_rounded, color: Colors.white),
+              tooltip: 'Ses Ayarları',
+            ),
           ],
         ),
         body: Container(
@@ -449,7 +551,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           return Align(
             alignment: Alignment.topCenter,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1100),
+              constraints: const BoxConstraints(maxWidth: 1280),
               child: Column(
                 children: [
                   TestProgressBar(

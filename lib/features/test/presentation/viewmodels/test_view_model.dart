@@ -12,7 +12,7 @@ class TestViewModel extends ChangeNotifier {
   final TestRepository _repository;
 
   // State
-  static const int questionTimeLimitSeconds = 60;
+  static const int questionTimeLimitSeconds = 40;
   List<TestQuestion> _questionQueue = [];
   TestQuestion? _currentTestQuestion;
   int? _sessionId;
