@@ -1,11 +1,12 @@
 -- Add is_published to topic contents payload
-DROP FUNCTION IF EXISTS get_weekly_curriculum(uuid, int, int, int);
+DROP FUNCTION IF EXISTS get_weekly_curriculum(uuid, int, int, int, boolean);
 
 CREATE OR REPLACE FUNCTION get_weekly_curriculum(
     p_user_id uuid,
     p_grade_id int,
     p_lesson_id int,
-    p_curriculum_week int
+    p_curriculum_week int,
+    p_is_admin boolean
 )
 RETURNS TABLE (
     outcome_id bigint,
@@ -53,6 +54,7 @@ BEGIN
          ON tc.id = tcw.topic_content_id
        WHERE tc.topic_id = t.id
          AND tcw.curriculum_week = p_curriculum_week
+         AND (p_is_admin OR tc.is_published = true)
       ) AS contents,
       -- Mini quiz soruları (1 ve 2 tipleri, rastgele 5 adet)
       (SELECT jsonb_agg(public.get_question_details(q.id, p_user_id))

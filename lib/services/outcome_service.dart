@@ -23,6 +23,7 @@ class OutcomeService {
       'p_grade_id': gradeId,
       'p_lesson_id': lessonId,
       'p_curriculum_week': curriculumWeek,
+      'p_is_admin': false,
     });
 
     // The RPC returns a list of all curriculum items for the week.

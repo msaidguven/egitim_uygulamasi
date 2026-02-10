@@ -396,13 +396,15 @@ class OutcomesViewModel extends ChangeNotifier {
 
   Future<void> _fetchDynamicData(int curriculumWeek, bool isGuest) async {
     try {
+      final userProfile = _ref.read(profileViewModelProvider).profile;
       final response = await Supabase.instance.client.rpc(
         'get_weekly_curriculum',
         params: {
-          'p_user_id': isGuest ? null : _ref.read(profileViewModelProvider).profile?.id,
+          'p_user_id': isGuest ? null : userProfile?.id,
           'p_grade_id': gradeId,
           'p_lesson_id': lessonId,
-          'p_curriculum_week': curriculumWeek
+          'p_curriculum_week': curriculumWeek,
+          'p_is_admin': userProfile?.role == 'admin',
         },
       );
 
@@ -464,7 +466,8 @@ class OutcomesViewModel extends ChangeNotifier {
         'p_user_id': userId,
         'p_grade_id': gradeId,
         'p_lesson_id': lessonId,
-        'p_curriculum_week': curriculumWeek
+        'p_curriculum_week': curriculumWeek,
+        'p_is_admin': userProfile?.role == 'admin',
       },
     );
 
