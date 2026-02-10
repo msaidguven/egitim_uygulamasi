@@ -37,9 +37,9 @@ class AcademicBreakWeek {
   });
 }
 
-const DateTime academicYearStartDate = DateTime(2025, 9, 8);
+final DateTime academicYearStartDate = DateTime(2025, 9, 8);
 
-const List<AcademicBreakWeek> academicBreakWeeks = [
+final List<AcademicBreakWeek> academicBreakWeeks = [
   AcademicBreakWeek(
     startDate: DateTime(2025, 11, 10),
     endDate: DateTime(2025, 11, 14),
