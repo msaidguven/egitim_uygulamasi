@@ -6,6 +6,7 @@ class TopicContent {
   final String title;
   final String content;
   final int order;
+  final bool? isPublished;
   final List<Question> miniQuizQuestions; // YENİ ALAN
 
   TopicContent({
@@ -14,6 +15,7 @@ class TopicContent {
     required this.title,
     required this.content,
     required this.order,
+    this.isPublished,
     this.miniQuizQuestions = const [], // YENİ ALAN
   });
 
@@ -30,6 +32,7 @@ class TopicContent {
       title: json['title'] as String? ?? '',
       content: json['content'] as String? ?? '',
       order: json['order_no'] as int? ?? 0,
+      isPublished: json['is_published'] as bool?,
       miniQuizQuestions: questions, // YENİ ALAN
     );
   }
@@ -41,6 +44,7 @@ class TopicContent {
       'title': title,
       'content': content,
       'order_no': order,
+      if (isPublished != null) 'is_published': isPublished,
       // toJson'a eklemek şimdilik gerekli değil, çünkü bu veriyi geri göndermiyoruz.
     };
   }

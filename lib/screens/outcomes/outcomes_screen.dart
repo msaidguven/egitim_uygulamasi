@@ -251,6 +251,9 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
     final isGuest = ref.watch(
       profileViewModelProvider.select((p) => p.profile == null),
     );
+    final isAdmin = ref.watch(
+      profileViewModelProvider.select((p) => p.profile?.role == 'admin'),
+    );
 
     if (isLoading) {
       return const Center(child: CircularProgressIndicator.adaptive());
@@ -340,7 +343,13 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
             delegate: SliverChildBuilderDelegate((context, index) {
               return Padding(
                 padding: EdgeInsets.fromLTRB(20, index == 0 ? 12 : 0, 20, 12),
-                child: TopicContentView(content: contents[index]),
+                child: TopicContentView(
+                  content: contents[index],
+                  isAdmin: isAdmin,
+                  onContentUpdated: () => ref
+                      .read(outcomesViewModelProvider(widget.args))
+                      .refreshCurrentWeekData(widget.curriculumWeek),
+                ),
               );
             }, childCount: contents.length),
           ),

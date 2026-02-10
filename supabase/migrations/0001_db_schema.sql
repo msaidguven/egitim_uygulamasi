@@ -1,6 +1,3 @@
--- supabase db schema --
--- docs/db_schema.md --
-
 -- WARNING: This schema is for context only and is not meant to be run.
 -- Table order and constraints may not be valid for execution.
 
@@ -35,6 +32,7 @@ CREATE TABLE public.grades (
   order_no integer NOT NULL DEFAULT 0 UNIQUE CHECK (order_no >= 0),
   is_active boolean NOT NULL DEFAULT true,
   question_count integer NOT NULL DEFAULT 0,
+  icon text,
   CONSTRAINT grades_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.lesson_grades (
@@ -42,6 +40,7 @@ CREATE TABLE public.lesson_grades (
   grade_id bigint NOT NULL,
   created_at timestamp with time zone DEFAULT now(),
   question_count integer NOT NULL DEFAULT 0,
+  is_active boolean NOT NULL DEFAULT true,
   CONSTRAINT lesson_grades_pkey PRIMARY KEY (lesson_id, grade_id),
   CONSTRAINT fk_lg_grade FOREIGN KEY (grade_id) REFERENCES public.grades(id),
   CONSTRAINT fk_lg_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id)
@@ -249,6 +248,7 @@ CREATE TABLE public.topic_contents (
   content text NOT NULL,
   order_no integer NOT NULL DEFAULT 0,
   created_at timestamp with time zone DEFAULT now(),
+  is_published boolean NOT NULL DEFAULT false,
   CONSTRAINT topic_contents_pkey PRIMARY KEY (id),
   CONSTRAINT fk_tc_topic FOREIGN KEY (topic_id) REFERENCES public.topics(id)
 );
@@ -307,6 +307,7 @@ CREATE TABLE public.user_curriculum_week_run_summary (
   correct_count integer NOT NULL DEFAULT 0,
   wrong_count integer NOT NULL DEFAULT 0,
   last_updated_at timestamp with time zone DEFAULT now(),
+  status character varying DEFAULT 'in_progress'::character varying CHECK (status::text = ANY (ARRAY['in_progress'::character varying, 'completed'::character varying, 'reviewing'::character varying]::text[])),
   CONSTRAINT user_curriculum_week_run_summary_pkey PRIMARY KEY (user_id, unit_id, curriculum_week, run_no),
   CONSTRAINT user_curriculum_week_run_summary_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id),
   CONSTRAINT user_curriculum_week_run_summary_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
@@ -337,7 +338,13 @@ CREATE TABLE public.user_question_stats (
   correct_attempts integer NOT NULL DEFAULT 0,
   wrong_attempts integer NOT NULL DEFAULT 0,
   next_review_at timestamp with time zone,
+  current_streak integer DEFAULT 0,
+  best_streak integer DEFAULT 0,
+  is_mastered boolean DEFAULT false,
+  mastered_at timestamp with time zone,
+  grade_id bigint,
   CONSTRAINT user_question_stats_pkey PRIMARY KEY (user_id, question_id),
+  CONSTRAINT fk_user_question_stats_grade FOREIGN KEY (grade_id) REFERENCES public.grades(id),
   CONSTRAINT user_question_stats_user_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
   CONSTRAINT user_question_stats_question_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id)
 );
