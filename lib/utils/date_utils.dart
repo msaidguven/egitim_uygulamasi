@@ -2,16 +2,32 @@
 
 // Bu dosya, tarih ve hafta hesaplamaları gibi paylaşılan yardımcı fonksiyonları içerir.
 
+import 'package:egitim_uygulamasi/constants.dart';
+
 const List<String> aylar = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 
-/// Akademik takvimdeki tatil haftalarını tanımlar.
-/// `after_week`: Bu haftadan sonra tatil başlar.
-/// `weeks`: Tatilin kaç hafta sürdüğünü belirtir.
-final List<Map<String, dynamic>> academicBreaks = [
-  {'after_week': 9, 'weeks': [{'type': 'break', 'title': 'Ara Tatil', 'duration': '1. DÖNEM ARA TATİLİ: 10 - 14 Kasım'}]},
-  {'after_week': 18, 'weeks': [{'type': 'break', 'title': 'Yarıyıl Tatili', 'duration': '1. Hafta (19 Ocak - 25 Ocak)'}, {'type': 'break', 'title': 'Yarıyıl Tatili', 'duration': '2. Hafta (26 Ocak - 1 Şubat)'}]},
-  {'after_week': 26, 'weeks': [{'type': 'break', 'title': 'Ara Tatil', 'duration': '2. DÖNEM ARA TATİLİ'}]},
-];
+class _BreakWeekInfo {
+  final DateTime startDate;
+  final DateTime endDate;
+  final String title;
+  final String subtitle;
+
+  const _BreakWeekInfo({
+    required this.startDate,
+    required this.endDate,
+    required this.title,
+    required this.subtitle,
+  });
+}
+
+final List<_BreakWeekInfo> _breakWeeks = academicBreakWeeks
+    .map((b) => _BreakWeekInfo(
+          startDate: DateTime(b.startDate.year, b.startDate.month, b.startDate.day),
+          endDate: DateTime(b.endDate.year, b.endDate.month, b.endDate.day),
+          title: b.title,
+          subtitle: b.subtitle,
+        ))
+    .toList();
 
 /// Haftanın durumunu tutan model
 class PeriodInfo {
@@ -28,56 +44,110 @@ class PeriodInfo {
   });
 }
 
+DateTime _dateOnly(DateTime date) => DateTime(date.year, date.month, date.day);
+
+DateTime _endOfWeek(DateTime startDate) => startDate.add(const Duration(days: 6));
+
+bool _isWithin(DateTime date, DateTime start, DateTime end) {
+  return !date.isBefore(start) && !date.isAfter(end);
+}
+
+_BreakWeekInfo? _findBreakWeekForDate(DateTime date) {
+  for (final breakWeek in _breakWeeks) {
+    final effectiveEnd = _endOfWeek(breakWeek.startDate);
+    if (_isWithin(date, breakWeek.startDate, effectiveEnd)) {
+      return breakWeek;
+    }
+  }
+  return null;
+}
+
+int _countBreakWeeksBefore(DateTime date) {
+  int count = 0;
+  for (final breakWeek in _breakWeeks) {
+    final effectiveEnd = _endOfWeek(breakWeek.startDate);
+    if (date.isAfter(effectiveEnd)) {
+      count++;
+    }
+  }
+  return count;
+}
+
 /// Okul başlangıç tarihini döndürür (2025-2026 için 8 Eylül 2025 Pazartesi).
-DateTime getSchoolStartDate(DateTime now) {
-  // Akademik yıl Eylül başlar. Eylül öncesindeysek bir önceki yılın başlangıcı.
-  final int startYear = now.month < 9 ? now.year - 1 : now.year;
-  return DateTime(startYear, 9, 8);
+DateTime getSchoolStartDate() => academicYearStartDate;
+
+/// Verilen tarih için akademik haftayı hesaplar.
+int getAcademicWeekForDate(DateTime date) {
+  final schoolStart = getSchoolStartDate();
+  final dateOnly = _dateOnly(date);
+
+  if (dateOnly.isBefore(schoolStart)) return 1;
+
+  final currentCalendarWeek =
+      (dateOnly.difference(schoolStart).inDays / 7).floor() + 1;
+
+  final breaksBefore = _countBreakWeeksBefore(dateOnly);
+  final breakWeek = _findBreakWeekForDate(dateOnly);
+
+  int academicWeek = breakWeek == null
+      ? currentCalendarWeek - breaksBefore
+      : currentCalendarWeek - breaksBefore - 1;
+
+  if (academicWeek <= 0) academicWeek = 1;
+  return academicWeek;
+}
+
+/// Akademik hafta için tarih aralığını döndürür (Pzt-Paz).
+(DateTime, DateTime) getWeekDateRangeForAcademicWeek(int curriculumWeek) {
+  final schoolStart = getSchoolStartDate();
+  DateTime weekStart = schoolStart;
+  int academicWeek = 1;
+
+  while (academicWeek < curriculumWeek) {
+    weekStart = weekStart.add(const Duration(days: 7));
+    if (_findBreakWeekForDate(weekStart) != null) {
+      continue;
+    }
+    academicWeek++;
+  }
+
+  final weekEnd = weekStart.add(const Duration(days: 6));
+  return (weekStart, weekEnd);
+}
+
+/// Tatil haftalarını UI için ekleme bilgisiyle döndürür.
+List<Map<String, dynamic>> getAcademicBreakEntries() {
+  return _breakWeeks.map((breakWeek) {
+    final insertAfterWeek = getAcademicWeekForDate(
+      breakWeek.startDate.subtract(const Duration(days: 1)),
+    );
+    return {
+      'insert_after_week': insertAfterWeek,
+      'break': {
+        'type': 'break',
+        'title': breakWeek.title,
+        'duration': breakWeek.subtitle,
+      },
+    };
+  }).toList();
 }
 
 /// Mevcut tarihi analiz ederek detaylı dönem bilgisini döndürür.
 /// UI tarafında bunu kullanın.
 PeriodInfo getCurrentPeriodInfo() {
   final now = DateTime.now();
-  // Okul başlangıç: 8 Eylül 2025 Pazartesi
-  final schoolStart = getSchoolStartDate(now);
-  
-  // Ham takvim haftası
-  int currentCalendarWeek = (now.difference(schoolStart).inDays / 7).floor() + 1;
+  final dateOnly = _dateOnly(now);
+  final breakWeek = _findBreakWeekForDate(dateOnly);
+  final academicWeek = getAcademicWeekForDate(dateOnly);
 
-  int weeksToSubtract = 0;
-
-  for (final breakInfo in academicBreaks) {
-    final int breakStartWeek = breakInfo['after_week'] as int;
-    final List weeks = breakInfo['weeks'] as List;
-    final int breakDuration = weeks.length;
-
-    int breakCalendarStart = breakStartWeek + 1 + weeksToSubtract;
-    int breakCalendarEnd = breakCalendarStart + breakDuration - 1;
-
-    // DURUM 1: Tatil İçindeyiz
-    if (currentCalendarWeek >= breakCalendarStart && currentCalendarWeek <= breakCalendarEnd) {
-      // Kaçıncı tatil haftası olduğunu bul (0-indexli)
-      int holidayIndex = currentCalendarWeek - breakCalendarStart;
-      var weekInfo = weeks[holidayIndex];
-      
-      return PeriodInfo(
-        academicWeek: breakStartWeek, // Tatil boyunca son akademik haftada kalır
-        isHoliday: true,
-        displayTitle: weekInfo['title'] ?? 'Tatil',
-        displaySubtitle: weekInfo['duration'] ?? '${holidayIndex + 1}. Hafta',
-      );
-    }
-
-    // DURUM 2: Tatil Geçti
-    if (currentCalendarWeek > breakCalendarEnd) {
-      weeksToSubtract += breakDuration;
-    }
+  if (breakWeek != null) {
+    return PeriodInfo(
+      academicWeek: academicWeek,
+      isHoliday: true,
+      displayTitle: breakWeek.title,
+      displaySubtitle: breakWeek.subtitle,
+    );
   }
-
-  // Tatil değilse normal akademik hafta
-  int academicWeek = currentCalendarWeek - weeksToSubtract;
-  if (academicWeek <= 0) academicWeek = 1;
 
   return PeriodInfo(
     academicWeek: academicWeek,

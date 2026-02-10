@@ -21,6 +21,7 @@ class QuestionCard extends StatelessWidget {
     final question = testQuestion.question;
     final isChecked = testQuestion.isChecked;
     final isCorrect = testQuestion.isCorrect;
+    final isTimeUp = isChecked && testQuestion.userAnswer == null;
     final stats = question.userStats;
     final isNarrow = MediaQuery.of(context).size.width < 700;
     final contentPadding = EdgeInsets.fromLTRB(
@@ -74,15 +75,19 @@ class QuestionCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          isCorrect ? Icons.check_circle : Icons.cancel,
-                          color: isCorrect ? Colors.green : Colors.red,
+                          isTimeUp
+                              ? Icons.timer_off
+                              : (isCorrect ? Icons.check_circle : Icons.cancel),
+                          color: isTimeUp
+                              ? Colors.orange
+                              : (isCorrect ? Colors.green : Colors.red),
                           size: isNarrow ? 20 : 24,
                         ),
                         SizedBox(width: isNarrow ? 6 : 8),
                         Text(
-                          isCorrect ? 'Doğru!' : 'Yanlış!',
+                          isTimeUp ? 'Süre doldu!' : (isCorrect ? 'Doğru!' : 'Yanlış!'),
                           style: TextStyle(
-                            color: isCorrect ? Colors.green : Colors.red,
+                            color: isTimeUp ? Colors.orange : (isCorrect ? Colors.green : Colors.red),
                             fontSize: isNarrow ? 16 : 18,
                             fontWeight: FontWeight.bold,
                           ),

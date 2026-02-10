@@ -12,6 +12,7 @@ class TestViewModel extends ChangeNotifier {
   final TestRepository _repository;
 
   // State
+  static const int questionTimeLimitSeconds = 60;
   List<TestQuestion> _questionQueue = [];
   TestQuestion? _currentTestQuestion;
   int? _sessionId;
@@ -41,6 +42,14 @@ class TestViewModel extends ChangeNotifier {
   Stopwatch get questionTimer => _questionTimer;
   TestMode get testMode => _testMode;
   int get unitId => _unitId;
+  int get timeLimitSeconds => questionTimeLimitSeconds;
+  int get remainingSeconds {
+    final elapsed = _questionTimer.elapsed.inSeconds;
+    final remaining = questionTimeLimitSeconds - elapsed;
+    if (remaining < 0) return 0;
+    if (remaining > questionTimeLimitSeconds) return questionTimeLimitSeconds;
+    return remaining;
+  }
 
   TestViewModel(this._repository);
 
@@ -534,6 +543,22 @@ class TestViewModel extends ChangeNotifier {
   void resetTimer() {
     _questionTimer.reset();
     _questionTimer.start();
+  }
+
+  Future<void> handleTimeExpired() async {
+    if (_currentTestQuestion == null || _currentTestQuestion!.isChecked) return;
+
+    if (_currentTestQuestion!.userAnswer != null) {
+      await checkAnswer();
+      return;
+    }
+
+    _questionTimer.stop();
+    _currentTestQuestion = _currentTestQuestion!.copyWith(
+      isChecked: true,
+      isCorrect: false,
+    );
+    notifyListeners();
   }
 
   void _setError(String message) {

@@ -21,3 +21,47 @@ String get authRedirectUrl => kIsWeb ? _authRedirectUrlWeb : _authRedirectUrlMob
 
 // Default grade id for Google sign-in when no selection is provided
 const int defaultGoogleGradeId = 5;
+
+// Akademik yıl ayarları (2025-2026)
+class AcademicBreakWeek {
+  final DateTime startDate;
+  final DateTime endDate;
+  final String title;
+  final String subtitle;
+
+  const AcademicBreakWeek({
+    required this.startDate,
+    required this.endDate,
+    required this.title,
+    required this.subtitle,
+  });
+}
+
+const DateTime academicYearStartDate = DateTime(2025, 9, 8);
+
+const List<AcademicBreakWeek> academicBreakWeeks = [
+  AcademicBreakWeek(
+    startDate: DateTime(2025, 11, 10),
+    endDate: DateTime(2025, 11, 14),
+    title: 'Ara Tatil',
+    subtitle: '1. DÖNEM ARA TATİLİ: 10 - 14 Kasım',
+  ),
+  AcademicBreakWeek(
+    startDate: DateTime(2026, 1, 19),
+    endDate: DateTime(2026, 1, 25),
+    title: 'Yarıyıl Tatili',
+    subtitle: '1. Hafta (19 Ocak - 25 Ocak)',
+  ),
+  AcademicBreakWeek(
+    startDate: DateTime(2026, 1, 26),
+    endDate: DateTime(2026, 2, 1),
+    title: 'Yarıyıl Tatili',
+    subtitle: '2. Hafta (26 Ocak - 1 Şubat)',
+  ),
+  AcademicBreakWeek(
+    startDate: DateTime(2026, 3, 30),
+    endDate: DateTime(2026, 4, 5),
+    title: 'Ara Tatil',
+    subtitle: '2. DÖNEM ARA TATİLİ',
+  ),
+];

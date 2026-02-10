@@ -10,6 +10,7 @@ import 'package:egitim_uygulamasi/features/test/presentation/views/components/te
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_bottom_nav.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:audioplayers/audioplayers.dart';
 
 class QuestionsScreen extends ConsumerStatefulWidget {
   final int unitId;
@@ -34,6 +35,13 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   bool _didCleanup = false;
   double _textScale = 1.0;
   double get _maxScale => kIsWeb ? 4.0 : 1.3;
+  Timer? _ticker;
+  int _remainingSeconds = TestViewModel.questionTimeLimitSeconds;
+  int? _activeQuestionId;
+  int? _timeUpQuestionId;
+  bool _isHypePlaying = false;
+  final AudioPlayer _hypePlayer = AudioPlayer();
+  final bool _enableHypeAudio = false;
 
   void _increaseTextScale() {
     setState(() {
@@ -51,6 +59,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
   void initState() {
     super.initState();
     debugPrint("QuestionsScreen: initState - Test başlatılıyor...");
+    _startTicker();
     Future.microtask(() => _initializeTest());
   }
 
@@ -75,7 +84,83 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     debugPrint(
       "QuestionsScreen: dispose - Ekran kapatılıyor ve TestViewModel sıfırlanıyor.",
     );
+    _ticker?.cancel();
+    _stopHypeAudio();
+    _hypePlayer.dispose();
     super.dispose();
+  }
+
+  void _startTicker() {
+    _ticker?.cancel();
+    _ticker = Timer.periodic(const Duration(milliseconds: 250), (_) {
+      if (!mounted) return;
+      final viewModel = ref.read(testViewModelProvider);
+      final currentQuestion = viewModel.currentTestQuestion;
+      if (currentQuestion == null) {
+        if (_remainingSeconds != viewModel.timeLimitSeconds) {
+          setState(() {
+            _remainingSeconds = viewModel.timeLimitSeconds;
+          });
+        }
+        _stopHypeAudio();
+        return;
+      }
+
+      final questionId = currentQuestion.question.id;
+      if (_activeQuestionId != questionId) {
+        _activeQuestionId = questionId;
+        _timeUpQuestionId = null;
+        _stopHypeAudio();
+      }
+
+      final remaining = viewModel.remainingSeconds;
+      if (remaining != _remainingSeconds) {
+        setState(() {
+          _remainingSeconds = remaining;
+        });
+      }
+
+      if (currentQuestion.isChecked) {
+        _stopHypeAudio();
+        return;
+      }
+
+      if (remaining <= 5 && remaining > 0) {
+        _playHypeAudio();
+      } else {
+        _stopHypeAudio();
+      }
+
+      if (remaining == 0 && _timeUpQuestionId != questionId) {
+        _timeUpQuestionId = questionId;
+        _handleTimeExpired();
+      }
+    });
+  }
+
+  Future<void> _playHypeAudio() async {
+    if (!_enableHypeAudio || _isHypePlaying) return;
+    _isHypePlaying = true;
+    try {
+      await _hypePlayer.setReleaseMode(ReleaseMode.loop);
+      await _hypePlayer.play(AssetSource('audio/timer_hurry.mp3'));
+    } catch (_) {
+      _isHypePlaying = false;
+    }
+  }
+
+  Future<void> _stopHypeAudio() async {
+    if (!_isHypePlaying) return;
+    _isHypePlaying = false;
+    try {
+      await _hypePlayer.stop();
+    } catch (_) {}
+  }
+
+  Future<void> _handleTimeExpired() async {
+    final viewModel = ref.read(testViewModelProvider.notifier);
+    await viewModel.handleTimeExpired();
+    _stopHypeAudio();
   }
 
   Future<void> _initializeTest() async {
@@ -371,6 +456,8 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                     currentQuestion: viewModel.answeredCount + 1,
                     totalQuestions: viewModel.totalQuestions,
                     score: viewModel.score,
+                    remainingSeconds: _remainingSeconds,
+                    totalSeconds: viewModel.timeLimitSeconds,
                   ),
                   Expanded(
                     child: MediaQuery(

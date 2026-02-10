@@ -17,18 +17,7 @@ class HeaderView extends ConsumerWidget {
   }) : super(key: key);
 
   (DateTime, DateTime) _getWeekDateRange(int curriculumWeek) {
-    final now = DateTime.now();
-    final schoolStart = getSchoolStartDate(now);
-    int offsetInWeeks = 0;
-    for (final breakInfo in academicBreaks) {
-      if (curriculumWeek > breakInfo['after_week']) {
-        offsetInWeeks += (breakInfo['weeks'] as List).length;
-      }
-    }
-    final daysToAdd = ((curriculumWeek - 1) + offsetInWeeks) * 7;
-    final weekStartDate = schoolStart.add(Duration(days: daysToAdd));
-    final weekEndDate = weekStartDate.add(const Duration(days: 6));
-    return (weekStartDate, weekEndDate);
+    return getWeekDateRangeForAcademicWeek(curriculumWeek);
   }
 
   Widget _buildStatusIndicator(

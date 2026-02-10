@@ -235,19 +235,18 @@ class OutcomesViewModel extends ChangeNotifier {
 
       // TATİL HAFTALARINI EKLEME MANTIĞI
       // Ters sıralama ile ekliyoruz ki indexler kaymasın.
-      for (final breakInfo in academicBreaks.reversed) {
-        final int breakAfterWeek = breakInfo['after_week'] as int;
+      final breakEntries = getAcademicBreakEntries();
+      for (final breakEntry in breakEntries.reversed) {
+        final int breakAfterWeek = breakEntry['insert_after_week'] as int;
         
         // Hangi index'ten sonraya ekleneceğini bul
         int breakIndex = processedWeeks.indexWhere((week) =>
             week['type'] == 'week' && week['curriculum_week'] == breakAfterWeek);
         
         if (breakIndex != -1) {
-          final breaks = (breakInfo['weeks'] as List)
-              .map((b) => Map<String, dynamic>.from(b))
-              .toList();
+          final breakMap = Map<String, dynamic>.from(breakEntry['break'] as Map);
           // Bulunan index'in bir sonrasına ekle
-          processedWeeks.insertAll(breakIndex + 1, breaks);
+          processedWeeks.insert(breakIndex + 1, breakMap);
         }
       }
 
