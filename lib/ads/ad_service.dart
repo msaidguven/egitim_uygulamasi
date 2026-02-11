@@ -1,4 +1,10 @@
+// Export diğer servisler - Dosya başında olmalı
+export 'admob_service.dart';
+export 'adsense_service.dart';
+
 import 'package:flutter/foundation.dart';
+import 'admob_service.dart';
+import 'adsense_service.dart';
 
 /// Reklam servisi arayüzü
 /// Tüm reklam sağlayıcıları bu arayüzü implemente etmelidir
@@ -80,7 +86,3 @@ class _UnsupportedPlatformService implements AdService {
   @override
   String? get rewardedAdUnitId => null;
 }
-
-// Export diğer servisler
-export 'admob_service.dart';
-export 'adsense_service.dart';

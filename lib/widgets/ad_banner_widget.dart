@@ -1,4 +1,4 @@
-import 'package:egitim_uygulamasi/services/ad_service.dart';
+import 'package:egitim_uygulamasi/ads/ad_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -22,7 +22,7 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
   }
 
   void _loadBanner() {
-    final adUnitId = AdService.bannerAdUnitId;
+    final adUnitId = AdManager.instance.bannerAdUnitId;
     if (adUnitId == null) return;
 
     final banner = BannerAd(
@@ -54,7 +54,7 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (!AdService.isSupportedPlatform || !_isLoaded || _bannerAd == null) {
+    if (!AdManager.instance.isSupportedPlatform || !_isLoaded || _bannerAd == null) {
       return const SizedBox.shrink();
     }
 
