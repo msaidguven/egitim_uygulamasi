@@ -564,6 +564,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                       currentQuestion: viewModel.answeredCount + 1,
                       totalQuestions: viewModel.totalQuestions,
                       score: viewModel.score,
+                      incorrectCount: viewModel.incorrectCount,
                       remainingSeconds: _remainingSeconds,
                       totalSeconds: viewModel.timeLimitSeconds,
                     ),
@@ -840,40 +841,39 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             ),
           ),
           const SizedBox(height: 16),
+          Text(
+            'Doğru: ${viewModel.correctCount}  Yanlış: ${viewModel.incorrectCount}',
+            style: const TextStyle(
+              fontSize: 22,
+              color: Colors.amber,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (viewModel.totalQuestions > 0)
+            Text(
+              'Başarı Oranı: ${viewModel.successPercentage.toStringAsFixed(1)}%',
+              style: const TextStyle(fontSize: 18, color: Colors.white),
+            ),
+          const SizedBox(height: 8),
+          if (viewModel.totalQuestions > 0)
+            Text(
+              'Çözülen Soru: ${viewModel.answeredCount}/${viewModel.totalQuestions}',
+              style: const TextStyle(fontSize: 16, color: Colors.white70),
+            ),
+          const SizedBox(height: 10),
           if (isGuest)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: Text(
-                'İlerlemeni kaydetmek ve istatistiklerini görmek için giriş yap.',
+                'İlerlemeni kalıcı kaydetmek ve istatistiklerini görmek için giriş yap.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white.withOpacity(0.9),
                 ),
               ),
-            )
-          else ...[
-            Text(
-              'Toplam Puan: ${viewModel.score}',
-              style: const TextStyle(
-                fontSize: 24,
-                color: Colors.amber,
-                fontWeight: FontWeight.bold,
-              ),
             ),
-            const SizedBox(height: 8),
-            if (viewModel.totalQuestions > 0)
-              Text(
-                'Başarı Oranı: ${((viewModel.score / viewModel.totalQuestions) * 100).toStringAsFixed(1)}%',
-                style: const TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            const SizedBox(height: 8),
-            if (viewModel.totalQuestions > 0)
-              Text(
-                'Çözülen Soru: ${viewModel.answeredCount}/${viewModel.totalQuestions}',
-                style: const TextStyle(fontSize: 16, color: Colors.white70),
-              ),
-          ],
           const SizedBox(height: 48),
           ElevatedButton.icon(
             onPressed: () => Navigator.of(context).pop(),

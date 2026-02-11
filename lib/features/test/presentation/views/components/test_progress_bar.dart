@@ -4,6 +4,7 @@ class TestProgressBar extends StatelessWidget {
   final int currentQuestion;
   final int totalQuestions;
   final int score;
+  final int incorrectCount;
   final int remainingSeconds;
   final int totalSeconds;
 
@@ -12,6 +13,7 @@ class TestProgressBar extends StatelessWidget {
     required this.currentQuestion,
     required this.totalQuestions,
     required this.score,
+    required this.incorrectCount,
     required this.remainingSeconds,
     required this.totalSeconds,
   });
@@ -80,7 +82,7 @@ class TestProgressBar extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Text(
-                'Puan: $score',
+                'D: $score  Y: $incorrectCount',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: isNarrow ? 14 : 16,

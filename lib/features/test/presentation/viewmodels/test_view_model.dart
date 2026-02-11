@@ -34,6 +34,16 @@ class TestViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   int get score => _score;
+  int get correctCount => _score;
+  int get incorrectCount {
+    final incorrect = _answeredCount - _score;
+    return incorrect < 0 ? 0 : incorrect;
+  }
+  double get successPercentage {
+    final denominator = _answeredCount > 0 ? _answeredCount : _totalQuestions;
+    if (denominator <= 0) return 0;
+    return (_score / denominator) * 100;
+  }
   bool get isSaving => _isSaving;
   int get answeredCount => _answeredCount;
   int get totalQuestions => _totalQuestions;
