@@ -22,6 +22,16 @@ String get authRedirectUrl => kIsWeb ? _authRedirectUrlWeb : _authRedirectUrlMob
 // Default grade id for Google sign-in when no selection is provided
 const int defaultGoogleGradeId = 5;
 
+// AdMob IDs can be overridden with --dart-define in release builds.
+const String admobAndroidBannerUnitId = String.fromEnvironment(
+  'ADMOB_ANDROID_BANNER_UNIT_ID',
+  defaultValue: 'ca-app-pub-3940256099942544/6300978111',
+);
+const String admobIosBannerUnitId = String.fromEnvironment(
+  'ADMOB_IOS_BANNER_UNIT_ID',
+  defaultValue: 'ca-app-pub-3940256099942544/2934735716',
+);
+
 // Akademik yıl ayarları (2025-2026)
 class AcademicBreakWeek {
   final DateTime startDate;

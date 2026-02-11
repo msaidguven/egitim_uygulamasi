@@ -1,12 +1,11 @@
 // lib/screens/signup_screen.dart
 
 import 'package:egitim_uygulamasi/screens/main_screen.dart';
-import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
 import 'package:egitim_uygulamasi/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:egitim_uygulamasi/providers.dart';
+import 'package:egitim_uygulamasi/widgets/ad_banner_widget.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -304,6 +303,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     ),
 
                     const SizedBox(height: 40),
+
+                    const AdBannerWidget(
+                      margin: EdgeInsets.only(bottom: 24),
+                    ),
 
                     // Bölücü çizgi
                     Row(

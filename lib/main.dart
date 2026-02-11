@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:egitim_uygulamasi/screens/reset_password_screen.dart';
+import 'package:egitim_uygulamasi/ads/ad_service.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:egitim_uygulamasi/screens/signup_screen.dart';
 import 'package:egitim_uygulamasi/constants.dart';
@@ -19,6 +20,7 @@ Future<void> main() async {
 
   // Supabase'i başlat
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+  await AdManager.initialize();
 
   // Uygulamayı ProviderScope ile sarmala
   runApp(const ProviderScope(child: EgitimUygulamasi()));

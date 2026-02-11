@@ -8,6 +8,7 @@ import 'package:egitim_uygulamasi/features/test/presentation/viewmodels/test_vie
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/question_card.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_progress_bar.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_bottom_nav.dart';
+import 'package:egitim_uygulamasi/widgets/ad_banner_widget.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:audioplayers/audioplayers.dart';
@@ -612,6 +613,10 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                       await ref.read(testViewModelProvider.notifier).finishTest();
                       _refreshSrsDueCountIfNeeded();
                     },
+                  ),
+                  const SizedBox(height: 8),
+                  const AdBannerWidget(
+                    margin: EdgeInsets.only(bottom: 8),
                   ),
                 ],
               ),
