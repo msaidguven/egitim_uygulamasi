@@ -69,8 +69,8 @@ final List<AcademicBreakWeek> academicBreakWeeks = [
     subtitle: '2. Hafta (26 Ocak - 1 Şubat)',
   ),
   AcademicBreakWeek(
-    startDate: DateTime(2026, 3, 30),
-    endDate: DateTime(2026, 4, 5),
+    startDate: DateTime(2026, 3, 16),
+    endDate: DateTime(2026, 3, 22),
     title: 'Ara Tatil',
     subtitle: '2. DÖNEM ARA TATİLİ',
   ),
