@@ -16,7 +16,6 @@ import 'package:egitim_uygulamasi/screens/home/widgets/teacher_content_view.dart
 import 'package:egitim_uygulamasi/screens/home/widgets/unfinished_tests_section.dart';
 
 import 'package:egitim_uygulamasi/screens/home/widgets/week_info_card.dart';
-import 'package:egitim_uygulamasi/screens/home/widgets/week_scroll_widget.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -92,6 +91,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     try {
       final userId = ref.read(userIdProvider);
       final clientId = await ref.read(clientIdProvider.future);
+      if (!mounted) return;
       final viewModel = ref.read(testViewModelProvider.notifier);
 
       if (userId == null) {
@@ -102,10 +102,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 
       // SRS test session oluştur
-      final sessionId = await ref.read(testRepositoryProvider).startSrsTestSession(
-        userId: userId,
-        clientId: clientId,
-      );
+      final sessionId = await ref
+          .read(testRepositoryProvider)
+          .startSrsTestSession(userId: userId, clientId: clientId);
 
       // ViewModel'de SRS testi başlat
       await viewModel.startSrsTest(
@@ -149,93 +148,156 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final srsDueCountAsync = ref.watch(srsDueCountProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
-      body: RefreshIndicator(
-        onRefresh: widget.onRefresh,
-        color: const Color(0xFF6366F1),
-        backgroundColor: Colors.white,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
+      backgroundColor: const Color(0xFFF4F7FF),
+      body: Stack(
+        children: [
+          IgnorePointer(
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFFF7FAFF),
+                    Color(0xFFEFF4FF),
+                    Color(0xFFF9FBFF),
+                  ],
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -90,
+                    right: -40,
+                    child: Container(
+                      width: 220,
+                      height: 220,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFBFD6FF).withValues(alpha: 0.28),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 220,
+                    left: -60,
+                    child: Container(
+                      width: 180,
+                      height: 180,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFFFD9B8).withValues(alpha: 0.2),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: -80,
+                    right: -30,
+                    child: Container(
+                      width: 210,
+                      height: 210,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFCDEBD9).withValues(alpha: 0.24),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          slivers: [
-            // 1. Header Section (Herkes)
-            SliverToBoxAdapter(
-              child: HomeHeader(
-                profile: widget.profile,
-                isAdmin: isAdmin,
-                onRoleChanged: widget.onRoleChanged,
-                impersonatedRole: widget.impersonatedRole,
+          RefreshIndicator(
+            onRefresh: widget.onRefresh,
+            color: const Color(0xFF6366F1),
+            backgroundColor: Colors.white,
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
               ),
-            ),
-
-            // 2. Week Info Card Section (Herkes)
-            SliverToBoxAdapter(
-              child: WeekInfoCard(
-                profile: widget.profile,
-                agendaData: widget.agendaData,
-                completedLessons: _calculateCompletedLessons(),
-              ),
-            ),
-
-            // 3. Streak Card Widget (Sadece Üyeler/Öğrenciler)
-            if (isStudent && widget.streakStats != null)
-              SliverToBoxAdapter(
-                child: StreakCardWidget(
-                  streakCount: widget.streakStats!['current_streak'] as int? ?? 0,
-                  dailyGoal: widget.streakStats!['daily_goal'] as int? ?? 40,
-                  currentProgress: widget.streakStats!['today_solved'] as int? ?? 0,
-                ),
-              ),
-
-            // 4. SRS Alert Widget (Herkes - buton sadece girişli öğrenciye)
-            SliverToBoxAdapter(
-              child: srsDueCountAsync.when(
-                data: (count) => SrsAlertWidget(
-                  questionCount: count,
-                  onReviewTap: _isStartingSrsTest ? () {} : () => _startSrsTest(),
-                  showActionButton: isStudent,
-                  guestMessage: 'Zamanı gelen soruları çözmek için giriş yapın.',
-                ),
-                loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
-              ),
-            ),
-
-            // 5. Week Scroll Widget (Herkes) - GECICI OLARAK KAPATILDI
-            // SliverToBoxAdapter(
-            //   child: WeekScrollWidget(
-            //     currentWeek: widget.currentCurriculumWeek,
-            //     onWeekSelected: (week) {
-            //       debugPrint('Selected week: $week');
-            //     },
-            //   ),
-            // ),
-
-            // 6. Unfinished Tests Section (Giriş yapan herkes)
-            if (widget.profile != null)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverToBoxAdapter(
-                  child: UnfinishedTestsSection(
-                    unfinishedSessions: widget.unfinishedSessions,
-                    isLoading: widget.isUnfinishedSessionsLoading,
-                    onRefresh: widget.onRefresh,
+              slivers: [
+                // 1. Header Section (Herkes)
+                SliverToBoxAdapter(
+                  child: HomeHeader(
+                    profile: widget.profile,
+                    isAdmin: isAdmin,
+                    onRoleChanged: widget.onRoleChanged,
+                    impersonatedRole: widget.impersonatedRole,
                   ),
                 ),
-              ),
 
+                // 2. Week Info Card Section (Herkes)
+                SliverToBoxAdapter(
+                  child: WeekInfoCard(
+                    profile: widget.profile,
+                    agendaData: widget.agendaData,
+                    completedLessons: _calculateCompletedLessons(),
+                  ),
+                ),
 
+                // 3. Streak Card Widget (Sadece Üyeler/Öğrenciler)
+                if (isStudent && widget.streakStats != null)
+                  SliverToBoxAdapter(
+                    child: StreakCardWidget(
+                      streakCount:
+                          widget.streakStats!['current_streak'] as int? ?? 0,
+                      dailyGoal:
+                          widget.streakStats!['daily_goal'] as int? ?? 40,
+                      currentProgress:
+                          widget.streakStats!['today_solved'] as int? ?? 0,
+                    ),
+                  ),
 
-            // Remaining Content Section
-            if (widget.profile == null)
-              _buildGuestContent()
-            else if (isStudent)
-              _buildStudentContent()
-            else
-              _buildTeacherContent(),
-          ],
-        ),
+                // 4. SRS Alert Widget (Herkes - buton sadece girişli öğrenciye)
+                SliverToBoxAdapter(
+                  child: srsDueCountAsync.when(
+                    data: (count) => SrsAlertWidget(
+                      questionCount: count,
+                      onReviewTap: _isStartingSrsTest
+                          ? () {}
+                          : () => _startSrsTest(),
+                      showActionButton: isStudent,
+                      guestMessage:
+                          'Zamanı gelen soruları çözmek için giriş yapın.',
+                    ),
+                    loading: () => const SizedBox.shrink(),
+                    error: (error, stackTrace) => const SizedBox.shrink(),
+                  ),
+                ),
+
+                // 5. Week Scroll Widget (Herkes) - GECICI OLARAK KAPATILDI
+                // SliverToBoxAdapter(
+                //   child: WeekScrollWidget(
+                //     currentWeek: widget.currentCurriculumWeek,
+                //     onWeekSelected: (week) {
+                //       debugPrint('Selected week: $week');
+                //     },
+                //   ),
+                // ),
+
+                // 6. Unfinished Tests Section (Giriş yapan herkes)
+                if (widget.profile != null)
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverToBoxAdapter(
+                      child: UnfinishedTestsSection(
+                        unfinishedSessions: widget.unfinishedSessions,
+                        isLoading: widget.isUnfinishedSessionsLoading,
+                        onRefresh: widget.onRefresh,
+                      ),
+                    ),
+                  ),
+
+                // Remaining Content Section
+                if (widget.profile == null)
+                  _buildGuestContent()
+                else if (isStudent)
+                  _buildStudentContent()
+                else
+                  _buildTeacherContent(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -283,9 +345,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildTeacherContent() {
     return const SliverPadding(
       padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
-      sliver: SliverToBoxAdapter(
-        child: TeacherContentView(),
-      ),
+      sliver: SliverToBoxAdapter(child: TeacherContentView()),
     );
   }
 
@@ -295,7 +355,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return widget.agendaData!
         .where(
           (item) => (item['progress_percentage'] ?? 0.0).toDouble() >= 100.0,
-    )
+        )
         .length;
   }
 }

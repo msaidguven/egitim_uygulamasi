@@ -64,6 +64,27 @@ _LessonThemePalette _paletteForLesson(int lessonId) {
   return _lessonPalettes[index];
 }
 
+class _NeighborPageScrollPhysics extends PageScrollPhysics {
+  const _NeighborPageScrollPhysics({super.parent});
+
+  @override
+  _NeighborPageScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return _NeighborPageScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  double get minFlingDistance => 24.0;
+
+  @override
+  double get minFlingVelocity => 300.0;
+
+  @override
+  double get maxFlingVelocity => 1200.0;
+
+  @override
+  double carriedMomentum(double existingVelocity) => 0.0;
+}
+
 class OutcomesScreen extends ConsumerStatefulWidget {
   final int lessonId;
   final int gradeId;
@@ -87,29 +108,6 @@ class OutcomesScreen extends ConsumerStatefulWidget {
 class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
   double _textScale = 1.0;
   double get _maxScale => kIsWeb ? 4.0 : 1.3;
-
-  int? _resolveAnchorWeekForPage(List<Map<String, dynamic>> allWeeksData, int index) {
-    if (index < 0 || index >= allWeeksData.length) return null;
-    final page = allWeeksData[index];
-    final type = page['type'] as String?;
-    final week = page['curriculum_week'] as int?;
-    if ((type == 'week' || type == 'special_content') && week != null) {
-      return week;
-    }
-    for (var i = index - 1; i >= 0; i--) {
-      final prev = allWeeksData[i];
-      if (prev['type'] == 'week' && prev['curriculum_week'] != null) {
-        return prev['curriculum_week'] as int;
-      }
-    }
-    for (var i = index + 1; i < allWeeksData.length; i++) {
-      final next = allWeeksData[i];
-      if (next['type'] == 'week' && next['curriculum_week'] != null) {
-        return next['curriculum_week'] as int;
-      }
-    }
-    return null;
-  }
 
   void _increaseTextScale() {
     setState(() {
@@ -175,7 +173,11 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFFF6F9FF), Color(0xFFEEF3FF), Color(0xFFF8FAFF)],
+                colors: [
+                  Color(0xFFF6F9FF),
+                  Color(0xFFEEF3FF),
+                  Color(0xFFF8FAFF),
+                ],
               ),
             ),
           ),
@@ -187,7 +189,7 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
               height: 220,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFBFD6FF).withOpacity(0.28),
+                color: const Color(0xFFBFD6FF).withValues(alpha: 0.28),
               ),
             ),
           ),
@@ -199,7 +201,7 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
               height: 180,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFFFD9B8).withOpacity(0.22),
+                color: const Color(0xFFFFD9B8).withValues(alpha: 0.22),
               ),
             ),
           ),
@@ -211,14 +213,14 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
               height: 210,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFCDEBD9).withOpacity(0.25),
+                color: const Color(0xFFCDEBD9).withValues(alpha: 0.25),
               ),
             ),
           ),
           viewModel.isLoadingWeeks
               ? const Center(child: CircularProgressIndicator.adaptive())
               : viewModel.hasErrorWeeks
-                  ? Center(
+              ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -238,70 +240,69 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                       ),
                     ],
                   ),
-                  )
-                  : viewModel.allWeeksData.isEmpty
-                      ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.inbox_outlined,
-                            size: 64,
-                            color: Colors.grey.shade400,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Bu derse ait hafta bulunamadı.',
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
+                )
+              : viewModel.allWeeksData.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.inbox_outlined,
+                        size: 64,
+                        color: Colors.grey.shade400,
                       ),
-                      )
-                      : PageView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          controller: viewModel.pageController,
-                          itemCount: viewModel.allWeeksData.length,
-                          onPageChanged: viewModel.onPageChanged,
-                          itemBuilder: (context, index) {
-                            final weekData = viewModel.allWeeksData[index];
-                            final anchorWeek = _resolveAnchorWeekForPage(
-                              viewModel.allWeeksData.cast<Map<String, dynamic>>(),
-                              index,
-                            );
-                            if (anchorWeek == null) {
-                              return ErrorCard(errorMessage: 'Hafta verisi bozuk');
-                            }
-
-                            return MediaQuery(
-                              data: mediaQuery.copyWith(
-                                textScaleFactor: _textScale,
-                              ),
-                              child: WeekContentView(
-                                key: ValueKey('week_content_${index}_$anchorWeek'),
-                                curriculumWeek: anchorWeek,
-                                pageData: Map<String, dynamic>.from(weekData),
-                                args: viewModelArgs,
-                                palette: palette,
-                              ),
-                            );
-                          },
+                      const SizedBox(height: 16),
+                      Text(
+                        'Bu derse ait hafta bulunamadı.',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 16,
                         ),
+                      ),
+                    ],
+                  ),
+                )
+                : PageView.builder(
+                    physics: const _NeighborPageScrollPhysics(),
+                    controller: viewModel.pageController,
+                    itemCount: viewModel.allWeeksData.length,
+                    onPageChanged: viewModel.onPageChanged,
+                  itemBuilder: (context, index) {
+                    final weekData = viewModel.allWeeksData[index];
+                    final anchorWeek =
+                        viewModel.timelineItems[index].anchorWeek;
+                    if (anchorWeek == null) {
+                      return ErrorCard(errorMessage: 'Hafta verisi bozuk');
+                    }
+
+                    final page = MediaQuery(
+                      data: mediaQuery.copyWith(
+                        textScaler: TextScaler.linear(_textScale),
+                      ),
+                      child: _WeekContentView(
+                        key: ValueKey('week_content_${index}_$anchorWeek'),
+                        curriculumWeek: anchorWeek,
+                        pageData: Map<String, dynamic>.from(weekData),
+                        args: viewModelArgs,
+                        palette: palette,
+                      ),
+                    );
+                    return page;
+                  },
+                ),
         ],
       ),
     );
   }
 }
 
-class WeekContentView extends ConsumerStatefulWidget {
+class _WeekContentView extends ConsumerStatefulWidget {
   final int curriculumWeek;
   final Map<String, dynamic> pageData;
   final OutcomesViewModelArgs args;
   final _LessonThemePalette palette;
 
-  const WeekContentView({
+  const _WeekContentView({
     super.key,
     required this.curriculumWeek,
     required this.pageData,
@@ -310,10 +311,10 @@ class WeekContentView extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<WeekContentView> createState() => _WeekContentViewState();
+  ConsumerState<_WeekContentView> createState() => _WeekContentViewState();
 }
 
-class _WeekContentViewState extends ConsumerState<WeekContentView>
+class _WeekContentViewState extends ConsumerState<_WeekContentView>
     with AutomaticKeepAliveClientMixin {
   int? _selectedSectionIndex;
   int? _selectedUnitId;
@@ -378,7 +379,9 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                           child: Container(
                             decoration: const BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(24),
+                              ),
                             ),
                             child: Column(
                               children: [
@@ -394,30 +397,49 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                                 const SizedBox(height: 14),
                                 const Text(
                                   'Ünite Seç',
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                                 const SizedBox(height: 8),
                                 Expanded(
                                   child: ListView.builder(
                                     controller: scrollController,
-                                    padding: const EdgeInsets.fromLTRB(14, 4, 14, 16),
+                                    padding: const EdgeInsets.fromLTRB(
+                                      14,
+                                      4,
+                                      14,
+                                      16,
+                                    ),
                                     itemCount: units.length,
                                     itemBuilder: (context, index) {
                                       final unit = units[index];
                                       final unitId = unit['unit_id'] as int?;
                                       final isSelected =
-                                          unitId != null && unitId == selectedUnitId;
-                                      final icon = unitIcons[index % unitIcons.length];
-                                      final iconColor = unitColors[index % unitColors.length];
+                                          unitId != null &&
+                                          unitId == selectedUnitId;
+                                      final icon =
+                                          unitIcons[index % unitIcons.length];
+                                      final iconColor =
+                                          unitColors[index % unitColors.length];
                                       return Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 5),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 5,
+                                        ),
                                         child: InkWell(
-                                          borderRadius: BorderRadius.circular(14),
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
                                           onTap: unitId == null
                                               ? null
-                                              : () => Navigator.of(context).pop(unitId),
+                                              : () => Navigator.of(
+                                                  context,
+                                                ).pop(unitId),
                                           child: AnimatedContainer(
-                                            duration: const Duration(milliseconds: 180),
+                                            duration: const Duration(
+                                              milliseconds: 180,
+                                            ),
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 14,
                                               vertical: 12,
@@ -431,8 +453,11 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                                                       ],
                                                     )
                                                   : null,
-                                              color: isSelected ? null : Colors.grey.shade50,
-                                              borderRadius: BorderRadius.circular(14),
+                                              color: isSelected
+                                                  ? null
+                                                  : Colors.grey.shade50,
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
                                               border: Border.all(
                                                 color: isSelected
                                                     ? const Color(0xFF2F6FE4)
@@ -445,8 +470,13 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                                                   width: 34,
                                                   height: 34,
                                                   decoration: BoxDecoration(
-                                                    color: iconColor.withOpacity(0.14),
-                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: iconColor.withValues(
+                                                      alpha: 0.14,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
                                                   ),
                                                   child: Icon(
                                                     icon,
@@ -457,7 +487,9 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                                                 const SizedBox(width: 10),
                                                 Expanded(
                                                   child: Text(
-                                                    (unit['unit_title'] as String? ?? 'Ünite')
+                                                    (unit['unit_title']
+                                                                as String? ??
+                                                            'Ünite')
                                                         .trim(),
                                                     style: TextStyle(
                                                       fontSize: 14,
@@ -469,9 +501,10 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                                                 ),
                                                 Icon(
                                                   isSelected
-                                                      ? Icons.check_circle_rounded
+                                                      ? Icons
+                                                            .check_circle_rounded
                                                       : Icons
-                                                          .radio_button_unchecked_rounded,
+                                                            .radio_button_unchecked_rounded,
                                                   color: isSelected
                                                       ? const Color(0xFF2F6FE4)
                                                       : Colors.grey.shade600,
@@ -502,10 +535,12 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
     if (!mounted || picked == null) return;
     setState(() => _selectedUnitId = picked);
 
-    final firstTopicForUnit = allTopics.firstWhere(
-      (topic) => topic['unit_id'] == picked,
-      orElse: () => <String, dynamic>{},
-    )['topic_id'] as int?;
+    final firstTopicForUnit =
+        allTopics.firstWhere(
+              (topic) => topic['unit_id'] == picked,
+              orElse: () => <String, dynamic>{},
+            )['topic_id']
+            as int?;
     if (firstTopicForUnit != null) {
       await _handleTopicSelect(
         topicId: firstTopicForUnit,
@@ -540,9 +575,7 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
       return;
     }
 
-    final targetPageIndex = viewModel.allWeeksData.indexWhere(
-      (w) => w['type'] == 'week' && w['curriculum_week'] == targetWeek,
-    );
+    final targetPageIndex = viewModel.weekPageIndexByWeek[targetWeek] ?? -1;
     if (targetPageIndex == -1) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Konunun haftası takvimde bulunamadı.')),
@@ -609,84 +642,34 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
       profileViewModelProvider.select((p) => p.profile?.role == 'admin'),
     );
     final lessonTopics = ref.watch(
-      outcomesViewModelProvider(
-        widget.args,
-      ).select((vm) => vm.lessonTopics),
+      outcomesViewModelProvider(widget.args).select((vm) => vm.lessonTopics),
     );
-    final allWeeksData = ref.watch(
+    final weekNumbers = ref.watch(
+      outcomesViewModelProvider(widget.args).select((vm) => vm.weekNumbers),
+    );
+    final weekPageIndexByWeek = ref.watch(
       outcomesViewModelProvider(
         widget.args,
-      ).select((vm) => vm.allWeeksData),
+      ).select((vm) => vm.weekPageIndexByWeek),
+    );
+    final breakAfterWeekCounts = ref.watch(
+      outcomesViewModelProvider(
+        widget.args,
+      ).select((vm) => vm.breakAfterWeekCounts),
+    );
+    final breakPageIndexesByAfterWeek = ref.watch(
+      outcomesViewModelProvider(
+        widget.args,
+      ).select((vm) => vm.breakPageIndexesByAfterWeek),
+    );
+    final extraBadgesByWeek = ref.watch(
+      outcomesViewModelProvider(
+        widget.args,
+      ).select((vm) => vm.extraBadgesByWeek),
     );
     final solvedWeeks = ref.watch(
-      outcomesViewModelProvider(
-        widget.args,
-      ).select((vm) => vm.solvedWeeks),
+      outcomesViewModelProvider(widget.args).select((vm) => vm.solvedWeeks),
     );
-    final weekNumbers = allWeeksData
-        .where(
-          (w) =>
-              (w['type'] == 'week' || w['type'] == 'special_content') &&
-              w['curriculum_week'] != null,
-        )
-        .map((w) => w['curriculum_week'] as int)
-        .toSet()
-        .toList()
-      ..sort();
-    final weekPageIndexByWeek = <int, int>{};
-    final breakAfterWeekCounts = <int, int>{};
-    final breakPageIndexesByAfterWeek = <int, List<int>>{};
-    final extraBadgesByWeek = <int, List<Map<String, dynamic>>>{};
-    for (var i = 0; i < allWeeksData.length; i++) {
-      final item = allWeeksData[i];
-      final type = item['type'] as String?;
-      final curriculumWeek = item['curriculum_week'] as int?;
-
-      if (curriculumWeek != null) {
-        if (type == 'week' || !weekPageIndexByWeek.containsKey(curriculumWeek)) {
-          weekPageIndexByWeek[curriculumWeek] = i;
-        }
-      }
-
-      if (type == 'social_activity') {
-        int? previousWeek;
-        for (var j = i - 1; j >= 0; j--) {
-          final prev = allWeeksData[j];
-          if (prev['type'] == 'week' && prev['curriculum_week'] != null) {
-            previousWeek = prev['curriculum_week'] as int;
-            break;
-          }
-        }
-        if (previousWeek != null) {
-          extraBadgesByWeek
-              .putIfAbsent(previousWeek, () => <Map<String, dynamic>>[])
-              .add({
-            'short_label': 'SE',
-            'title': (item['title'] as String? ?? '').trim(),
-            'page_index': i,
-            'is_special': false,
-          });
-        }
-      }
-      if (item['type'] != 'break') continue;
-      int? previousWeek;
-      for (var j = i - 1; j >= 0; j--) {
-        final prev = allWeeksData[j];
-        if (prev['type'] == 'week' && prev['curriculum_week'] != null) {
-          previousWeek = prev['curriculum_week'] as int;
-          break;
-        }
-      }
-      if (previousWeek != null) {
-        breakAfterWeekCounts[previousWeek] =
-            (breakAfterWeekCounts[previousWeek] ?? 0) + 1;
-        final indexes = breakPageIndexesByAfterWeek.putIfAbsent(
-          previousWeek,
-          () => <int>[],
-        );
-        indexes.add(i);
-      }
-    }
     final actualCurrentWeek = calculateCurrentAcademicWeek();
     final pageType = (widget.pageData['type'] as String?) ?? 'week';
     final isSpecialPage = pageType != 'week';
@@ -747,7 +730,7 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
               'topic_title': data['topic_title'],
               'outcomes': data['outcomes'] ?? <dynamic>[],
               'contents': data['contents'] ?? <dynamic>[],
-            }
+            },
           ];
     if (sections.isEmpty) {
       return Center(
@@ -771,16 +754,13 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
     final rawSelectedIndex = _selectedSectionIndex ?? 0;
     final safeSelectedIndex =
         (rawSelectedIndex >= 0 && rawSelectedIndex < sections.length)
-            ? rawSelectedIndex
-            : 0;
+        ? rawSelectedIndex
+        : 0;
     if (_selectedSectionIndex != safeSelectedIndex) {
       _selectedSectionIndex = safeSelectedIndex;
     }
 
     final selectedSection = sections[safeSelectedIndex];
-    final selectedOutcomes = (selectedSection['outcomes'] as List? ?? [])
-        .whereType<String>()
-        .toList();
     final selectedContents = (selectedSection['contents'] as List? ?? [])
         .whereType<Map>()
         .map((c) => TopicContent.fromJson(Map<String, dynamic>.from(c)))
@@ -794,7 +774,8 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
     final topicMenu = lessonTopics.isNotEmpty
         ? lessonTopics
         : sections
-            .map((s) => {
+              .map(
+                (s) => {
                   'topic_id': s['topic_id'],
                   'topic_title': s['topic_title'],
                   'unit_id': s['unit_id'],
@@ -804,8 +785,9 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                   'weeks': <int>[widget.curriculumWeek],
                   'first_week': widget.curriculumWeek,
                   'last_week': widget.curriculumWeek,
-                })
-            .toList();
+                },
+              )
+              .toList();
     final unitOptions = <Map<String, dynamic>>[];
     for (final topic in topicMenu) {
       final unitId = topic['unit_id'] as int?;
@@ -834,14 +816,18 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
     final filteredTopics = effectiveUnitId == null
         ? topicMenu
         : topicMenu.where((t) => t['unit_id'] == effectiveUnitId).toList();
-    final effectiveSelectedTopicId = filteredTopics.any((t) => t['topic_id'] == selectedTopicId)
+    final effectiveSelectedTopicId =
+        filteredTopics.any((t) => t['topic_id'] == selectedTopicId)
         ? selectedTopicId
-        : (filteredTopics.isNotEmpty ? filteredTopics.first['topic_id'] as int? : null);
-    final selectedUnitTitle = unitOptions
-            .firstWhere(
+        : (filteredTopics.isNotEmpty
+              ? filteredTopics.first['topic_id'] as int?
+              : null);
+    final selectedUnitTitle =
+        unitOptions.firstWhere(
               (u) => u['unit_id'] == effectiveUnitId,
               orElse: () => <String, dynamic>{'unit_title': 'Ünite seçiniz'},
-            )['unit_title'] as String? ??
+            )['unit_title']
+            as String? ??
         'Ünite seçiniz';
 
     final isLastWeek = data['is_last_week_of_unit'] ?? false;
@@ -860,6 +846,7 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
               child: HeaderView(
                 curriculumWeek: widget.curriculumWeek,
                 data: data,
+                pageData: widget.pageData,
                 args: widget.args,
               ),
             ),
@@ -879,80 +866,111 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                 breakAfterWeekCounts: breakAfterWeekCounts,
                 breakPageIndexesByAfterWeek: breakPageIndexesByAfterWeek,
                 extraBadgesByWeek: extraBadgesByWeek,
-                selectedWeek: widget.curriculumWeek,
+                weekPageIndexByWeek: weekPageIndexByWeek,
+                selectedWeek: isSpecialPage ? null : widget.curriculumWeek,
                 actualCurrentWeek: actualCurrentWeek,
                 solvedWeeks: solvedWeeks,
                 palette: widget.palette,
-                onSelectWeek: (targetWeek) async {
-                  final targetPageIndex = weekPageIndexByWeek[targetWeek];
-                  if (targetPageIndex == null) return;
-                  final viewModel = ref.read(outcomesViewModelProvider(widget.args));
-                  await viewModel.pageController.animateToPage(
-                    targetPageIndex,
-                    duration: const Duration(milliseconds: 260),
-                    curve: Curves.easeOutCubic,
+                onSelectWeek: (targetWeek, directPageIndex) async {
+                  final viewModel = ref.read(
+                    outcomesViewModelProvider(widget.args),
                   );
+                  int targetPageIndex = directPageIndex;
+
+                  final exactFromTimeline = viewModel.timelineItems.indexWhere(
+                    (item) =>
+                        item.type == 'week' &&
+                        item.curriculumWeek == targetWeek,
+                  );
+                  if (exactFromTimeline != -1) {
+                    targetPageIndex = exactFromTimeline;
+                  }
+
+                  viewModel.pageController.jumpToPage(targetPageIndex);
+
+                  final settledIndex =
+                      (viewModel.pageController.page?.round() ??
+                      targetPageIndex);
+                  final settledItem =
+                      (settledIndex >= 0 &&
+                          settledIndex < viewModel.timelineItems.length)
+                      ? viewModel.timelineItems[settledIndex]
+                      : null;
+                  final isCorrect =
+                      settledItem != null &&
+                      settledItem.type == 'week' &&
+                      settledItem.curriculumWeek == targetWeek;
+                  if (!isCorrect) {
+                    final hardIndex = viewModel.timelineItems.indexWhere(
+                      (item) =>
+                          item.type == 'week' &&
+                          item.curriculumWeek == targetWeek,
+                    );
+                    if (hardIndex != -1) {
+                      viewModel.pageController.jumpToPage(hardIndex);
+                    }
+                  }
                 },
-                onSelectBreakPageIndex: (breakPageIndex) async {
-                  if (breakPageIndex < 0 || breakPageIndex >= allWeeksData.length) return;
-                  final viewModel = ref.read(outcomesViewModelProvider(widget.args));
-                  await viewModel.pageController.animateToPage(
-                    breakPageIndex,
-                    duration: const Duration(milliseconds: 260),
-                    curve: Curves.easeOutCubic,
+                onSelectSpecialPage: (breakPageIndex, expectedType) async {
+                  final viewModel = ref.read(
+                    outcomesViewModelProvider(widget.args),
                   );
+                  final resolved = viewModel.findNearestPageIndexByType(
+                    aroundIndex: breakPageIndex,
+                    expectedType: expectedType,
+                  );
+                  if (resolved == null) return;
+                  viewModel.pageController.jumpToPage(resolved);
                 },
               ),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _TopicSelectorCard(
-                      topics: filteredTopics,
-                      selectedTopicId: effectiveSelectedTopicId,
-                      currentWeekTopicIds: currentWeekTopicIds,
-                      currentWeek: widget.curriculumWeek,
-                      palette: widget.palette,
-                      selectedUnitTitle: selectedUnitTitle,
-                      unitCount: unitOptions.length,
-                      onTapUnit: () => _showUnitPicker(
-                        context,
-                        unitOptions,
-                        effectiveUnitId,
-                        topicMenu,
-                        sections,
-                      ),
-                      onSelectTopic: (topicId) => _handleTopicSelect(
-                        topicId: topicId,
-                        currentSections: sections,
+          if (!isSpecialPage)
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _TopicSelectorCard(
+                        topics: filteredTopics,
+                        selectedTopicId: effectiveSelectedTopicId,
+                        currentWeekTopicIds: currentWeekTopicIds,
+                        currentWeek: widget.curriculumWeek,
+                        palette: widget.palette,
+                        selectedUnitTitle: selectedUnitTitle,
+                        unitCount: unitOptions.length,
+                        onTapUnit: () => _showUnitPicker(
+                          context,
+                          unitOptions,
+                          effectiveUnitId,
+                          topicMenu,
+                          sections,
+                        ),
+                        onSelectTopic: (topicId) => _handleTopicSelect(
+                          topicId: topicId,
+                          currentSections: sections,
+                        ),
                       ),
                     ),
-                  ),
-                  _WeekSectionBlock(
-                    weekSections: sections,
-                    selectedTopicId: effectiveSelectedTopicId,
-                    outcomes: selectedOutcomes,
-                    contents: selectedContents,
-                    isAdmin: isAdmin,
-                    onContentUpdated: () => ref
-                        .read(outcomesViewModelProvider(widget.args))
-                        .refreshCurrentWeekData(widget.curriculumWeek),
-                  ),
-                ],
+                    _WeekSectionBlock(
+                      contents: selectedContents,
+                      isAdmin: isAdmin,
+                      onContentUpdated: () => ref
+                          .read(outcomesViewModelProvider(widget.args))
+                          .refreshCurrentWeekData(widget.curriculumWeek),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          if (unitId != null)
+          if (!isSpecialPage && unitId != null)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
               sliver: SliverToBoxAdapter(
                 child: MediaQuery(
-                  data: mediaQuery.copyWith(textScaleFactor: 1.0),
+                  data: mediaQuery.copyWith(textScaler: TextScaler.noScaling),
                   child: WeeklyTestView(
                     unitId: unitId,
                     curriculumWeek: widget.curriculumWeek,
@@ -962,12 +980,12 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                 ),
               ),
             ),
-          if (isLastWeek && unitSummary != null)
+          if (!isSpecialPage && isLastWeek && unitSummary != null)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               sliver: SliverToBoxAdapter(
                 child: MediaQuery(
-                  data: mediaQuery.copyWith(textScaleFactor: 1.0),
+                  data: mediaQuery.copyWith(textScaler: TextScaler.noScaling),
                   child: UnitTestView(
                     unitSummary: unitSummary,
                     unitId: data['unit_id']!,
@@ -987,7 +1005,10 @@ class _PageTypeInfoCard extends StatelessWidget {
   const _PageTypeInfoCard({required this.pageData});
 
   String _stripHtml(String value) {
-    return value.replaceAll(RegExp(r'<[^>]*>'), ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
+    return value
+        .replaceAll(RegExp(r'<[^>]*>'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
   }
 
   @override
@@ -1041,7 +1062,7 @@ class _PageTypeInfoCard extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.75),
+              color: Colors.white.withValues(alpha: 0.75),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: text, size: 20),
@@ -1066,7 +1087,7 @@ class _PageTypeInfoCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: text.withOpacity(0.92),
+                      color: text.withValues(alpha: 0.92),
                     ),
                   ),
                 ],
@@ -1115,7 +1136,7 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
     final firstWeek = topic['first_week'] as int?;
     final lastWeek = topic['last_week'] as int?;
     if (firstWeek == null || lastWeek == null) return 'Plan Bekliyor';
-    if (widget.currentWeek < firstWeek) return '${firstWeek}. Hafta';
+    if (widget.currentWeek < firstWeek) return '$firstWeek. Hafta';
     if (widget.currentWeek > lastWeek) return 'Tamamlandı';
     return 'Devam Ediyor';
   }
@@ -1130,13 +1151,14 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedTopicTitle = (widget.topics
-            .firstWhere(
-              (topic) => topic['topic_id'] == widget.selectedTopicId,
-              orElse: () => <String, dynamic>{'topic_title': ''},
-            )['topic_title'] as String? ??
-        '')
-        .trim();
+    final selectedTopicTitle =
+        (widget.topics.firstWhere(
+                      (topic) => topic['topic_id'] == widget.selectedTopicId,
+                      orElse: () => <String, dynamic>{'topic_title': ''},
+                    )['topic_title']
+                    as String? ??
+                '')
+            .trim();
 
     return Container(
       width: double.infinity,
@@ -1151,7 +1173,7 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
         border: Border.all(color: widget.palette.border),
         boxShadow: [
           BoxShadow(
-            color: widget.palette.primary.withOpacity(0.2),
+            color: widget.palette.primary.withValues(alpha: 0.2),
             blurRadius: 16,
             offset: const Offset(0, 7),
           ),
@@ -1167,7 +1189,7 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
               height: 92,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFBFD6FF).withOpacity(0.22),
+                color: const Color(0xFFBFD6FF).withValues(alpha: 0.22),
               ),
             ),
           ),
@@ -1179,7 +1201,7 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
               height: 90,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFFFD9B8).withOpacity(0.18),
+                color: const Color(0xFFFFD9B8).withValues(alpha: 0.18),
               ),
             ),
           ),
@@ -1190,9 +1212,12 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                 borderRadius: BorderRadius.circular(12),
                 onTap: widget.onTapUnit,
                 child: Ink(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.72),
+                    color: Colors.white.withValues(alpha: 0.72),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: widget.palette.border),
                   ),
@@ -1202,7 +1227,7 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                         width: 30,
                         height: 30,
                         decoration: BoxDecoration(
-                          color: widget.palette.primary.withOpacity(0.13),
+                          color: widget.palette.primary.withValues(alpha: 0.13),
                           borderRadius: BorderRadius.circular(9),
                         ),
                         child: Icon(
@@ -1218,7 +1243,10 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                           children: [
                             const Text(
                               'Seçili Ünite',
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             Text(
                               widget.selectedUnitTitle,
@@ -1234,13 +1262,19 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                       ),
                       Text(
                         '${widget.unitCount} ünite',
-                        style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey.shade700,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: widget.palette.primary.withOpacity(0.12),
+                          color: widget.palette.primary.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Row(
@@ -1282,11 +1316,15 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                   switchInCurve: Curves.easeOutCubic,
                   switchOutCurve: Curves.easeInCubic,
                   child: Column(
-                    key: ValueKey('${widget.topics.first['unit_id']}_${widget.topics.length}'),
+                    key: ValueKey(
+                      '${widget.topics.first['unit_id']}_${widget.topics.length}',
+                    ),
                     children: widget.topics.map((topic) {
                       final topicId = topic['topic_id'] as int?;
-                      final title = (topic['topic_title'] as String? ?? 'Konu').trim();
-                      final isSelected = topicId != null && topicId == widget.selectedTopicId;
+                      final title = (topic['topic_title'] as String? ?? 'Konu')
+                          .trim();
+                      final isSelected =
+                          topicId != null && topicId == widget.selectedTopicId;
                       final status = _statusLabel(topic);
                       final weekRange = _weekRangeLabel(topic);
                       final bool isCurrent = status == 'Bu Hafta';
@@ -1295,12 +1333,18 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                         decoration: BoxDecoration(
                           gradient: isSelected
                               ? LinearGradient(
-                                  colors: [widget.palette.soft, const Color(0xFFF3F8FF)],
+                                  colors: [
+                                    widget.palette.soft,
+                                    const Color(0xFFF3F8FF),
+                                  ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 )
                               : const LinearGradient(
-                                  colors: [Color(0xFFFFFFFF), Color(0xFFF8FBFF)],
+                                  colors: [
+                                    Color(0xFFFFFFFF),
+                                    Color(0xFFF8FBFF),
+                                  ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
@@ -1313,7 +1357,9 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                           boxShadow: [
                             if (isSelected)
                               BoxShadow(
-                                color: widget.palette.primary.withOpacity(0.18),
+                                color: widget.palette.primary.withValues(
+                                  alpha: 0.18,
+                                ),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -1326,12 +1372,16 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                             height: 30,
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? widget.palette.primary.withOpacity(0.12)
+                                  ? widget.palette.primary.withValues(
+                                      alpha: 0.12,
+                                    )
                                   : Colors.white,
                               borderRadius: BorderRadius.circular(9),
                             ),
                             child: Icon(
-                              isSelected ? Icons.bookmark_rounded : Icons.book_outlined,
+                              isSelected
+                                  ? Icons.bookmark_rounded
+                                  : Icons.book_outlined,
                               color: isSelected
                                   ? widget.palette.primary
                                   : Colors.grey.shade700,
@@ -1342,17 +1392,21 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                             title,
                             style: TextStyle(
                               fontSize: 13,
-                              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                              fontWeight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
                             ),
                           ),
                           subtitle: Text(
                             '$status • $weekRange',
                             style: TextStyle(
                               fontSize: 11,
-                          color: isCurrent
+                              color: isCurrent
                                   ? widget.palette.primary
                                   : Colors.grey.shade600,
-                              fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                              fontWeight: isCurrent
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
                             ),
                           ),
                           trailing: Icon(
@@ -1362,7 +1416,9 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
                                 ? widget.palette.primary
                                 : Colors.grey.shade500,
                           ),
-                          onTap: topicId == null ? null : () => widget.onSelectTopic(topicId),
+                          onTap: topicId == null
+                              ? null
+                              : () => widget.onSelectTopic(topicId),
                         ),
                       );
                     }).toList(),
@@ -1392,24 +1448,26 @@ class _WeekStripBar extends StatefulWidget {
   final Map<int, int> breakAfterWeekCounts;
   final Map<int, List<int>> breakPageIndexesByAfterWeek;
   final Map<int, List<Map<String, dynamic>>> extraBadgesByWeek;
-  final int selectedWeek;
+  final Map<int, int> weekPageIndexByWeek;
+  final int? selectedWeek;
   final int actualCurrentWeek;
   final Set<int> solvedWeeks;
   final _LessonThemePalette palette;
-  final ValueChanged<int> onSelectWeek;
-  final ValueChanged<int> onSelectBreakPageIndex;
+  final void Function(int week, int pageIndex) onSelectWeek;
+  final void Function(int pageIndex, String expectedType) onSelectSpecialPage;
 
   const _WeekStripBar({
     required this.weekNumbers,
     required this.breakAfterWeekCounts,
     required this.breakPageIndexesByAfterWeek,
     required this.extraBadgesByWeek,
+    required this.weekPageIndexByWeek,
     required this.selectedWeek,
     required this.actualCurrentWeek,
     required this.solvedWeeks,
     required this.palette,
     required this.onSelectWeek,
-    required this.onSelectBreakPageIndex,
+    required this.onSelectSpecialPage,
   });
 
   @override
@@ -1438,11 +1496,7 @@ class _WeekStripBarState extends State<_WeekStripBar> {
       if (retryCount < 2) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            _centerWeek(
-              week,
-              duration: duration,
-              retryCount: retryCount + 1,
-            );
+            _centerWeek(week, duration: duration, retryCount: retryCount + 1);
           }
         });
       }
@@ -1463,15 +1517,17 @@ class _WeekStripBarState extends State<_WeekStripBar> {
       if (!mounted) return;
       final initialWeek = !_didGlobalInitialCentering
           ? (widget.weekNumbers.contains(widget.actualCurrentWeek)
-              ? widget.actualCurrentWeek
-              : widget.weekNumbers.contains(widget.selectedWeek)
-                  ? widget.selectedWeek
-                  : widget.weekNumbers.first)
-          : (widget.weekNumbers.contains(widget.selectedWeek)
-              ? widget.selectedWeek
-              : widget.weekNumbers.contains(widget.actualCurrentWeek)
-                  ? widget.actualCurrentWeek
-                  : widget.weekNumbers.first);
+                ? widget.actualCurrentWeek
+                : (widget.selectedWeek != null &&
+                      widget.weekNumbers.contains(widget.selectedWeek))
+                ? widget.selectedWeek!
+                : widget.weekNumbers.first)
+          : ((widget.selectedWeek != null &&
+                    widget.weekNumbers.contains(widget.selectedWeek))
+                ? widget.selectedWeek!
+                : widget.weekNumbers.contains(widget.actualCurrentWeek)
+                ? widget.actualCurrentWeek
+                : widget.weekNumbers.first);
       _didGlobalInitialCentering = true;
       _didInitialCentering = true;
       _centerWeek(initialWeek, duration: const Duration(milliseconds: 0));
@@ -1485,11 +1541,13 @@ class _WeekStripBarState extends State<_WeekStripBar> {
     if (oldWidget.selectedWeek != widget.selectedWeek) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        final weekToCenter = widget.weekNumbers.contains(widget.selectedWeek)
-            ? widget.selectedWeek
+        final weekToCenter =
+            (widget.selectedWeek != null &&
+                widget.weekNumbers.contains(widget.selectedWeek))
+            ? widget.selectedWeek!
             : widget.weekNumbers.contains(widget.actualCurrentWeek)
-                ? widget.actualCurrentWeek
-                : widget.weekNumbers.first;
+            ? widget.actualCurrentWeek
+            : widget.weekNumbers.first;
         _centerWeek(weekToCenter);
       });
     }
@@ -1517,7 +1575,7 @@ class _WeekStripBarState extends State<_WeekStripBar> {
         border: Border.all(color: const Color(0xFFD9E7FF)),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF87A8E5).withOpacity(0.12),
+            color: const Color(0xFF87A8E5).withValues(alpha: 0.12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1540,7 +1598,9 @@ class _WeekStripBarState extends State<_WeekStripBar> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: widget.weekNumbers.map((week) {
-                final isSelected = week == widget.selectedWeek;
+                final isSelected =
+                    widget.selectedWeek != null && week == widget.selectedWeek;
+                final hasExplicitWeekSelection = widget.selectedWeek != null;
                 final isCurrent = week == widget.actualCurrentWeek;
                 final isPast = week < widget.actualCurrentWeek;
                 final isSolved = widget.solvedWeeks.contains(week);
@@ -1551,9 +1611,13 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                       padding: const EdgeInsets.only(right: 8),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(999),
-                        onTap: () => widget.onSelectWeek(week),
+                        onTap: () {
+                          final pageIndex = widget.weekPageIndexByWeek[week];
+                          if (pageIndex == null) return;
+                          widget.onSelectWeek(week, pageIndex);
+                        },
                         child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 160),
+                          duration: const Duration(milliseconds: 190),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 8,
@@ -1562,17 +1626,44 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                             color: isSelected
                                 ? widget.palette.primary
                                 : isCurrent
-                                    ? const Color(0xFFFFE7CB)
-                                    : isPast
-                                        ? const Color(0xFFE8F0FF)
-                                        : Colors.white,
+                                ? (hasExplicitWeekSelection
+                                      ? const Color(0xFFFFE7CB)
+                                      : const Color(0xFFF7F9FD))
+                                : isPast
+                                ? const Color(0xFFE8F0FF)
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(999),
                             border: Border.all(
                               color: isCurrent
-                                  ? widget.palette.warm
+                                  ? (hasExplicitWeekSelection
+                                        ? widget.palette.warm
+                                        : const Color(0xFFD5E2FF))
                                   : const Color(0xFFD5E2FF),
-                              width: isCurrent ? 1.5 : 1.0,
+                              width: isCurrent && hasExplicitWeekSelection
+                                  ? 1.5
+                                  : 1.0,
                             ),
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: widget.palette.primary.withValues(
+                                        alpha: 0.28,
+                                      ),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ]
+                                : (isCurrent && hasExplicitWeekSelection)
+                                ? [
+                                    BoxShadow(
+                                      color: widget.palette.warm.withValues(
+                                        alpha: 0.22,
+                                      ),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ]
+                                : null,
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -1585,13 +1676,15 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                                   color: isSelected
                                       ? Colors.white
                                       : isCurrent
-                                          ? const Color(0xFFB76A00)
-                                          : isPast
-                                              ? widget.palette.primary
-                                              : Colors.grey.shade700,
+                                      ? (hasExplicitWeekSelection
+                                            ? const Color(0xFFB76A00)
+                                            : Colors.grey.shade700)
+                                      : isPast
+                                      ? widget.palette.primary
+                                      : Colors.grey.shade700,
                                 ),
                               ),
-                              if (isCurrent) ...[
+                              if (isCurrent && hasExplicitWeekSelection) ...[
                                 const SizedBox(width: 6),
                                 Container(
                                   width: 6,
@@ -1627,11 +1720,18 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                           padding: const EdgeInsets.only(right: 8),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(999),
-                            onTap: (widget.breakPageIndexesByAfterWeek[week] != null &&
-                                    widget.breakPageIndexesByAfterWeek[week]!.length > index)
-                                ? () => widget.onSelectBreakPageIndex(
-                                      widget.breakPageIndexesByAfterWeek[week]![index],
-                                    )
+                            onTap:
+                                (widget.breakPageIndexesByAfterWeek[week] !=
+                                        null &&
+                                    widget
+                                            .breakPageIndexesByAfterWeek[week]!
+                                            .length >
+                                        index)
+                                ? () => widget.onSelectSpecialPage(
+                                    widget
+                                        .breakPageIndexesByAfterWeek[week]![index],
+                                    'break',
+                                  )
                                 : null,
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -1641,7 +1741,9 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFE4EC),
                                 borderRadius: BorderRadius.circular(999),
-                                border: Border.all(color: const Color(0xFFFFB0C7)),
+                                border: Border.all(
+                                  color: const Color(0xFFFFB0C7),
+                                ),
                               ),
                               child: const Text(
                                 'T',
@@ -1658,7 +1760,8 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                     if ((widget.extraBadgesByWeek[week]?.isNotEmpty ?? false))
                       ...widget.extraBadgesByWeek[week]!.map((badge) {
                         final pageIndex = badge['page_index'] as int?;
-                        final shortLabel = badge['short_label'] as String? ?? 'EK';
+                        final shortLabel =
+                            badge['short_label'] as String? ?? 'EK';
                         final title = badge['title'] as String? ?? '';
                         final isSpecial = badge['is_special'] == true;
                         return Padding(
@@ -1669,7 +1772,12 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                               borderRadius: BorderRadius.circular(999),
                               onTap: pageIndex == null
                                   ? null
-                                  : () => widget.onSelectBreakPageIndex(pageIndex),
+                                  : () => widget.onSelectSpecialPage(
+                                      pageIndex,
+                                      shortLabel == 'SE'
+                                          ? 'social_activity'
+                                          : 'special_content',
+                                    ),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 9,
@@ -1713,17 +1821,11 @@ class _WeekStripBarState extends State<_WeekStripBar> {
 }
 
 class _WeekSectionBlock extends StatelessWidget {
-  final List<Map<String, dynamic>> weekSections;
-  final int? selectedTopicId;
-  final List<String> outcomes;
   final List<TopicContent> contents;
   final bool isAdmin;
   final VoidCallback onContentUpdated;
 
   const _WeekSectionBlock({
-    required this.weekSections,
-    required this.selectedTopicId,
-    required this.outcomes,
     required this.contents,
     required this.isAdmin,
     required this.onContentUpdated,
@@ -1734,61 +1836,9 @@ class _WeekSectionBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (outcomes.isNotEmpty) ...[
-          AppleCollapsibleCard(
-            icon: Icons.flag_outlined,
-            title: 'Süreç Bileşenleri',
-            child: weekSections.length <= 1
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: outcomes
-                        .map((outcome) => AppleOutcomeTile(text: outcome))
-                        .toList(),
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: weekSections.map((section) {
-                      final topicTitle =
-                          (section['topic_title'] as String? ?? 'Konu').trim();
-                      final topicOutcomes = (section['outcomes'] as List? ?? [])
-                          .whereType<String>()
-                          .toList();
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              topicTitle,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            ...topicOutcomes.map(
-                              (outcome) => Padding(
-                                padding: const EdgeInsets.only(bottom: 3),
-                                child: Text(
-                                  '• $outcome',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey.shade800,
-                                    height: 1.3,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ),
-          ),
-        ],
         for (var i = 0; i < contents.length; i++)
           Padding(
-            padding: EdgeInsets.only(top: i == 0 ? 12 : 8),
+            padding: EdgeInsets.only(top: i == 0 ? 0 : 8),
             child: TopicContentView(
               content: contents[i],
               isAdmin: isAdmin,

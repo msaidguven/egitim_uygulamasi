@@ -31,14 +31,21 @@ class HomeHeader extends StatelessWidget {
         : '?';
 
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16, bottom: 24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 16,
+        bottom: 24,
+      ),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFFFFF), Color(0xFFF2F6FF), Color(0xFFEEF3FF)],
+        ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32),
           bottomRight: Radius.circular(32),
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Color(0x14000000),
             blurRadius: 16,
@@ -46,79 +53,132 @@ class HomeHeader extends StatelessWidget {
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
+        children: [
+          Positioned(
+            top: -22,
+            right: -14,
+            child: Container(
+              width: 110,
+              height: 110,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF9EC3FF).withValues(alpha: 0.22),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -32,
+            left: -10,
+            child: Container(
+              width: 92,
+              height: 92,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFFFFDAB5).withValues(alpha: 0.18),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _LogoText(),
-                if (isLoggedIn) ...[
-                  const SizedBox(height: 4),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.55,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        fullName ?? 'Kullanıcı',
-                        style: const TextStyle(
-                          color: Color(0xFF0F172A),
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(0, 2),
-                              blurRadius: 4,
-                              color: Colors.black12,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _LogoText(),
+                      const SizedBox(height: 6),
+                      if (isLoggedIn) ...[
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.58,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              fullName ?? 'Kullanıcı',
+                              style: const TextStyle(
+                                color: Color(0xFF0F172A),
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                              ),
                             ),
-                          ],
+                          ),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.72),
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(color: const Color(0xFFD8E4FF)),
+                          ),
+                          child: const Text(
+                            'Bugün için hedefini tamamla',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF475569),
+                            ),
+                          ),
+                        ),
+                      ] else ...[
+                        Text(
+                          'Kaldığın yerden devam etmek için giriş yap',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                if (isAdmin)
+                  _buildAdminProfileMenu(context, avatarUrl, initials)
+                else if (isLoggedIn)
+                  _buildUserAvatar(avatarUrl, initials)
+                else
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.white.withValues(alpha: 0.9),
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: const Icon(
+                        Icons.person_outline_rounded,
+                        color: Color(0xFF64748B),
+                        size: 24,
                       ),
                     ),
                   ),
-                ],
               ],
             ),
-            if (isAdmin)
-              _buildAdminProfileMenu(context, avatarUrl, initials)
-            else if (isLoggedIn)
-              _buildUserAvatar(avatarUrl, initials)
-            else
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    ),
-                  );
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: const Icon(
-                    Icons.person_outline_rounded,
-                    color: Color(0xFF64748B),
-                    size: 24,
-                  ),
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -150,7 +210,8 @@ class HomeHeader extends StatelessWidget {
       itemBuilder: (context) {
         return <PopupMenuEntry<String?>>[
           ...roles.map((roleData) {
-            final isSelected = (impersonatedRole ?? 'admin') == roleData['role'];
+            final isSelected =
+                (impersonatedRole ?? 'admin') == roleData['role'];
             return PopupMenuItem<String?>(
               value: roleData['role'],
               child: Row(
@@ -164,7 +225,9 @@ class HomeHeader extends StatelessWidget {
                   Text(
                     roleData['label'],
                     style: TextStyle(
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                       color: Colors.grey.shade900,
                     ),
                   ),
@@ -177,9 +240,16 @@ class HomeHeader extends StatelessWidget {
             value: 'show_games',
             child: Row(
               children: [
-                Icon(Icons.gamepad_rounded, color: Colors.grey.shade600, size: 20),
+                Icon(
+                  Icons.gamepad_rounded,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
                 const SizedBox(width: 12),
-                Text('Anasınıfı Oyunları', style: TextStyle(color: Colors.grey.shade900)),
+                Text(
+                  'Anasınıfı Oyunları',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
               ],
             ),
           ),
@@ -188,9 +258,16 @@ class HomeHeader extends StatelessWidget {
             value: 'question_test_page',
             child: Row(
               children: [
-                Icon(Icons.science_outlined, color: Colors.grey.shade600, size: 20),
+                Icon(
+                  Icons.science_outlined,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
                 const SizedBox(width: 12),
-                Text('Deneme Sayfası', style: TextStyle(color: Colors.grey.shade900)),
+                Text(
+                  'Deneme Sayfası',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
               ],
             ),
           ),
@@ -212,7 +289,7 @@ class HomeHeader extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -406,11 +483,7 @@ class _LogoText extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShaderMask(
       shaderCallback: (bounds) => const LinearGradient(
-        colors: [
-          Color(0xFF4F46E5),
-          Color(0xFF7C3AED),
-          Color(0xFFEC4899),
-        ],
+        colors: [Color(0xFF4F46E5), Color(0xFF7C3AED), Color(0xFFEC4899)],
       ).createShader(bounds),
       child: RichText(
         text: const TextSpan(

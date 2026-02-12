@@ -112,6 +112,26 @@ final List<Map<String, dynamic>> _specialWeeks = [
   },
 ];
 
+class TimelineItem {
+  final String id;
+  final String type;
+  final int pageIndex;
+  final int? curriculumWeek;
+  final int? anchorWeek;
+  final String? title;
+  final String? duration;
+
+  const TimelineItem({
+    required this.id,
+    required this.type,
+    required this.pageIndex,
+    required this.curriculumWeek,
+    required this.anchorWeek,
+    this.title,
+    this.duration,
+  });
+}
+
 class OutcomesViewModel extends ChangeNotifier {
   final Ref _ref;
   final int lessonId;
@@ -136,6 +156,24 @@ class OutcomesViewModel extends ChangeNotifier {
 
   Set<int> _solvedWeeks = {};
   Set<int> get solvedWeeks => _solvedWeeks;
+
+  List<TimelineItem> _timelineItems = [];
+  List<TimelineItem> get timelineItems => _timelineItems;
+
+  List<int> _weekNumbers = [];
+  List<int> get weekNumbers => _weekNumbers;
+
+  Map<int, int> _weekPageIndexByWeek = {};
+  Map<int, int> get weekPageIndexByWeek => _weekPageIndexByWeek;
+
+  Map<int, int> _breakAfterWeekCounts = {};
+  Map<int, int> get breakAfterWeekCounts => _breakAfterWeekCounts;
+
+  Map<int, List<int>> _breakPageIndexesByAfterWeek = {};
+  Map<int, List<int>> get breakPageIndexesByAfterWeek => _breakPageIndexesByAfterWeek;
+
+  Map<int, List<Map<String, dynamic>>> _extraBadgesByWeek = {};
+  Map<int, List<Map<String, dynamic>>> get extraBadgesByWeek => _extraBadgesByWeek;
 
   bool _isLoadingWeeks = true;
   bool get isLoadingWeeks => _isLoadingWeeks;
@@ -190,6 +228,99 @@ class OutcomesViewModel extends ChangeNotifier {
     }
   }
 
+  int? _findPreviousWeek(int pageIndex) {
+    for (var i = pageIndex - 1; i >= 0; i--) {
+      final entry = _allWeeksData[i];
+      if (entry['type'] == 'week' && entry['curriculum_week'] != null) {
+        return entry['curriculum_week'] as int;
+      }
+    }
+    return null;
+  }
+
+  int? _findNextWeek(int pageIndex) {
+    for (var i = pageIndex + 1; i < _allWeeksData.length; i++) {
+      final entry = _allWeeksData[i];
+      if (entry['type'] == 'week' && entry['curriculum_week'] != null) {
+        return entry['curriculum_week'] as int;
+      }
+    }
+    return null;
+  }
+
+  void _rebuildTimelineMeta() {
+    final weekNumbersSet = <int>{};
+    final weekPageMap = <int, int>{};
+    final breakCounts = <int, int>{};
+    final breakIndexes = <int, List<int>>{};
+    final extraBadges = <int, List<Map<String, dynamic>>>{};
+    final items = <TimelineItem>[];
+
+    for (var i = 0; i < _allWeeksData.length; i++) {
+      final entry = _allWeeksData[i];
+      final type = entry['type'] as String? ?? 'week';
+      final curriculumWeek = entry['curriculum_week'] as int?;
+      final title = entry['title'] as String?;
+      final duration = entry['duration'] as String?;
+
+      if (curriculumWeek != null &&
+          (type == 'week' || type == 'special_content')) {
+        weekNumbersSet.add(curriculumWeek);
+      }
+
+      if (curriculumWeek != null) {
+        if (type == 'week' || !weekPageMap.containsKey(curriculumWeek)) {
+          weekPageMap[curriculumWeek] = i;
+        }
+      }
+
+      if (type == 'break') {
+        final prevWeek = _findPreviousWeek(i);
+        if (prevWeek != null) {
+          breakCounts[prevWeek] = (breakCounts[prevWeek] ?? 0) + 1;
+          breakIndexes.putIfAbsent(prevWeek, () => <int>[]).add(i);
+        }
+      }
+
+      if (type == 'social_activity') {
+        final prevWeek = _findPreviousWeek(i);
+        if (prevWeek != null) {
+          extraBadges.putIfAbsent(prevWeek, () => <Map<String, dynamic>>[]).add({
+            'short_label': 'SE',
+            'title': (title ?? '').trim(),
+            'page_index': i,
+            'is_special': false,
+          });
+        }
+      }
+
+      final anchorWeek = (type == 'week' || type == 'special_content') && curriculumWeek != null
+          ? curriculumWeek
+          : (_findPreviousWeek(i) ?? _findNextWeek(i));
+
+      items.add(
+        TimelineItem(
+          id: '$type-$i',
+          type: type,
+          pageIndex: i,
+          curriculumWeek: curriculumWeek,
+          anchorWeek: anchorWeek,
+          title: title,
+          duration: duration,
+        ),
+      );
+    }
+
+    final sortedWeekNumbers = weekNumbersSet.toList()..sort();
+
+    _timelineItems = items;
+    _weekNumbers = sortedWeekNumbers;
+    _weekPageIndexByWeek = weekPageMap;
+    _breakAfterWeekCounts = breakCounts;
+    _breakPageIndexesByAfterWeek = breakIndexes;
+    _extraBadgesByWeek = extraBadges;
+  }
+
   Future<void> _fetchAndProcessWeeks() async {
     _isLoadingWeeks = true;
     _hasErrorWeeks = false;
@@ -213,12 +344,6 @@ class OutcomesViewModel extends ChangeNotifier {
       }
 
       Map<int, Map<String, dynamic>> weeksMap = {};
-      for (final specialWeek in _specialWeeks) {
-        if (specialWeek['grade_id'] == gradeId &&
-            specialWeek['lesson_id'] == lessonId) {
-          weeksMap[specialWeek['curriculum_week']] = specialWeek;
-        }
-      }
 
       if (dbResult != null) {
         for (var item in dbResult) {
@@ -241,6 +366,29 @@ class OutcomesViewModel extends ChangeNotifier {
       List<Map<String, dynamic>> processedWeeks = weeksMap.values.toList();
       processedWeeks.sort(
           (a, b) => (a['curriculum_week'] as int).compareTo(b['curriculum_week'] as int));
+
+      // Özel içerikleri ilgili haftadan sonra timeline'a ekle (haftayı ezmeden).
+      final specialWeeks = _specialWeeks.where(
+        (specialWeek) =>
+            specialWeek['grade_id'] == gradeId &&
+            specialWeek['lesson_id'] == lessonId,
+      ).toList();
+      specialWeeks.sort(
+        (a, b) => (a['curriculum_week'] as int).compareTo(b['curriculum_week'] as int),
+      );
+      for (final specialWeek in specialWeeks.reversed) {
+        final specialWeekNo = specialWeek['curriculum_week'] as int?;
+        if (specialWeekNo == null) continue;
+        final insertIndex = processedWeeks.indexWhere(
+          (w) => w['type'] == 'week' && w['curriculum_week'] == specialWeekNo,
+        );
+        final specialMap = Map<String, dynamic>.from(specialWeek);
+        if (insertIndex == -1) {
+          processedWeeks.insert(0, specialMap);
+        } else {
+          processedWeeks.insert(insertIndex + 1, specialMap);
+        }
+      }
 
       // TATİL HAFTALARINI EKLEME MANTIĞI
       // Ters sıralama ile ekliyoruz ki indexler kaymasın.
@@ -270,6 +418,7 @@ class OutcomesViewModel extends ChangeNotifier {
       }
 
       _allWeeksData = processedWeeks;
+      _rebuildTimelineMeta();
       await _fetchLessonTopics();
 
       // Başlangıç sayfasını belirle
@@ -315,6 +464,12 @@ class OutcomesViewModel extends ChangeNotifier {
       _hasErrorWeeks = true;
       _weeksErrorMessage = e.toString();
       _allWeeksData = [];
+      _timelineItems = [];
+      _weekNumbers = [];
+      _weekPageIndexByWeek = {};
+      _breakAfterWeekCounts = {};
+      _breakPageIndexesByAfterWeek = {};
+      _extraBadgesByWeek = {};
     } finally {
       _isLoadingWeeks = false;
       _safeNotifyListeners();
@@ -517,6 +672,39 @@ class OutcomesViewModel extends ChangeNotifier {
     await _fetchWeekContent(index);
   }
 
+  int? findPageIndexForWeek(int curriculumWeek) {
+    final exact = _allWeeksData.indexWhere(
+      (w) => w['type'] == 'week' && w['curriculum_week'] == curriculumWeek,
+    );
+    if (exact != -1) return exact;
+    final fallback = _allWeeksData.indexWhere(
+      (w) => w['curriculum_week'] == curriculumWeek,
+    );
+    return fallback == -1 ? null : fallback;
+  }
+
+  int? findNearestPageIndexByType({
+    required int aroundIndex,
+    required String expectedType,
+  }) {
+    if (_allWeeksData.isEmpty) return null;
+    final start = aroundIndex.clamp(0, _allWeeksData.length - 1);
+    if ((_allWeeksData[start]['type'] as String?) == expectedType) return start;
+    for (var offset = 1; offset <= _allWeeksData.length; offset++) {
+      final left = start - offset;
+      final right = start + offset;
+      if (left >= 0) {
+        final leftType = _allWeeksData[left]['type'] as String?;
+        if (leftType == expectedType) return left;
+      }
+      if (right < _allWeeksData.length) {
+        final rightType = _allWeeksData[right]['type'] as String?;
+        if (rightType == expectedType) return right;
+      }
+    }
+    return null;
+  }
+
   Future<void> _fetchWeekContent(int index) async {
     if (index < 0 || index >= _allWeeksData.length) return;
 
@@ -617,9 +805,10 @@ class OutcomesViewModel extends ChangeNotifier {
         },
       );
 
-      if (response != null && (response as List).isNotEmpty) {
+      final responseList = response as List?;
+      if (responseList != null && responseList.isNotEmpty) {
         final allQuestions = <int, Question>{};
-        for (final item in (response as List)) {
+        for (final item in responseList) {
           final quizQuestions = (item['mini_quiz_questions'] as List? ?? []);
           for (final q in quizQuestions) {
             final question = Question.fromMap(q as Map<String, dynamic>);
