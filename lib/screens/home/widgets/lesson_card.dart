@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
 final _lessonDetails = {
@@ -39,7 +38,7 @@ class LessonCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool isNextStep;
   final String? lessonIcon; // Veritabanından gelen emoji ikon
-  
+
   // İstatistikler
   final int? totalQuestions;
   final int? correctCount;
@@ -79,214 +78,261 @@ class LessonCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
         decoration: BoxDecoration(
-          color: Colors.white,
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFFFFFFF), Color(0xFFF4F8FF)],
+          ),
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFD8E6FF)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 14,
-              offset: const Offset(0, 8),
+              color: gradient.first.withValues(alpha: 0.12),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
-        child: Column(
+        child: Stack(
           children: [
-            // Üst Kısım: İkon ve Başlıklar
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Renkli ikon alanı
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: gradient,
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: gradient.first.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: lessonIcon != null 
-                        ? Center(
-                            child: Text(
-                              lessonIcon!,
-                              style: const TextStyle(fontSize: 28),
-                            ),
-                          )
-                        : Icon(icon, color: Colors.white, size: 28),
-                  ),
-
-                  const SizedBox(width: 16),
-
-                  // Metin alanı
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Hiyerarşi: Sınıf -> Ders -> Konu
-                        Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            if (gradeName != null) ...[
-                              Text(
-                                gradeName!,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                              Icon(Icons.chevron_right_rounded, size: 16, color: Colors.grey.shade400),
-                            ],
-                            Text(
-                              lessonName,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: gradient.first,
-                              ),
-                            ),
-                            if (topicTitle != null) ...[
-                              Icon(Icons.chevron_right_rounded, size: 16, color: Colors.grey.shade400),
-                              Text(
-                                topicTitle!,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey.shade800,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ],
-                        ),
-                        
-                        const SizedBox(height: 8),
-                        
-                        // Ana Başlık (Konu veya Ders)
-                        Text(
-                          topicTitle ?? lessonName,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black87,
-                            height: 1.2,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-                  // İlerleme Yüzdesi (Dairesel)
-                  Column(
+            Positioned(
+              top: -26,
+              right: -14,
+              child: Container(
+                width: 86,
+                height: 86,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: gradient.last.withValues(alpha: 0.14),
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                // Üst Kısım: İkon ve Başlıklar
+                Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            CircularProgressIndicator(
-                              value: progress / 100,
-                              strokeWidth: 4,
-                              backgroundColor: Colors.grey.shade100,
-                              valueColor: AlwaysStoppedAnimation<Color>(gradient.last),
-                            ),
-                            Center(
-                              child: Text(
-                                "${progress.toInt()}%",
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.grey.shade800,
-                                ),
-                              ),
+                      // Renkli ikon alanı
+                      Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: gradient,
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: gradient.first.withValues(alpha: 0.26),
+                              blurRadius: 7,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
+                        child: lessonIcon != null
+                            ? Center(
+                                child: Text(
+                                  lessonIcon!,
+                                  style: const TextStyle(fontSize: 26),
+                                ),
+                              )
+                            : Icon(icon, color: Colors.white, size: 26),
+                      ),
+
+                      const SizedBox(width: 12),
+
+                      // Metin alanı
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Hiyerarşi: Sınıf -> Ders -> Konu
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                if (gradeName != null) ...[
+                                  Text(
+                                    gradeName!,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 16,
+                                    color: Colors.grey.shade400,
+                                  ),
+                                ],
+                                Text(
+                                  lessonName,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: gradient.first,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 6),
+
+                            // Ana Başlık (Konu veya Ders)
+                            Text(
+                              topicTitle ?? lessonName,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black87,
+                                height: 1.2,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            if (curriculumWeek != null) ...[
+                              const SizedBox(height: 7),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: gradient.last.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                    color: gradient.last.withValues(
+                                      alpha: 0.28,
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  '$curriculumWeek. hafta',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: gradient.last,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+
+                      // İlerleme Yüzdesi (Dairesel)
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: 38,
+                            height: 38,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: progress / 100,
+                                  strokeWidth: 4,
+                                  backgroundColor: Colors.grey.shade100,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    gradient.last,
+                                  ),
+                                ),
+                                Center(
+                                  child: Text(
+                                    '${progress.toInt()}%',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.grey.shade800,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            
-            // Alt Kısım: İstatistikler (Varsa)
-            if (totalQuestions != null && totalQuestions! > 0) ...[
-              Container(
-                height: 1,
-                color: Colors.grey.shade100,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  children: [
-                    // Toplam Soru
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '$totalQuestions Soru',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    
-                    // Doğru
-                    _buildStatItem(
-                      count: correctCount ?? 0,
-                      label: 'd',
-                      color: const Color(0xFF10B981), // Emerald
-                    ),
-                    const SizedBox(width: 12),
-                    
-                    // Yanlış
-                    _buildStatItem(
-                      count: wrongCount ?? 0,
-                      label: 'y',
-                      color: const Color(0xFFEF4444), // Red
-                    ),
-                    const SizedBox(width: 12),
-                    
-                    // Çözülmedi
-                    _buildStatItem(
-                      count: unsolvedCount ?? 0,
-                      label: 'boş',
-                      color: Colors.grey.shade400,
-                    ),
-                  ],
                 ),
-              ),
-            ],
+
+                // Alt Kısım: İstatistikler (Varsa)
+                if (totalQuestions != null && totalQuestions! > 0) ...[
+                  Container(height: 1, color: const Color(0xFFE8F0FF)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      children: [
+                        // Toplam Soru
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEFF4FF),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '$totalQuestions Soru',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+
+                        // Doğru
+                        _buildStatItem(
+                          count: correctCount ?? 0,
+                          label: 'd',
+                          color: const Color(0xFF10B981), // Emerald
+                        ),
+                        const SizedBox(width: 10),
+
+                        // Yanlış
+                        _buildStatItem(
+                          count: wrongCount ?? 0,
+                          label: 'y',
+                          color: const Color(0xFFEF4444), // Red
+                        ),
+                        const SizedBox(width: 10),
+
+                        // Çözülmedi
+                        _buildStatItem(
+                          count: unsolvedCount ?? 0,
+                          label: 'boş',
+                          color: Colors.grey.shade400,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatItem({required int count, required String label, required Color color}) {
+  Widget _buildStatItem({
+    required int count,
+    required String label,
+    required Color color,
+  }) {
     return Row(
       children: [
         Text(
@@ -302,7 +348,7 @@ class LessonCard extends StatelessWidget {
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w500,
-            color: color.withOpacity(0.8),
+            color: color.withValues(alpha: 0.8),
           ),
         ),
       ],

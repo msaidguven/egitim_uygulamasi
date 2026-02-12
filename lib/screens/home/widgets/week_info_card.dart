@@ -24,6 +24,10 @@ class WeekInfoCard extends StatelessWidget {
     const Color textSecondaryColor = Color(0xFF64748B);
 
     final periodInfo = getCurrentPeriodInfo();
+    final currentWeek = calculateCurrentAcademicWeek();
+    final (startDate, endDate) = getWeekDateRangeForAcademicWeek(currentWeek);
+    final dateRangeText =
+        '${startDate.day} ${aylar[startDate.month - 1]} - ${endDate.day} ${aylar[endDate.month - 1]} ${endDate.year}';
 
     final int totalLessons = agendaData?.length ?? 0;
 
@@ -86,7 +90,7 @@ class WeekInfoCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  periodInfo.displaySubtitle ?? 'Eğitim Takvimi',
+                  dateRangeText,
                   style: const TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: 13,
