@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:egitim_uygulamasi/viewmodels/outcomes_viewmodel.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/header_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/topic_content_view.dart';
-import 'package:egitim_uygulamasi/screens/outcomes/widgets/mini_quiz_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/weekly_test_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/unit_test_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/special_cards_view.dart';
@@ -88,6 +87,29 @@ class OutcomesScreen extends ConsumerStatefulWidget {
 class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
   double _textScale = 1.0;
   double get _maxScale => kIsWeb ? 4.0 : 1.3;
+
+  int? _resolveAnchorWeekForPage(List<Map<String, dynamic>> allWeeksData, int index) {
+    if (index < 0 || index >= allWeeksData.length) return null;
+    final page = allWeeksData[index];
+    final type = page['type'] as String?;
+    final week = page['curriculum_week'] as int?;
+    if ((type == 'week' || type == 'special_content') && week != null) {
+      return week;
+    }
+    for (var i = index - 1; i >= 0; i--) {
+      final prev = allWeeksData[i];
+      if (prev['type'] == 'week' && prev['curriculum_week'] != null) {
+        return prev['curriculum_week'] as int;
+      }
+    }
+    for (var i = index + 1; i < allWeeksData.length; i++) {
+      final next = allWeeksData[i];
+      if (next['type'] == 'week' && next['curriculum_week'] != null) {
+        return next['curriculum_week'] as int;
+      }
+    }
+    return null;
+  }
 
   void _increaseTextScale() {
     setState(() {
@@ -245,27 +267,11 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                           onPageChanged: viewModel.onPageChanged,
                           itemBuilder: (context, index) {
                             final weekData = viewModel.allWeeksData[index];
-                            if (weekData['type'] == 'social_activity') {
-                              return AppleStyleSocialActivityCard(
-                                title: weekData['title'],
-                              );
-                            }
-                            if (weekData['type'] == 'break') {
-                              return AppleStyleBreakCard(
-                                title: weekData['title'],
-                                duration: weekData['duration'],
-                              );
-                            }
-                            if (weekData['type'] == 'special_content') {
-                              return AppleStyleSpecialContentCard(
-                                title: weekData['title'],
-                                content: weekData['content'],
-                                icon: weekData['icon'],
-                              );
-                            }
-
-                            final curriculumWeek = weekData['curriculum_week'];
-                            if (curriculumWeek == null) {
+                            final anchorWeek = _resolveAnchorWeekForPage(
+                              viewModel.allWeeksData.cast<Map<String, dynamic>>(),
+                              index,
+                            );
+                            if (anchorWeek == null) {
                               return ErrorCard(errorMessage: 'Hafta verisi bozuk');
                             }
 
@@ -274,8 +280,9 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                                 textScaleFactor: _textScale,
                               ),
                               child: WeekContentView(
-                                key: ValueKey('week_content_$curriculumWeek'),
-                                curriculumWeek: curriculumWeek as int,
+                                key: ValueKey('week_content_${index}_$anchorWeek'),
+                                curriculumWeek: anchorWeek,
+                                pageData: Map<String, dynamic>.from(weekData),
                                 args: viewModelArgs,
                                 palette: palette,
                               ),
@@ -290,12 +297,14 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
 
 class WeekContentView extends ConsumerStatefulWidget {
   final int curriculumWeek;
+  final Map<String, dynamic> pageData;
   final OutcomesViewModelArgs args;
   final _LessonThemePalette palette;
 
   const WeekContentView({
     super.key,
     required this.curriculumWeek,
+    required this.pageData,
     required this.args,
     required this.palette,
   });
@@ -558,6 +567,7 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final viewModel = ref.read(outcomesViewModelProvider(widget.args));
+        viewModel.ensureWeekDataByCurriculumWeek(widget.curriculumWeek);
         final index = viewModel.allWeeksData.indexWhere(
           (w) => w['curriculum_week'] == widget.curriculumWeek,
         );
@@ -592,11 +602,6 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
         widget.args,
       ).select((vm) => vm.getWeekContent(widget.curriculumWeek)),
     );
-    final questions = ref.watch(
-      outcomesViewModelProvider(
-        widget.args,
-      ).select((vm) => vm.getWeekQuestions(widget.curriculumWeek)),
-    );
     final isGuest = ref.watch(
       profileViewModelProvider.select((p) => p.profile == null),
     );
@@ -619,22 +624,49 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
       ).select((vm) => vm.solvedWeeks),
     );
     final weekNumbers = allWeeksData
-        .where((w) => w['type'] == 'week' && w['curriculum_week'] != null)
+        .where(
+          (w) =>
+              (w['type'] == 'week' || w['type'] == 'special_content') &&
+              w['curriculum_week'] != null,
+        )
         .map((w) => w['curriculum_week'] as int)
+        .toSet()
         .toList()
       ..sort();
+    final weekPageIndexByWeek = <int, int>{};
     final breakAfterWeekCounts = <int, int>{};
     final breakPageIndexesByAfterWeek = <int, List<int>>{};
-    final extraPages = <Map<String, dynamic>>[];
+    final extraBadgesByWeek = <int, List<Map<String, dynamic>>>{};
     for (var i = 0; i < allWeeksData.length; i++) {
       final item = allWeeksData[i];
       final type = item['type'] as String?;
-      if (type == 'special_content' || type == 'social_activity') {
-        extraPages.add({
-          'type': type,
-          'title': (item['title'] as String? ?? '').trim(),
-          'page_index': i,
-        });
+      final curriculumWeek = item['curriculum_week'] as int?;
+
+      if (curriculumWeek != null) {
+        if (type == 'week' || !weekPageIndexByWeek.containsKey(curriculumWeek)) {
+          weekPageIndexByWeek[curriculumWeek] = i;
+        }
+      }
+
+      if (type == 'social_activity') {
+        int? previousWeek;
+        for (var j = i - 1; j >= 0; j--) {
+          final prev = allWeeksData[j];
+          if (prev['type'] == 'week' && prev['curriculum_week'] != null) {
+            previousWeek = prev['curriculum_week'] as int;
+            break;
+          }
+        }
+        if (previousWeek != null) {
+          extraBadgesByWeek
+              .putIfAbsent(previousWeek, () => <Map<String, dynamic>>[])
+              .add({
+            'short_label': 'SE',
+            'title': (item['title'] as String? ?? '').trim(),
+            'page_index': i,
+            'is_special': false,
+          });
+        }
       }
       if (item['type'] != 'break') continue;
       int? previousWeek;
@@ -656,6 +688,8 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
       }
     }
     final actualCurrentWeek = calculateCurrentAcademicWeek();
+    final pageType = (widget.pageData['type'] as String?) ?? 'week';
+    final isSpecialPage = pageType != 'week';
 
     if (isLoading) {
       return const Center(child: CircularProgressIndicator.adaptive());
@@ -830,6 +864,13 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
               ),
             ),
           ),
+          if (isSpecialPage)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              sliver: SliverToBoxAdapter(
+                child: _PageTypeInfoCard(pageData: widget.pageData),
+              ),
+            ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
             sliver: SliverToBoxAdapter(
@@ -837,17 +878,15 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                 weekNumbers: weekNumbers,
                 breakAfterWeekCounts: breakAfterWeekCounts,
                 breakPageIndexesByAfterWeek: breakPageIndexesByAfterWeek,
-                extraPages: extraPages,
+                extraBadgesByWeek: extraBadgesByWeek,
                 selectedWeek: widget.curriculumWeek,
                 actualCurrentWeek: actualCurrentWeek,
                 solvedWeeks: solvedWeeks,
                 palette: widget.palette,
                 onSelectWeek: (targetWeek) async {
+                  final targetPageIndex = weekPageIndexByWeek[targetWeek];
+                  if (targetPageIndex == null) return;
                   final viewModel = ref.read(outcomesViewModelProvider(widget.args));
-                  final targetPageIndex = viewModel.allWeeksData.indexWhere(
-                    (w) => w['type'] == 'week' && w['curriculum_week'] == targetWeek,
-                  );
-                  if (targetPageIndex == -1) return;
                   await viewModel.pageController.animateToPage(
                     targetPageIndex,
                     duration: const Duration(milliseconds: 260),
@@ -895,8 +934,6 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                     ),
                   ),
                   _WeekSectionBlock(
-                    unitTitle: selectedSection['unit_title'] as String?,
-                    topicTitle: selectedSection['topic_title'] as String?,
                     outcomes: selectedOutcomes,
                     contents: selectedContents,
                     isAdmin: isAdmin,
@@ -908,19 +945,6 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
               ),
             ),
           ),
-          if (questions != null && questions.isNotEmpty)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-              sliver: SliverToBoxAdapter(
-                child: MediaQuery(
-                  data: mediaQuery.copyWith(textScaleFactor: 1.0),
-                  child: MiniQuizView(
-                    key: ValueKey('mini_quiz_${widget.curriculumWeek}'),
-                    questions: questions,
-                  ),
-                ),
-              ),
-            ),
           if (unitId != null)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
@@ -949,6 +973,104 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PageTypeInfoCard extends StatelessWidget {
+  final Map<String, dynamic> pageData;
+
+  const _PageTypeInfoCard({required this.pageData});
+
+  String _stripHtml(String value) {
+    return value.replaceAll(RegExp(r'<[^>]*>'), ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final type = pageData['type'] as String? ?? 'week';
+    String title;
+    String subtitle;
+    IconData icon;
+    Color bg;
+    Color border;
+    Color text;
+
+    if (type == 'break') {
+      title = (pageData['title'] as String? ?? 'Tatil').trim();
+      subtitle = (pageData['duration'] as String? ?? '').trim();
+      icon = Icons.beach_access_rounded;
+      bg = const Color(0xFFEAF2FB);
+      border = const Color(0xFFC5D7EC);
+      text = const Color(0xFF24527A);
+    } else if (type == 'social_activity') {
+      title = (pageData['title'] as String? ?? 'Sosyal Etkinlik').trim();
+      subtitle = 'Bu hafta için sosyal etkinlik odaklı içerik.';
+      icon = Icons.celebration_rounded;
+      bg = const Color(0xFFE9F8F4);
+      border = const Color(0xFFBFE8DA);
+      text = const Color(0xFF0D7D66);
+    } else {
+      title = (pageData['title'] as String? ?? 'Özel İçerik').trim();
+      subtitle = _stripHtml((pageData['content'] as String? ?? '')).trim();
+      if (subtitle.length > 140) {
+        subtitle = '${subtitle.substring(0, 140)}...';
+      }
+      icon = (pageData['icon'] as IconData?) ?? Icons.info_outline_rounded;
+      bg = const Color(0xFFEFF3FF);
+      border = const Color(0xFFC8D6FF);
+      text = const Color(0xFF2F4FA8);
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: border),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.75),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: text, size: 20),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: text,
+                  ),
+                ),
+                if (subtitle.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: text.withOpacity(0.92),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -1267,7 +1389,7 @@ class _WeekStripBar extends StatefulWidget {
   final List<int> weekNumbers;
   final Map<int, int> breakAfterWeekCounts;
   final Map<int, List<int>> breakPageIndexesByAfterWeek;
-  final List<Map<String, dynamic>> extraPages;
+  final Map<int, List<Map<String, dynamic>>> extraBadgesByWeek;
   final int selectedWeek;
   final int actualCurrentWeek;
   final Set<int> solvedWeeks;
@@ -1279,7 +1401,7 @@ class _WeekStripBar extends StatefulWidget {
     required this.weekNumbers,
     required this.breakAfterWeekCounts,
     required this.breakPageIndexesByAfterWeek,
-    required this.extraPages,
+    required this.extraBadgesByWeek,
     required this.selectedWeek,
     required this.actualCurrentWeek,
     required this.solvedWeeks,
@@ -1410,46 +1532,6 @@ class _WeekStripBarState extends State<_WeekStripBar> {
               color: Colors.grey.shade800,
             ),
           ),
-          if (widget.extraPages.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: widget.extraPages.map((entry) {
-                  final type = entry['type'] as String? ?? '';
-                  final title = entry['title'] as String? ?? '';
-                  final pageIndex = entry['page_index'] as int?;
-                  final isSpecial = type == 'special_content';
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ActionChip(
-                      onPressed: pageIndex == null
-                          ? null
-                          : () => widget.onSelectBreakPageIndex(pageIndex),
-                      backgroundColor: isSpecial
-                          ? const Color(0xFFEAF2FF)
-                          : const Color(0xFFEAF7F3),
-                      side: BorderSide(
-                        color: isSpecial
-                            ? const Color(0xFFC8DBFF)
-                            : const Color(0xFFBFE9DE),
-                      ),
-                      label: Text(
-                        isSpecial ? 'Özel: $title' : 'Etkinlik: $title',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: isSpecial
-                              ? const Color(0xFF2F6FE4)
-                              : const Color(0xFF16A085),
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
           const SizedBox(height: 8),
           SingleChildScrollView(
             controller: _scrollController,
@@ -1571,6 +1653,52 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                           ),
                         ),
                       ),
+                    if ((widget.extraBadgesByWeek[week]?.isNotEmpty ?? false))
+                      ...widget.extraBadgesByWeek[week]!.map((badge) {
+                        final pageIndex = badge['page_index'] as int?;
+                        final shortLabel = badge['short_label'] as String? ?? 'EK';
+                        final title = badge['title'] as String? ?? '';
+                        final isSpecial = badge['is_special'] == true;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Tooltip(
+                            message: title,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(999),
+                              onTap: pageIndex == null
+                                  ? null
+                                  : () => widget.onSelectBreakPageIndex(pageIndex),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 9,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isSpecial
+                                      ? const Color(0xFFEAF2FF)
+                                      : const Color(0xFFEAF7F3),
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                    color: isSpecial
+                                        ? const Color(0xFFC8DBFF)
+                                        : const Color(0xFFBFE9DE),
+                                  ),
+                                ),
+                                child: Text(
+                                  shortLabel,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    color: isSpecial
+                                        ? const Color(0xFF2F6FE4)
+                                        : const Color(0xFF16A085),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
                   ],
                 );
               }).toList(),
@@ -1583,16 +1711,12 @@ class _WeekStripBarState extends State<_WeekStripBar> {
 }
 
 class _WeekSectionBlock extends StatelessWidget {
-  final String? unitTitle;
-  final String? topicTitle;
   final List<String> outcomes;
   final List<TopicContent> contents;
   final bool isAdmin;
   final VoidCallback onContentUpdated;
 
   const _WeekSectionBlock({
-    required this.unitTitle,
-    required this.topicTitle,
     required this.outcomes,
     required this.contents,
     required this.isAdmin,
@@ -1604,66 +1728,7 @@ class _WeekSectionBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFFFFFFFF), Color(0xFFF3F8FF)],
-            ),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFDCE8FF)),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF7CA3E8).withOpacity(0.15),
-                blurRadius: 12,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (unitTitle != null)
-                Row(
-                  children: [
-                    const Icon(Icons.folder_open_outlined, color: Colors.blue),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        unitTitle!,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              if (topicTitle != null) ...[
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(Icons.article_outlined, color: Colors.indigo),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        topicTitle!,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
-        ),
         if (outcomes.isNotEmpty) ...[
-          const SizedBox(height: 12),
           AppleCollapsibleCard(
             icon: Icons.flag_outlined,
             title: 'Süreç Bileşenleri',

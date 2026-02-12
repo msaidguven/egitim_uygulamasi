@@ -509,6 +509,14 @@ class OutcomesViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> ensureWeekDataByCurriculumWeek(int curriculumWeek) async {
+    final index = _allWeeksData.indexWhere(
+      (w) => w['type'] == 'week' && w['curriculum_week'] == curriculumWeek,
+    );
+    if (index == -1) return;
+    await _fetchWeekContent(index);
+  }
+
   Future<void> _fetchWeekContent(int index) async {
     if (index < 0 || index >= _allWeeksData.length) return;
 
