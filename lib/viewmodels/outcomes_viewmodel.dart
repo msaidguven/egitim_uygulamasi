@@ -28,17 +28,19 @@ class OutcomesViewModelArgs {
           initialCurriculumWeek == other.initialCurriculumWeek;
 
   @override
-  int get hashCode => lessonId.hashCode ^ gradeId.hashCode ^ initialCurriculumWeek.hashCode;
+  int get hashCode =>
+      lessonId.hashCode ^ gradeId.hashCode ^ initialCurriculumWeek.hashCode;
 }
 
-final outcomesViewModelProvider = ChangeNotifierProvider.family<OutcomesViewModel, OutcomesViewModelArgs>(
-  (ref, args) => OutcomesViewModel(
-    ref,
-    lessonId: args.lessonId,
-    gradeId: args.gradeId,
-    initialCurriculumWeek: args.initialCurriculumWeek,
-  ),
-);
+final outcomesViewModelProvider =
+    ChangeNotifierProvider.family<OutcomesViewModel, OutcomesViewModelArgs>(
+      (ref, args) => OutcomesViewModel(
+        ref,
+        lessonId: args.lessonId,
+        gradeId: args.gradeId,
+        initialCurriculumWeek: args.initialCurriculumWeek,
+      ),
+    );
 
 class SuccessLevel {
   final int starCount;
@@ -170,10 +172,12 @@ class OutcomesViewModel extends ChangeNotifier {
   Map<int, int> get breakAfterWeekCounts => _breakAfterWeekCounts;
 
   Map<int, List<int>> _breakPageIndexesByAfterWeek = {};
-  Map<int, List<int>> get breakPageIndexesByAfterWeek => _breakPageIndexesByAfterWeek;
+  Map<int, List<int>> get breakPageIndexesByAfterWeek =>
+      _breakPageIndexesByAfterWeek;
 
   Map<int, List<Map<String, dynamic>>> _extraBadgesByWeek = {};
-  Map<int, List<Map<String, dynamic>>> get extraBadgesByWeek => _extraBadgesByWeek;
+  Map<int, List<Map<String, dynamic>>> get extraBadgesByWeek =>
+      _extraBadgesByWeek;
 
   bool _isLoadingWeeks = true;
   bool get isLoadingWeeks => _isLoadingWeeks;
@@ -186,6 +190,9 @@ class OutcomesViewModel extends ChangeNotifier {
 
   int _initialPageIndex = 0;
   int get initialPageIndex => _initialPageIndex;
+
+  int _currentPageIndex = 0;
+  int get currentPageIndex => _currentPageIndex;
 
   final Map<int, Map<String, dynamic>> _weekMainContents = {};
   final Map<int, List<Question>> _weekQuestions = {};
@@ -285,16 +292,20 @@ class OutcomesViewModel extends ChangeNotifier {
       if (type == 'social_activity') {
         final prevWeek = _findPreviousWeek(i);
         if (prevWeek != null) {
-          extraBadges.putIfAbsent(prevWeek, () => <Map<String, dynamic>>[]).add({
-            'short_label': 'SE',
-            'title': (title ?? '').trim(),
-            'page_index': i,
-            'is_special': false,
-          });
+          extraBadges
+              .putIfAbsent(prevWeek, () => <Map<String, dynamic>>[])
+              .add({
+                'short_label': 'SE',
+                'title': (title ?? '').trim(),
+                'page_index': i,
+                'is_special': false,
+              });
         }
       }
 
-      final anchorWeek = (type == 'week' || type == 'special_content') && curriculumWeek != null
+      final anchorWeek =
+          (type == 'week' || type == 'special_content') &&
+              curriculumWeek != null
           ? curriculumWeek
           : (_findPreviousWeek(i) ?? _findNextWeek(i));
 
@@ -329,7 +340,9 @@ class OutcomesViewModel extends ChangeNotifier {
 
     try {
       List<dynamic>? dbResult = await _cacheService.getAvailableWeeks(
-          gradeId: gradeId, lessonId: lessonId);
+        gradeId: gradeId,
+        lessonId: lessonId,
+      );
 
       if (dbResult == null) {
         dbResult = await Supabase.instance.client.rpc(
@@ -353,28 +366,36 @@ class OutcomesViewModel extends ChangeNotifier {
             if (!weeksMap.containsKey(curriculumWeek)) {
               weeksMap[curriculumWeek] = {
                 'type': 'week',
-                'curriculum_week': curriculumWeek
+                'curriculum_week': curriculumWeek,
               };
             }
           } else {
             debugPrint(
-                'HATA: get_available_weeks RPC\'sinden null curriculum_week değeri geldi. Gelen veri: $item');
+              'HATA: get_available_weeks RPC\'sinden null curriculum_week değeri geldi. Gelen veri: $item',
+            );
           }
         }
       }
 
       List<Map<String, dynamic>> processedWeeks = weeksMap.values.toList();
       processedWeeks.sort(
-          (a, b) => (a['curriculum_week'] as int).compareTo(b['curriculum_week'] as int));
+        (a, b) => (a['curriculum_week'] as int).compareTo(
+          b['curriculum_week'] as int,
+        ),
+      );
 
       // Özel içerikleri ilgili haftadan sonra timeline'a ekle (haftayı ezmeden).
-      final specialWeeks = _specialWeeks.where(
-        (specialWeek) =>
-            specialWeek['grade_id'] == gradeId &&
-            specialWeek['lesson_id'] == lessonId,
-      ).toList();
+      final specialWeeks = _specialWeeks
+          .where(
+            (specialWeek) =>
+                specialWeek['grade_id'] == gradeId &&
+                specialWeek['lesson_id'] == lessonId,
+          )
+          .toList();
       specialWeeks.sort(
-        (a, b) => (a['curriculum_week'] as int).compareTo(b['curriculum_week'] as int),
+        (a, b) => (a['curriculum_week'] as int).compareTo(
+          b['curriculum_week'] as int,
+        ),
       );
       for (final specialWeek in specialWeeks.reversed) {
         final specialWeekNo = specialWeek['curriculum_week'] as int?;
@@ -395,25 +416,31 @@ class OutcomesViewModel extends ChangeNotifier {
       final breakEntries = getAcademicBreakEntries();
       for (final breakEntry in breakEntries.reversed) {
         final int breakAfterWeek = breakEntry['insert_after_week'] as int;
-        
+
         // Hangi index'ten sonraya ekleneceğini bul
-        int breakIndex = processedWeeks.indexWhere((week) =>
-            week['type'] == 'week' && week['curriculum_week'] == breakAfterWeek);
-        
+        int breakIndex = processedWeeks.indexWhere(
+          (week) =>
+              week['type'] == 'week' &&
+              week['curriculum_week'] == breakAfterWeek,
+        );
+
         if (breakIndex != -1) {
-          final breakMap = Map<String, dynamic>.from(breakEntry['break'] as Map);
+          final breakMap = Map<String, dynamic>.from(
+            breakEntry['break'] as Map,
+          );
           // Bulunan index'in bir sonrasına ekle
           processedWeeks.insert(breakIndex + 1, breakMap);
         }
       }
 
-      int week36Index =
-          processedWeeks.indexWhere((w) => w['type'] == 'week' && w['curriculum_week'] == 36);
+      int week36Index = processedWeeks.indexWhere(
+        (w) => w['type'] == 'week' && w['curriculum_week'] == 36,
+      );
       if (week36Index != -1) {
         processedWeeks.insert(week36Index + 1, {
           'type': 'social_activity',
           'curriculum_week': 37,
-          'title': 'SOSYAL ETKİNLİK HAFTASI'
+          'title': 'SOSYAL ETKİNLİK HAFTASI',
         });
       }
 
@@ -423,42 +450,57 @@ class OutcomesViewModel extends ChangeNotifier {
 
       // Başlangıç sayfasını belirle
       final currentInfo = getCurrentPeriodInfo();
-      
+
       // ÖNCELİK 1: Eğer şu an gerçek tarihte tatildeysek, parametreyi ez ve tatil kartını aç.
       if (currentInfo.isHoliday) {
-        _initialPageIndex = _allWeeksData.indexWhere((w) =>
-            w['type'] == 'break' &&
-            w['title'] == currentInfo.displayTitle &&
-            w['duration'] == currentInfo.displaySubtitle
+        _initialPageIndex = _allWeeksData.indexWhere(
+          (w) =>
+              w['type'] == 'break' &&
+              w['title'] == currentInfo.displayTitle &&
+              w['duration'] == currentInfo.displaySubtitle,
         );
-        
+
         // Eğer tam eşleşme bulamazsa (isim farkı vs.), genel bir 'break' bulmaya çalış
         if (_initialPageIndex == -1) {
-           _initialPageIndex = _allWeeksData.indexWhere((w) => w['type'] == 'break');
+          _initialPageIndex = _allWeeksData.indexWhere(
+            (w) => w['type'] == 'break',
+          );
         }
       }
-      
+
       // ÖNCELİK 2: Tatil değilse veya tatil kartı bulunamadıysa parametreyi kullan
       if (_initialPageIndex == -1 || !currentInfo.isHoliday) {
         if (initialCurriculumWeek != null) {
-          _initialPageIndex = _allWeeksData.indexWhere((w) =>
-              w['type'] == 'week' && w['curriculum_week'] == initialCurriculumWeek);
+          _initialPageIndex = _allWeeksData.indexWhere(
+            (w) =>
+                w['type'] == 'week' &&
+                w['curriculum_week'] == initialCurriculumWeek,
+          );
         }
-        
+
         // Parametre yoksa veya bulunamadıysa bugünü hesapla
         if (_initialPageIndex == -1) {
           int currentAcademicWeek = calculateCurrentAcademicWeek();
-          _initialPageIndex = _allWeeksData.indexWhere((w) =>
-              w['type'] == 'week' &&
-              w['curriculum_week'] == currentAcademicWeek);
+          _initialPageIndex = _allWeeksData.indexWhere(
+            (w) =>
+                w['type'] == 'week' &&
+                w['curriculum_week'] == currentAcademicWeek,
+          );
         }
-        
+
         if (_initialPageIndex == -1) _initialPageIndex = 0;
       }
 
       // Sayfa kontrolcüsü zaten oluştuysa, onu yeni sayfaya zıplat
       if (_pageController != null && _pageController!.hasClients) {
         _pageController!.jumpToPage(_initialPageIndex);
+      }
+      _currentPageIndex = _initialPageIndex;
+      if (_initialPageIndex >= 0 && _initialPageIndex < _allWeeksData.length) {
+        final initialData = _allWeeksData[_initialPageIndex];
+        if (initialData['type'] == 'week') {
+          _currentWeek = initialData['curriculum_week'] as int?;
+        }
       }
     } catch (e) {
       _hasErrorWeeks = true;
@@ -494,7 +536,8 @@ class OutcomesViewModel extends ChangeNotifier {
       final unitIds = units.map((u) => u['id']).whereType<int>().toList();
       final unitTitleById = <int, String>{
         for (final unit in units)
-          if (unit['id'] is int) unit['id'] as int: (unit['title'] as String? ?? ''),
+          if (unit['id'] is int)
+            unit['id'] as int: (unit['title'] as String? ?? ''),
       };
       final unitOrderById = <int, int>{
         for (final unit in units)
@@ -565,29 +608,31 @@ class OutcomesViewModel extends ChangeNotifier {
         }
       }
 
-      final topics = rawTopics.map((topic) {
-        final unitId = topic['unit_id'] as int?;
-        final topicId = topic['id'] as int?;
-        final weeks = topicId != null
-            ? ((weeksByTopic[topicId] ?? <int>{}).toList()..sort())
-            : <int>[];
-        return {
-          'topic_id': topicId,
-          'topic_title': topic['title'],
-          'unit_id': unitId,
-          'unit_title': unitId != null ? unitTitleById[unitId] : null,
-          'unit_order': unitId != null ? (unitOrderById[unitId] ?? 0) : 0,
-          'topic_order': topic['order_no'] as int? ?? 0,
-          'weeks': weeks,
-          'first_week': weeks.isNotEmpty ? weeks.first : null,
-          'last_week': weeks.isNotEmpty ? weeks.last : null,
-        };
-      }).toList()
-        ..sort((a, b) {
-          final unitCompare = (a['unit_order'] as int).compareTo(b['unit_order'] as int);
-          if (unitCompare != 0) return unitCompare;
-          return (a['topic_order'] as int).compareTo(b['topic_order'] as int);
-        });
+      final topics =
+          rawTopics.map((topic) {
+            final unitId = topic['unit_id'] as int?;
+            final topicId = topic['id'] as int?;
+            final weeks = topicId != null
+                ? ((weeksByTopic[topicId] ?? <int>{}).toList()..sort())
+                : <int>[];
+            return {
+              'topic_id': topicId,
+              'topic_title': topic['title'],
+              'unit_id': unitId,
+              'unit_title': unitId != null ? unitTitleById[unitId] : null,
+              'unit_order': unitId != null ? (unitOrderById[unitId] ?? 0) : 0,
+              'topic_order': topic['order_no'] as int? ?? 0,
+              'weeks': weeks,
+              'first_week': weeks.isNotEmpty ? weeks.first : null,
+              'last_week': weeks.isNotEmpty ? weeks.last : null,
+            };
+          }).toList()..sort((a, b) {
+            final unitCompare = (a['unit_order'] as int).compareTo(
+              b['unit_order'] as int,
+            );
+            if (unitCompare != 0) return unitCompare;
+            return (a['topic_order'] as int).compareTo(b['topic_order'] as int);
+          });
 
       _lessonTopics = topics;
       await _fetchSolvedWeeks(unitIds);
@@ -654,14 +699,15 @@ class OutcomesViewModel extends ChangeNotifier {
   }
 
   void onPageChanged(int index) {
+    if (index < 0 || index >= _allWeeksData.length) return;
+    _currentPageIndex = index;
     final weekData = _allWeeksData[index];
     if (weekData['type'] == 'week') {
       final curriculumWeek = weekData['curriculum_week'] as int;
       _currentWeek = curriculumWeek;
-      _safeNotifyListeners();
-
       _fetchWeekContent(index);
     }
+    _safeNotifyListeners();
   }
 
   Future<void> ensureWeekDataByCurriculumWeek(int curriculumWeek) async {
@@ -718,7 +764,8 @@ class OutcomesViewModel extends ChangeNotifier {
     final hasSectionedWeekData =
         existingSections is List && existingSections.isNotEmpty;
 
-    if ((_weekMainContents.containsKey(curriculumWeek) && hasSectionedWeekData) ||
+    if ((_weekMainContents.containsKey(curriculumWeek) &&
+            hasSectionedWeekData) ||
         (_weekLoadingStatus[curriculumWeek] ?? false)) {
       return;
     }
@@ -754,7 +801,9 @@ class OutcomesViewModel extends ChangeNotifier {
         }
       }
 
-      final fullData = await _fetchNetworkDataWithoutCaching(curriculumWeek: curriculumWeek);
+      final fullData = await _fetchNetworkDataWithoutCaching(
+        curriculumWeek: curriculumWeek,
+      );
 
       final contentToCache = Map<String, dynamic>.from(fullData);
       contentToCache.remove('mini_quiz_questions');
@@ -769,16 +818,17 @@ class OutcomesViewModel extends ChangeNotifier {
         );
       }
 
-      _weekQuestions[curriculumWeek] = (fullData['mini_quiz_questions'] as List? ?? [])
-          .map((q) => Question.fromMap(q as Map<String, dynamic>))
-          .toList();
+      _weekQuestions[curriculumWeek] =
+          (fullData['mini_quiz_questions'] as List? ?? [])
+              .map((q) => Question.fromMap(q as Map<String, dynamic>))
+              .toList();
 
-      _weekUnitIds[curriculumWeek] = _weekMainContents[curriculumWeek]?['unit_id'];
+      _weekUnitIds[curriculumWeek] =
+          _weekMainContents[curriculumWeek]?['unit_id'];
 
       if (!isGuest) {
         await _loadWeeklyStats(curriculumWeek);
       }
-
     } catch (e) {
       _weekErrorMessages[curriculumWeek] = e.toString();
       _weekMainContents.remove(curriculumWeek);
@@ -823,7 +873,6 @@ class OutcomesViewModel extends ChangeNotifier {
       if (!isGuest) {
         await _loadWeeklyStats(curriculumWeek);
       }
-
     } catch (e) {
       debugPrint('Error fetching dynamic data for week $curriculumWeek: $e');
       _weekQuestions.remove(curriculumWeek);
@@ -850,16 +899,22 @@ class OutcomesViewModel extends ChangeNotifier {
     };
 
     try {
-      final response = await Supabase.instance.client
-          .rpc('get_weekly_summary_stats', params: params);
+      final response = await Supabase.instance.client.rpc(
+        'get_weekly_summary_stats',
+        params: params,
+      );
       _weekStats[curriculumWeek] = response as Map<String, dynamic>?;
     } catch (error) {
-      debugPrint('[Stats] Error fetching weekly stats for week $curriculumWeek: $error');
+      debugPrint(
+        '[Stats] Error fetching weekly stats for week $curriculumWeek: $error',
+      );
       _weekStats.remove(curriculumWeek);
     }
   }
 
-  Future<Map<String, dynamic>> _fetchNetworkDataWithoutCaching({required int curriculumWeek}) async {
+  Future<Map<String, dynamic>> _fetchNetworkDataWithoutCaching({
+    required int curriculumWeek,
+  }) async {
     final userProfile = _ref.read(profileViewModelProvider).profile;
     final userId = userProfile?.id;
 
@@ -875,7 +930,9 @@ class OutcomesViewModel extends ChangeNotifier {
     );
 
     if (response == null || (response as List).isEmpty) {
-      debugPrint('No data returned from get_weekly_curriculum for week $curriculumWeek');
+      debugPrint(
+        'No data returned from get_weekly_curriculum for week $curriculumWeek',
+      );
       return {};
     }
 
@@ -911,7 +968,8 @@ class OutcomesViewModel extends ChangeNotifier {
         allOutcomes.add(outcome);
       }
 
-      final sectionContents = (section['contents'] as List<Map<String, dynamic>>);
+      final sectionContents =
+          (section['contents'] as List<Map<String, dynamic>>);
       final seenContentIds = sectionContents
           .map((c) => c['id'])
           .whereType<int>()
@@ -981,7 +1039,9 @@ class OutcomesViewModel extends ChangeNotifier {
     _weekLoadingStatus.remove(curriculumWeek);
     _weekErrorMessages.remove(curriculumWeek);
 
-    final index = _allWeeksData.indexWhere((w) => w['curriculum_week'] == curriculumWeek);
+    final index = _allWeeksData.indexWhere(
+      (w) => w['curriculum_week'] == curriculumWeek,
+    );
     if (index != -1) {
       await _fetchWeekContent(index);
     }

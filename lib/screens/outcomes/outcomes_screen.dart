@@ -262,11 +262,11 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                     ],
                   ),
                 )
-                : PageView.builder(
-                    physics: const _NeighborPageScrollPhysics(),
-                    controller: viewModel.pageController,
-                    itemCount: viewModel.allWeeksData.length,
-                    onPageChanged: viewModel.onPageChanged,
+              : PageView.builder(
+                  physics: const _NeighborPageScrollPhysics(),
+                  controller: viewModel.pageController,
+                  itemCount: viewModel.allWeeksData.length,
+                  onPageChanged: viewModel.onPageChanged,
                   itemBuilder: (context, index) {
                     final weekData = viewModel.allWeeksData[index];
                     final anchorWeek =
@@ -670,6 +670,17 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final solvedWeeks = ref.watch(
       outcomesViewModelProvider(widget.args).select((vm) => vm.solvedWeeks),
     );
+    final selectedWeekForStrip = ref.watch(
+      outcomesViewModelProvider(widget.args).select((vm) {
+        final index = vm.currentPageIndex;
+        if (index < 0 || index >= vm.timelineItems.length) return null;
+        final item = vm.timelineItems[index];
+        if (item.type == 'week' || item.type == 'special_content') {
+          return item.curriculumWeek;
+        }
+        return null;
+      }),
+    );
     final actualCurrentWeek = calculateCurrentAcademicWeek();
     final pageType = (widget.pageData['type'] as String?) ?? 'week';
     final isSpecialPage = pageType != 'week';
@@ -867,7 +878,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                 breakPageIndexesByAfterWeek: breakPageIndexesByAfterWeek,
                 extraBadgesByWeek: extraBadgesByWeek,
                 weekPageIndexByWeek: weekPageIndexByWeek,
-                selectedWeek: isSpecialPage ? null : widget.curriculumWeek,
+                selectedWeek: selectedWeekForStrip,
                 actualCurrentWeek: actualCurrentWeek,
                 solvedWeeks: solvedWeeks,
                 palette: widget.palette,
