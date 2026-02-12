@@ -934,6 +934,8 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                     ),
                   ),
                   _WeekSectionBlock(
+                    weekSections: sections,
+                    selectedTopicId: effectiveSelectedTopicId,
                     outcomes: selectedOutcomes,
                     contents: selectedContents,
                     isAdmin: isAdmin,
@@ -1711,12 +1713,16 @@ class _WeekStripBarState extends State<_WeekStripBar> {
 }
 
 class _WeekSectionBlock extends StatelessWidget {
+  final List<Map<String, dynamic>> weekSections;
+  final int? selectedTopicId;
   final List<String> outcomes;
   final List<TopicContent> contents;
   final bool isAdmin;
   final VoidCallback onContentUpdated;
 
   const _WeekSectionBlock({
+    required this.weekSections,
+    required this.selectedTopicId,
     required this.outcomes,
     required this.contents,
     required this.isAdmin,
@@ -1732,12 +1738,52 @@ class _WeekSectionBlock extends StatelessWidget {
           AppleCollapsibleCard(
             icon: Icons.flag_outlined,
             title: 'Süreç Bileşenleri',
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: outcomes
-                  .map((outcome) => AppleOutcomeTile(text: outcome))
-                  .toList(),
-            ),
+            child: weekSections.length <= 1
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: outcomes
+                        .map((outcome) => AppleOutcomeTile(text: outcome))
+                        .toList(),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: weekSections.map((section) {
+                      final topicTitle =
+                          (section['topic_title'] as String? ?? 'Konu').trim();
+                      final topicOutcomes = (section['outcomes'] as List? ?? [])
+                          .whereType<String>()
+                          .toList();
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              topicTitle,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            ...topicOutcomes.map(
+                              (outcome) => Padding(
+                                padding: const EdgeInsets.only(bottom: 3),
+                                child: Text(
+                                  '• $outcome',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey.shade800,
+                                    height: 1.3,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
           ),
         ],
         for (var i = 0; i < contents.length; i++)
