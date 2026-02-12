@@ -13,6 +13,58 @@ import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+class _LessonThemePalette {
+  final Color primary;
+  final Color soft;
+  final Color border;
+  final Color warm;
+
+  const _LessonThemePalette({
+    required this.primary,
+    required this.soft,
+    required this.border,
+    required this.warm,
+  });
+}
+
+const List<_LessonThemePalette> _lessonPalettes = [
+  _LessonThemePalette(
+    primary: Color(0xFF2F6FE4),
+    soft: Color(0xFFEAF2FF),
+    border: Color(0xFFC8DBFF),
+    warm: Color(0xFFF39C12),
+  ),
+  _LessonThemePalette(
+    primary: Color(0xFF16A085),
+    soft: Color(0xFFE8F7F3),
+    border: Color(0xFFBFE9DE),
+    warm: Color(0xFFE67E22),
+  ),
+  _LessonThemePalette(
+    primary: Color(0xFF8E44AD),
+    soft: Color(0xFFF3EBFA),
+    border: Color(0xFFDCC8EE),
+    warm: Color(0xFFE67E22),
+  ),
+  _LessonThemePalette(
+    primary: Color(0xFFC0392B),
+    soft: Color(0xFFFCEEEB),
+    border: Color(0xFFF2CFC9),
+    warm: Color(0xFFEB9A3A),
+  ),
+  _LessonThemePalette(
+    primary: Color(0xFF1F7A8C),
+    soft: Color(0xFFE8F5F7),
+    border: Color(0xFFC6E3E8),
+    warm: Color(0xFFD88D1C),
+  ),
+];
+
+_LessonThemePalette _paletteForLesson(int lessonId) {
+  final index = (lessonId - 1).abs() % _lessonPalettes.length;
+  return _lessonPalettes[index];
+}
+
 class OutcomesScreen extends ConsumerStatefulWidget {
   final int lessonId;
   final int gradeId;
@@ -85,6 +137,7 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
     );
     final viewModel = ref.watch(outcomesViewModelProvider(viewModelArgs));
     final mediaQuery = MediaQuery.of(context);
+    final palette = _paletteForLesson(widget.lessonId);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F8FF),
@@ -224,6 +277,7 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                                 key: ValueKey('week_content_$curriculumWeek'),
                                 curriculumWeek: curriculumWeek as int,
                                 args: viewModelArgs,
+                                palette: palette,
                               ),
                             );
                           },
@@ -237,11 +291,13 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
 class WeekContentView extends ConsumerStatefulWidget {
   final int curriculumWeek;
   final OutcomesViewModelArgs args;
+  final _LessonThemePalette palette;
 
   const WeekContentView({
     super.key,
     required this.curriculumWeek,
     required this.args,
+    required this.palette,
   });
 
   @override
@@ -251,6 +307,203 @@ class WeekContentView extends ConsumerStatefulWidget {
 class _WeekContentViewState extends ConsumerState<WeekContentView>
     with AutomaticKeepAliveClientMixin {
   int? _selectedSectionIndex;
+  int? _selectedUnitId;
+
+  Future<void> _showUnitPicker(
+    BuildContext context,
+    List<Map<String, dynamic>> units,
+    int? selectedUnitId,
+    List<Map<String, dynamic>> allTopics,
+    List<Map<String, dynamic>> currentSections,
+  ) async {
+    final picked = await showModalBottomSheet<int>(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black54,
+      builder: (context) {
+        const unitIcons = <IconData>[
+          Icons.auto_stories_rounded,
+          Icons.public_rounded,
+          Icons.menu_book_rounded,
+          Icons.hub_rounded,
+          Icons.account_balance_rounded,
+          Icons.emoji_objects_rounded,
+        ];
+        const unitColors = <Color>[
+          Color(0xFF2F6FE4),
+          Color(0xFF16A085),
+          Color(0xFFE67E22),
+          Color(0xFF8E44AD),
+          Color(0xFFC0392B),
+          Color(0xFF1F7A8C),
+        ];
+
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => Navigator.of(context).pop(),
+                child: const SizedBox.expand(),
+              ),
+            ),
+            SafeArea(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Material(
+                  color: Colors.transparent,
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.86,
+                    child: DraggableScrollableSheet(
+                      initialChildSize: 0.64,
+                      minChildSize: 0.42,
+                      maxChildSize: 0.95,
+                      expand: false,
+                      builder: (context, scrollController) {
+                        return GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                            ),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 10),
+                                Container(
+                                  width: 40,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade300,
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                ),
+                                const SizedBox(height: 14),
+                                const Text(
+                                  'Ünite Seç',
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                                ),
+                                const SizedBox(height: 8),
+                                Expanded(
+                                  child: ListView.builder(
+                                    controller: scrollController,
+                                    padding: const EdgeInsets.fromLTRB(14, 4, 14, 16),
+                                    itemCount: units.length,
+                                    itemBuilder: (context, index) {
+                                      final unit = units[index];
+                                      final unitId = unit['unit_id'] as int?;
+                                      final isSelected =
+                                          unitId != null && unitId == selectedUnitId;
+                                      final icon = unitIcons[index % unitIcons.length];
+                                      final iconColor = unitColors[index % unitColors.length];
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 5),
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(14),
+                                          onTap: unitId == null
+                                              ? null
+                                              : () => Navigator.of(context).pop(unitId),
+                                          child: AnimatedContainer(
+                                            duration: const Duration(milliseconds: 180),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 14,
+                                              vertical: 12,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              gradient: isSelected
+                                                  ? const LinearGradient(
+                                                      colors: [
+                                                        Color(0xFFEAF2FF),
+                                                        Color(0xFFF2F7FF),
+                                                      ],
+                                                    )
+                                                  : null,
+                                              color: isSelected ? null : Colors.grey.shade50,
+                                              borderRadius: BorderRadius.circular(14),
+                                              border: Border.all(
+                                                color: isSelected
+                                                    ? const Color(0xFF2F6FE4)
+                                                    : Colors.grey.shade300,
+                                              ),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 34,
+                                                  height: 34,
+                                                  decoration: BoxDecoration(
+                                                    color: iconColor.withOpacity(0.14),
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  child: Icon(
+                                                    icon,
+                                                    color: iconColor,
+                                                    size: 18,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Expanded(
+                                                  child: Text(
+                                                    (unit['unit_title'] as String? ?? 'Ünite')
+                                                        .trim(),
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: isSelected
+                                                          ? FontWeight.w700
+                                                          : FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  isSelected
+                                                      ? Icons.check_circle_rounded
+                                                      : Icons
+                                                          .radio_button_unchecked_rounded,
+                                                  color: isSelected
+                                                      ? const Color(0xFF2F6FE4)
+                                                      : Colors.grey.shade600,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!mounted || picked == null) return;
+    setState(() => _selectedUnitId = picked);
+
+    final firstTopicForUnit = allTopics.firstWhere(
+      (topic) => topic['unit_id'] == picked,
+      orElse: () => <String, dynamic>{},
+    )['topic_id'] as int?;
+    if (firstTopicForUnit != null) {
+      await _handleTopicSelect(
+        topicId: firstTopicForUnit,
+        currentSections: currentSections,
+      );
+    }
+  }
 
   Future<void> _handleTopicSelect({
     required int topicId,
@@ -370,6 +623,38 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
         .map((w) => w['curriculum_week'] as int)
         .toList()
       ..sort();
+    final breakAfterWeekCounts = <int, int>{};
+    final breakPageIndexesByAfterWeek = <int, List<int>>{};
+    final extraPages = <Map<String, dynamic>>[];
+    for (var i = 0; i < allWeeksData.length; i++) {
+      final item = allWeeksData[i];
+      final type = item['type'] as String?;
+      if (type == 'special_content' || type == 'social_activity') {
+        extraPages.add({
+          'type': type,
+          'title': (item['title'] as String? ?? '').trim(),
+          'page_index': i,
+        });
+      }
+      if (item['type'] != 'break') continue;
+      int? previousWeek;
+      for (var j = i - 1; j >= 0; j--) {
+        final prev = allWeeksData[j];
+        if (prev['type'] == 'week' && prev['curriculum_week'] != null) {
+          previousWeek = prev['curriculum_week'] as int;
+          break;
+        }
+      }
+      if (previousWeek != null) {
+        breakAfterWeekCounts[previousWeek] =
+            (breakAfterWeekCounts[previousWeek] ?? 0) + 1;
+        final indexes = breakPageIndexesByAfterWeek.putIfAbsent(
+          previousWeek,
+          () => <int>[],
+        );
+        indexes.add(i);
+      }
+    }
     final actualCurrentWeek = calculateCurrentAcademicWeek();
 
     if (isLoading) {
@@ -487,6 +772,43 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                   'last_week': widget.curriculumWeek,
                 })
             .toList();
+    final unitOptions = <Map<String, dynamic>>[];
+    for (final topic in topicMenu) {
+      final unitId = topic['unit_id'] as int?;
+      if (unitId == null) continue;
+      if (unitOptions.any((u) => u['unit_id'] == unitId)) continue;
+      unitOptions.add({
+        'unit_id': unitId,
+        'unit_title': topic['unit_title'],
+        'unit_order': topic['unit_order'] as int? ?? 0,
+      });
+    }
+    unitOptions.sort(
+      (a, b) => (a['unit_order'] as int).compareTo(b['unit_order'] as int),
+    );
+
+    final selectedUnitFromSection = selectedUnitId;
+    final defaultUnitId = (selectedUnitFromSection is int)
+        ? selectedUnitFromSection
+        : (unitOptions.isNotEmpty ? unitOptions.first['unit_id'] as int : null);
+    if (_selectedUnitId == null ||
+        !unitOptions.any((u) => u['unit_id'] == _selectedUnitId)) {
+      _selectedUnitId = defaultUnitId;
+    }
+
+    final effectiveUnitId = _selectedUnitId;
+    final filteredTopics = effectiveUnitId == null
+        ? topicMenu
+        : topicMenu.where((t) => t['unit_id'] == effectiveUnitId).toList();
+    final effectiveSelectedTopicId = filteredTopics.any((t) => t['topic_id'] == selectedTopicId)
+        ? selectedTopicId
+        : (filteredTopics.isNotEmpty ? filteredTopics.first['topic_id'] as int? : null);
+    final selectedUnitTitle = unitOptions
+            .firstWhere(
+              (u) => u['unit_id'] == effectiveUnitId,
+              orElse: () => <String, dynamic>{'unit_title': 'Ünite seçiniz'},
+            )['unit_title'] as String? ??
+        'Ünite seçiniz';
 
     final isLastWeek = data['is_last_week_of_unit'] ?? false;
     final unitSummary = data['unit_summary'];
@@ -513,9 +835,13 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
             sliver: SliverToBoxAdapter(
               child: _WeekStripBar(
                 weekNumbers: weekNumbers,
+                breakAfterWeekCounts: breakAfterWeekCounts,
+                breakPageIndexesByAfterWeek: breakPageIndexesByAfterWeek,
+                extraPages: extraPages,
                 selectedWeek: widget.curriculumWeek,
                 actualCurrentWeek: actualCurrentWeek,
                 solvedWeeks: solvedWeeks,
+                palette: widget.palette,
                 onSelectWeek: (targetWeek) async {
                   final viewModel = ref.read(outcomesViewModelProvider(widget.args));
                   final targetPageIndex = viewModel.allWeeksData.indexWhere(
@@ -524,6 +850,15 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                   if (targetPageIndex == -1) return;
                   await viewModel.pageController.animateToPage(
                     targetPageIndex,
+                    duration: const Duration(milliseconds: 260),
+                    curve: Curves.easeOutCubic,
+                  );
+                },
+                onSelectBreakPageIndex: (breakPageIndex) async {
+                  if (breakPageIndex < 0 || breakPageIndex >= allWeeksData.length) return;
+                  final viewModel = ref.read(outcomesViewModelProvider(widget.args));
+                  await viewModel.pageController.animateToPage(
+                    breakPageIndex,
                     duration: const Duration(milliseconds: 260),
                     curve: Curves.easeOutCubic,
                   );
@@ -539,10 +874,20 @@ class _WeekContentViewState extends ConsumerState<WeekContentView>
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: _TopicSelectorCard(
-                      topics: topicMenu,
-                      selectedTopicId: selectedTopicId,
+                      topics: filteredTopics,
+                      selectedTopicId: effectiveSelectedTopicId,
                       currentWeekTopicIds: currentWeekTopicIds,
                       currentWeek: widget.curriculumWeek,
+                      palette: widget.palette,
+                      selectedUnitTitle: selectedUnitTitle,
+                      unitCount: unitOptions.length,
+                      onTapUnit: () => _showUnitPicker(
+                        context,
+                        unitOptions,
+                        effectiveUnitId,
+                        topicMenu,
+                        sections,
+                      ),
                       onSelectTopic: (topicId) => _handleTopicSelect(
                         topicId: topicId,
                         currentSections: sections,
@@ -615,6 +960,10 @@ class _TopicSelectorCard extends StatefulWidget {
   final int? selectedTopicId;
   final Set<int> currentWeekTopicIds;
   final int currentWeek;
+  final _LessonThemePalette palette;
+  final String selectedUnitTitle;
+  final int unitCount;
+  final VoidCallback onTapUnit;
   final ValueChanged<int> onSelectTopic;
 
   const _TopicSelectorCard({
@@ -622,6 +971,10 @@ class _TopicSelectorCard extends StatefulWidget {
     required this.selectedTopicId,
     required this.currentWeekTopicIds,
     required this.currentWeek,
+    required this.palette,
+    required this.selectedUnitTitle,
+    required this.unitCount,
+    required this.onTapUnit,
     required this.onSelectTopic,
   });
 
@@ -630,8 +983,6 @@ class _TopicSelectorCard extends StatefulWidget {
 }
 
 class _TopicSelectorCardState extends State<_TopicSelectorCard> {
-  int? _expandedUnitId;
-
   String _statusLabel(Map<String, dynamic> topic) {
     final topicId = topic['topic_id'] as int?;
     if (topicId != null && widget.currentWeekTopicIds.contains(topicId)) {
@@ -655,38 +1006,6 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
 
   @override
   Widget build(BuildContext context) {
-    final unitGroups = <int, List<Map<String, dynamic>>>{};
-    final unitTitleById = <int, String>{};
-    final unitOrderById = <int, int>{};
-
-    for (final topic in widget.topics) {
-      final unitId = topic['unit_id'] as int?;
-      if (unitId == null) continue;
-      unitGroups.putIfAbsent(unitId, () => <Map<String, dynamic>>[]).add(topic);
-      unitTitleById[unitId] = topic['unit_title'] as String? ?? 'Ünite';
-      unitOrderById[unitId] = topic['unit_order'] as int? ?? 0;
-    }
-
-    final sortedUnitIds = unitGroups.keys.toList()
-      ..sort((a, b) => (unitOrderById[a] ?? 0).compareTo(unitOrderById[b] ?? 0));
-    const unitBadgePalette = <Color>[
-      Color(0xFF2F6FE4),
-      Color(0xFF16A085),
-      Color(0xFFE67E22),
-      Color(0xFF8E44AD),
-      Color(0xFFC0392B),
-      Color(0xFF1F7A8C),
-    ];
-
-    if (_expandedUnitId == null && sortedUnitIds.isNotEmpty) {
-      final selectedUnitId = widget.topics
-          .firstWhere(
-            (t) => t['topic_id'] == widget.selectedTopicId,
-            orElse: () => <String, dynamic>{},
-          )['unit_id'] as int?;
-      _expandedUnitId = selectedUnitId ?? sortedUnitIds.first;
-    }
-
     final selectedTopicTitle = (widget.topics
             .firstWhere(
               (topic) => topic['topic_id'] == widget.selectedTopicId,
@@ -694,224 +1013,249 @@ class _TopicSelectorCardState extends State<_TopicSelectorCard> {
             )['topic_title'] as String? ??
         '')
         .trim();
-    final currentWeekCount = widget.currentWeekTopicIds.length;
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFFFFFFF), Color(0xFFF5F8FF)],
-        ),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFDCE7FF)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF87A8E5).withOpacity(0.16),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Dersin Konuları',
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '${widget.topics.length} konu • Bu hafta $currentWeekCount konu aktif',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          ...sortedUnitIds.asMap().entries.map((entry) {
-            final index = entry.key;
-            final unitId = entry.value;
-            final unitTopics = unitGroups[unitId] ?? const <Map<String, dynamic>>[];
-            final expanded = _expandedUnitId == unitId;
-            final badgeColor = unitBadgePalette[index % unitBadgePalette.length];
-            return Container(
-              margin: const EdgeInsets.only(top: 8),
-              child: _UnitAccordionPanel(
-                title: unitTitleById[unitId] ?? 'Ünite',
-                subtitle: '${unitTopics.length} konu',
-                badgeColor: badgeColor,
-                expanded: expanded,
-                onHeaderTap: () {
-                  setState(() {
-                    _expandedUnitId = expanded ? null : unitId;
-                  });
-                },
-                child: Column(
-                  children: unitTopics.map((topic) {
-                    final topicId = topic['topic_id'] as int?;
-                    final title = (topic['topic_title'] as String? ?? 'Konu').trim();
-                    final isSelected = topicId != null && topicId == widget.selectedTopicId;
-                    final status = _statusLabel(topic);
-                    final weekRange = _weekRangeLabel(topic);
-                    return ListTile(
-                      dense: true,
-                      selected: isSelected,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      selectedTileColor: const Color(0xFFE9F1FF),
-                      leading: Icon(
-                        isSelected ? Icons.bookmark_rounded : Icons.book_outlined,
-                        color: isSelected ? const Color(0xFF2F6FE4) : Colors.grey.shade700,
-                        size: 20,
-                      ),
-                      title: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '$status • $weekRange',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: status == 'Bu Hafta'
-                              ? const Color(0xFF2F6FE4)
-                              : Colors.grey.shade600,
-                          fontWeight: status == 'Bu Hafta' ? FontWeight.w700 : FontWeight.w500,
-                        ),
-                      ),
-                      onTap: topicId == null ? null : () => widget.onSelectTopic(topicId),
-                    );
-                  }).toList(),
-                ),
-              ),
-            );
-          }),
-          if (selectedTopicTitle.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              'Seçili konu: $selectedTopicTitle',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade700,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _UnitAccordionPanel extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final Color badgeColor;
-  final bool expanded;
-  final VoidCallback onHeaderTap;
-  final Widget child;
-
-  const _UnitAccordionPanel({
-    required this.title,
-    required this.subtitle,
-    required this.badgeColor,
-    required this.expanded,
-    required this.onHeaderTap,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOutCubic,
-      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: expanded
-              ? const [Color(0xFFFFFFFF), Color(0xFFF1F7FF)]
-              : const [Color(0xFFFFFFFF), Color(0xFFF7FAFF)],
+          colors: [Colors.white, widget.palette.soft, const Color(0xFFEEF5FF)],
         ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: expanded ? const Color(0xFFCFE0FF) : const Color(0xFFE1E9FF),
-        ),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: widget.palette.border),
         boxShadow: [
-          if (expanded)
-            BoxShadow(
-              color: const Color(0xFF8CACEE).withOpacity(0.12),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
+          BoxShadow(
+            color: widget.palette.primary.withOpacity(0.2),
+            blurRadius: 16,
+            offset: const Offset(0, 7),
+          ),
         ],
       ),
-      child: Column(
+      child: Stack(
         children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: onHeaderTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-              child: Row(
-                children: [
-                  Container(
-                    width: 10,
-                    height: 34,
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                      color: badgeColor,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-                        ),
-                        Text(
-                          subtitle,
-                          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                        ),
-                      ],
-                    ),
-                  ),
-                  AnimatedRotation(
-                    turns: expanded ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 220),
-                    curve: Curves.easeOutCubic,
-                    child: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: expanded ? const Color(0xFF2F6FE4) : Colors.grey.shade700,
-                    ),
-                  ),
-                ],
+          Positioned(
+            top: -18,
+            right: -10,
+            child: Container(
+              width: 92,
+              height: 92,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFFBFD6FF).withOpacity(0.22),
               ),
             ),
           ),
-          ClipRect(
-            child: AnimatedSize(
-              duration: const Duration(milliseconds: 240),
-              curve: Curves.easeOutCubic,
-              child: expanded
-                  ? Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                      child: child,
-                    )
-                  : const SizedBox.shrink(),
+          Positioned(
+            bottom: -26,
+            left: -12,
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFFFFD9B8).withOpacity(0.18),
+              ),
             ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: widget.onTapUnit,
+                child: Ink(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.72),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: widget.palette.border),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: widget.palette.primary.withOpacity(0.13),
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        child: Icon(
+                          Icons.folder_open_rounded,
+                          color: widget.palette.primary,
+                          size: 16,
+                        ),
+                      ),
+                      const SizedBox(width: 9),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Seçili Ünite',
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              widget.selectedUnitTitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        '${widget.unitCount} ünite',
+                        style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: widget.palette.primary.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Menü',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: widget.palette.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 3),
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 14,
+                              color: widget.palette.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (widget.topics.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    'Bu ünite için konu bulunamadı.',
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                )
+              else
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 240),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  child: Column(
+                    key: ValueKey('${widget.topics.first['unit_id']}_${widget.topics.length}'),
+                    children: widget.topics.map((topic) {
+                      final topicId = topic['topic_id'] as int?;
+                      final title = (topic['topic_title'] as String? ?? 'Konu').trim();
+                      final isSelected = topicId != null && topicId == widget.selectedTopicId;
+                      final status = _statusLabel(topic);
+                      final weekRange = _weekRangeLabel(topic);
+                      final bool isCurrent = status == 'Bu Hafta';
+                      return Container(
+                        margin: const EdgeInsets.only(top: 7),
+                        decoration: BoxDecoration(
+                          gradient: isSelected
+                              ? LinearGradient(
+                                  colors: [widget.palette.soft, const Color(0xFFF3F8FF)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                )
+                              : const LinearGradient(
+                                  colors: [Color(0xFFFFFFFF), Color(0xFFF8FBFF)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected
+                                ? widget.palette.border
+                                : const Color(0xFFDDE8FB),
+                          ),
+                          boxShadow: [
+                            if (isSelected)
+                              BoxShadow(
+                                color: widget.palette.primary.withOpacity(0.18),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                          ],
+                        ),
+                        child: ListTile(
+                          dense: true,
+                          leading: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? widget.palette.primary.withOpacity(0.12)
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(9),
+                            ),
+                            child: Icon(
+                              isSelected ? Icons.bookmark_rounded : Icons.book_outlined,
+                              color: isSelected
+                                  ? widget.palette.primary
+                                  : Colors.grey.shade700,
+                              size: 18,
+                            ),
+                          ),
+                          title: Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                            ),
+                          ),
+                          subtitle: Text(
+                            '$status • $weekRange',
+                            style: TextStyle(
+                              fontSize: 11,
+                          color: isCurrent
+                                  ? widget.palette.primary
+                                  : Colors.grey.shade600,
+                              fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                            ),
+                          ),
+                          trailing: Icon(
+                            Icons.chevron_right_rounded,
+                            size: 18,
+                            color: isSelected
+                                ? widget.palette.primary
+                                : Colors.grey.shade500,
+                          ),
+                          onTap: topicId == null ? null : () => widget.onSelectTopic(topicId),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              if (selectedTopicTitle.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  'Seçili konu: $selectedTopicTitle',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ],
           ),
         ],
       ),
@@ -919,24 +1263,123 @@ class _UnitAccordionPanel extends StatelessWidget {
   }
 }
 
-class _WeekStripBar extends StatelessWidget {
+class _WeekStripBar extends StatefulWidget {
   final List<int> weekNumbers;
+  final Map<int, int> breakAfterWeekCounts;
+  final Map<int, List<int>> breakPageIndexesByAfterWeek;
+  final List<Map<String, dynamic>> extraPages;
   final int selectedWeek;
   final int actualCurrentWeek;
   final Set<int> solvedWeeks;
+  final _LessonThemePalette palette;
   final ValueChanged<int> onSelectWeek;
+  final ValueChanged<int> onSelectBreakPageIndex;
 
   const _WeekStripBar({
     required this.weekNumbers,
+    required this.breakAfterWeekCounts,
+    required this.breakPageIndexesByAfterWeek,
+    required this.extraPages,
     required this.selectedWeek,
     required this.actualCurrentWeek,
     required this.solvedWeeks,
+    required this.palette,
     required this.onSelectWeek,
+    required this.onSelectBreakPageIndex,
   });
 
   @override
+  State<_WeekStripBar> createState() => _WeekStripBarState();
+}
+
+class _WeekStripBarState extends State<_WeekStripBar> {
+  final ScrollController _scrollController = ScrollController();
+  final Map<int, GlobalKey> _weekKeys = <int, GlobalKey>{};
+  static bool _didGlobalInitialCentering = false;
+  bool _didInitialCentering = false;
+
+  GlobalKey _keyForWeek(int week) {
+    return _weekKeys.putIfAbsent(week, () => GlobalKey());
+  }
+
+  void _centerWeek(
+    int week, {
+    Duration duration = const Duration(milliseconds: 280),
+    int retryCount = 0,
+  }) {
+    if (!widget.weekNumbers.contains(week)) return;
+    final key = _weekKeys[week];
+    final targetContext = key?.currentContext;
+    if (targetContext == null) {
+      if (retryCount < 2) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _centerWeek(
+              week,
+              duration: duration,
+              retryCount: retryCount + 1,
+            );
+          }
+        });
+      }
+      return;
+    }
+    Scrollable.ensureVisible(
+      targetContext,
+      alignment: 0.5,
+      duration: duration,
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final initialWeek = !_didGlobalInitialCentering
+          ? (widget.weekNumbers.contains(widget.actualCurrentWeek)
+              ? widget.actualCurrentWeek
+              : widget.weekNumbers.contains(widget.selectedWeek)
+                  ? widget.selectedWeek
+                  : widget.weekNumbers.first)
+          : (widget.weekNumbers.contains(widget.selectedWeek)
+              ? widget.selectedWeek
+              : widget.weekNumbers.contains(widget.actualCurrentWeek)
+                  ? widget.actualCurrentWeek
+                  : widget.weekNumbers.first);
+      _didGlobalInitialCentering = true;
+      _didInitialCentering = true;
+      _centerWeek(initialWeek, duration: const Duration(milliseconds: 0));
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _WeekStripBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_didInitialCentering) return;
+    if (oldWidget.selectedWeek != widget.selectedWeek) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final weekToCenter = widget.weekNumbers.contains(widget.selectedWeek)
+            ? widget.selectedWeek
+            : widget.weekNumbers.contains(widget.actualCurrentWeek)
+                ? widget.actualCurrentWeek
+                : widget.weekNumbers.first;
+        _centerWeek(weekToCenter);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (weekNumbers.isEmpty) return const SizedBox.shrink();
+    if (widget.weekNumbers.isEmpty) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -960,91 +1403,175 @@ class _WeekStripBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Hafta Akışı • Şu an: $actualCurrentWeek',
+            'Hafta Akışı • Şu an: ${widget.actualCurrentWeek}',
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
               color: Colors.grey.shade800,
             ),
           ),
-          const SizedBox(height: 8),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: weekNumbers.map((week) {
-                final isSelected = week == selectedWeek;
-                final isCurrent = week == actualCurrentWeek;
-                final isPast = week < actualCurrentWeek;
-                final isSolved = solvedWeeks.contains(week);
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(999),
-                    onTap: () => onSelectWeek(week),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 160),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFF2F6FE4)
-                            : isCurrent
-                                ? const Color(0xFFFFE7CB)
-                            : isPast
-                                ? const Color(0xFFE8F0FF)
-                                : Colors.white,
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(
-                          color: isCurrent
-                              ? const Color(0xFFF39C12)
-                              : const Color(0xFFD5E2FF),
-                          width: isCurrent ? 1.5 : 1.0,
+          if (widget.extraPages.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: widget.extraPages.map((entry) {
+                  final type = entry['type'] as String? ?? '';
+                  final title = entry['title'] as String? ?? '';
+                  final pageIndex = entry['page_index'] as int?;
+                  final isSpecial = type == 'special_content';
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ActionChip(
+                      onPressed: pageIndex == null
+                          ? null
+                          : () => widget.onSelectBreakPageIndex(pageIndex),
+                      backgroundColor: isSpecial
+                          ? const Color(0xFFEAF2FF)
+                          : const Color(0xFFEAF7F3),
+                      side: BorderSide(
+                        color: isSpecial
+                            ? const Color(0xFFC8DBFF)
+                            : const Color(0xFFBFE9DE),
+                      ),
+                      label: Text(
+                        isSpecial ? 'Özel: $title' : 'Etkinlik: $title',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: isSpecial
+                              ? const Color(0xFF2F6FE4)
+                              : const Color(0xFF16A085),
                         ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '$week',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: isSelected
-                                  ? Colors.white
-                                  : isCurrent
-                                      ? const Color(0xFFB76A00)
-                                      : isPast
-                                          ? const Color(0xFF356FD9)
-                                          : Colors.grey.shade700,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+          const SizedBox(height: 8),
+          SingleChildScrollView(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: widget.weekNumbers.map((week) {
+                final isSelected = week == widget.selectedWeek;
+                final isCurrent = week == widget.actualCurrentWeek;
+                final isPast = week < widget.actualCurrentWeek;
+                final isSolved = widget.solvedWeeks.contains(week);
+                return Row(
+                  children: [
+                    Padding(
+                      key: _keyForWeek(week),
+                      padding: const EdgeInsets.only(right: 8),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(999),
+                        onTap: () => widget.onSelectWeek(week),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 160),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? widget.palette.primary
+                                : isCurrent
+                                    ? const Color(0xFFFFE7CB)
+                                    : isPast
+                                        ? const Color(0xFFE8F0FF)
+                                        : Colors.white,
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(
+                              color: isCurrent
+                                  ? widget.palette.warm
+                                  : const Color(0xFFD5E2FF),
+                              width: isCurrent ? 1.5 : 1.0,
                             ),
                           ),
-                          if (isCurrent) ...[
-                            const SizedBox(width: 6),
-                            Container(
-                              width: 6,
-                              height: 6,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFF39C12),
-                                shape: BoxShape.circle,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '$week',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : isCurrent
+                                          ? const Color(0xFFB76A00)
+                                          : isPast
+                                              ? widget.palette.primary
+                                              : Colors.grey.shade700,
+                                ),
                               ),
-                            ),
-                          ],
-                          if (isSolved) ...[
-                            const SizedBox(width: 6),
-                            Container(
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? Colors.white
-                                    : const Color(0xFF2F6FE4),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          ],
-                        ],
+                              if (isCurrent) ...[
+                                const SizedBox(width: 6),
+                                Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: widget.palette.warm,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ],
+                              if (isSolved) ...[
+                                const SizedBox(width: 6),
+                                Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? Colors.white
+                                        : widget.palette.primary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    if ((widget.breakAfterWeekCounts[week] ?? 0) > 0)
+                      ...List.generate(
+                        widget.breakAfterWeekCounts[week] ?? 0,
+                        (index) => Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(999),
+                            onTap: (widget.breakPageIndexesByAfterWeek[week] != null &&
+                                    widget.breakPageIndexesByAfterWeek[week]!.length > index)
+                                ? () => widget.onSelectBreakPageIndex(
+                                      widget.breakPageIndexesByAfterWeek[week]![index],
+                                    )
+                                : null,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 9,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFE4EC),
+                                borderRadius: BorderRadius.circular(999),
+                                border: Border.all(color: const Color(0xFFFFB0C7)),
+                              ),
+                              child: const Text(
+                                'T',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFFC43D67),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 );
               }).toList(),
             ),
@@ -1139,7 +1666,7 @@ class _WeekSectionBlock extends StatelessWidget {
           const SizedBox(height: 12),
           AppleCollapsibleCard(
             icon: Icons.flag_outlined,
-            title: 'Öğrenme Çıktıları',
+            title: 'Süreç Bileşenleri',
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: outcomes
