@@ -1040,7 +1040,7 @@ class _WeekStripBar extends StatelessWidget {
                                 shape: BoxShape.circle,
                               ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ),
