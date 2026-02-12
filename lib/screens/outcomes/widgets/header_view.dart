@@ -42,13 +42,18 @@ class HeaderView extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFFFFF), Color(0xFFF4F8FF)],
+        ),
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFDCE7FF)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: const Color(0xFF85A5E2).withOpacity(0.15),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -132,6 +137,13 @@ class HeaderView extends ConsumerWidget {
       profileViewModelProvider.select((p) => p.profile == null),
     );
 
+    final sections = (data['sections'] as List?)
+            ?.whereType<Map>()
+            .map((s) => Map<String, dynamic>.from(s))
+            .toList() ??
+        const <Map<String, dynamic>>[];
+    final isMultiSectionWeek = sections.length > 1;
+
     final (startDate, endDate) = _getWeekDateRange(curriculumWeek);
     final formattedStartDate = '${startDate.day} ${aylar[startDate.month - 1]}';
     final formattedEndDate =
@@ -143,13 +155,18 @@ class HeaderView extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFFFFFFF), Color(0xFFF2F7FF)],
+            ),
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFD8E6FF)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                color: const Color(0xFF7CA5E8).withOpacity(0.18),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
@@ -175,12 +192,17 @@ class HeaderView extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              if (data['unit_title'] != null)
+              if (isMultiSectionWeek)
+                _buildHierarchyRow(
+                  Icons.layers_outlined,
+                  'Bu hafta ${sections.length} farklı konu planlandı',
+                ),
+              if (!isMultiSectionWeek && data['unit_title'] != null)
                 _buildHierarchyRow(
                   Icons.folder_open_outlined,
                   data['unit_title']!,
                 ),
-              if (data['topic_title'] != null)
+              if (!isMultiSectionWeek && data['topic_title'] != null)
                 _buildHierarchyRow(
                   Icons.article_outlined,
                   data['topic_title']!,

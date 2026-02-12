@@ -128,6 +128,15 @@ class OutcomesViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> _allWeeksData = [];
   List<Map<String, dynamic>> get allWeeksData => _allWeeksData;
 
+  List<Map<String, dynamic>> _lessonTopics = [];
+  List<Map<String, dynamic>> get lessonTopics => _lessonTopics;
+
+  bool _isLoadingLessonTopics = false;
+  bool get isLoadingLessonTopics => _isLoadingLessonTopics;
+
+  Set<int> _solvedWeeks = {};
+  Set<int> get solvedWeeks => _solvedWeeks;
+
   bool _isLoadingWeeks = true;
   bool get isLoadingWeeks => _isLoadingWeeks;
 
@@ -261,6 +270,7 @@ class OutcomesViewModel extends ChangeNotifier {
       }
 
       _allWeeksData = processedWeeks;
+      await _fetchLessonTopics();
 
       // Başlangıç sayfasını belirle
       final currentInfo = getCurrentPeriodInfo();
@@ -311,6 +321,183 @@ class OutcomesViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> _fetchLessonTopics() async {
+    _isLoadingLessonTopics = true;
+    _safeNotifyListeners();
+    try {
+      final unitsResponse = await Supabase.instance.client
+          .from('units')
+          .select('id, title, order_no, unit_grades!inner(grade_id)')
+          .eq('lesson_id', lessonId)
+          .eq('is_active', true)
+          .eq('unit_grades.grade_id', gradeId)
+          .order('order_no', ascending: true);
+
+      final units = (unitsResponse as List)
+          .map((u) => Map<String, dynamic>.from(u as Map))
+          .toList();
+      final unitIds = units.map((u) => u['id']).whereType<int>().toList();
+      final unitTitleById = <int, String>{
+        for (final unit in units)
+          if (unit['id'] is int) unit['id'] as int: (unit['title'] as String? ?? ''),
+      };
+      final unitOrderById = <int, int>{
+        for (final unit in units)
+          if (unit['id'] is int)
+            unit['id'] as int: (unit['order_no'] as int? ?? 0),
+      };
+
+      if (unitIds.isEmpty) {
+        _lessonTopics = [];
+        _solvedWeeks = {};
+        return;
+      }
+
+      final topicsResponse = await Supabase.instance.client
+          .from('topics')
+          .select('id, unit_id, title, order_no')
+          .inFilter('unit_id', unitIds)
+          .eq('is_active', true)
+          .order('order_no', ascending: true);
+
+      final rawTopics = (topicsResponse as List)
+          .map((t) => Map<String, dynamic>.from(t as Map))
+          .toList();
+
+      final topicIds = rawTopics.map((t) => t['id']).whereType<int>().toList();
+      final weeksByTopic = <int, Set<int>>{};
+      for (final topicId in topicIds) {
+        weeksByTopic[topicId] = <int>{};
+      }
+
+      if (topicIds.isNotEmpty) {
+        final outcomesRes = await Supabase.instance.client
+            .from('outcomes')
+            .select('topic_id, outcome_weeks(start_week, end_week)')
+            .inFilter('topic_id', topicIds);
+
+        for (final raw in (outcomesRes as List)) {
+          final row = Map<String, dynamic>.from(raw as Map);
+          final topicId = row['topic_id'] as int?;
+          if (topicId == null) continue;
+          final list = (row['outcome_weeks'] as List? ?? []);
+          for (final rawOw in list) {
+            final ow = Map<String, dynamic>.from(rawOw as Map);
+            final startWeek = ow['start_week'] as int?;
+            final endWeek = ow['end_week'] as int?;
+            if (startWeek == null || endWeek == null) continue;
+            for (var w = startWeek; w <= endWeek; w++) {
+              weeksByTopic[topicId]?.add(w);
+            }
+          }
+        }
+
+        final topicContentsRes = await Supabase.instance.client
+            .from('topic_contents')
+            .select('topic_id, topic_content_weeks(curriculum_week)')
+            .inFilter('topic_id', topicIds);
+
+        for (final raw in (topicContentsRes as List)) {
+          final row = Map<String, dynamic>.from(raw as Map);
+          final topicId = row['topic_id'] as int?;
+          if (topicId == null) continue;
+          final list = (row['topic_content_weeks'] as List? ?? []);
+          for (final rawTcw in list) {
+            final tcw = Map<String, dynamic>.from(rawTcw as Map);
+            final week = tcw['curriculum_week'] as int?;
+            if (week != null) weeksByTopic[topicId]?.add(week);
+          }
+        }
+      }
+
+      final topics = rawTopics.map((topic) {
+        final unitId = topic['unit_id'] as int?;
+        final topicId = topic['id'] as int?;
+        final weeks = topicId != null
+            ? ((weeksByTopic[topicId] ?? <int>{}).toList()..sort())
+            : <int>[];
+        return {
+          'topic_id': topicId,
+          'topic_title': topic['title'],
+          'unit_id': unitId,
+          'unit_title': unitId != null ? unitTitleById[unitId] : null,
+          'unit_order': unitId != null ? (unitOrderById[unitId] ?? 0) : 0,
+          'topic_order': topic['order_no'] as int? ?? 0,
+          'weeks': weeks,
+          'first_week': weeks.isNotEmpty ? weeks.first : null,
+          'last_week': weeks.isNotEmpty ? weeks.last : null,
+        };
+      }).toList()
+        ..sort((a, b) {
+          final unitCompare = (a['unit_order'] as int).compareTo(b['unit_order'] as int);
+          if (unitCompare != 0) return unitCompare;
+          return (a['topic_order'] as int).compareTo(b['topic_order'] as int);
+        });
+
+      _lessonTopics = topics;
+      await _fetchSolvedWeeks(unitIds);
+    } catch (e) {
+      debugPrint('Error fetching lesson topics: $e');
+      _lessonTopics = [];
+      _solvedWeeks = {};
+    } finally {
+      _isLoadingLessonTopics = false;
+      _safeNotifyListeners();
+    }
+  }
+
+  Future<void> _fetchSolvedWeeks(List<int> unitIds) async {
+    try {
+      final userId = Supabase.instance.client.auth.currentUser?.id;
+      if (userId == null || unitIds.isEmpty) {
+        _solvedWeeks = {};
+        return;
+      }
+
+      final response = await Supabase.instance.client
+          .from('user_curriculum_week_run_summary')
+          .select('curriculum_week, correct_count, wrong_count')
+          .eq('user_id', userId)
+          .inFilter('unit_id', unitIds);
+
+      final solved = <int>{};
+      for (final raw in (response as List)) {
+        final row = Map<String, dynamic>.from(raw as Map);
+        final week = row['curriculum_week'] as int?;
+        final correct = row['correct_count'] as int? ?? 0;
+        final wrong = row['wrong_count'] as int? ?? 0;
+        if (week != null && (correct + wrong) > 0) {
+          solved.add(week);
+        }
+      }
+      _solvedWeeks = solved;
+    } catch (e) {
+      debugPrint('Error fetching solved weeks: $e');
+      _solvedWeeks = {};
+    }
+  }
+
+  Future<int?> findBestWeekForTopic({
+    required int topicId,
+    required int currentWeek,
+  }) async {
+    try {
+      final topic = _lessonTopics.firstWhere(
+        (t) => t['topic_id'] == topicId,
+        orElse: () => <String, dynamic>{},
+      );
+      final weeks = (topic['weeks'] as List? ?? []).whereType<int>().toList();
+      if (weeks.isEmpty) return null;
+
+      weeks.sort();
+      final futureOrCurrent = weeks.where((w) => w >= currentWeek).toList();
+      return futureOrCurrent.isNotEmpty ? futureOrCurrent.first : weeks.first;
+    } catch (e) {
+      debugPrint('Error finding week for topic $topicId: $e');
+      return null;
+    }
+  }
+
   void onPageChanged(int index) {
     final weekData = _allWeeksData[index];
     if (weekData['type'] == 'week') {
@@ -330,7 +517,13 @@ class OutcomesViewModel extends ChangeNotifier {
 
     final curriculumWeek = weekData['curriculum_week'] as int;
 
-    if (_weekMainContents.containsKey(curriculumWeek) || (_weekLoadingStatus[curriculumWeek] ?? false)) {
+    final existingWeekData = _weekMainContents[curriculumWeek];
+    final existingSections = existingWeekData?['sections'];
+    final hasSectionedWeekData =
+        existingSections is List && existingSections.isNotEmpty;
+
+    if ((_weekMainContents.containsKey(curriculumWeek) && hasSectionedWeekData) ||
+        (_weekLoadingStatus[curriculumWeek] ?? false)) {
       return;
     }
 
@@ -349,11 +542,19 @@ class OutcomesViewModel extends ChangeNotifier {
           gradeId: gradeId,
         );
         if (cachedData != null) {
-          _weekMainContents[curriculumWeek] = cachedData;
-          _weekUnitIds[curriculumWeek] = cachedData['unit_id'];
-          _safeNotifyListeners();
-          await _fetchDynamicData(curriculumWeek, isGuest);
-          return;
+          final cachedSections = cachedData['sections'];
+          final hasSections =
+              cachedSections is List && cachedSections.isNotEmpty;
+
+          // Backward-compatibility: eski cache kayıtlarında "sections" yoktu.
+          // Bu durumda taze ağ verisi çekip cache'i yeni yapıya yükselt.
+          if (hasSections) {
+            _weekMainContents[curriculumWeek] = cachedData;
+            _weekUnitIds[curriculumWeek] = cachedData['unit_id'];
+            _safeNotifyListeners();
+            await _fetchDynamicData(curriculumWeek, isGuest);
+            return;
+          }
         }
       }
 
@@ -409,10 +610,15 @@ class OutcomesViewModel extends ChangeNotifier {
       );
 
       if (response != null && (response as List).isNotEmpty) {
-        final firstItem = response.first;
-        _weekQuestions[curriculumWeek] = (firstItem['mini_quiz_questions'] as List? ?? [])
-            .map((q) => Question.fromMap(q as Map<String, dynamic>))
-            .toList();
+        final allQuestions = <int, Question>{};
+        for (final item in (response as List)) {
+          final quizQuestions = (item['mini_quiz_questions'] as List? ?? []);
+          for (final q in quizQuestions) {
+            final question = Question.fromMap(q as Map<String, dynamic>);
+            allQuestions[question.id] = question;
+          }
+        }
+        _weekQuestions[curriculumWeek] = allQuestions.values.toList();
       } else {
         _weekQuestions[curriculumWeek] = [];
       }
@@ -476,18 +682,85 @@ class OutcomesViewModel extends ChangeNotifier {
       return {};
     }
 
-    final firstItem = response.first;
+    final firstItem = response.first as Map<String, dynamic>;
+    final sectionMap = <String, Map<String, dynamic>>{};
+    final allOutcomes = <String>{};
+    final allContents = <int, Map<String, dynamic>>{};
+    final allMiniQuizQuestions = <int, Map<String, dynamic>>{};
+    final allUnitIds = <int>{};
+
+    for (final rawItem in response) {
+      final item = rawItem as Map<String, dynamic>;
+      final unitId = item['unit_id'] as int?;
+      final topicId = item['topic_id'] as int?;
+      if (unitId == null || topicId == null) continue;
+
+      allUnitIds.add(unitId);
+      final sectionKey = '$unitId-$topicId';
+      final section = sectionMap.putIfAbsent(sectionKey, () {
+        return {
+          'unit_id': unitId,
+          'unit_title': item['unit_title'],
+          'topic_id': topicId,
+          'topic_title': item['topic_title'],
+          'outcomes': <String>{},
+          'contents': <Map<String, dynamic>>[],
+        };
+      });
+
+      final outcome = item['outcome_description'] as String?;
+      if (outcome != null && outcome.trim().isNotEmpty) {
+        (section['outcomes'] as Set<String>).add(outcome);
+        allOutcomes.add(outcome);
+      }
+
+      final sectionContents = (section['contents'] as List<Map<String, dynamic>>);
+      final seenContentIds = sectionContents
+          .map((c) => c['id'])
+          .whereType<int>()
+          .toSet();
+      for (final rawContent in (item['contents'] as List? ?? [])) {
+        final content = Map<String, dynamic>.from(rawContent as Map);
+        final contentId = content['id'] as int?;
+        if (contentId != null && seenContentIds.contains(contentId)) continue;
+        if (contentId != null) {
+          seenContentIds.add(contentId);
+          allContents[contentId] = content;
+        }
+        sectionContents.add(content);
+      }
+
+      for (final rawQuestion in (item['mini_quiz_questions'] as List? ?? [])) {
+        final question = Map<String, dynamic>.from(rawQuestion as Map);
+        final questionId = question['id'] as int?;
+        if (questionId != null) {
+          allMiniQuizQuestions[questionId] = question;
+        }
+      }
+    }
+
+    final sections = sectionMap.values.map((section) {
+      return {
+        'unit_id': section['unit_id'],
+        'unit_title': section['unit_title'],
+        'topic_id': section['topic_id'],
+        'topic_title': section['topic_title'],
+        'outcomes': (section['outcomes'] as Set<String>).toList(),
+        'contents': section['contents'],
+      };
+    }).toList();
+
     return {
       'unit_title': firstItem['unit_title'],
       'topic_title': firstItem['topic_title'],
       'topic_id': firstItem['topic_id'],
       'unit_id': firstItem['unit_id'],
-      'outcomes': (response)
-          .map((item) => item['outcome_description'] as String)
-          .toSet()
-          .toList(),
-      'contents': firstItem['contents'],
-      'mini_quiz_questions': firstItem['mini_quiz_questions'],
+      'unit_ids': allUnitIds.toList(),
+      'is_multi_topic_week': sections.length > 1,
+      'sections': sections,
+      'outcomes': allOutcomes.toList(),
+      'contents': allContents.values.toList(),
+      'mini_quiz_questions': allMiniQuizQuestions.values.toList(),
       'is_last_week_of_unit': firstItem['is_last_week_of_unit'],
       'unit_summary': firstItem['unit_summary'],
     };
