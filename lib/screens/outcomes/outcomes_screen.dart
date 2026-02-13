@@ -244,6 +244,7 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                 )
               : PageView.builder(
                   physics: const PageScrollPhysics(),
+                  allowImplicitScrolling: true,
                   controller: viewModel.pageController,
                   itemCount: viewModel.allWeeksData.length,
                   onPageChanged: viewModel.onPageChanged,
@@ -255,17 +256,19 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                       return ErrorCard(errorMessage: 'Hafta verisi bozuk');
                     }
 
-                    final page = MediaQuery(
-                      data: mediaQuery.copyWith(
-                        textScaler: TextScaler.linear(_textScale),
-                      ),
-                      child: _WeekContentView(
-                        key: ValueKey('week_content_${index}_$anchorWeek'),
-                        curriculumWeek: anchorWeek,
-                        pageData: Map<String, dynamic>.from(weekData)
-                          ..['_page_index'] = index,
-                        args: viewModelArgs,
-                        palette: palette,
+                    final page = RepaintBoundary(
+                      child: MediaQuery(
+                        data: mediaQuery.copyWith(
+                          textScaler: TextScaler.linear(_textScale),
+                        ),
+                        child: _WeekContentView(
+                          key: ValueKey('week_content_${index}_$anchorWeek'),
+                          curriculumWeek: anchorWeek,
+                          pageData: Map<String, dynamic>.from(weekData)
+                            ..['_page_index'] = index,
+                          args: viewModelArgs,
+                          palette: palette,
+                        ),
                       ),
                     );
                     return page;
