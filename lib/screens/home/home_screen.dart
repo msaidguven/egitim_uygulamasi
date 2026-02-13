@@ -19,6 +19,7 @@ import 'package:egitim_uygulamasi/screens/home/widgets/week_info_card.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   final Function(int) onNavigate;
@@ -294,6 +295,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   _buildStudentContent()
                 else
                   _buildTeacherContent(),
+                const SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 18),
+                  sliver: SliverToBoxAdapter(child: _LegalLinksSection()),
+                ),
               ],
             ),
           ),
@@ -357,5 +362,70 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           (item) => (item['progress_percentage'] ?? 0.0).toDouble() >= 100.0,
         )
         .length;
+  }
+}
+
+class _LegalLinksSection extends StatelessWidget {
+  const _LegalLinksSection();
+
+  Future<void> _openUrl(String value) async {
+    final uri = Uri.parse(value);
+    await launchUrl(uri, webOnlyWindowName: '_blank');
+  }
+
+  Widget _linkButton({
+    required String label,
+    required String url,
+    required IconData icon,
+  }) {
+    return TextButton.icon(
+      onPressed: () => _openUrl(url),
+      icon: Icon(icon, size: 15),
+      label: Text(label),
+      style: TextButton.styleFrom(
+        foregroundColor: const Color(0xFF475569),
+        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.92),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFDDE6F5)),
+      ),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 4,
+        runSpacing: 2,
+        children: [
+          _linkButton(
+            label: 'Gizlilik Politikası',
+            url: 'https://derstakip.net/privacy-policy.html',
+            icon: Icons.privacy_tip_outlined,
+          ),
+          _linkButton(
+            label: 'Hakkımızda',
+            url: 'https://derstakip.net/about.html',
+            icon: Icons.info_outline_rounded,
+          ),
+          _linkButton(
+            label: 'İletişim',
+            url: 'https://derstakip.net/contact.html',
+            icon: Icons.mail_outline_rounded,
+          ),
+          _linkButton(
+            label: 'Ana Sayfa',
+            url: 'https://derstakip.net/',
+            icon: Icons.home_outlined,
+          ),
+        ],
+      ),
+    );
   }
 }
