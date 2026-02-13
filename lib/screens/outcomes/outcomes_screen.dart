@@ -653,9 +653,13 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final actualCurrentWeek = calculateCurrentAcademicWeek();
     final pageType = (widget.pageData['type'] as String?) ?? 'week';
     final isSpecialPage = pageType != 'week';
-    final selectedSpecialPageIndex = isSpecialPage
+    final selectedSpecialPageIndex =
+        (pageType == 'break' || pageType == 'social_activity')
         ? widget.pageData['_page_index'] as int?
         : null;
+    final selectedWeekForStrip = (pageType == 'special_content')
+        ? widget.curriculumWeek
+        : (isSpecialPage ? null : widget.curriculumWeek);
     final safeData = data ?? <String, dynamic>{};
 
     if (!isSpecialPage && isLoading) {
@@ -851,7 +855,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                 breakPageIndexesByAfterWeek: breakPageIndexesByAfterWeek,
                 extraBadgesByWeek: extraBadgesByWeek,
                 weekPageIndexByWeek: weekPageIndexByWeek,
-                selectedWeek: isSpecialPage ? null : widget.curriculumWeek,
+                selectedWeek: selectedWeekForStrip,
                 selectedSpecialPageIndex: selectedSpecialPageIndex,
                 actualCurrentWeek: actualCurrentWeek,
                 solvedWeeks: solvedWeeks,
