@@ -191,9 +191,6 @@ class OutcomesViewModel extends ChangeNotifier {
   int _initialPageIndex = 0;
   int get initialPageIndex => _initialPageIndex;
 
-  int _currentPageIndex = 0;
-  int get currentPageIndex => _currentPageIndex;
-
   final Map<int, Map<String, dynamic>> _weekMainContents = {};
   final Map<int, List<Question>> _weekQuestions = {};
   final Map<int, Map<String, dynamic>?> _weekStats = {};
@@ -495,7 +492,6 @@ class OutcomesViewModel extends ChangeNotifier {
       if (_pageController != null && _pageController!.hasClients) {
         _pageController!.jumpToPage(_initialPageIndex);
       }
-      _currentPageIndex = _initialPageIndex;
       if (_initialPageIndex >= 0 && _initialPageIndex < _allWeeksData.length) {
         final initialData = _allWeeksData[_initialPageIndex];
         if (initialData['type'] == 'week') {
@@ -700,7 +696,6 @@ class OutcomesViewModel extends ChangeNotifier {
 
   void onPageChanged(int index) {
     if (index < 0 || index >= _allWeeksData.length) return;
-    _currentPageIndex = index;
     final weekData = _allWeeksData[index];
     if (weekData['type'] == 'week') {
       final curriculumWeek = weekData['curriculum_week'] as int;

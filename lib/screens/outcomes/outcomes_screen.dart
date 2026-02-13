@@ -64,27 +64,6 @@ _LessonThemePalette _paletteForLesson(int lessonId) {
   return _lessonPalettes[index];
 }
 
-class _NeighborPageScrollPhysics extends PageScrollPhysics {
-  const _NeighborPageScrollPhysics({super.parent});
-
-  @override
-  _NeighborPageScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return _NeighborPageScrollPhysics(parent: buildParent(ancestor));
-  }
-
-  @override
-  double get minFlingDistance => 24.0;
-
-  @override
-  double get minFlingVelocity => 300.0;
-
-  @override
-  double get maxFlingVelocity => 1200.0;
-
-  @override
-  double carriedMomentum(double existingVelocity) => 0.0;
-}
-
 class OutcomesScreen extends ConsumerStatefulWidget {
   final int lessonId;
   final int gradeId;
@@ -263,7 +242,7 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                   ),
                 )
               : PageView.builder(
-                  physics: const _NeighborPageScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   controller: viewModel.pageController,
                   itemCount: viewModel.allWeeksData.length,
                   onPageChanged: viewModel.onPageChanged,
@@ -282,7 +261,8 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                       child: _WeekContentView(
                         key: ValueKey('week_content_${index}_$anchorWeek'),
                         curriculumWeek: anchorWeek,
-                        pageData: Map<String, dynamic>.from(weekData),
+                        pageData: Map<String, dynamic>.from(weekData)
+                          ..['_page_index'] = index,
                         args: viewModelArgs,
                         palette: palette,
                       ),
@@ -670,26 +650,19 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final solvedWeeks = ref.watch(
       outcomesViewModelProvider(widget.args).select((vm) => vm.solvedWeeks),
     );
-    final selectedWeekForStrip = ref.watch(
-      outcomesViewModelProvider(widget.args).select((vm) {
-        final index = vm.currentPageIndex;
-        if (index < 0 || index >= vm.timelineItems.length) return null;
-        final item = vm.timelineItems[index];
-        if (item.type == 'week' || item.type == 'special_content') {
-          return item.curriculumWeek;
-        }
-        return null;
-      }),
-    );
     final actualCurrentWeek = calculateCurrentAcademicWeek();
     final pageType = (widget.pageData['type'] as String?) ?? 'week';
     final isSpecialPage = pageType != 'week';
+    final selectedSpecialPageIndex = isSpecialPage
+        ? widget.pageData['_page_index'] as int?
+        : null;
+    final safeData = data ?? <String, dynamic>{};
 
-    if (isLoading) {
+    if (!isSpecialPage && isLoading) {
       return const Center(child: CircularProgressIndicator.adaptive());
     }
 
-    if (error != null) {
+    if (!isSpecialPage && error != null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -706,7 +679,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
       );
     }
 
-    if (data == null || data.isEmpty) {
+    if (!isSpecialPage && (data == null || data.isEmpty)) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -726,7 +699,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
       );
     }
 
-    final rawSections = (data['sections'] as List?)
+    final rawSections = (safeData['sections'] as List?)
         ?.whereType<Map>()
         .map((s) => Map<String, dynamic>.from(s))
         .toList();
@@ -735,12 +708,12 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         ? rawSections
         : [
             {
-              'unit_id': data['unit_id'],
-              'unit_title': data['unit_title'],
-              'topic_id': data['topic_id'],
-              'topic_title': data['topic_title'],
-              'outcomes': data['outcomes'] ?? <dynamic>[],
-              'contents': data['contents'] ?? <dynamic>[],
+              'unit_id': safeData['unit_id'],
+              'unit_title': safeData['unit_title'],
+              'topic_id': safeData['topic_id'],
+              'topic_title': safeData['topic_title'],
+              'outcomes': safeData['outcomes'] ?? <dynamic>[],
+              'contents': safeData['contents'] ?? <dynamic>[],
             },
           ];
     if (sections.isEmpty) {
@@ -841,9 +814,9 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             as String? ??
         'Ünite seçiniz';
 
-    final isLastWeek = data['is_last_week_of_unit'] ?? false;
-    final unitSummary = data['unit_summary'];
-    final unitId = selectedUnitId ?? data['unit_id'];
+    final isLastWeek = safeData['is_last_week_of_unit'] ?? false;
+    final unitSummary = safeData['unit_summary'];
+    final unitId = selectedUnitId ?? safeData['unit_id'];
 
     return RefreshIndicator.adaptive(
       onRefresh: () async => ref
@@ -856,7 +829,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             sliver: SliverToBoxAdapter(
               child: HeaderView(
                 curriculumWeek: widget.curriculumWeek,
-                data: data,
+                data: safeData,
                 pageData: widget.pageData,
                 args: widget.args,
               ),
@@ -878,7 +851,8 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                 breakPageIndexesByAfterWeek: breakPageIndexesByAfterWeek,
                 extraBadgesByWeek: extraBadgesByWeek,
                 weekPageIndexByWeek: weekPageIndexByWeek,
-                selectedWeek: selectedWeekForStrip,
+                selectedWeek: isSpecialPage ? null : widget.curriculumWeek,
+                selectedSpecialPageIndex: selectedSpecialPageIndex,
                 actualCurrentWeek: actualCurrentWeek,
                 solvedWeeks: solvedWeeks,
                 palette: widget.palette,
@@ -991,16 +965,16 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                 ),
               ),
             ),
-          if (!isSpecialPage && isLastWeek && unitSummary != null)
+          if (!isSpecialPage &&
+              isLastWeek &&
+              unitSummary != null &&
+              unitId != null)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               sliver: SliverToBoxAdapter(
                 child: MediaQuery(
                   data: mediaQuery.copyWith(textScaler: TextScaler.noScaling),
-                  child: UnitTestView(
-                    unitSummary: unitSummary,
-                    unitId: data['unit_id']!,
-                  ),
+                  child: UnitTestView(unitSummary: unitSummary, unitId: unitId),
                 ),
               ),
             ),
@@ -1461,6 +1435,7 @@ class _WeekStripBar extends StatefulWidget {
   final Map<int, List<Map<String, dynamic>>> extraBadgesByWeek;
   final Map<int, int> weekPageIndexByWeek;
   final int? selectedWeek;
+  final int? selectedSpecialPageIndex;
   final int actualCurrentWeek;
   final Set<int> solvedWeeks;
   final _LessonThemePalette palette;
@@ -1474,6 +1449,7 @@ class _WeekStripBar extends StatefulWidget {
     required this.extraBadgesByWeek,
     required this.weekPageIndexByWeek,
     required this.selectedWeek,
+    required this.selectedSpecialPageIndex,
     required this.actualCurrentWeek,
     required this.solvedWeeks,
     required this.palette,
@@ -1488,11 +1464,16 @@ class _WeekStripBar extends StatefulWidget {
 class _WeekStripBarState extends State<_WeekStripBar> {
   final ScrollController _scrollController = ScrollController();
   final Map<int, GlobalKey> _weekKeys = <int, GlobalKey>{};
+  final Map<int, GlobalKey> _specialKeys = <int, GlobalKey>{};
   static bool _didGlobalInitialCentering = false;
   bool _didInitialCentering = false;
 
   GlobalKey _keyForWeek(int week) {
     return _weekKeys.putIfAbsent(week, () => GlobalKey());
+  }
+
+  GlobalKey _keyForSpecial(int pageIndex) {
+    return _specialKeys.putIfAbsent(pageIndex, () => GlobalKey());
   }
 
   void _centerWeek(
@@ -1521,11 +1502,49 @@ class _WeekStripBarState extends State<_WeekStripBar> {
     );
   }
 
+  void _centerSpecial(
+    int pageIndex, {
+    Duration duration = const Duration(milliseconds: 280),
+    int retryCount = 0,
+  }) {
+    final key = _specialKeys[pageIndex];
+    final targetContext = key?.currentContext;
+    if (targetContext == null) {
+      if (retryCount < 2) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _centerSpecial(
+              pageIndex,
+              duration: duration,
+              retryCount: retryCount + 1,
+            );
+          }
+        });
+      }
+      return;
+    }
+    Scrollable.ensureVisible(
+      targetContext,
+      alignment: 0.5,
+      duration: duration,
+      curve: Curves.easeOutCubic,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      if (widget.selectedSpecialPageIndex != null) {
+        _didGlobalInitialCentering = true;
+        _didInitialCentering = true;
+        _centerSpecial(
+          widget.selectedSpecialPageIndex!,
+          duration: const Duration(milliseconds: 0),
+        );
+        return;
+      }
       final initialWeek = !_didGlobalInitialCentering
           ? (widget.weekNumbers.contains(widget.actualCurrentWeek)
                 ? widget.actualCurrentWeek
@@ -1549,7 +1568,16 @@ class _WeekStripBarState extends State<_WeekStripBar> {
   void didUpdateWidget(covariant _WeekStripBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!_didInitialCentering) return;
-    if (oldWidget.selectedWeek != widget.selectedWeek) {
+    if (oldWidget.selectedSpecialPageIndex != widget.selectedSpecialPageIndex &&
+        widget.selectedSpecialPageIndex != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _centerSpecial(widget.selectedSpecialPageIndex!);
+      });
+      return;
+    }
+    if (oldWidget.selectedWeek != widget.selectedWeek &&
+        widget.selectedSpecialPageIndex == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         final weekToCenter =
@@ -1725,9 +1753,24 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                       ),
                     ),
                     if ((widget.breakAfterWeekCounts[week] ?? 0) > 0)
-                      ...List.generate(
-                        widget.breakAfterWeekCounts[week] ?? 0,
-                        (index) => Padding(
+                      ...List.generate(widget.breakAfterWeekCounts[week] ?? 0, (
+                        index,
+                      ) {
+                        final breakPageIndex =
+                            (widget.breakPageIndexesByAfterWeek[week] != null &&
+                                widget
+                                        .breakPageIndexesByAfterWeek[week]!
+                                        .length >
+                                    index)
+                            ? widget.breakPageIndexesByAfterWeek[week]![index]
+                            : null;
+                        final isSelected =
+                            breakPageIndex != null &&
+                            widget.selectedSpecialPageIndex == breakPageIndex;
+                        return Padding(
+                          key: breakPageIndex != null
+                              ? _keyForSpecial(breakPageIndex)
+                              : null,
                           padding: const EdgeInsets.only(right: 8),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(999),
@@ -1744,30 +1787,46 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                                     'break',
                                   )
                                 : null,
-                            child: Container(
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 180),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 9,
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFFE4EC),
+                                color: isSelected
+                                    ? const Color(0xFFC43D67)
+                                    : const Color(0xFFFFE4EC),
                                 borderRadius: BorderRadius.circular(999),
                                 border: Border.all(
-                                  color: const Color(0xFFFFB0C7),
+                                  color: isSelected
+                                      ? const Color(0xFFC43D67)
+                                      : const Color(0xFFFFB0C7),
                                 ),
+                                boxShadow: isSelected
+                                    ? [
+                                        const BoxShadow(
+                                          color: Color(0x3DC43D67),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ]
+                                    : null,
                               ),
-                              child: const Text(
+                              child: Text(
                                 'T',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w800,
-                                  color: Color(0xFFC43D67),
+                                  color: isSelected
+                                      ? Colors.white
+                                      : const Color(0xFFC43D67),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      }),
                     if ((widget.extraBadgesByWeek[week]?.isNotEmpty ?? false))
                       ...widget.extraBadgesByWeek[week]!.map((badge) {
                         final pageIndex = badge['page_index'] as int?;
@@ -1775,7 +1834,13 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                             badge['short_label'] as String? ?? 'EK';
                         final title = badge['title'] as String? ?? '';
                         final isSpecial = badge['is_special'] == true;
+                        final isSelected =
+                            pageIndex != null &&
+                            widget.selectedSpecialPageIndex == pageIndex;
                         return Padding(
+                          key: pageIndex != null
+                              ? _keyForSpecial(pageIndex)
+                              : null,
                           padding: const EdgeInsets.only(right: 8),
                           child: Tooltip(
                             message: title,
@@ -1789,28 +1854,56 @@ class _WeekStripBarState extends State<_WeekStripBar> {
                                           ? 'social_activity'
                                           : 'special_content',
                                     ),
-                              child: Container(
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 180),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 9,
                                   vertical: 8,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: isSpecial
+                                  color: isSelected
+                                      ? (isSpecial
+                                            ? const Color(0xFF2F6FE4)
+                                            : const Color(0xFF16A085))
+                                      : isSpecial
                                       ? const Color(0xFFEAF2FF)
                                       : const Color(0xFFEAF7F3),
                                   borderRadius: BorderRadius.circular(999),
                                   border: Border.all(
-                                    color: isSpecial
+                                    color: isSelected
+                                        ? (isSpecial
+                                              ? const Color(0xFF2F6FE4)
+                                              : const Color(0xFF16A085))
+                                        : isSpecial
                                         ? const Color(0xFFC8DBFF)
                                         : const Color(0xFFBFE9DE),
                                   ),
+                                  boxShadow: isSelected
+                                      ? [
+                                          BoxShadow(
+                                            color:
+                                                (isSpecial
+                                                        ? const Color(
+                                                            0xFF2F6FE4,
+                                                          )
+                                                        : const Color(
+                                                            0xFF16A085,
+                                                          ))
+                                                    .withValues(alpha: 0.24),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ]
+                                      : null,
                                 ),
                                 child: Text(
                                   shortLabel,
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w800,
-                                    color: isSpecial
+                                    color: isSelected
+                                        ? Colors.white
+                                        : isSpecial
                                         ? const Color(0xFF2F6FE4)
                                         : const Color(0xFF16A085),
                                   ),
