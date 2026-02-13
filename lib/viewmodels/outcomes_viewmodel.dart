@@ -702,7 +702,29 @@ class OutcomesViewModel extends ChangeNotifier {
       _currentWeek = curriculumWeek;
       _fetchWeekContent(index);
     }
+    _prefetchNeighborWeeks(index);
     _safeNotifyListeners();
+  }
+
+  void _prefetchNeighborWeeks(int centerIndex) {
+    final neighborIndexes = <int>[centerIndex - 1, centerIndex + 1];
+    for (final index in neighborIndexes) {
+      if (index < 0 || index >= _allWeeksData.length) continue;
+      final entry = _allWeeksData[index];
+      if (entry['type'] != 'week') continue;
+      final curriculumWeek = entry['curriculum_week'] as int?;
+      if (curriculumWeek == null) continue;
+
+      final existingWeekData = _weekMainContents[curriculumWeek];
+      final existingSections = existingWeekData?['sections'];
+      final hasSectionedWeekData =
+          existingSections is List && existingSections.isNotEmpty;
+      final isLoading = _weekLoadingStatus[curriculumWeek] ?? false;
+      if (hasSectionedWeekData || isLoading) continue;
+
+      // Sessiz prefetch: komsu haftalarin verisini arka planda isitir.
+      _fetchWeekContent(index);
+    }
   }
 
   Future<void> ensureWeekDataByCurriculumWeek(int curriculumWeek) async {
