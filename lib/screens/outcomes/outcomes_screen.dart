@@ -87,6 +87,43 @@ class OutcomesScreen extends ConsumerStatefulWidget {
 class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
   double _textScale = 1.0;
   double get _maxScale => kIsWeb ? 4.0 : 1.3;
+  static const double _swipeVelocityThreshold = 260.0;
+  static const double _swipeDistanceThreshold = 28.0;
+  double _dragDx = 0.0;
+  bool _isSwipeNavigating = false;
+
+  Future<void> _handleHorizontalSwipe({
+    required DragEndDetails details,
+    required OutcomesViewModel viewModel,
+  }) async {
+    if (_isSwipeNavigating) return;
+    final velocity = details.primaryVelocity ?? 0;
+    final dragDx = _dragDx;
+    final passedVelocity = velocity.abs() >= _swipeVelocityThreshold;
+    final passedDistance = dragDx.abs() >= _swipeDistanceThreshold;
+    if (!passedVelocity && !passedDistance) return;
+    if (viewModel.allWeeksData.isEmpty) return;
+
+    final current =
+        (viewModel.pageController.page?.round() ?? viewModel.initialPageIndex)
+            .clamp(0, viewModel.allWeeksData.length - 1);
+    final isLeftSwipe = passedVelocity ? (velocity < 0) : (dragDx < 0);
+    final next = isLeftSwipe ? current + 1 : current - 1;
+    if (next < 0 || next >= viewModel.allWeeksData.length) return;
+
+    _isSwipeNavigating = true;
+    try {
+      // Komsu haftalarda kisa bir gecis efekti: kullanici gecisi gorebilsin.
+      await viewModel.pageController.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+      );
+    } finally {
+      _dragDx = 0;
+      _isSwipeNavigating = false;
+    }
+  }
 
   void _increaseTextScale() {
     setState(() {
@@ -241,34 +278,50 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                     ],
                   ),
                 )
-              : PageView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: viewModel.pageController,
-                  itemCount: viewModel.allWeeksData.length,
-                  onPageChanged: viewModel.onPageChanged,
-                  itemBuilder: (context, index) {
-                    final weekData = viewModel.allWeeksData[index];
-                    final anchorWeek =
-                        viewModel.timelineItems[index].anchorWeek;
-                    if (anchorWeek == null) {
-                      return ErrorCard(errorMessage: 'Hafta verisi bozuk');
-                    }
-
-                    final page = MediaQuery(
-                      data: mediaQuery.copyWith(
-                        textScaler: TextScaler.linear(_textScale),
-                      ),
-                      child: _WeekContentView(
-                        key: ValueKey('week_content_${index}_$anchorWeek'),
-                        curriculumWeek: anchorWeek,
-                        pageData: Map<String, dynamic>.from(weekData)
-                          ..['_page_index'] = index,
-                        args: viewModelArgs,
-                        palette: palette,
-                      ),
-                    );
-                    return page;
+              : GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onHorizontalDragStart: (_) {
+                    _dragDx = 0;
                   },
+                  onHorizontalDragUpdate: (details) {
+                    _dragDx += details.primaryDelta ?? 0;
+                  },
+                  onHorizontalDragCancel: () {
+                    _dragDx = 0;
+                  },
+                  onHorizontalDragEnd: (details) => _handleHorizontalSwipe(
+                    details: details,
+                    viewModel: viewModel,
+                  ),
+                  child: PageView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: viewModel.pageController,
+                    itemCount: viewModel.allWeeksData.length,
+                    onPageChanged: viewModel.onPageChanged,
+                    itemBuilder: (context, index) {
+                      final weekData = viewModel.allWeeksData[index];
+                      final anchorWeek =
+                          viewModel.timelineItems[index].anchorWeek;
+                      if (anchorWeek == null) {
+                        return ErrorCard(errorMessage: 'Hafta verisi bozuk');
+                      }
+
+                      final page = MediaQuery(
+                        data: mediaQuery.copyWith(
+                          textScaler: TextScaler.linear(_textScale),
+                        ),
+                        child: _WeekContentView(
+                          key: ValueKey('week_content_${index}_$anchorWeek'),
+                          curriculumWeek: anchorWeek,
+                          pageData: Map<String, dynamic>.from(weekData)
+                            ..['_page_index'] = index,
+                          args: viewModelArgs,
+                          palette: palette,
+                        ),
+                      );
+                      return page;
+                    },
+                  ),
                 ),
         ],
       ),
