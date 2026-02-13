@@ -244,7 +244,6 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                 )
               : PageView.builder(
                   physics: const PageScrollPhysics(),
-                  allowImplicitScrolling: true,
                   controller: viewModel.pageController,
                   itemCount: viewModel.allWeeksData.length,
                   onPageChanged: viewModel.onPageChanged,

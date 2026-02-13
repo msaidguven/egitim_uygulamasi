@@ -812,26 +812,23 @@ class OutcomesViewModel extends ChangeNotifier {
       final userProfile = _ref.read(profileViewModelProvider).profile;
       final isGuest = userProfile == null;
 
-      if (!isGuest) {
-        final cachedData = await _cacheService.getWeeklyCurriculumData(
-          curriculumWeek: curriculumWeek,
-          lessonId: lessonId,
-          gradeId: gradeId,
-        );
-        if (cachedData != null) {
-          final cachedSections = cachedData['sections'];
-          final hasSections =
-              cachedSections is List && cachedSections.isNotEmpty;
+      final cachedData = await _cacheService.getWeeklyCurriculumData(
+        curriculumWeek: curriculumWeek,
+        lessonId: lessonId,
+        gradeId: gradeId,
+      );
+      if (cachedData != null) {
+        final cachedSections = cachedData['sections'];
+        final hasSections = cachedSections is List && cachedSections.isNotEmpty;
 
-          // Backward-compatibility: eski cache kayıtlarında "sections" yoktu.
-          // Bu durumda taze ağ verisi çekip cache'i yeni yapıya yükselt.
-          if (hasSections) {
-            _weekMainContents[curriculumWeek] = cachedData;
-            _weekUnitIds[curriculumWeek] = cachedData['unit_id'];
-            _safeNotifyListeners();
-            await _fetchDynamicData(curriculumWeek, isGuest);
-            return;
-          }
+        // Backward-compatibility: eski cache kayıtlarında "sections" yoktu.
+        // Bu durumda taze ağ verisi çekip cache'i yeni yapıya yükselt.
+        if (hasSections) {
+          _weekMainContents[curriculumWeek] = cachedData;
+          _weekUnitIds[curriculumWeek] = cachedData['unit_id'];
+          _safeNotifyListeners();
+          await _fetchDynamicData(curriculumWeek, isGuest);
+          return;
         }
       }
 
@@ -843,14 +840,12 @@ class OutcomesViewModel extends ChangeNotifier {
       contentToCache.remove('mini_quiz_questions');
       _weekMainContents[curriculumWeek] = contentToCache;
 
-      if (!isGuest) {
-        await _cacheService.saveWeeklyCurriculumData(
-          curriculumWeek: curriculumWeek,
-          lessonId: lessonId,
-          gradeId: gradeId,
-          data: contentToCache,
-        );
-      }
+      await _cacheService.saveWeeklyCurriculumData(
+        curriculumWeek: curriculumWeek,
+        lessonId: lessonId,
+        gradeId: gradeId,
+        data: contentToCache,
+      );
 
       _weekQuestions[curriculumWeek] =
           (fullData['mini_quiz_questions'] as List? ?? [])
