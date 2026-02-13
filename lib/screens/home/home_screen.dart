@@ -404,6 +404,12 @@ class _LegalLinksSection extends StatelessWidget {
         spacing: 4,
         runSpacing: 2,
         children: [
+
+          _linkButton(
+            label: 'Ana Sayfa',
+            url: 'https://derstakip.net/',
+            icon: Icons.home_outlined,
+          ),
           _linkButton(
             label: 'Gizlilik Politikası',
             url: 'https://derstakip.net/privacy-policy.html',
@@ -419,11 +425,7 @@ class _LegalLinksSection extends StatelessWidget {
             url: 'https://derstakip.net/contact.html',
             icon: Icons.mail_outline_rounded,
           ),
-          _linkButton(
-            label: 'Ana Sayfa',
-            url: 'https://derstakip.net/',
-            icon: Icons.home_outlined,
-          ),
+          
         ],
       ),
     );
