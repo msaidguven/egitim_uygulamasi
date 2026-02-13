@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -18,7 +18,25 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Öğrenci ve öğretmenler için haftalık kazanım takibi, konu planlama, ders içerikleri ve eğitim süreçlerini düzenli yönetmeye yardımcı eğitim platformu.">
+  <meta name="keywords" content="eğitim, haftalık kazanım, ders planı, öğretmen, öğrenci, konu takibi, test, okul, müfredat">
+  <meta name="author" content="Eğitim Uygulaması">
+  <meta name="robots" content="index,follow">
+  <meta name="application-name" content="Eğitim Uygulaması">
+  <link rel="canonical" href="https://derstakip.net/">
+
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://derstakip.net/">
+  <meta property="og:title" content="Eğitim Uygulaması - Haftalık Kazanım ve Ders Takibi">
+  <meta property="og:description" content="Haftalık ders içerikleri, kazanım takibi, konu planı ve ölçme değerlendirme süreçlerini tek yerde yönetin.">
+  <meta property="og:image" content="https://derstakip.net/app_logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://derstakip.net/">
+  <meta name="twitter:title" content="Eğitim Uygulaması - Haftalık Kazanım ve Ders Takibi">
+  <meta name="twitter:description" content="Öğrenci ve öğretmenler için haftalık kazanım, konu ve ders içerik yönetimi.">
+  <meta name="twitter:image" content="https://derstakip.net/app_logo.png">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -29,10 +47,102 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>egitim_uygulamasi</title>
+  <title>Eğitim Uygulaması - Haftalık Kazanım ve Ders Takibi</title>
   <link rel="manifest" href="manifest.json">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Eğitim Uygulaması",
+    "url": "https://derstakip.net/",
+    "inLanguage": "tr-TR",
+    "description": "Öğrenci ve öğretmenler için haftalık kazanım takibi, konu planlama ve ders içerik yönetimi platformu.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Eğitim Uygulaması",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://derstakip.net/app_logo.png"
+      }
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "Eğitim Teknolojisi"
+    }
+  }
+  </script>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+
+  <style>
+    .legal-footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(4px);
+      border-top: 1px solid #e2e8f0;
+      font-family: sans-serif;
+      font-size: 12px;
+    }
+
+    .legal-footer a {
+      color: #475569;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .legal-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .site-logo {
+      position: fixed;
+      top: 10px;
+      left: 12px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid #dbe7ff;
+      border-radius: 999px;
+      padding: 6px 10px 6px 6px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 12px rgba(47, 111, 228, 0.16);
+      color: #1e3a8a;
+      font-family: sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .site-logo img {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      object-fit: cover;
+    }
+  </style>
 </head>
 <body>
+  <a class="site-logo" href="https://derstakip.net/" aria-label="Ders Takip">
+    <img src="app_logo.png" alt="Ders Takip Logo">
+    <span>Ders Takip</span>
+  </a>
+  <div class="legal-footer">
+    <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>
+    <a href="about.html" target="_blank" rel="noopener">About</a>
+    <a href="contact.html" target="_blank" rel="noopener">Contact</a>
+  </div>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
