@@ -10,6 +10,7 @@ import 'package:egitim_uygulamasi/screens/outcomes/widgets/app_bar_view.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart'; // profileViewModelProvider için
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class _LessonThemePalette {
@@ -248,7 +249,8 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                   onPageChanged: viewModel.onPageChanged,
                   itemBuilder: (context, index) {
                     final weekData = viewModel.allWeeksData[index];
-                    final anchorWeek = viewModel.timelineItems[index].anchorWeek;
+                    final anchorWeek =
+                        viewModel.timelineItems[index].anchorWeek;
                     if (anchorWeek == null) {
                       return ErrorCard(errorMessage: 'Hafta verisi bozuk');
                     }
@@ -838,13 +840,6 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               ),
             ),
           ),
-          if (isSpecialPage)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-              sliver: SliverToBoxAdapter(
-                child: _PageTypeInfoCard(pageData: widget.pageData),
-              ),
-            ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
             sliver: SliverToBoxAdapter(
@@ -913,6 +908,20 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               ),
             ),
           ),
+          if (isSpecialPage)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              sliver: SliverToBoxAdapter(
+                child: _PageTypeInfoCard(pageData: widget.pageData),
+              ),
+            ),
+          if (isSpecialPage)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              sliver: SliverToBoxAdapter(
+                child: _SpecialInfoContentCard(pageData: widget.pageData),
+              ),
+            ),
           if (!isSpecialPage)
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -1081,6 +1090,109 @@ class _PageTypeInfoCard extends StatelessWidget {
                 ],
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SpecialInfoContentCard extends StatelessWidget {
+  final Map<String, dynamic> pageData;
+
+  const _SpecialInfoContentCard({required this.pageData});
+
+  String _defaultHtmlForType(String type, String title, String duration) {
+    if (type == 'break') {
+      final safeTitle = title.isNotEmpty ? title : 'Tatil Haftasi';
+      final safeDuration = duration.isNotEmpty ? duration : 'Planli ara donem';
+      return '''
+<p><strong>$safeTitle</strong></p>
+<p>Bu hafta ders icerigi yerine planli tatil uygulanir.</p>
+<ul>
+  <li>Sure: $safeDuration</li>
+  <li>Oneri: Kisa tekrar ve dinlenme dengesi kurun.</li>
+</ul>
+''';
+    }
+    if (type == 'social_activity') {
+      return '''
+<p><strong>Sosyal Etkinlik Haftasi</strong></p>
+<p>Bu hafta sosyal-duygusal gelisim ve isbirligi odaklidir.</p>
+<ul>
+  <li>Kisa grup etkinligi planlayin.</li>
+  <li>Hafta sonu kisa yansitma yaptirin.</li>
+</ul>
+''';
+    }
+    return '''
+<p><strong>Bilgilendirme</strong></p>
+<p>Bu hafta icin ozel bir icerik planlanmistir.</p>
+''';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final type = pageData['type'] as String? ?? 'special_content';
+    final title = (pageData['title'] as String? ?? '').trim();
+    final duration = (pageData['duration'] as String? ?? '').trim();
+    final rawContent = (pageData['content'] as String? ?? '').trim();
+    final htmlContent = rawContent.isNotEmpty
+        ? rawContent
+        : _defaultHtmlForType(type, title, duration);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFFFFF), Color(0xFFF4F8FF)],
+        ),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFD8E6FF)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF9EBBEE).withValues(alpha: 0.18),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Icon(Icons.menu_book_rounded, size: 18, color: Color(0xFF2F6FE4)),
+              SizedBox(width: 8),
+              Text(
+                'Bilgilendirme Icerigi',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF2F4FA8),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Html(
+            data: htmlContent,
+            style: {
+              'body': Style(
+                margin: Margins.zero,
+                padding: HtmlPaddings.zero,
+                fontSize: FontSize(13),
+                lineHeight: const LineHeight(1.45),
+                color: const Color(0xFF334155),
+              ),
+              'p': Style(margin: Margins.only(bottom: 8)),
+              'ul': Style(margin: Margins.only(left: 14, bottom: 8)),
+              'li': Style(margin: Margins.only(bottom: 4)),
+              'strong': Style(fontWeight: FontWeight.w700),
+            },
           ),
         ],
       ),
