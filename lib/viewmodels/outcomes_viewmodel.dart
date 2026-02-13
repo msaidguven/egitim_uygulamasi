@@ -707,7 +707,24 @@ class OutcomesViewModel extends ChangeNotifier {
   }
 
   void _prefetchNeighborWeeks(int centerIndex) {
-    final neighborIndexes = <int>[centerIndex - 1, centerIndex + 1];
+    int? prevWeekIndex;
+    for (var i = centerIndex - 1; i >= 0; i--) {
+      if (_allWeeksData[i]['type'] == 'week') {
+        prevWeekIndex = i;
+        break;
+      }
+    }
+
+    int? nextWeekIndex;
+    for (var i = centerIndex + 1; i < _allWeeksData.length; i++) {
+      if (_allWeeksData[i]['type'] == 'week') {
+        nextWeekIndex = i;
+        break;
+      }
+    }
+
+    final neighborIndexes = <int>[?prevWeekIndex, ?nextWeekIndex];
+
     for (final index in neighborIndexes) {
       if (index < 0 || index >= _allWeeksData.length) continue;
       final entry = _allWeeksData[index];

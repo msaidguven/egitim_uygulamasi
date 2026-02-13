@@ -582,9 +582,12 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
       if (mounted) {
         final viewModel = ref.read(outcomesViewModelProvider(widget.args));
         viewModel.ensureWeekDataByCurriculumWeek(widget.curriculumWeek);
-        final index = viewModel.allWeeksData.indexWhere(
-          (w) => w['curriculum_week'] == widget.curriculumWeek,
-        );
+        final exactPageIndex = widget.pageData['_page_index'] as int?;
+        final index =
+            exactPageIndex ??
+            viewModel.allWeeksData.indexWhere(
+              (w) => w['curriculum_week'] == widget.curriculumWeek,
+            );
         if (index != -1) {
           if (viewModel.pageController.page?.round() == index) {
             viewModel.onPageChanged(index);
