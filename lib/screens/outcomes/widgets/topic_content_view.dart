@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/html_style.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+enum _AdminMenuAction { update, publish, downloadPdf, copy }
 
 class TopicContentView extends StatelessWidget {
   final TopicContent content;
@@ -24,9 +29,9 @@ class TopicContentView extends StatelessWidget {
     bool? isPublished,
   }) async {
     if (content.id == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('İçerik ID bulunamadı.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('İçerik ID bulunamadı.')));
       return;
     }
 
@@ -43,14 +48,16 @@ class TopicContentView extends StatelessWidget {
           .from('topic_contents')
           .update(updateData)
           .eq('id', content.id!);
+      if (!context.mounted) return;
       onContentUpdated?.call();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('İçerik güncellendi.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('İçerik güncellendi.')));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Güncelleme hatası: $e')),
-      );
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Güncelleme hatası: $e')));
     }
   }
 
@@ -78,7 +85,9 @@ class TopicContentView extends StatelessWidget {
                     const SizedBox(height: 12),
                     TextField(
                       controller: htmlController,
-                      decoration: const InputDecoration(labelText: 'İçerik (HTML)'),
+                      decoration: const InputDecoration(
+                        labelText: 'İçerik (HTML)',
+                      ),
                       minLines: 6,
                       maxLines: 12,
                     ),
@@ -105,7 +114,9 @@ class TopicContentView extends StatelessWidget {
               ),
               actions: [
                 TextButton(
-                  onPressed: isSaving ? null : () => Navigator.of(context).pop(),
+                  onPressed: isSaving
+                      ? null
+                      : () => Navigator.of(context).pop(),
                   child: const Text('İptal'),
                 ),
                 ElevatedButton(
@@ -152,6 +163,56 @@ class TopicContentView extends StatelessWidget {
     );
   }
 
+  String _stripHtml(String value) {
+    return value
+        .replaceAll(RegExp(r'<[^>]*>'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
+  Future<void> _copyContent(BuildContext context) async {
+    final plainText = _stripHtml(content.content);
+    await Clipboard.setData(
+      ClipboardData(text: '${content.title}\n\n$plainText'),
+    );
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('İçerik panoya kopyalandı.')));
+  }
+
+  Future<void> _downloadContentAsPdf(BuildContext context) async {
+    try {
+      final plainText = _stripHtml(content.content);
+      final doc = pw.Document();
+      final font = await PdfGoogleFonts.notoSansRegular();
+      final boldFont = await PdfGoogleFonts.notoSansBold();
+
+      doc.addPage(
+        pw.MultiPage(
+          build: (context) => [
+            pw.Text(
+              content.title,
+              style: pw.TextStyle(font: boldFont, fontSize: 20),
+            ),
+            pw.SizedBox(height: 12),
+            pw.Text(plainText, style: pw.TextStyle(font: font, fontSize: 12)),
+          ],
+        ),
+      );
+
+      await Printing.layoutPdf(
+        name: '${content.title.trim().replaceAll(' ', '_')}.pdf',
+        onLayout: (_) => doc.save(),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('PDF oluşturulamadı: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final newStyle = Map<String, Style>.from(getBaseHtmlStyle(context));
@@ -177,10 +238,7 @@ class TopicContentView extends StatelessWidget {
       fontWeight: FontWeight.w700,
       margin: Margins.symmetric(vertical: 10),
     );
-    newStyle['strong'] = Style(
-      color: Colors.red,
-      fontWeight: FontWeight.w700,
-    );
+    newStyle['strong'] = Style(color: Colors.red, fontWeight: FontWeight.w700);
 
     return Container(
       decoration: BoxDecoration(
@@ -216,26 +274,80 @@ class TopicContentView extends StatelessWidget {
                 ),
                 if (isAdmin) ...[
                   const SizedBox(width: 8),
-                  IconButton(
-                    tooltip: 'Düzenle',
-                    onPressed: () => _showEditDialog(context),
-                    icon: const Icon(Icons.edit, color: Colors.red),
-                  ),
-                  IconButton(
-                    tooltip: content.isPublished == true
-                        ? 'Yayından Al'
-                        : 'Yayınla',
-                    onPressed: content.isPublished == null
-                        ? null
-                        : () => _togglePublish(context),
-                    icon: Icon(
-                      content.isPublished == true
-                          ? Icons.public
-                          : Icons.public_off,
-                      color: content.isPublished == true
-                          ? Colors.green
-                          : Colors.grey,
-                    ),
+                  PopupMenuButton<_AdminMenuAction>(
+                    tooltip: 'İçerik işlemleri',
+                    icon: const Icon(Icons.more_vert, color: Colors.red),
+                    onSelected: (action) async {
+                      switch (action) {
+                        case _AdminMenuAction.update:
+                          await _showEditDialog(context);
+                          break;
+                        case _AdminMenuAction.publish:
+                          await _togglePublish(context);
+                          break;
+                        case _AdminMenuAction.downloadPdf:
+                          await _downloadContentAsPdf(context);
+                          break;
+                        case _AdminMenuAction.copy:
+                          await _copyContent(context);
+                          break;
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem<_AdminMenuAction>(
+                        value: _AdminMenuAction.update,
+                        child: Row(
+                          children: [
+                            Icon(Icons.edit, size: 18),
+                            SizedBox(width: 8),
+                            Text('İçeriği Güncelle'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<_AdminMenuAction>(
+                        value: _AdminMenuAction.publish,
+                        enabled: content.isPublished != null,
+                        child: Row(
+                          children: [
+                            Icon(
+                              content.isPublished == true
+                                  ? Icons.public
+                                  : Icons.public_off,
+                              size: 18,
+                              color: content.isPublished == true
+                                  ? Colors.green
+                                  : null,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              content.isPublished == true
+                                  ? 'Yayından Al'
+                                  : 'Yayınla',
+                            ),
+                          ],
+                        ),
+                      ),
+                      const PopupMenuItem<_AdminMenuAction>(
+                        value: _AdminMenuAction.downloadPdf,
+                        child: Row(
+                          children: [
+                            Icon(Icons.picture_as_pdf, size: 18),
+                            SizedBox(width: 8),
+                            Text('PDF Olarak İndir'),
+                          ],
+                        ),
+                      ),
+                      const PopupMenuItem<_AdminMenuAction>(
+                        value: _AdminMenuAction.copy,
+                        child: Row(
+                          children: [
+                            Icon(Icons.copy, size: 18),
+                            SizedBox(width: 8),
+                            Text('İçeriği Kopyala'),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ],

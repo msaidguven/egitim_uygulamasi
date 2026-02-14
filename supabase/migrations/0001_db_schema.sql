@@ -95,6 +95,7 @@ CREATE TABLE public.outcomes (
   topic_id bigint NOT NULL,
   description text NOT NULL,
   order_index integer CHECK (order_index >= 0),
+  curriculum_week integer CHECK (curriculum_week >= 1),
   CONSTRAINT outcomes_pkey PRIMARY KEY (id),
   CONSTRAINT fk_outcomes_topic FOREIGN KEY (topic_id) REFERENCES public.topics(id)
 );

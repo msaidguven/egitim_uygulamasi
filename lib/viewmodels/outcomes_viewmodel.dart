@@ -341,7 +341,9 @@ class OutcomesViewModel extends ChangeNotifier {
         lessonId: lessonId,
       );
 
-      if (dbResult == null) {
+      // "Boş hafta" önbelleği, sonradan eklenen içeriklerin görünmesini engelleyebilir.
+      // Bu yüzden cache null veya boşsa ağı yeniden sorgula.
+      if (dbResult == null || dbResult.isEmpty) {
         dbResult = await Supabase.instance.client.rpc(
           'get_available_weeks',
           params: {'p_grade_id': gradeId, 'p_lesson_id': lessonId},
@@ -567,23 +569,15 @@ class OutcomesViewModel extends ChangeNotifier {
       if (topicIds.isNotEmpty) {
         final outcomesRes = await Supabase.instance.client
             .from('outcomes')
-            .select('topic_id, outcome_weeks(start_week, end_week)')
+            .select('topic_id, curriculum_week')
             .inFilter('topic_id', topicIds);
 
         for (final raw in (outcomesRes as List)) {
           final row = Map<String, dynamic>.from(raw as Map);
           final topicId = row['topic_id'] as int?;
           if (topicId == null) continue;
-          final list = (row['outcome_weeks'] as List? ?? []);
-          for (final rawOw in list) {
-            final ow = Map<String, dynamic>.from(rawOw as Map);
-            final startWeek = ow['start_week'] as int?;
-            final endWeek = ow['end_week'] as int?;
-            if (startWeek == null || endWeek == null) continue;
-            for (var w = startWeek; w <= endWeek; w++) {
-              weeksByTopic[topicId]?.add(w);
-            }
-          }
+          final week = row['curriculum_week'] as int?;
+          if (week != null) weeksByTopic[topicId]?.add(week);
         }
 
         final topicContentsRes = await Supabase.instance.client

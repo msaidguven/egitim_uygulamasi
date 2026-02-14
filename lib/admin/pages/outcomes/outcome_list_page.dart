@@ -445,15 +445,25 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
     try {
       final startWeek = int.parse(_startWeekController.text.trim());
       final endWeek = int.parse(_endWeekController.text.trim());
+      if (startWeek != endWeek) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Yeni yapıda kazanım tek haftaya atanır. Başlangıç ve bitiş haftası aynı olmalı.',
+              ),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
+      }
 
-      final newOutcomeIds = await _insertOutcomes(
+      await _insertOutcomes(
         topicId: _selectedTopicId!,
         texts: finalOutcomeTexts,
+        curriculumWeek: startWeek,
       );
-      
-      for (final outcomeId in newOutcomeIds) {
-        await _outcomeService.createOutcomeWeek(outcomeId, startWeek, endWeek);
-      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -482,6 +492,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
   Future<List<int>> _insertOutcomes({
     required int topicId,
     required List<String> texts,
+    required int curriculumWeek,
   }) async {
     if (texts.isEmpty) return [];
 
@@ -505,6 +516,7 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
         'topic_id': topicId,
         'description': text,
         'order_index': currentMaxOrder + 1 + index,
+        'curriculum_week': curriculumWeek,
       };
     }).toList();
 

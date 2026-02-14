@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CacheService {
+  // Geçici olarak cache kapalı. Tekrar açmak için true yapın.
+  static const _enabled = false;
   static const _cacheVersion = 3; // TTL + ders-bazlı pruning
   static const _cacheVersionKey = 'cache_version';
   static const _availableWeeksPrefix = 'available_weeks_cache_';
@@ -15,6 +17,7 @@ class CacheService {
   SharedPreferences? _prefs;
 
   Future<void> _init() async {
+    if (!_enabled) return;
     if (_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
       final storedVersion = _prefs!.getInt(_cacheVersionKey) ?? 0;
@@ -26,6 +29,7 @@ class CacheService {
   }
 
   Future<void> clearAll() async {
+    if (!_enabled) return;
     _prefs ??= await SharedPreferences.getInstance();
     final keys = _prefs!.getKeys();
     for (String key in keys) {
@@ -40,6 +44,7 @@ class CacheService {
     required int gradeId,
     required int lessonId,
   }) async {
+    if (!_enabled) return null;
     await _init();
     final key = '$_availableWeeksPrefix${gradeId}_$lessonId';
     final cachedData = _prefs!.getString(key);
@@ -61,8 +66,17 @@ class CacheService {
     required int lessonId,
     required List<dynamic> weeks,
   }) async {
+    if (!_enabled) return;
     await _init();
     final key = '$_availableWeeksPrefix${gradeId}_$lessonId';
+    if (weeks.isEmpty) {
+      await _prefs!.remove(key);
+      await _prefs!.remove(_timestampKey(key));
+      debugPrint(
+        '[CacheService] Available weeks for $key is empty; cache entry removed.',
+      );
+      return;
+    }
     await _prefs!.setString(key, jsonEncode(weeks));
     await _prefs!.setInt(
       _timestampKey(key),
@@ -76,6 +90,7 @@ class CacheService {
     required int lessonId,
     required int gradeId,
   }) async {
+    if (!_enabled) return null;
     await _init();
     final key =
         '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_$curriculumWeek';
@@ -101,6 +116,7 @@ class CacheService {
     required int gradeId,
     required Map<String, dynamic> data,
   }) async {
+    if (!_enabled) return;
     await _init();
     final key =
         '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_$curriculumWeek';
@@ -120,6 +136,7 @@ class CacheService {
     required int lessonId,
     required int gradeId,
   }) async {
+    if (!_enabled) return;
     await _init();
     final key =
         '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_$curriculumWeek';
@@ -139,6 +156,7 @@ class CacheService {
     required int gradeId,
     required int lessonId,
   }) async {
+    if (!_enabled) return;
     final basePrefix = '$_weeklyCurriculumPrefix${gradeId}_${lessonId}_';
     final keys = _prefs!.getKeys();
     final weeklyEntries = <MapEntry<int, String>>[];

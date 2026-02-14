@@ -270,25 +270,17 @@ class _UnitOutcomeFormPageState extends State<UnitOutcomeFormPage> {
       );
 
       // 2. Adım: Topic Content ID'yi çöz (Bul veya Oluştur)
-      final contentId = await _resolveContentId(
+      await _resolveContentId(
         topicId,
         _contentController.text,
         week,
       );
 
-      // 3. Adım: Outcome (Kazanım) Oluştur ve haftasını ata
-      final newOutcome = await supabase.from('outcomes').insert({
+      // 3. Adım: Outcome (Kazanım) Oluştur
+      await supabase.from('outcomes').insert({
         'topic_id': topicId,
         'description': _outcomeDescriptionController.text.trim(),
-      }).select('id').single();
-
-      final newOutcomeId = newOutcome['id'] as int;
-
-      // Haftayı ayrı tabloya ekle
-      await supabase.from('outcome_weeks').insert({
-        'outcome_id': newOutcomeId,
-        'start_week': week,
-        'end_week': week, // Bu formda tek hafta olduğu için başlangıç ve bitiş aynı
+        'curriculum_week': week,
       });
 
       if (mounted) {

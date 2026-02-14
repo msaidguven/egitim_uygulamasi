@@ -30,6 +30,8 @@ dependencies:
   flutter_tts: ^3.8.5
   shimmer: ^3.0.0
   audioplayers: ^6.1.0
+  pdf: ^3.11.3
+  printing: ^5.14.2
 
 
   # Riverpod for state management
