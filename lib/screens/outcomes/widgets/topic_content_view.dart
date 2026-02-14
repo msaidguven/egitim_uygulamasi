@@ -201,9 +201,9 @@ class TopicContentView extends StatelessWidget {
         ),
       );
 
-      await Printing.layoutPdf(
-        name: '${content.title.trim().replaceAll(' ', '_')}.pdf',
-        onLayout: (_) => doc.save(),
+      await Printing.sharePdf(
+        bytes: await doc.save(),
+        filename: '${content.title.trim().replaceAll(' ', '_')}.pdf',
       );
     } catch (e) {
       if (!context.mounted) return;
