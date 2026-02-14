@@ -961,7 +961,6 @@ class OutcomesViewModel extends ChangeNotifier {
 
     final firstItem = response.first as Map<String, dynamic>;
     final sectionMap = <String, Map<String, dynamic>>{};
-    final allOutcomes = <String>{};
     final allContents = <int, Map<String, dynamic>>{};
     final allMiniQuizQuestions = <int, Map<String, dynamic>>{};
     final allUnitIds = <int>{};
@@ -980,15 +979,24 @@ class OutcomesViewModel extends ChangeNotifier {
           'unit_title': item['unit_title'],
           'topic_id': topicId,
           'topic_title': item['topic_title'],
-          'outcomes': <String>{},
+          'outcomes': <String, Map<String, dynamic>>{},
           'contents': <Map<String, dynamic>>[],
         };
       });
 
-      final outcome = item['outcome_description'] as String?;
-      if (outcome != null && outcome.trim().isNotEmpty) {
-        (section['outcomes'] as Set<String>).add(outcome);
-        allOutcomes.add(outcome);
+      final outcomeDescription = (item['outcome_description'] as String?)
+          ?.trim();
+      final outcomeId = item['outcome_id'] as int?;
+      if (outcomeDescription != null && outcomeDescription.isNotEmpty) {
+        final dedupeKey = '${topicId}_${outcomeId ?? outcomeDescription}';
+        final outcomeData = <String, dynamic>{
+          'id': outcomeId,
+          'description': outcomeDescription,
+          'topic_id': topicId,
+          'topic_title': item['topic_title'],
+        };
+        (section['outcomes'] as Map<String, Map<String, dynamic>>)[dedupeKey] =
+            outcomeData;
       }
 
       final sectionContents =
@@ -1023,10 +1031,21 @@ class OutcomesViewModel extends ChangeNotifier {
         'unit_title': section['unit_title'],
         'topic_id': section['topic_id'],
         'topic_title': section['topic_title'],
-        'outcomes': (section['outcomes'] as Set<String>).toList(),
+        'outcomes': (section['outcomes'] as Map<String, Map<String, dynamic>>)
+            .values
+            .toList(),
         'contents': section['contents'],
       };
     }).toList();
+
+    final allOutcomeMaps = <Map<String, dynamic>>[];
+    for (final section in sections) {
+      final sectionOutcomes = (section['outcomes'] as List? ?? [])
+          .whereType<Map>()
+          .map((o) => Map<String, dynamic>.from(o))
+          .toList();
+      allOutcomeMaps.addAll(sectionOutcomes);
+    }
 
     return {
       'unit_title': firstItem['unit_title'],
@@ -1036,7 +1055,7 @@ class OutcomesViewModel extends ChangeNotifier {
       'unit_ids': allUnitIds.toList(),
       'is_multi_topic_week': sections.length > 1,
       'sections': sections,
-      'outcomes': allOutcomes.toList(),
+      'outcomes': allOutcomeMaps,
       'contents': allContents.values.toList(),
       'mini_quiz_questions': allMiniQuizQuestions.values.toList(),
       'is_last_week_of_unit': firstItem['is_last_week_of_unit'],

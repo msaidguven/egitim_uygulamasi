@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/viewmodels/outcomes_viewmodel.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HeaderView extends ConsumerWidget {
   final int curriculumWeek;
@@ -89,10 +90,239 @@ class HeaderView extends ConsumerWidget {
     );
   }
 
+  List<Map<String, dynamic>> _normalizeOutcomeList(
+    List? rawOutcomes, {
+    int? fallbackTopicId,
+    String? fallbackTopicTitle,
+  }) {
+    if (rawOutcomes == null) return const [];
+    return rawOutcomes.map((raw) {
+      if (raw is Map) {
+        final map = Map<String, dynamic>.from(raw);
+        final description = (map['description'] as String? ?? '').trim();
+        return {
+          'id': map['id'] as int?,
+          'description': description,
+          'topic_id': map['topic_id'] as int? ?? fallbackTopicId,
+          'topic_title': map['topic_title'] as String? ?? fallbackTopicTitle,
+        };
+      }
+      final description = raw.toString().trim();
+      return {
+        'id': null,
+        'description': description,
+        'topic_id': fallbackTopicId,
+        'topic_title': fallbackTopicTitle,
+      };
+    }).where((o) => (o['description'] as String).isNotEmpty).toList();
+  }
+
+  Future<String?> _showEditOutcomeDialog(
+    BuildContext context, {
+    required String initialText,
+  }) async {
+    final controller = TextEditingController(text: initialText);
+    return showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Kazanımı Güncelle'),
+          content: TextField(
+            controller: controller,
+            minLines: 2,
+            maxLines: 6,
+            decoration: const InputDecoration(
+              hintText: 'Kazanım metnini girin',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('İptal'),
+            ),
+            FilledButton(
+              onPressed: () {
+                final text = controller.text.trim();
+                if (text.isEmpty) return;
+                Navigator.of(dialogContext).pop(text);
+              },
+              child: const Text('Kaydet'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool> _updateOutcome(
+    BuildContext context, {
+    required int? outcomeId,
+    required String description,
+  }) async {
+    if (outcomeId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bu kazanım güncellenemiyor (ID yok).')),
+      );
+      return false;
+    }
+
+    try {
+      await Supabase.instance.client
+          .from('outcomes')
+          .update({'description': description})
+          .eq('id', outcomeId);
+      if (!context.mounted) return false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Kazanım güncellendi.')),
+      );
+      return true;
+    } catch (e) {
+      if (!context.mounted) return false;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Güncelleme hatası: $e')));
+      return false;
+    }
+  }
+
+  Future<bool> _deleteOutcome(
+    BuildContext context, {
+    required int? outcomeId,
+  }) async {
+    if (outcomeId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bu kazanım silinemiyor (ID yok).')),
+      );
+      return false;
+    }
+
+    final approved = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Kazanımı Sil'),
+          content: const Text('Bu kazanımı silmek istediğinize emin misiniz?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: FilledButton.styleFrom(backgroundColor: Colors.red),
+              child: const Text('Sil'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (approved != true) return false;
+
+    try {
+      await Supabase.instance.client.from('outcomes').delete().eq('id', outcomeId);
+      if (!context.mounted) return false;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Kazanım silindi.')));
+      return true;
+    } catch (e) {
+      if (!context.mounted) return false;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Silme hatası: $e')));
+      return false;
+    }
+  }
+
+  Widget _buildOutcomeTile(
+    BuildContext context, {
+    required Map<String, dynamic> outcome,
+    required bool isAdmin,
+    required VoidCallback onDeleted,
+    required ValueChanged<String> onEdited,
+    required VoidCallback onRefreshWeek,
+  }) {
+    final description = (outcome['description'] as String? ?? '').trim();
+    final outcomeId = outcome['id'] as int?;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFF),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFDDE7FF)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              color: const Color(0xFF2F6FE4).withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: const Icon(Icons.flag_rounded, size: 14, color: Color(0xFF2F6FE4)),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              description,
+              style: TextStyle(
+                fontSize: 13.5,
+                height: 1.35,
+                color: Colors.grey.shade900,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          if (isAdmin) ...[
+            IconButton(
+              tooltip: 'Güncelle',
+              onPressed: () async {
+                final next = await _showEditOutcomeDialog(
+                  context,
+                  initialText: description,
+                );
+                if (next == null || next == description) return;
+                final ok = await _updateOutcome(
+                  context,
+                  outcomeId: outcomeId,
+                  description: next,
+                );
+                if (ok) {
+                  onEdited(next);
+                  onRefreshWeek();
+                }
+              },
+              icon: const Icon(Icons.edit_outlined, size: 18),
+            ),
+            IconButton(
+              tooltip: 'Sil',
+              onPressed: () async {
+                final ok = await _deleteOutcome(context, outcomeId: outcomeId);
+                if (ok) {
+                  onDeleted();
+                  onRefreshWeek();
+                }
+              },
+              icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   void _showOutcomesSheet(
     BuildContext context,
     List<Map<String, dynamic>> sections,
-    List<String> flatOutcomes,
+    List<Map<String, dynamic>> flatOutcomes, {
+    required bool isAdmin,
+    required VoidCallback onRefreshWeek,
   ) {
     showModalBottomSheet<void>(
       context: context,
@@ -100,82 +330,176 @@ class HeaderView extends ConsumerWidget {
       showDragHandle: true,
       backgroundColor: Colors.white,
       builder: (context) {
-        final hasMulti = sections.length > 1;
+        final localSections = (sections.isNotEmpty
+                ? sections
+                : [
+                    {
+                      'topic_title': data['topic_title'] ?? 'Konu',
+                      'topic_id': data['topic_id'],
+                      'outcomes': flatOutcomes,
+                    },
+                  ])
+            .map(
+              (section) => {
+                ...section,
+                'outcomes': _normalizeOutcomeList(
+                  section['outcomes'] as List?,
+                  fallbackTopicId: section['topic_id'] as int?,
+                  fallbackTopicTitle: section['topic_title'] as String?,
+                ),
+              },
+            )
+            .toList();
+
         return SafeArea(
           child: FractionallySizedBox(
             heightFactor: 0.82,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Süreç Bileşenleri',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
-                  ),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: ListView(
-                      children: hasMulti
-                          ? sections.map((section) {
-                              final topicTitle =
-                                  (section['topic_title'] as String? ?? 'Konu')
-                                      .trim();
-                              final topicOutcomes =
-                                  (section['outcomes'] as List? ?? [])
-                                      .whereType<String>()
-                                      .toList();
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      topicTitle,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
+            child: StatefulBuilder(
+              builder: (context, setModalState) {
+                final hasMulti = localSections.length > 1;
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.flag_circle_rounded, color: Color(0xFF2F6FE4)),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Kazanımlar',
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.grey.shade900,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        hasMulti
+                            ? '${localSections.length} konu için kazanımlar'
+                            : 'Haftanın hedef kazanımları',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: ListView(
+                          children: localSections.map((section) {
+                            final topicTitle =
+                                (section['topic_title'] as String? ?? 'Konu')
+                                    .trim();
+                            final topicOutcomes =
+                                (section['outcomes'] as List? ?? [])
+                                    .whereType<Map>()
+                                    .map((o) => Map<String, dynamic>.from(o))
+                                    .toList();
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: const Color(0xFFE3EAFF)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.03),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.menu_book_rounded,
+                                        size: 16,
+                                        color: Color(0xFF2F6FE4),
                                       ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    ...topicOutcomes.map(
-                                      (outcome) => Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 3,
-                                        ),
+                                      const SizedBox(width: 6),
+                                      Expanded(
                                         child: Text(
-                                          '• $outcome',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.grey.shade800,
-                                            height: 1.3,
+                                          topicTitle,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w800,
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList()
-                          : flatOutcomes
-                                .map(
-                                  (outcome) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 6),
-                                    child: Text(
-                                      '• $outcome',
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(
+                                            0xFF2F6FE4,
+                                          ).withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(999),
+                                        ),
+                                        child: Text(
+                                          '${topicOutcomes.length}',
+                                          style: const TextStyle(
+                                            color: Color(0xFF2F6FE4),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  if (topicOutcomes.isEmpty)
+                                    Text(
+                                      'Bu konu için kazanım bulunamadı.',
                                       style: TextStyle(
                                         fontSize: 13,
-                                        color: Colors.grey.shade800,
-                                        height: 1.3,
+                                        color: Colors.grey.shade600,
                                       ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                    ),
+                                    )
+                                  else
+                                    ...topicOutcomes.asMap().entries.map((entry) {
+                                      final index = entry.key;
+                                      final outcome = entry.value;
+                                      return _buildOutcomeTile(
+                                        context,
+                                        outcome: outcome,
+                                        isAdmin: isAdmin,
+                                        onEdited: (nextText) {
+                                          setModalState(() {
+                                            topicOutcomes[index]['description'] =
+                                                nextText;
+                                            (section['outcomes'] as List)[index] =
+                                                topicOutcomes[index];
+                                          });
+                                        },
+                                        onDeleted: () {
+                                          setModalState(() {
+                                            topicOutcomes.removeAt(index);
+                                            section['outcomes'] = topicOutcomes;
+                                          });
+                                        },
+                                        onRefreshWeek: onRefreshWeek,
+                                      );
+                                    }),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         );
@@ -193,17 +517,34 @@ class HeaderView extends ConsumerWidget {
     final isGuest = ref.watch(
       profileViewModelProvider.select((p) => p.profile == null),
     );
+    final isAdmin = ref.watch(
+      profileViewModelProvider.select((p) => p.profile?.role == 'admin'),
+    );
 
     final sections =
         (data['sections'] as List?)
             ?.whereType<Map>()
-            .map((s) => Map<String, dynamic>.from(s))
+            .map((s) {
+              final section = Map<String, dynamic>.from(s);
+              final topicId = section['topic_id'] as int?;
+              final topicTitle = section['topic_title'] as String?;
+              return {
+                ...section,
+                'outcomes': _normalizeOutcomeList(
+                  section['outcomes'] as List?,
+                  fallbackTopicId: topicId,
+                  fallbackTopicTitle: topicTitle,
+                ),
+              };
+            })
             .toList() ??
         const <Map<String, dynamic>>[];
     final isMultiSectionWeek = sections.length > 1;
-    final flatOutcomes = (data['outcomes'] as List? ?? [])
-        .whereType<String>()
-        .toList();
+    final flatOutcomes = _normalizeOutcomeList(
+      data['outcomes'] as List?,
+      fallbackTopicId: data['topic_id'] as int?,
+      fallbackTopicTitle: data['topic_title'] as String?,
+    );
     final solved = isGuest ? 0 : stats?['solved_unique'] ?? 0;
     final total = isGuest ? 10 : stats?['total_questions'] ?? 0;
     final correctCount = isGuest ? 0 : stats?['correct_count'] ?? 0;
@@ -415,12 +756,20 @@ class HeaderView extends ConsumerWidget {
                     alignment: Alignment.centerLeft,
                     child: OutlinedButton.icon(
                       onPressed: () =>
-                          _showOutcomesSheet(context, sections, flatOutcomes),
+                          _showOutcomesSheet(
+                            context,
+                            sections,
+                            flatOutcomes,
+                            isAdmin: isAdmin,
+                            onRefreshWeek: () => ref
+                                .read(outcomesViewModelProvider(args))
+                                .refreshCurrentWeekData(curriculumWeek),
+                          ),
                       icon: const Icon(Icons.flag_outlined, size: 18),
                       label: Text(
                         isMultiSectionWeek
-                            ? 'Süreç Bileşenleri (${sections.length} konu)'
-                            : 'Süreç Bileşenleri',
+                            ? 'Kazanımlar (${sections.length} konu)'
+                            : 'Kazanımlar',
                       ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF2F6FE4),
