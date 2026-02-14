@@ -323,7 +323,7 @@ class HeaderView extends ConsumerWidget {
     List<Map<String, dynamic>> flatOutcomes, {
     required bool isAdmin,
     required VoidCallback onRefreshWeek,
-  ) {
+  }) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
