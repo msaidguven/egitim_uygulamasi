@@ -411,7 +411,8 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     debugPrint(
       "QuestionsScreen: _onWillPop - Kullanıcıya çıkış onayı gösteriliyor.",
     );
-    final shouldExit = await showDialog(
+    final shouldExit =
+        await showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Testten Çıkış'),
@@ -570,9 +571,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                     ),
                   Expanded(
                     child: MediaQuery(
-                      data: MediaQuery.of(context).copyWith(
-                        textScaleFactor: _textScale,
-                      ),
+                      data: MediaQuery.of(
+                        context,
+                      ).copyWith(textScaleFactor: _textScale),
                       child: QuestionCard(
                         key: ValueKey(
                           viewModel.currentTestQuestion!.question.id,
@@ -598,7 +599,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                       debugPrint(
                         "QuestionsScreen: onCheckPressed - Cevap kontrol ediliyor.",
                       );
-                      await ref.read(testViewModelProvider.notifier).checkAnswer();
+                      await ref
+                          .read(testViewModelProvider.notifier)
+                          .checkAnswer();
                       _refreshSrsDueCountIfNeeded();
                     },
                     onNextPressed: () {
@@ -611,14 +614,14 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                       debugPrint(
                         "QuestionsScreen: onFinishPressed - Test bitiriliyor.",
                       );
-                      await ref.read(testViewModelProvider.notifier).finishTest();
+                      await ref
+                          .read(testViewModelProvider.notifier)
+                          .finishTest();
                       _refreshSrsDueCountIfNeeded();
                     },
                   ),
                   const SizedBox(height: 8),
-                  const AdBannerWidget(
-                    margin: EdgeInsets.only(bottom: 8),
-                  ),
+                  const AdBannerWidget(margin: EdgeInsets.only(bottom: 8)),
                 ],
               ),
             ),
@@ -634,6 +637,8 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
         : viewModel.answeredCount + 1;
     final totalQuestions = viewModel.totalQuestions;
     final remaining = _remainingSeconds;
+    final score = viewModel.score;
+    final wrong = viewModel.incorrectCount;
 
     return Row(
       children: [
@@ -645,7 +650,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.18),
+            color: Colors.white.withValues(alpha: 0.18),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
@@ -667,6 +672,18 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             style: const TextStyle(color: Colors.white, fontSize: 14),
           ),
         ),
+        const SizedBox(width: 10),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.18),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(
+            'D: $score  Y: $wrong',
+            style: const TextStyle(color: Colors.white, fontSize: 14),
+          ),
+        ),
       ],
     );
   }
@@ -676,8 +693,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
         ? viewModel.answeredCount
         : viewModel.answeredCount + 1;
     final totalQuestions = viewModel.totalQuestions;
-    final progressValue =
-        totalQuestions > 0 ? currentQuestion / totalQuestions : 0.0;
+    final progressValue = totalQuestions > 0
+        ? currentQuestion / totalQuestions
+        : 0.0;
     final timeProgressValue = viewModel.timeLimitSeconds > 0
         ? _remainingSeconds / viewModel.timeLimitSeconds
         : 0.0;
@@ -697,7 +715,9 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             minHeight: 4,
             backgroundColor: Colors.white.withOpacity(0.12),
             valueColor: AlwaysStoppedAnimation<Color>(
-              _remainingSeconds <= 5 ? Colors.redAccent : Colors.lightBlueAccent,
+              _remainingSeconds <= 5
+                  ? Colors.redAccent
+                  : Colors.lightBlueAccent,
             ),
           ),
         ],
