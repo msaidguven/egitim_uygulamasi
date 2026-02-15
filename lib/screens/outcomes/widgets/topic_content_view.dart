@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
+import 'package:html/dom.dart' as dom;
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/html_style.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -215,68 +216,59 @@ class TopicContentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final newStyle = Map<String, Style>.from(getBaseHtmlStyle(context));
-    newStyle['body'] = Style(
-      fontSize: FontSize(15),
-      lineHeight: const LineHeight(1.6),
-    );
-    newStyle['h2'] = Style(
-      color: Colors.red,
-      fontSize: FontSize(20),
-      fontWeight: FontWeight.w700,
-      margin: Margins.symmetric(vertical: 12),
-    );
-    newStyle['h1'] = Style(
-      color: Colors.red,
-      fontSize: FontSize(22),
-      fontWeight: FontWeight.w800,
-      margin: Margins.symmetric(vertical: 14),
-    );
-    newStyle['h3'] = Style(
-      color: Colors.red,
-      fontSize: FontSize(18),
-      fontWeight: FontWeight.w700,
-      margin: Margins.symmetric(vertical: 10),
-    );
-    newStyle['strong'] = Style(color: Colors.red, fontWeight: FontWeight.w700);
+    // Determine colors based on content type or use default red
+    final accentColor = Colors.blue.shade700;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: Colors.transparent, // Cards handle their own background
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Topic Title Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+            child: Row(
               children: [
-                const Icon(Icons.article_rounded, color: Colors.red),
-                const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
-                    content.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.red,
-                    ),
-                    textAlign: TextAlign.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        content.title,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.blue.shade900,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade300,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                if (isAdmin) ...[
-                  const SizedBox(width: 8),
+                if (isAdmin)
                   PopupMenuButton<_AdminMenuAction>(
                     tooltip: 'İçerik işlemleri',
-                    icon: const Icon(Icons.more_vert, color: Colors.red),
+                    icon: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: Icon(Icons.more_horiz_rounded,
+                          color: Colors.grey.shade700, size: 20),
+                    ),
                     onSelected: (action) async {
                       switch (action) {
                         case _AdminMenuAction.update:
@@ -350,23 +342,177 @@ class TopicContentView extends StatelessWidget {
                     ],
                   ),
                 ],
-              ],
-            ),
-            const SizedBox(height: 16),
-            Container(height: 1, color: Colors.grey.shade200),
-            const SizedBox(height: 16),
-            RepaintBoundary(
-              child: Html(
-                data: content.content,
-                extensions: const [TableHtmlExtension()],
-                style: newStyle,
               ),
             ),
-          ],
-        ),
+
+          RepaintBoundary(
+            child: Html(
+              data: content.content,
+              extensions: [
+                const TableHtmlExtension(),
+                TagExtension(
+                  tagsToExtend: {"section"},
+                  builder: (context) {
+                    final element = context.node as dom.Element;
+                    final h2Element =
+                        element.children.where((e) => e.localName == "h2");
+                    final title = h2Element.isNotEmpty
+                        ? h2Element.first.text.trim()
+                        : "Bilgi";
+
+                    return _PedagogicalCard(
+                      title: title,
+                      child: Html(
+                        data: element.innerHtml.replaceAll(
+                            RegExp(r'<h2[^>]*>.*?</h2>', dotAll: true), ''),
+                        extensions: const [TableHtmlExtension()],
+                        style: {
+                          ...getBaseHtmlStyle(context.buildContext!),
+                          "p": Style(
+                            fontSize: FontSize(15.5),
+                            lineHeight: const LineHeight(1.6),
+                            margin: Margins.only(bottom: 8),
+                            color: Colors.grey.shade800,
+                          ),
+                          "li": Style(
+                            fontSize: FontSize(15),
+                            lineHeight: const LineHeight(1.5),
+                            margin: Margins.only(bottom: 4),
+                          ),
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
+              style: getBaseHtmlStyle(context),
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class _PedagogicalCard extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const _PedagogicalCard({required this.title, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final type = _getSectionType(title);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: type.color.withOpacity(0.15), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: type.color.withOpacity(0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Card Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: type.color.withOpacity(0.06),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(18)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: type.color.withOpacity(0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(type.icon, color: type.color, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      color: type.color.shade900,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+            child: child,
+          ),
+        ],
+      ),
+    );
+  }
+
+  _SectionType _getSectionType(String title) {
+    final t = title.toLowerCase();
+    if (t.contains("giriş")) {
+      return const _SectionType(Icons.auto_stories_rounded, Colors.indigo);
+    }
+    if (t.contains("bilgi")) {
+      return const _SectionType(Icons.lightbulb_outline_rounded, Colors.blue);
+    }
+    if (t.contains("kavrama") || t.contains("açıklama")) {
+      return const _SectionType(Icons.psychology_rounded, Colors.cyan);
+    }
+    if (t.contains("günlük hayat")) {
+      return const _SectionType(Icons.eco_rounded, Colors.teal);
+    }
+    if (t.contains("uygulama")) {
+      return const _SectionType(Icons.app_registration_rounded, Colors.orange);
+    }
+    if (t.contains("analiz") || t.contains("derinleştirme")) {
+      return const _SectionType(Icons.insights_rounded, Colors.deepPurple);
+    }
+    if (t.contains("yanılgı")) {
+      return const _SectionType(Icons.report_problem_rounded, Colors.red);
+    }
+    if (t.contains("etkinlik")) {
+      return const _SectionType(Icons.extension_rounded, Colors.pink);
+    }
+    if (t.contains("düşünme")) {
+      return const _SectionType(Icons.help_center_rounded, Colors.amber);
+    }
+    if (t.contains("özet")) {
+      return const _SectionType(Icons.summarize_rounded, Colors.green);
+    }
+    if (t.contains("kavramlar")) {
+      return const _SectionType(Icons.key_rounded, Colors.blueGrey);
+    }
+    if (t.contains("soru")) {
+      return const _SectionType(Icons.quiz_rounded, Colors.indigo);
+    }
+    if (t.contains("cevap")) {
+      return const _SectionType(Icons.checklist_rtl_rounded, Colors.teal);
+    }
+    return const _SectionType(Icons.article_rounded, Colors.blue);
+  }
+}
+
+class _SectionType {
+  final IconData icon;
+  final MaterialColor color;
+  const _SectionType(this.icon, this.color);
 }
 
 class AppleCollapsibleCard extends StatelessWidget {

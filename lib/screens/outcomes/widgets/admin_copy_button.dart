@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 class AdminCopyButton extends StatelessWidget {
   final String gradeName;
   final String lessonName;
+  final String unitTitle;
   final String topicTitle;
   final List<Map<String, dynamic>> outcomes;
 
@@ -11,6 +12,7 @@ class AdminCopyButton extends StatelessWidget {
     super.key,
     required this.gradeName,
     required this.lessonName,
+    required this.unitTitle,
     required this.topicTitle,
     required this.outcomes,
   });
@@ -36,6 +38,7 @@ Sana şu bilgileri vereceğim:
 
 - Sınıf: $gradeName
 - Ders: $lessonName
+- Ünite: $unitTitle
 - Konu: $topicTitle
 - Kazanımlar:
 ${outcomesBuffer.toString()}
@@ -176,6 +179,7 @@ SON KULLANIM
 
 Sınıf: { $gradeName }
 Ders: { $lessonName }
+Ünite: { $unitTitle }
 Konu: { $topicTitle }
 Kazanımlar: {
 ${outcomesBuffer.toString()} }

@@ -583,6 +583,23 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                                                                     as String? ??
                                                                 'Konu')
                                                             .trim();
+                                                    final topicWeeksRaw =
+                                                        (topic['weeks']
+                                                                as List?)
+                                                            ?.whereType<num>()
+                                                            .map(
+                                                              (w) => w.toInt(),
+                                                            )
+                                                            .toSet()
+                                                            .toList() ??
+                                                        <int>[];
+                                                    topicWeeksRaw.sort();
+                                                    final topicWeeksText =
+                                                        topicWeeksRaw.isEmpty
+                                                        ? ''
+                                                        : topicWeeksRaw.join(
+                                                            ', ',
+                                                          );
                                                     final isTopicSelected =
                                                         topicId != null &&
                                                         topicId ==
@@ -659,21 +676,48 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                                                                 width: 8,
                                                               ),
                                                               Expanded(
-                                                                child: Text(
-                                                                  topicTitle,
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                        12.5,
-                                                                    fontWeight:
-                                                                        isTopicSelected
-                                                                        ? FontWeight
-                                                                              .w700
-                                                                        : FontWeight
-                                                                              .w500,
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade900,
-                                                                  ),
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      topicTitle,
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            12.5,
+                                                                        fontWeight:
+                                                                            isTopicSelected
+                                                                            ? FontWeight.w700
+                                                                            : FontWeight.w500,
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .shade900,
+                                                                      ),
+                                                                    ),
+                                                                    if (topicWeeksText
+                                                                        .isNotEmpty) ...[
+                                                                      const SizedBox(
+                                                                        height:
+                                                                            2,
+                                                                      ),
+                                                                      Text(
+                                                                        'Hafta: $topicWeeksText',
+                                                                        style: TextStyle(
+                                                                          fontSize:
+                                                                              11.5,
+                                                                          fontWeight:
+                                                                              FontWeight.w600,
+                                                                          color:
+                                                                              isTopicSelected
+                                                                              ? const Color(
+                                                                                  0xFF2F6FE4,
+                                                                                )
+                                                                              : Colors.grey.shade600,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ],
                                                                 ),
                                                               ),
                                                             ],

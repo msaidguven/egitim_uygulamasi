@@ -32,6 +32,45 @@ class HeaderView extends ConsumerWidget {
     return getWeekDateRangeForAcademicWeek(curriculumWeek);
   }
 
+  List<Map<String, dynamic>> _sortSectionsForDisplay(
+    List<Map<String, dynamic>> sections,
+  ) {
+    final sorted = sections.map((s) => Map<String, dynamic>.from(s)).toList();
+    sorted.sort((a, b) {
+      final aOrder = a['topic_order'] as int? ?? (1 << 30);
+      final bOrder = b['topic_order'] as int? ?? (1 << 30);
+      final byOrder = aOrder.compareTo(bOrder);
+      if (byOrder != 0) return byOrder;
+
+      final aId = a['topic_id'] as int? ?? (1 << 30);
+      final bId = b['topic_id'] as int? ?? (1 << 30);
+      final byId = aId.compareTo(bId);
+      if (byId != 0) return byId;
+
+      final aTitle = (a['topic_title'] as String? ?? '').trim().toLowerCase();
+      final bTitle = (b['topic_title'] as String? ?? '').trim().toLowerCase();
+      return aTitle.compareTo(bTitle);
+    });
+    return sorted;
+  }
+
+  List<Map<String, dynamic>> _sortOutcomesForDisplay(
+    List<Map<String, dynamic>> outcomes,
+  ) {
+    final sorted = outcomes.map((o) => Map<String, dynamic>.from(o)).toList();
+    sorted.sort((a, b) {
+      final aId = a['id'] as int? ?? (1 << 30);
+      final bId = b['id'] as int? ?? (1 << 30);
+      final byId = aId.compareTo(bId);
+      if (byId != 0) return byId;
+
+      final aDesc = (a['description'] as String? ?? '').trim().toLowerCase();
+      final bDesc = (b['description'] as String? ?? '').trim().toLowerCase();
+      return aDesc.compareTo(bDesc);
+    });
+    return sorted;
+  }
+
   Widget _statPill({
     required String label,
     required String value,
@@ -67,7 +106,8 @@ class HeaderView extends ConsumerWidget {
     );
   }
 
-  Widget _buildHierarchyRow(IconData icon, String text) {
+  Widget _buildHierarchyRow(IconData icon, List<String> items) {
+    final text = items.map((item) => '• $item').join('\n');
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Row(
@@ -355,27 +395,30 @@ class HeaderView extends ConsumerWidget {
       showDragHandle: true,
       backgroundColor: Colors.white,
       builder: (context) {
-        final localSections =
-            (sections.isNotEmpty
-                    ? sections
-                    : [
-                        {
-                          'topic_title': data['topic_title'] ?? 'Konu',
-                          'topic_id': data['topic_id'],
-                          'outcomes': flatOutcomes,
-                        },
-                      ])
-                .map(
-                  (section) => {
-                    ...section,
-                    'outcomes': _normalizeOutcomeList(
+        final localSections = _sortSectionsForDisplay(
+          (sections.isNotEmpty
+                  ? sections
+                  : [
+                      {
+                        'topic_title': data['topic_title'] ?? 'Konu',
+                        'topic_id': data['topic_id'],
+                        'outcomes': flatOutcomes,
+                      },
+                    ])
+              .map(
+                (section) => {
+                  ...section,
+                  'outcomes': _sortOutcomesForDisplay(
+                    _normalizeOutcomeList(
                       section['outcomes'] as List?,
                       fallbackTopicId: section['topic_id'] as int?,
                       fallbackTopicTitle: section['topic_title'] as String?,
                     ),
-                  },
-                )
-                .toList();
+                  ),
+                },
+              )
+              .toList(),
+        );
 
         return SafeArea(
           child: FractionallySizedBox(
@@ -573,37 +616,59 @@ class HeaderView extends ConsumerWidget {
         }).toList() ??
         const <Map<String, dynamic>>[];
     final isMultiSectionWeek = sections.length > 1;
-    List<String> collectDistinctTitles(String key, {String? fallback}) {
-      final values = <String>[];
+    List<String> collectDistinctTitles({
+      required String titleKey,
+      required String idKey,
+      required String orderKey,
+      String? fallback,
+    }) {
+      final values = <Map<String, dynamic>>[];
       final seen = <String>{};
       final source = sections.isNotEmpty
           ? sections
           : <Map<String, dynamic>>[data];
 
       for (final row in source) {
-        final value = (row[key] as String? ?? '').trim();
+        final value = (row[titleKey] as String? ?? '').trim();
         if (value.isEmpty || seen.contains(value)) continue;
         seen.add(value);
-        values.add(value);
+        values.add({
+          'title': value,
+          'id': row[idKey] as int? ?? 1 << 30,
+          'order': row[orderKey] as int? ?? 1 << 30,
+        });
       }
 
+      values.sort((a, b) {
+        final byOrder = (a['order'] as int).compareTo(b['order'] as int);
+        if (byOrder != 0) return byOrder;
+        final byId = (a['id'] as int).compareTo(b['id'] as int);
+        if (byId != 0) return byId;
+        return (a['title'] as String).compareTo(b['title'] as String);
+      });
+
       final safeFallback = (fallback ?? '').trim();
-      if (values.isEmpty && safeFallback.isNotEmpty) {
-        values.add(safeFallback);
+      if (values.isEmpty) {
+        if (safeFallback.isNotEmpty) {
+          return [safeFallback];
+        }
+        return const [];
       }
-      return values;
+      return values.map((e) => e['title'] as String).toList();
     }
 
     final unitTitles = collectDistinctTitles(
-      'unit_title',
+      titleKey: 'unit_title',
+      idKey: 'unit_id',
+      orderKey: 'unit_order',
       fallback: data['unit_title'] as String?,
     );
     final topicTitles = collectDistinctTitles(
-      'topic_title',
+      titleKey: 'topic_title',
+      idKey: 'topic_id',
+      orderKey: 'topic_order',
       fallback: data['topic_title'] as String?,
     );
-    final unitHierarchyText = unitTitles.join(' • ');
-    final topicHierarchyText = topicTitles.join(' • ');
     final flatOutcomes = _normalizeOutcomeList(
       data['outcomes'] as List?,
       fallbackTopicId: data['topic_id'] as int?,
@@ -800,16 +865,10 @@ class HeaderView extends ConsumerWidget {
                   ),
                 ],
                 const SizedBox(height: 12),
-                if (!isSpecialPage && unitHierarchyText.isNotEmpty)
-                  _buildHierarchyRow(
-                    Icons.folder_open_outlined,
-                    unitHierarchyText,
-                  ),
-                if (!isSpecialPage && topicHierarchyText.isNotEmpty)
-                  _buildHierarchyRow(
-                    Icons.article_outlined,
-                    topicHierarchyText,
-                  ),
+                if (!isSpecialPage && unitTitles.isNotEmpty)
+                  _buildHierarchyRow(Icons.folder_open_outlined, unitTitles),
+                if (!isSpecialPage && topicTitles.isNotEmpty)
+                  _buildHierarchyRow(Icons.article_outlined, topicTitles),
                 if (!isSpecialPage) ...[
                   const SizedBox(height: 10),
                   Align(
@@ -874,6 +933,8 @@ class HeaderView extends ConsumerWidget {
                           AdminCopyButton(
                             gradeName: gradeName,
                             lessonName: lessonName,
+                            unitTitle:
+                                (data['unit_title'] as String? ?? '').trim(),
                             topicTitle: (data['topic_title'] as String? ?? '')
                                 .trim(),
                             outcomes: flatOutcomes,
