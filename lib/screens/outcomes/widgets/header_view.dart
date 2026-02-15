@@ -736,16 +736,12 @@ class HeaderView extends ConsumerWidget {
                   ),
                 ],
                 const SizedBox(height: 12),
-                if (!isSpecialPage &&
-                    !isMultiSectionWeek &&
-                    data['unit_title'] != null)
+                if (!isSpecialPage && data['unit_title'] != null)
                   _buildHierarchyRow(
                     Icons.folder_open_outlined,
                     data['unit_title']!,
                   ),
-                if (!isSpecialPage &&
-                    !isMultiSectionWeek &&
-                    data['topic_title'] != null)
+                if (!isSpecialPage && data['topic_title'] != null)
                   _buildHierarchyRow(
                     Icons.article_outlined,
                     data['topic_title']!,

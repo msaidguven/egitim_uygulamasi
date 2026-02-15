@@ -302,6 +302,45 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   int? _selectedSectionIndex;
   int? _selectedUnitId;
 
+  int _pickDefaultSectionIndex(
+    List<Map<String, dynamic>> sections, {
+    int? preferredUnitId,
+  }) {
+    if (sections.isEmpty) return 0;
+
+    bool hasContentOrOutcome(Map<String, dynamic> section) {
+      final hasContents = (section['contents'] as List?)?.isNotEmpty ?? false;
+      final hasOutcomes = (section['outcomes'] as List?)?.isNotEmpty ?? false;
+      return hasContents || hasOutcomes;
+    }
+
+    if (preferredUnitId != null) {
+      final preferredRichIndex = sections.indexWhere(
+        (s) => s['unit_id'] == preferredUnitId && hasContentOrOutcome(s),
+      );
+      if (preferredRichIndex != -1) return preferredRichIndex;
+    }
+
+    final withContentsIndex = sections.indexWhere(
+      (s) => (s['contents'] as List?)?.isNotEmpty ?? false,
+    );
+    if (withContentsIndex != -1) return withContentsIndex;
+
+    final withOutcomesIndex = sections.indexWhere(
+      (s) => (s['outcomes'] as List?)?.isNotEmpty ?? false,
+    );
+    if (withOutcomesIndex != -1) return withOutcomesIndex;
+
+    if (preferredUnitId != null) {
+      final preferredAnyIndex = sections.indexWhere(
+        (s) => s['unit_id'] == preferredUnitId,
+      );
+      if (preferredAnyIndex != -1) return preferredAnyIndex;
+    }
+
+    return 0;
+  }
+
   Future<void> _showUnitPicker(
     BuildContext context,
     List<Map<String, dynamic>> units,
@@ -518,7 +557,14 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     if (!mounted || picked == null) return;
     setState(() => _selectedUnitId = picked);
 
-    final firstTopicForUnit =
+    int? firstTopicForUnit =
+        currentSections.firstWhere(
+              (section) =>
+                  section['unit_id'] == picked && section['topic_id'] != null,
+              orElse: () => <String, dynamic>{},
+            )['topic_id']
+            as int?;
+    firstTopicForUnit ??=
         allTopics.firstWhere(
               (topic) => topic['unit_id'] == picked,
               orElse: () => <String, dynamic>{},
@@ -579,7 +625,6 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   @override
   void initState() {
     super.initState();
-    _selectedSectionIndex ??= 0;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final viewModel = ref.read(outcomesViewModelProvider(widget.args));
@@ -745,22 +790,14 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         ),
       );
     }
-    final rawSelectedIndex = _selectedSectionIndex ?? 0;
-    final safeSelectedIndex =
+    final rawSelectedIndex = _selectedSectionIndex ?? -1;
+    final baseSelectedIndex =
         (rawSelectedIndex >= 0 && rawSelectedIndex < sections.length)
         ? rawSelectedIndex
-        : 0;
-    if (_selectedSectionIndex != safeSelectedIndex) {
-      _selectedSectionIndex = safeSelectedIndex;
-    }
-
-    final selectedSection = sections[safeSelectedIndex];
-    final selectedContents = (selectedSection['contents'] as List? ?? [])
-        .whereType<Map>()
-        .map((c) => TopicContent.fromJson(Map<String, dynamic>.from(c)))
-        .toList();
-    final selectedUnitId = selectedSection['unit_id'] as int?;
-    final selectedTopicId = selectedSection['topic_id'] as int?;
+        : _pickDefaultSectionIndex(sections, preferredUnitId: _selectedUnitId);
+    final baseSelectedSection = sections[baseSelectedIndex];
+    final baseSelectedUnitId = baseSelectedSection['unit_id'] as int?;
+    final baseSelectedTopicId = baseSelectedSection['topic_id'] as int?;
     final currentWeekTopicIds = sections
         .map((s) => s['topic_id'])
         .whereType<int>()
@@ -797,7 +834,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
       (a, b) => (a['unit_order'] as int).compareTo(b['unit_order'] as int),
     );
 
-    final selectedUnitFromSection = selectedUnitId;
+    final selectedUnitFromSection = baseSelectedUnitId;
     final defaultUnitId = (selectedUnitFromSection is int)
         ? selectedUnitFromSection
         : (unitOptions.isNotEmpty ? unitOptions.first['unit_id'] as int : null);
@@ -811,11 +848,28 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         ? topicMenu
         : topicMenu.where((t) => t['unit_id'] == effectiveUnitId).toList();
     final effectiveSelectedTopicId =
-        filteredTopics.any((t) => t['topic_id'] == selectedTopicId)
-        ? selectedTopicId
+        filteredTopics.any((t) => t['topic_id'] == baseSelectedTopicId)
+        ? baseSelectedTopicId
         : (filteredTopics.isNotEmpty
               ? filteredTopics.first['topic_id'] as int?
               : null);
+    final resolvedSectionIndex = effectiveSelectedTopicId == null
+        ? -1
+        : sections.indexWhere((s) => s['topic_id'] == effectiveSelectedTopicId);
+    final safeSelectedIndex = resolvedSectionIndex != -1
+        ? resolvedSectionIndex
+        : baseSelectedIndex;
+    if (_selectedSectionIndex != safeSelectedIndex) {
+      _selectedSectionIndex = safeSelectedIndex;
+    }
+
+    final selectedSection = sections[safeSelectedIndex];
+    final selectedContents = (selectedSection['contents'] as List? ?? [])
+        .whereType<Map>()
+        .map((c) => TopicContent.fromJson(Map<String, dynamic>.from(c)))
+        .toList();
+    final selectedUnitId = selectedSection['unit_id'] as int?;
+    final selectedTopicId = selectedSection['topic_id'] as int?;
     final selectedUnitTitle =
         unitOptions.firstWhere(
               (u) => u['unit_id'] == effectiveUnitId,
@@ -823,6 +877,19 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             )['unit_title']
             as String? ??
         'Ünite seçiniz';
+    final selectedSectionUnitTitle =
+        (selectedSection['unit_title'] as String? ?? '').trim();
+    final selectedSectionTopicTitle =
+        (selectedSection['topic_title'] as String? ?? '').trim();
+    final headerData = Map<String, dynamic>.from(safeData)
+      ..['unit_id'] = selectedUnitId ?? safeData['unit_id']
+      ..['topic_id'] = selectedTopicId ?? safeData['topic_id']
+      ..['unit_title'] = selectedSectionUnitTitle.isNotEmpty
+          ? selectedSectionUnitTitle
+          : safeData['unit_title']
+      ..['topic_title'] = selectedSectionTopicTitle.isNotEmpty
+          ? selectedSectionTopicTitle
+          : safeData['topic_title'];
 
     final isLastWeek = safeData['is_last_week_of_unit'] ?? false;
     final unitSummary = safeData['unit_summary'];
@@ -839,7 +906,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             sliver: SliverToBoxAdapter(
               child: HeaderView(
                 curriculumWeek: widget.curriculumWeek,
-                data: safeData,
+                data: headerData,
                 pageData: widget.pageData,
                 args: widget.args,
               ),
