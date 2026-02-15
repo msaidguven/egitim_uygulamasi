@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:egitim_uygulamasi/screens/home/widgets/pressable_card.dart';
 
 final _lessonDetails = {
   1: {
@@ -74,24 +75,29 @@ class LessonCard extends StatelessWidget {
 
     final gradient = details['gradient'] as List<Color>;
     final icon = details['icon'] as IconData;
+    final statusColor = _statusColor(progress, successRate);
 
-    return GestureDetector(
+    return PressableCard(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+        margin: const EdgeInsets.symmetric(vertical: 7),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFFFFFFF), Color(0xFFF4F8FF)],
+            colors: [
+              Color.lerp(Colors.white, gradient.first, 0.12)!,
+              Color.lerp(const Color(0xFFF4F8FF), statusColor, 0.12)!,
+              const Color(0xFFF8FBFF),
+            ],
           ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFD8E6FF)),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: statusColor.withValues(alpha: 0.34)),
           boxShadow: [
             BoxShadow(
-              color: gradient.first.withValues(alpha: 0.12),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
+              color: gradient.first.withValues(alpha: 0.14),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
@@ -106,6 +112,18 @@ class LessonCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: gradient.last.withValues(alpha: 0.14),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: -28,
+              left: -14,
+              child: Container(
+                width: 82,
+                height: 82,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: gradient.first.withValues(alpha: 0.09),
                 ),
               ),
             ),
@@ -189,9 +207,9 @@ class LessonCard extends StatelessWidget {
                             Text(
                               topicTitle ?? lessonName,
                               style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black87,
+                                fontSize: 15.5,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF0F172A),
                                 height: 1.2,
                               ),
                               maxLines: 2,
@@ -223,6 +241,34 @@ class LessonCard extends StatelessWidget {
                                 ),
                               ),
                             ],
+                            if (isNextStep) ...[
+                              const SizedBox(height: 7),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFF2F6FE4,
+                                  ).withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                    color: const Color(
+                                      0xFF2F6FE4,
+                                    ).withValues(alpha: 0.25),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Önerilen',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF2F6FE4),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),
@@ -231,8 +277,8 @@ class LessonCard extends StatelessWidget {
                       Column(
                         children: [
                           SizedBox(
-                            width: 38,
-                            height: 38,
+                            width: 42,
+                            height: 42,
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
@@ -241,14 +287,14 @@ class LessonCard extends StatelessWidget {
                                   strokeWidth: 4,
                                   backgroundColor: Colors.grey.shade100,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                    gradient.last,
+                                    statusColor,
                                   ),
                                 ),
                                 Center(
                                   child: Text(
                                     '${progress.toInt()}%',
                                     style: TextStyle(
-                                      fontSize: 10,
+                                      fontSize: 10.5,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.grey.shade800,
                                     ),
@@ -281,7 +327,8 @@ class LessonCard extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: const Color(0xFFEFF4FF),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: const Color(0xFFD7E6FF)),
                           ),
                           child: Text(
                             '$totalQuestions Soru',
@@ -326,6 +373,16 @@ class LessonCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _statusColor(double progress, double successRate) {
+    if (progress >= 100 && successRate >= 80) {
+      return const Color(0xFF16A34A);
+    }
+    if (progress >= 60 || successRate >= 60) {
+      return const Color(0xFF2F6FE4);
+    }
+    return const Color(0xFFEF6C2F);
   }
 
   Widget _buildStatItem({

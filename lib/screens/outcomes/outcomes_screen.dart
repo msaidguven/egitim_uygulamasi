@@ -7,11 +7,13 @@ import 'package:egitim_uygulamasi/screens/outcomes/widgets/weekly_test_view.dart
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/unit_test_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/special_cards_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/app_bar_view.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_question_shortcut_card.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart'; // profileViewModelProvider için
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:egitim_uygulamasi/admin/pages/smart_question_addition/smart_question_addition_page.dart';
 
 class _LessonThemePalette {
   final Color primary;
@@ -267,6 +269,8 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
                             ..['_page_index'] = index,
                           args: viewModelArgs,
                           palette: palette,
+                          gradeName: widget.gradeName,
+                          lessonName: widget.lessonName,
                         ),
                       ),
                     );
@@ -284,6 +288,8 @@ class _WeekContentView extends ConsumerStatefulWidget {
   final Map<String, dynamic> pageData;
   final OutcomesViewModelArgs args;
   final _LessonThemePalette palette;
+  final String gradeName;
+  final String lessonName;
 
   const _WeekContentView({
     super.key,
@@ -291,6 +297,8 @@ class _WeekContentView extends ConsumerStatefulWidget {
     required this.pageData,
     required this.args,
     required this.palette,
+    required this.gradeName,
+    required this.lessonName,
   });
 
   @override
@@ -774,6 +782,25 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     );
   }
 
+  Future<void> _openSmartQuestionAddition({
+    required int selectedUnitId,
+    required int selectedTopicId,
+  }) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SmartQuestionAdditionPage(
+          initialGradeId: widget.args.gradeId,
+          initialLessonId: widget.args.lessonId,
+          initialUnitId: selectedUnitId,
+          initialTopicId: selectedTopicId,
+          initialCurriculumWeek: widget.curriculumWeek,
+          initialUsageType: 'weekly',
+        ),
+      ),
+    );
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -1139,6 +1166,8 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                 data: headerData,
                 pageData: widget.pageData,
                 args: widget.args,
+                gradeName: widget.gradeName,
+                lessonName: widget.lessonName,
                 onTapUnits: unitOptions.isEmpty
                     ? null
                     : () => _showUnitPicker(
@@ -1152,6 +1181,21 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               ),
             ),
           ),
+          if (!isSpecialPage && isAdmin)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              sliver: SliverToBoxAdapter(
+                child: AdminQuestionShortcutCard(
+                  curriculumWeek: widget.curriculumWeek,
+                  onTap: (selectedUnitId == null || selectedTopicId == null)
+                      ? null
+                      : () => _openSmartQuestionAddition(
+                          selectedUnitId: selectedUnitId,
+                          selectedTopicId: selectedTopicId,
+                        ),
+                ),
+              ),
+            ),
           if (isSpecialPage)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),

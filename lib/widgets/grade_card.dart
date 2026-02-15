@@ -1,6 +1,7 @@
 // lib/widgets/grade_card.dart
 
 import 'package:egitim_uygulamasi/models/grade_model.dart';
+import 'package:egitim_uygulamasi/screens/home/widgets/pressable_card.dart';
 import 'package:flutter/material.dart';
 
 enum GradeCardVariant { standard, compact }
@@ -27,153 +28,150 @@ class GradeCard extends StatelessWidget {
 
     final colors = _getGradientColor(index);
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: colors,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: colors.first.withOpacity(0.25),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-                spreadRadius: -2,
-              ),
-            ],
+    return PressableCard(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: colors,
           ),
-          child: Stack(
-            children: [
-              // Background Pattern
-              Positioned(
-                top: -20,
-                right: -20,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.08),
-                  ),
+          boxShadow: [
+            BoxShadow(
+              color: colors.first.withValues(alpha: 0.25),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+              spreadRadius: -2,
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // Background Pattern
+            Positioned(
+              top: -20,
+              right: -20,
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.08),
                 ),
               ),
-              Positioned(
-                bottom: -30,
-                left: -30,
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.05),
-                  ),
+            ),
+            Positioned(
+              bottom: -30,
+              left: -30,
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.05),
                 ),
               ),
+            ),
 
-              // Content
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Icon with background
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        _getIconForGrade(index),
-                        color: Colors.white,
-                        size: 26,
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    // Grade Name
-                    Text(
-                      grade.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                        height: 1.2,
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Action Button
-                    Container(
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 1,
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Icon with background
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
-                            'Derslere Git',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          SizedBox(width: 6),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                        ],
+                      ],
+                    ),
+                    child: Icon(
+                      _getIconForGrade(index),
+                      color: Colors.white,
+                      size: 26,
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  // Grade Name
+                  Text(
+                    grade.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                      height: 1.2,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Action Button
+                  Container(
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                        width: 1,
                       ),
                     ),
-                  ],
-                ),
-              ),
-
-              // Shine Effect
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 1,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.white.withOpacity(0.3),
-                        Colors.white.withOpacity(0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Derslere Git',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(width: 6),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 16,
+                        ),
                       ],
                     ),
                   ),
+                ],
+              ),
+            ),
+
+            // Shine Effect
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 1,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white.withValues(alpha: 0.3),
+                      Colors.white.withValues(alpha: 0),
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -181,100 +179,137 @@ class GradeCard extends StatelessWidget {
 
   Widget _buildCompactCard(BuildContext context) {
     final gradients = [
-      [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
-      [const Color(0xFFEC4899), const Color(0xFFF43F5E)],
-      [const Color(0xFF10B981), const Color(0xFF059669)],
-      [const Color(0xFFF59E0B), const Color(0xFFD97706)],
-      [const Color(0xFF3B82F6), const Color(0xFF2563EB)],
-      [const Color(0xFF8B5CF6), const Color(0xFF7C3AED)],
-      [const Color(0xFFEF4444), const Color(0xFFDC2626)],
-      [const Color(0xFF06B6D4), const Color(0xFF0891B2)],
+      [const Color(0xFF1E88E5), const Color(0xFF4FC3F7)],
+      [const Color(0xFFFF7043), const Color(0xFFFFB74D)],
+      [const Color(0xFF26A69A), const Color(0xFF66BB6A)],
+      [const Color(0xFF5C6BC0), const Color(0xFF42A5F5)],
+      [const Color(0xFFEC407A), const Color(0xFFFF8A80)],
+      [const Color(0xFF8D6E63), const Color(0xFFFFB74D)],
+      [const Color(0xFF7CB342), const Color(0xFFAED581)],
+      [const Color(0xFF29B6F6), const Color(0xFF26C6DA)],
     ];
 
     final gradient = gradients[index % gradients.length];
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: gradient[0].withOpacity(0.15),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
+    return PressableCard(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              gradient[0].withValues(alpha: 0.96),
+              gradient[1].withValues(alpha: 0.94),
             ],
-            border: Border.all(color: Colors.grey.shade100),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 48,
-                height: 48,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: gradient[0].withValues(alpha: 0.28),
+              blurRadius: 18,
+              offset: const Offset(0, 9),
+            ),
+          ],
+          border: Border.all(color: Colors.white.withValues(alpha: 0.35)),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: -24,
+              right: -20,
+              child: Container(
+                width: 86,
+                height: 86,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: gradient,
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.18),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: -28,
+              left: -16,
+              child: Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.13),
+                ),
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.24),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.3),
+                    ),
                   ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: gradient[0].withOpacity(0.4),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
+                  child: Icon(
+                    _getIconForCompact(index),
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      grade.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.24),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text(
+                            'Derslere git',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 14,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                child: Icon(
-                  _getIconForCompact(index),
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    grade.name,
-                    style: TextStyle(
-                      color: Colors.grey.shade900,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        'Derslere git',
-                        style: TextStyle(
-                          color: gradient[0],
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.arrow_forward_rounded,
-                        size: 14,
-                        color: gradient[0],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
     );

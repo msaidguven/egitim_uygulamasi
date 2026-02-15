@@ -4,6 +4,7 @@ import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/viewmodels/outcomes_viewmodel.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_copy_button.dart';
 
 class HeaderView extends ConsumerWidget {
   final int curriculumWeek;
@@ -12,6 +13,8 @@ class HeaderView extends ConsumerWidget {
   final OutcomesViewModelArgs args;
   final VoidCallback? onTapUnits;
   final int unitCount;
+  final String gradeName;
+  final String lessonName;
 
   const HeaderView({
     super.key,
@@ -21,6 +24,8 @@ class HeaderView extends ConsumerWidget {
     required this.args,
     this.onTapUnits,
     this.unitCount = 0,
+    required this.gradeName,
+    required this.lessonName,
   });
 
   (DateTime, DateTime) _getWeekDateRange(int curriculumWeek) {
@@ -864,6 +869,14 @@ class HeaderView extends ConsumerWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
+                          ),
+                        if (isAdmin)
+                          AdminCopyButton(
+                            gradeName: gradeName,
+                            lessonName: lessonName,
+                            topicTitle: (data['topic_title'] as String? ?? '')
+                                .trim(),
+                            outcomes: flatOutcomes,
                           ),
                       ],
                     ),

@@ -16,104 +16,121 @@ class SrsAlertWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Colors based on the "alert" nature, usually orange/amber or purple/indigo
-    // Using a distinct color to make it stand out as an alert
-    const Color accentColor = Color(0xFF8B5CF6); // Violet
-    const Color surfaceColor = Colors.white;
+    final bool hasDue = questionCount > 0;
+    final Color accentColor = hasDue
+        ? const Color(0xFF0EA5E9)
+        : const Color(0xFF22C55E);
+    final Color accentWarm = hasDue
+        ? const Color(0xFFF97316)
+        : const Color(0xFF06B6D4);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: surfaceColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: accentColor.withOpacity(0.1)),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFFFFF), Color(0xFFEFF9FF), Color(0xFFF7FCFF)],
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: hasDue ? const Color(0xFFD0ECFF) : const Color(0xFFCDEFD7),
+        ),
         boxShadow: [
           BoxShadow(
-            color: accentColor.withOpacity(0.1),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
+            color: accentColor.withValues(alpha: 0.14),
+            blurRadius: 18,
+            offset: const Offset(0, 9),
           ),
         ],
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          // Icon
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [accentColor.withOpacity(0.1), accentColor.withOpacity(0.2)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Center(
-              child: Text(
-                '🧠',
-                style: TextStyle(fontSize: 24),
+          Positioned(
+            top: -26,
+            right: -18,
+            child: Container(
+              width: 104,
+              height: 104,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFFBEE8FF).withValues(alpha: 0.35),
               ),
             ),
           ),
-          const SizedBox(width: 16),
-          
-          // Content
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Zamanı Gelen Tekrarlar',
-                  style: TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF1E293B),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      accentColor.withValues(alpha: 0.18),
+                      accentWarm.withValues(alpha: 0.2),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  borderRadius: BorderRadius.circular(14),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  showActionButton
-                      ? (questionCount > 0
-                          ? '$questionCount soru için tekrar zamanı geldi. Bu soruları çözerek öğrenmeni pekiştir.'
-                          : 'Şu an tekrar etmen gereken soru yok. Harikasın! Yeni konular öğrenmeye devam et.')
-                      : (guestMessage ??
-                          'Zamanı gelen soruları çözmek için giriş yapın.'),
-                  style: TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 13,
-                    color: Colors.grey.shade600,
-                    height: 1.4,
-                  ),
+                child: const Center(
+                  child: Text('🧠', style: TextStyle(fontSize: 24)),
                 ),
-                const SizedBox(height: 12),
-                if (showActionButton && questionCount > 0)
-                  SizedBox(
-                    height: 36,
-                    child: ElevatedButton(
-                      onPressed: onReviewTap,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: accentColor,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Zamanı Gelen Tekrarlar',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF1E293B),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      showActionButton
+                          ? (questionCount > 0
+                                ? '$questionCount soru için tekrar zamanı geldi. Öğrendiklerini tazele.'
+                                : 'Şu an tekrar etmen gereken soru yok. Harika gidiyorsun.')
+                          : (guestMessage ??
+                                'Zamanı gelen soruları çözmek için giriş yapın.'),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade700,
+                        height: 1.4,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (showActionButton && questionCount > 0)
+                      FilledButton.icon(
+                        onPressed: onReviewTap,
+                        icon: const Icon(Icons.bolt_rounded, size: 16),
+                        label: const Text('Şimdi Tekrar Et'),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: accentColor,
+                          foregroundColor: Colors.white,
+                          visualDensity: VisualDensity.compact,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
-                      child: const Text('Şimdi Tekrar Et'),
-                    ),
-                  ),
-              ],
-            ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),

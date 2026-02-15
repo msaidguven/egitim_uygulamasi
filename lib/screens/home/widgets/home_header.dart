@@ -7,7 +7,7 @@ import 'package:egitim_uygulamasi/screens/deneme/question_test_page.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends StatefulWidget {
   final Profile? profile;
   final bool isAdmin;
   final ValueChanged<String?> onRoleChanged;
@@ -22,164 +22,219 @@ class HomeHeader extends StatelessWidget {
   });
 
   @override
+  State<HomeHeader> createState() => _HomeHeaderState();
+}
+
+class _HomeHeaderState extends State<HomeHeader>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _floatAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat(reverse: true);
+    _floatAnim = Tween<double>(
+      begin: -1.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isLoggedIn = profile != null;
-    final avatarUrl = profile?.avatarUrl;
-    final fullName = profile?.fullName;
+    final isLoggedIn = widget.profile != null;
+    final avatarUrl = widget.profile?.avatarUrl;
+    final fullName = widget.profile?.fullName;
     final initials = fullName != null && fullName.isNotEmpty
         ? fullName.substring(0, 1).toUpperCase()
         : '?';
 
-    return Container(
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 16,
-        bottom: 24,
-      ),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFFFFFFF), Color(0xFFF2F6FF), Color(0xFFEEF3FF)],
-        ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(32),
-          bottomRight: Radius.circular(32),
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 16,
-            offset: Offset(0, 8),
+    return AnimatedBuilder(
+      animation: _floatAnim,
+      builder: (context, child) {
+        final offset = _floatAnim.value;
+        return Container(
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + 12,
+            bottom: 22,
           ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -22,
-            right: -14,
-            child: Container(
-              width: 110,
-              height: 110,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFF9EC3FF).withValues(alpha: 0.22),
-              ),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFECF4FF), Color(0xFFE5F0FF), Color(0xFFF0F8FF)],
             ),
-          ),
-          Positioned(
-            bottom: -32,
-            left: -10,
-            child: Container(
-              width: 92,
-              height: 92,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFFFDAB5).withValues(alpha: 0.18),
-              ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(28),
+              bottomRight: Radius.circular(28),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF2F6FE4).withValues(alpha: 0.14),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _LogoText(),
-                      const SizedBox(height: 6),
-                      if (isLoggedIn) ...[
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.58,
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              fullName ?? 'Kullanıcı',
+          child: Stack(
+            children: [
+              Positioned(
+                top: -30 + (offset * 2),
+                right: -18 + (offset * 1.5),
+                child: Container(
+                  width: 132,
+                  height: 132,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFF98C8FF).withValues(alpha: 0.28),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 14 - (offset * 2),
+                left: -36 + (offset * 1.2),
+                child: Container(
+                  width: 94,
+                  height: 94,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFFFD9A8).withValues(alpha: 0.25),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: -28 + (offset * 1.8),
+                right: 58 - (offset * 1.3),
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFB7EFD7).withValues(alpha: 0.24),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 8 + (offset * 2.2),
+                right: 78,
+                child: _MascotBadge(offset: offset),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _LogoText(),
+                          const SizedBox(height: 10),
+                          if (isLoggedIn) ...[
+                            Text(
+                              'Merhaba, ${fullName ?? 'Kullanıcı'}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: Color(0xFF0F172A),
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
                                 height: 1.2,
                               ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.72),
-                            borderRadius: BorderRadius.circular(999),
-                            border: Border.all(color: const Color(0xFFD8E4FF)),
-                          ),
-                          child: const Text(
-                            'Bugün için hedefini tamamla',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF475569),
+                            const SizedBox(height: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.65),
+                                borderRadius: BorderRadius.circular(999),
+                                border: Border.all(
+                                  color: const Color(0xFFCDE0FF),
+                                ),
+                              ),
+                              child: const Text(
+                                'Hedefini tamamla, puanını yükselt',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF2F5FAE),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ] else ...[
-                        Text(
-                          'Kaldığın yerden devam etmek için giriş yap',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey.shade700,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                if (isAdmin)
-                  _buildAdminProfileMenu(context, avatarUrl, initials)
-                else if (isLoggedIn)
-                  _buildUserAvatar(avatarUrl, initials)
-                else
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white.withValues(alpha: 0.9),
-                        border: Border.all(color: Colors.grey.shade200),
-                      ),
-                      child: const Icon(
-                        Icons.person_outline_rounded,
-                        color: Color(0xFF64748B),
-                        size: 24,
+                          ] else ...[
+                            const Text(
+                              'Renkli ders kartları, mini testler ve haftalık yol haritası seni bekliyor.',
+                              style: TextStyle(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF334155),
+                                height: 1.35,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
-                  ),
-              ],
-            ),
+                    const SizedBox(width: 12),
+                    if (widget.isAdmin)
+                      _buildAdminProfileMenu(context, avatarUrl, initials)
+                    else if (isLoggedIn)
+                      _buildUserAvatar(avatarUrl, initials)
+                    else
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(14),
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF2F6FE4), Color(0xFF38BDF8)],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(
+                                  0xFF2F6FE4,
+                                ).withValues(alpha: 0.25),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.person_outline_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -204,14 +259,14 @@ class HomeHeader extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const QuestionTestPage()),
           );
         } else {
-          onRoleChanged(value);
+          widget.onRoleChanged(value);
         }
       },
       itemBuilder: (context) {
         return <PopupMenuEntry<String?>>[
           ...roles.map((roleData) {
             final isSelected =
-                (impersonatedRole ?? 'admin') == roleData['role'];
+                (widget.impersonatedRole ?? 'admin') == roleData['role'];
             return PopupMenuItem<String?>(
               value: roleData['role'],
               child: Row(
@@ -478,32 +533,114 @@ class HomeHeader extends StatelessWidget {
   }
 }
 
+class _MascotBadge extends StatelessWidget {
+  final double offset;
+
+  const _MascotBadge({required this.offset});
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: Offset(offset * 1.8, -offset * 1.2),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFFFFB649), Color(0xFFFF8A00)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFFF9F1C).withValues(alpha: 0.35),
+                  blurRadius: 14,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.75),
+                width: 1.6,
+              ),
+            ),
+            child: const Icon(
+              Icons.smart_toy_rounded,
+              size: 28,
+              color: Colors.white,
+            ),
+          ),
+          Positioned(
+            top: -6 + (offset * 0.6),
+            right: -8,
+            child: Icon(
+              Icons.auto_awesome_rounded,
+              size: 14,
+              color: const Color(0xFF2F6FE4).withValues(alpha: 0.9),
+            ),
+          ),
+          Positioned(
+            bottom: -6 - (offset * 0.5),
+            left: -7,
+            child: Icon(
+              Icons.star_rounded,
+              size: 12,
+              color: const Color(0xFF34D399).withValues(alpha: 0.9),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _LogoText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (bounds) => const LinearGradient(
-        colors: [Color(0xFF4F46E5), Color(0xFF7C3AED), Color(0xFFEC4899)],
-      ).createShader(bounds),
-      child: RichText(
-        text: const TextSpan(
-          text: 'Ders Takip',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-          ),
-          children: [
-            TextSpan(
-              text: '.net',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF2F6FE4), Color(0xFF38BDF8), Color(0xFF34D399)],
         ),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2F6FE4).withValues(alpha: 0.3),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Icon(Icons.auto_stories_rounded, color: Colors.white, size: 18),
+          SizedBox(width: 8),
+          Text(
+            'DersTakip',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.2,
+            ),
+          ),
+          SizedBox(width: 4),
+          Text(
+            '.net',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }

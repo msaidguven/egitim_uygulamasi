@@ -114,16 +114,20 @@ class UnfinishedTestsSection extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFFFFFFFF), Color(0xFFF5F8FF)],
+              ),
+              borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  color: const Color(0xFF2F6FE4).withValues(alpha: 0.1),
+                  blurRadius: 13,
+                  offset: const Offset(0, 7),
                 ),
               ],
-              border: Border.all(color: Colors.grey.shade100),
+              border: Border.all(color: const Color(0xFFD8E6FF)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,9 +141,9 @@ class UnfinishedTestsSection extends StatelessWidget {
                           ? 'Tüm Dersler'
                           : (session.lessonName ?? 'Ders'),
                       style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey.shade600,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 11.5,
+                        color: Colors.grey.shade700,
+                        fontWeight: FontWeight.w600,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -150,8 +154,8 @@ class UnfinishedTestsSection extends StatelessWidget {
                           ? 'Genel Tekrar'
                           : (session.unitName ?? 'Ünite'),
                       style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w700,
                         color: Colors.grey.shade900,
                       ),
                       maxLines: 2,
@@ -165,20 +169,20 @@ class UnfinishedTestsSection extends StatelessWidget {
                     Text(
                       'Devam Et',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: const Color(0xFF6366F1),
-                        fontWeight: FontWeight.w600,
+                        fontSize: 12.5,
+                        color: const Color(0xFF2F6FE4),
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF6366F1).withOpacity(0.1),
+                        color: const Color(0xFF2F6FE4).withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
                         Icons.arrow_forward_rounded,
-                        color: Color(0xFF6366F1),
+                        color: Color(0xFF2F6FE4),
                         size: 14,
                       ),
                     ),

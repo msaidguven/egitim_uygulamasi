@@ -32,96 +32,112 @@ class WeekInfoCard extends StatelessWidget {
     final int totalLessons = agendaData?.length ?? 0;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFFFFFFF), Color(0xFFF3F7FF)],
+          colors: [Color(0xFFFFFFFF), Color(0xFFF3F7FF), Color(0xFFF8FBFF)],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: primaryColor.withValues(alpha: 0.08),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
+            color: primaryColor.withValues(alpha: 0.12),
+            blurRadius: 18,
+            offset: const Offset(0, 9),
           ),
         ],
         border: Border.all(color: const Color(0xFFD9E7FF)),
       ),
-      child: Row(
+      child: Stack(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  primaryColor.withValues(alpha: 0.12),
-                  primaryColor.withValues(alpha: 0.22),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.calendar_today_rounded,
-                color: primaryColor,
-                size: 24,
+          Positioned(
+            top: -28,
+            right: -18,
+            child: Container(
+              width: 102,
+              height: 102,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFFD8E8FF).withValues(alpha: 0.4),
               ),
             ),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  periodInfo.displayTitle,
-                  style: const TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: textPrimaryColor,
+          Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      primaryColor.withValues(alpha: 0.12),
+                      primaryColor.withValues(alpha: 0.24),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.calendar_today_rounded,
+                    color: primaryColor,
+                    size: 23,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  dateRangeText,
-                  style: const TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 13,
-                    color: textSecondaryColor,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _StatusChip(
-                      label: 'Tamamlanan',
-                      value: '$completedLessons',
-                      color: const Color(0xFF16A34A),
-                    ),
-                    _StatusChip(
-                      label: 'Toplam Ders',
-                      value: '$totalLessons',
-                      color: const Color(0xFF2563EB),
-                    ),
-                    if (profile == null)
-                      const _StatusChip(
-                        label: 'Hesap',
-                        value: 'Misafir',
-                        color: Color(0xFFF59E0B),
+                    Text(
+                      periodInfo.displayTitle,
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: textPrimaryColor,
                       ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      dateRangeText,
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 13,
+                        color: textSecondaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _StatusChip(
+                          label: 'Tamamlanan',
+                          value: '$completedLessons',
+                          color: const Color(0xFF16A34A),
+                        ),
+                        _StatusChip(
+                          label: 'Toplam Ders',
+                          value: '$totalLessons',
+                          color: const Color(0xFF2563EB),
+                        ),
+                        if (profile == null)
+                          const _StatusChip(
+                            label: 'Hesap',
+                            value: 'Misafir',
+                            color: Color(0xFFF59E0B),
+                          ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

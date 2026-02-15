@@ -2,6 +2,7 @@ import 'package:egitim_uygulamasi/features/test/data/repositories/test_repositor
 import 'package:egitim_uygulamasi/features/test/data/models/test_session.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/viewmodels/test_view_model.dart';
 import 'package:egitim_uygulamasi/repositories/auth_repository.dart';
+import 'package:egitim_uygulamasi/services/analytics_service.dart';
 import 'package:egitim_uygulamasi/viewmodels/auth_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,7 +47,9 @@ final testViewModelProvider = ChangeNotifierProvider<TestViewModel>((ref) {
 });
 
 // Kullanıcının yarım kalan test oturumları
-final unfinishedSessionsProvider = FutureProvider<List<TestSession>>((ref) async {
+final unfinishedSessionsProvider = FutureProvider<List<TestSession>>((
+  ref,
+) async {
   // auth değişince yeniden fetch et
   ref.watch(authStateProvider);
 
@@ -79,4 +82,9 @@ final srsDueCountProvider = FutureProvider<int>((ref) async {
 
   final repository = ref.watch(testRepositoryProvider);
   return repository.getSrsDueCount(userId);
+});
+
+// 6. Analytics
+final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
+  return AnalyticsService();
 });

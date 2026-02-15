@@ -14,6 +14,7 @@ class StudentContentView extends StatelessWidget {
   final VoidCallback onToggleNextSteps;
   final VoidCallback onExpandNextSteps;
   final VoidCallback onRefresh;
+  final ValueChanged<Map<String, dynamic>>? onLessonCardTap;
 
   const StudentContentView({
     super.key,
@@ -24,6 +25,7 @@ class StudentContentView extends StatelessWidget {
     required this.onToggleNextSteps,
     required this.onExpandNextSteps,
     required this.onRefresh,
+    this.onLessonCardTap,
   });
 
   @override
@@ -33,10 +35,7 @@ class StudentContentView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(
-          title: 'Bu Hafta',
-          icon: Icons.today_outlined,
-        ),
+        SectionHeader(title: 'Bu Hafta', icon: Icons.today_outlined),
         const SizedBox(height: 16),
         _buildAgendaSection(context),
         if (hasNextSteps) ...[
@@ -98,7 +97,10 @@ class StudentContentView extends StatelessWidget {
             correctCount: item['correct_count'] as int?,
             wrongCount: item['wrong_count'] as int?,
             unsolvedCount: item['unsolved_count'] as int?,
-            onTap: () => _navigateToOutcomes(context, item),
+            onTap: () {
+              onLessonCardTap?.call(item);
+              _navigateToOutcomes(context, item);
+            },
           ),
         );
       }).toList(),
@@ -114,7 +116,7 @@ class StudentContentView extends StatelessWidget {
 
     final bool showMoreButton =
         nextStepsState == NextStepsDisplayState.collapsed &&
-            nextStepsData!.length > 3;
+        nextStepsData!.length > 3;
 
     return Column(
       children: [
@@ -135,7 +137,10 @@ class StudentContentView extends StatelessWidget {
               correctCount: item['correct_count'] as int?,
               wrongCount: item['wrong_count'] as int?,
               unsolvedCount: item['unsolved_count'] as int?,
-              onTap: () => _navigateToOutcomes(context, item),
+              onTap: () {
+                onLessonCardTap?.call(item);
+                _navigateToOutcomes(context, item);
+              },
               isNextStep: true,
             ),
           );
@@ -156,7 +161,7 @@ class StudentContentView extends StatelessWidget {
                     border: Border.all(color: Colors.grey.shade200),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -201,14 +206,17 @@ class StudentContentView extends StatelessWidget {
           gradeId: data['grade_id'],
           lessonName: data['lesson_name'],
           gradeName: data['grade_name'],
-          initialCurriculumWeek: data['curriculum_week'] ?? currentCurriculumWeek,
+          initialCurriculumWeek:
+              data['curriculum_week'] ?? currentCurriculumWeek,
         ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
-          final tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          final tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
           final offsetAnimation = animation.drive(tween);
           return SlideTransition(position: offsetAnimation, child: child);
         },
