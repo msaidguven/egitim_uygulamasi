@@ -877,6 +877,13 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             )['unit_title']
             as String? ??
         'Ünite seçiniz';
+    final selectedTopicTitleFromMenu =
+        topicMenu.firstWhere(
+              (t) => t['topic_id'] == selectedTopicId,
+              orElse: () => <String, dynamic>{'topic_title': ''},
+            )['topic_title']
+            as String? ??
+        '';
     final selectedSectionUnitTitle =
         (selectedSection['unit_title'] as String? ?? '').trim();
     final selectedSectionTopicTitle =
@@ -886,10 +893,14 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
       ..['topic_id'] = selectedTopicId ?? safeData['topic_id']
       ..['unit_title'] = selectedSectionUnitTitle.isNotEmpty
           ? selectedSectionUnitTitle
-          : safeData['unit_title']
+          : (selectedUnitTitle.trim().isNotEmpty
+                ? selectedUnitTitle.trim()
+                : safeData['unit_title'])
       ..['topic_title'] = selectedSectionTopicTitle.isNotEmpty
           ? selectedSectionTopicTitle
-          : safeData['topic_title'];
+          : (selectedTopicTitleFromMenu.trim().isNotEmpty
+                ? selectedTopicTitleFromMenu.trim()
+                : safeData['topic_title']);
 
     final isLastWeek = safeData['is_last_week_of_unit'] ?? false;
     final unitSummary = safeData['unit_summary'];
@@ -2124,6 +2135,26 @@ class _WeekSectionBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (contents.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFDDE8FB)),
+        ),
+        child: Text(
+          'Bu konu için haftaya bağlı içerik bulunamadı. Kazanımları kontrol ederek devam edebilirsin.',
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.grey.shade700,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
