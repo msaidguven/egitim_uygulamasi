@@ -10,6 +10,8 @@ class HeaderView extends ConsumerWidget {
   final Map<String, dynamic> data;
   final Map<String, dynamic>? pageData;
   final OutcomesViewModelArgs args;
+  final VoidCallback? onTapUnits;
+  final int unitCount;
 
   const HeaderView({
     super.key,
@@ -17,6 +19,8 @@ class HeaderView extends ConsumerWidget {
     required this.data,
     this.pageData,
     required this.args,
+    this.onTapUnits,
+    this.unitCount = 0,
   });
 
   (DateTime, DateTime) _getWeekDateRange(int curriculumWeek) {
@@ -96,25 +100,29 @@ class HeaderView extends ConsumerWidget {
     String? fallbackTopicTitle,
   }) {
     if (rawOutcomes == null) return const [];
-    return rawOutcomes.map((raw) {
-      if (raw is Map) {
-        final map = Map<String, dynamic>.from(raw);
-        final description = (map['description'] as String? ?? '').trim();
-        return {
-          'id': map['id'] as int?,
-          'description': description,
-          'topic_id': map['topic_id'] as int? ?? fallbackTopicId,
-          'topic_title': map['topic_title'] as String? ?? fallbackTopicTitle,
-        };
-      }
-      final description = raw.toString().trim();
-      return {
-        'id': null,
-        'description': description,
-        'topic_id': fallbackTopicId,
-        'topic_title': fallbackTopicTitle,
-      };
-    }).where((o) => (o['description'] as String).isNotEmpty).toList();
+    return rawOutcomes
+        .map((raw) {
+          if (raw is Map) {
+            final map = Map<String, dynamic>.from(raw);
+            final description = (map['description'] as String? ?? '').trim();
+            return {
+              'id': map['id'] as int?,
+              'description': description,
+              'topic_id': map['topic_id'] as int? ?? fallbackTopicId,
+              'topic_title':
+                  map['topic_title'] as String? ?? fallbackTopicTitle,
+            };
+          }
+          final description = raw.toString().trim();
+          return {
+            'id': null,
+            'description': description,
+            'topic_id': fallbackTopicId,
+            'topic_title': fallbackTopicTitle,
+          };
+        })
+        .where((o) => (o['description'] as String).isNotEmpty)
+        .toList();
   }
 
   Future<String?> _showEditOutcomeDialog(
@@ -173,9 +181,9 @@ class HeaderView extends ConsumerWidget {
           .update({'description': description})
           .eq('id', outcomeId);
       if (!context.mounted) return false;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Kazanım güncellendi.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Kazanım güncellendi.')));
       return true;
     } catch (e) {
       if (!context.mounted) return false;
@@ -221,7 +229,10 @@ class HeaderView extends ConsumerWidget {
     if (approved != true) return false;
 
     try {
-      await Supabase.instance.client.from('outcomes').delete().eq('id', outcomeId);
+      await Supabase.instance.client
+          .from('outcomes')
+          .delete()
+          .eq('id', outcomeId);
       if (!context.mounted) return false;
       ScaffoldMessenger.of(
         context,
@@ -265,7 +276,11 @@ class HeaderView extends ConsumerWidget {
               color: const Color(0xFF2F6FE4).withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(999),
             ),
-            child: const Icon(Icons.flag_rounded, size: 14, color: Color(0xFF2F6FE4)),
+            child: const Icon(
+              Icons.flag_rounded,
+              size: 14,
+              color: Color(0xFF2F6FE4),
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -288,6 +303,7 @@ class HeaderView extends ConsumerWidget {
                   initialText: description,
                 );
                 if (next == null || next == description) return;
+                if (!context.mounted) return;
                 final ok = await _updateOutcome(
                   context,
                   outcomeId: outcomeId,
@@ -309,7 +325,11 @@ class HeaderView extends ConsumerWidget {
                   onRefreshWeek();
                 }
               },
-              icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+              icon: const Icon(
+                Icons.delete_outline,
+                size: 18,
+                color: Colors.red,
+              ),
             ),
           ],
         ],
@@ -330,26 +350,27 @@ class HeaderView extends ConsumerWidget {
       showDragHandle: true,
       backgroundColor: Colors.white,
       builder: (context) {
-        final localSections = (sections.isNotEmpty
-                ? sections
-                : [
-                    {
-                      'topic_title': data['topic_title'] ?? 'Konu',
-                      'topic_id': data['topic_id'],
-                      'outcomes': flatOutcomes,
-                    },
-                  ])
-            .map(
-              (section) => {
-                ...section,
-                'outcomes': _normalizeOutcomeList(
-                  section['outcomes'] as List?,
-                  fallbackTopicId: section['topic_id'] as int?,
-                  fallbackTopicTitle: section['topic_title'] as String?,
-                ),
-              },
-            )
-            .toList();
+        final localSections =
+            (sections.isNotEmpty
+                    ? sections
+                    : [
+                        {
+                          'topic_title': data['topic_title'] ?? 'Konu',
+                          'topic_id': data['topic_id'],
+                          'outcomes': flatOutcomes,
+                        },
+                      ])
+                .map(
+                  (section) => {
+                    ...section,
+                    'outcomes': _normalizeOutcomeList(
+                      section['outcomes'] as List?,
+                      fallbackTopicId: section['topic_id'] as int?,
+                      fallbackTopicTitle: section['topic_title'] as String?,
+                    ),
+                  },
+                )
+                .toList();
 
         return SafeArea(
           child: FractionallySizedBox(
@@ -364,7 +385,10 @@ class HeaderView extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.flag_circle_rounded, color: Color(0xFF2F6FE4)),
+                          const Icon(
+                            Icons.flag_circle_rounded,
+                            color: Color(0xFF2F6FE4),
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             'Kazanımlar',
@@ -405,7 +429,9 @@ class HeaderView extends ConsumerWidget {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: const Color(0xFFE3EAFF)),
+                                border: Border.all(
+                                  color: const Color(0xFFE3EAFF),
+                                ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.03),
@@ -443,7 +469,9 @@ class HeaderView extends ConsumerWidget {
                                           color: const Color(
                                             0xFF2F6FE4,
                                           ).withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(999),
+                                          borderRadius: BorderRadius.circular(
+                                            999,
+                                          ),
                                         ),
                                         child: Text(
                                           '${topicOutcomes.length}',
@@ -466,7 +494,9 @@ class HeaderView extends ConsumerWidget {
                                       ),
                                     )
                                   else
-                                    ...topicOutcomes.asMap().entries.map((entry) {
+                                    ...topicOutcomes.asMap().entries.map((
+                                      entry,
+                                    ) {
                                       final index = entry.key;
                                       final outcome = entry.value;
                                       return _buildOutcomeTile(
@@ -477,7 +507,8 @@ class HeaderView extends ConsumerWidget {
                                           setModalState(() {
                                             topicOutcomes[index]['description'] =
                                                 nextText;
-                                            (section['outcomes'] as List)[index] =
+                                            (section['outcomes']
+                                                    as List)[index] =
                                                 topicOutcomes[index];
                                           });
                                         },
@@ -522,24 +553,52 @@ class HeaderView extends ConsumerWidget {
     );
 
     final sections =
-        (data['sections'] as List?)
-            ?.whereType<Map>()
-            .map((s) {
-              final section = Map<String, dynamic>.from(s);
-              final topicId = section['topic_id'] as int?;
-              final topicTitle = section['topic_title'] as String?;
-              return {
-                ...section,
-                'outcomes': _normalizeOutcomeList(
-                  section['outcomes'] as List?,
-                  fallbackTopicId: topicId,
-                  fallbackTopicTitle: topicTitle,
-                ),
-              };
-            })
-            .toList() ??
+        (data['sections'] as List?)?.whereType<Map>().map((s) {
+          final section = Map<String, dynamic>.from(s);
+          final topicId = section['topic_id'] as int?;
+          final topicTitle = section['topic_title'] as String?;
+          return {
+            ...section,
+            'outcomes': _normalizeOutcomeList(
+              section['outcomes'] as List?,
+              fallbackTopicId: topicId,
+              fallbackTopicTitle: topicTitle,
+            ),
+          };
+        }).toList() ??
         const <Map<String, dynamic>>[];
     final isMultiSectionWeek = sections.length > 1;
+    List<String> collectDistinctTitles(String key, {String? fallback}) {
+      final values = <String>[];
+      final seen = <String>{};
+      final source = sections.isNotEmpty
+          ? sections
+          : <Map<String, dynamic>>[data];
+
+      for (final row in source) {
+        final value = (row[key] as String? ?? '').trim();
+        if (value.isEmpty || seen.contains(value)) continue;
+        seen.add(value);
+        values.add(value);
+      }
+
+      final safeFallback = (fallback ?? '').trim();
+      if (values.isEmpty && safeFallback.isNotEmpty) {
+        values.add(safeFallback);
+      }
+      return values;
+    }
+
+    final unitTitles = collectDistinctTitles(
+      'unit_title',
+      fallback: data['unit_title'] as String?,
+    );
+    final topicTitles = collectDistinctTitles(
+      'topic_title',
+      fallback: data['topic_title'] as String?,
+    );
+    final unitHierarchyText = unitTitles.join(' • ');
+    final topicHierarchyText = topicTitles.join(' • ');
     final flatOutcomes = _normalizeOutcomeList(
       data['outcomes'] as List?,
       fallbackTopicId: data['topic_id'] as int?,
@@ -736,23 +795,26 @@ class HeaderView extends ConsumerWidget {
                   ),
                 ],
                 const SizedBox(height: 12),
-                if (!isSpecialPage && data['unit_title'] != null)
+                if (!isSpecialPage && unitHierarchyText.isNotEmpty)
                   _buildHierarchyRow(
                     Icons.folder_open_outlined,
-                    data['unit_title']!,
+                    unitHierarchyText,
                   ),
-                if (!isSpecialPage && data['topic_title'] != null)
+                if (!isSpecialPage && topicHierarchyText.isNotEmpty)
                   _buildHierarchyRow(
                     Icons.article_outlined,
-                    data['topic_title']!,
+                    topicHierarchyText,
                   ),
                 if (!isSpecialPage) ...[
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: OutlinedButton.icon(
-                      onPressed: () =>
-                          _showOutcomesSheet(
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: () => _showOutcomesSheet(
                             context,
                             sections,
                             flatOutcomes,
@@ -761,23 +823,49 @@ class HeaderView extends ConsumerWidget {
                                 .read(outcomesViewModelProvider(args))
                                 .refreshCurrentWeekData(curriculumWeek),
                           ),
-                      icon: const Icon(Icons.flag_outlined, size: 18),
-                      label: Text(
-                        isMultiSectionWeek
-                            ? 'Kazanımlar (${sections.length} konu)'
-                            : 'Kazanımlar',
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF2F6FE4),
-                        side: const BorderSide(color: Color(0xFFC8DBFF)),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
+                          icon: const Icon(Icons.flag_outlined, size: 18),
+                          label: Text(
+                            isMultiSectionWeek
+                                ? 'Kazanımlar (${sections.length} konu)'
+                                : 'Kazanımlar',
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFF2F6FE4),
+                            side: const BorderSide(color: Color(0xFFC8DBFF)),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
+                        if (onTapUnits != null)
+                          OutlinedButton.icon(
+                            onPressed: onTapUnits,
+                            icon: const Icon(
+                              Icons.folder_open_rounded,
+                              size: 18,
+                            ),
+                            label: Text(
+                              unitCount > 0
+                                  ? 'Üniteler ($unitCount)'
+                                  : 'Üniteler',
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF2F6FE4),
+                              side: const BorderSide(color: Color(0xFFC8DBFF)),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ],

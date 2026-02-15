@@ -348,7 +348,14 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     List<Map<String, dynamic>> allTopics,
     List<Map<String, dynamic>> currentSections,
   ) async {
-    final picked = await showModalBottomSheet<int>(
+    final selectedTopicIdInWeek =
+        (_selectedSectionIndex != null &&
+            _selectedSectionIndex! >= 0 &&
+            _selectedSectionIndex! < currentSections.length)
+        ? currentSections[_selectedSectionIndex!]['topic_id'] as int?
+        : null;
+
+    final picked = await showModalBottomSheet<Map<String, int>>(
       context: context,
       isDismissible: true,
       isScrollControlled: true,
@@ -441,6 +448,9 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                                       final isSelected =
                                           unitId != null &&
                                           unitId == selectedUnitId;
+                                      final unitTopics = allTopics
+                                          .where((t) => t['unit_id'] == unitId)
+                                          .toList();
                                       final icon =
                                           unitIcons[index % unitIcons.length];
                                       final iconColor =
@@ -449,91 +459,224 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                                         padding: const EdgeInsets.symmetric(
                                           vertical: 5,
                                         ),
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.circular(
-                                            14,
-                                          ),
-                                          onTap: unitId == null
-                                              ? null
-                                              : () => Navigator.of(
-                                                  context,
-                                                ).pop(unitId),
-                                          child: AnimatedContainer(
-                                            duration: const Duration(
-                                              milliseconds: 180,
-                                            ),
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 14,
-                                              vertical: 12,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              gradient: isSelected
-                                                  ? const LinearGradient(
-                                                      colors: [
-                                                        Color(0xFFEAF2FF),
-                                                        Color(0xFFF2F7FF),
-                                                      ],
-                                                    )
-                                                  : null,
-                                              color: isSelected
-                                                  ? null
-                                                  : Colors.grey.shade50,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: [
+                                            InkWell(
                                               borderRadius:
                                                   BorderRadius.circular(14),
-                                              border: Border.all(
-                                                color: isSelected
-                                                    ? const Color(0xFF2F6FE4)
-                                                    : Colors.grey.shade300,
+                                              onTap: unitId == null
+                                                  ? null
+                                                  : () => Navigator.of(
+                                                      context,
+                                                    ).pop({'unit_id': unitId}),
+                                              child: AnimatedContainer(
+                                                duration: const Duration(
+                                                  milliseconds: 180,
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 14,
+                                                      vertical: 12,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  gradient: isSelected
+                                                      ? const LinearGradient(
+                                                          colors: [
+                                                            Color(0xFFEAF2FF),
+                                                            Color(0xFFF2F7FF),
+                                                          ],
+                                                        )
+                                                      : null,
+                                                  color: isSelected
+                                                      ? null
+                                                      : Colors.grey.shade50,
+                                                  borderRadius:
+                                                      BorderRadius.circular(14),
+                                                  border: Border.all(
+                                                    color: isSelected
+                                                        ? const Color(
+                                                            0xFF2F6FE4,
+                                                          )
+                                                        : Colors.grey.shade300,
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 34,
+                                                      height: 34,
+                                                      decoration: BoxDecoration(
+                                                        color: iconColor
+                                                            .withValues(
+                                                              alpha: 0.14,
+                                                            ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                      ),
+                                                      child: Icon(
+                                                        icon,
+                                                        color: iconColor,
+                                                        size: 18,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 10),
+                                                    Expanded(
+                                                      child: Text(
+                                                        (unit['unit_title']
+                                                                    as String? ??
+                                                                'Ünite')
+                                                            .trim(),
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight: isSelected
+                                                              ? FontWeight.w700
+                                                              : FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Icon(
+                                                      isSelected
+                                                          ? Icons
+                                                                .check_circle_rounded
+                                                          : Icons
+                                                                .radio_button_unchecked_rounded,
+                                                      color: isSelected
+                                                          ? const Color(
+                                                              0xFF2F6FE4,
+                                                            )
+                                                          : Colors
+                                                                .grey
+                                                                .shade600,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 34,
-                                                  height: 34,
-                                                  decoration: BoxDecoration(
-                                                    color: iconColor.withValues(
-                                                      alpha: 0.14,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          10,
+                                            if (unitTopics.isNotEmpty)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  left: 16,
+                                                  right: 6,
+                                                  top: 6,
+                                                ),
+                                                child: Column(
+                                                  children: unitTopics.map((
+                                                    topic,
+                                                  ) {
+                                                    final topicId =
+                                                        topic['topic_id']
+                                                            as int?;
+                                                    final topicTitle =
+                                                        (topic['topic_title']
+                                                                    as String? ??
+                                                                'Konu')
+                                                            .trim();
+                                                    final isTopicSelected =
+                                                        topicId != null &&
+                                                        topicId ==
+                                                            selectedTopicIdInWeek;
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                            bottom: 4,
+                                                          ),
+                                                      child: InkWell(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                        onTap:
+                                                            (unitId == null ||
+                                                                topicId == null)
+                                                            ? null
+                                                            : () =>
+                                                                  Navigator.of(
+                                                                    context,
+                                                                  ).pop({
+                                                                    'unit_id':
+                                                                        unitId,
+                                                                    'topic_id':
+                                                                        topicId,
+                                                                  }),
+                                                        child: Container(
+                                                          width:
+                                                              double.infinity,
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 8,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            color:
+                                                                isTopicSelected
+                                                                ? const Color(
+                                                                    0xFFEAF2FF,
+                                                                  )
+                                                                : Colors.white,
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  10,
+                                                                ),
+                                                            border: Border.all(
+                                                              color:
+                                                                  isTopicSelected
+                                                                  ? const Color(
+                                                                      0xFF2F6FE4,
+                                                                    )
+                                                                  : const Color(
+                                                                      0xFFDDE8FB,
+                                                                    ),
+                                                            ),
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .article_outlined,
+                                                                size: 16,
+                                                                color:
+                                                                    isTopicSelected
+                                                                    ? const Color(
+                                                                        0xFF2F6FE4,
+                                                                      )
+                                                                    : Colors
+                                                                          .grey
+                                                                          .shade700,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 8,
+                                                              ),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  topicTitle,
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        12.5,
+                                                                    fontWeight:
+                                                                        isTopicSelected
+                                                                        ? FontWeight
+                                                                              .w700
+                                                                        : FontWeight
+                                                                              .w500,
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade900,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
-                                                  ),
-                                                  child: Icon(
-                                                    icon,
-                                                    color: iconColor,
-                                                    size: 18,
-                                                  ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
                                                 ),
-                                                const SizedBox(width: 10),
-                                                Expanded(
-                                                  child: Text(
-                                                    (unit['unit_title']
-                                                                as String? ??
-                                                            'Ünite')
-                                                        .trim(),
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight: isSelected
-                                                          ? FontWeight.w700
-                                                          : FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Icon(
-                                                  isSelected
-                                                      ? Icons
-                                                            .check_circle_rounded
-                                                      : Icons
-                                                            .radio_button_unchecked_rounded,
-                                                  color: isSelected
-                                                      ? const Color(0xFF2F6FE4)
-                                                      : Colors.grey.shade600,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
+                                              ),
+                                          ],
                                         ),
                                       );
                                     },
@@ -555,18 +698,30 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     );
 
     if (!mounted || picked == null) return;
-    setState(() => _selectedUnitId = picked);
+    final pickedUnitId = picked['unit_id'];
+    final pickedTopicId = picked['topic_id'];
+    if (pickedUnitId == null) return;
+    setState(() => _selectedUnitId = pickedUnitId);
+
+    if (pickedTopicId != null) {
+      await _handleTopicSelect(
+        topicId: pickedTopicId,
+        currentSections: currentSections,
+      );
+      return;
+    }
 
     int? firstTopicForUnit =
         currentSections.firstWhere(
               (section) =>
-                  section['unit_id'] == picked && section['topic_id'] != null,
+                  section['unit_id'] == pickedUnitId &&
+                  section['topic_id'] != null,
               orElse: () => <String, dynamic>{},
             )['topic_id']
             as int?;
     firstTopicForUnit ??=
         allTopics.firstWhere(
-              (topic) => topic['unit_id'] == picked,
+              (topic) => topic['unit_id'] == pickedUnitId,
               orElse: () => <String, dynamic>{},
             )['topic_id']
             as int?;
@@ -798,10 +953,6 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final baseSelectedSection = sections[baseSelectedIndex];
     final baseSelectedUnitId = baseSelectedSection['unit_id'] as int?;
     final baseSelectedTopicId = baseSelectedSection['topic_id'] as int?;
-    final currentWeekTopicIds = sections
-        .map((s) => s['topic_id'])
-        .whereType<int>()
-        .toSet();
     final topicMenu = lessonTopics.isNotEmpty
         ? lessonTopics
         : sections
@@ -913,18 +1064,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
       child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.all(20),
-            sliver: SliverToBoxAdapter(
-              child: HeaderView(
-                curriculumWeek: widget.curriculumWeek,
-                data: headerData,
-                pageData: widget.pageData,
-                args: widget.args,
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
             sliver: SliverToBoxAdapter(
               child: _WeekStripBar(
                 weekNumbers: weekNumbers,
@@ -991,6 +1131,27 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               ),
             ),
           ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            sliver: SliverToBoxAdapter(
+              child: HeaderView(
+                curriculumWeek: widget.curriculumWeek,
+                data: headerData,
+                pageData: widget.pageData,
+                args: widget.args,
+                onTapUnits: unitOptions.isEmpty
+                    ? null
+                    : () => _showUnitPicker(
+                        context,
+                        unitOptions,
+                        effectiveUnitId,
+                        topicMenu,
+                        sections,
+                      ),
+                unitCount: unitOptions.length,
+              ),
+            ),
+          ),
           if (isSpecialPage)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
@@ -1009,39 +1170,12 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               sliver: SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _TopicSelectorCard(
-                        topics: filteredTopics,
-                        selectedTopicId: effectiveSelectedTopicId,
-                        currentWeekTopicIds: currentWeekTopicIds,
-                        currentWeek: widget.curriculumWeek,
-                        palette: widget.palette,
-                        selectedUnitTitle: selectedUnitTitle,
-                        unitCount: unitOptions.length,
-                        onTapUnit: () => _showUnitPicker(
-                          context,
-                          unitOptions,
-                          effectiveUnitId,
-                          topicMenu,
-                          sections,
-                        ),
-                        onSelectTopic: (topicId) => _handleTopicSelect(
-                          topicId: topicId,
-                          currentSections: sections,
-                        ),
-                      ),
-                    ),
-                    _WeekSectionBlock(
-                      contents: selectedContents,
-                      isAdmin: isAdmin,
-                      onContentUpdated: () => ref
-                          .read(outcomesViewModelProvider(widget.args))
-                          .refreshCurrentWeekData(widget.curriculumWeek),
-                    ),
-                  ],
+                child: _WeekSectionBlock(
+                  contents: selectedContents,
+                  isAdmin: isAdmin,
+                  onContentUpdated: () => ref
+                      .read(outcomesViewModelProvider(widget.args))
+                      .refreshCurrentWeekData(widget.curriculumWeek),
                 ),
               ),
             ),
@@ -1276,349 +1410,6 @@ class _SpecialInfoContentCard extends StatelessWidget {
               'li': Style(margin: Margins.only(bottom: 4)),
               'strong': Style(fontWeight: FontWeight.w700),
             },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TopicSelectorCard extends StatefulWidget {
-  final List<Map<String, dynamic>> topics;
-  final int? selectedTopicId;
-  final Set<int> currentWeekTopicIds;
-  final int currentWeek;
-  final _LessonThemePalette palette;
-  final String selectedUnitTitle;
-  final int unitCount;
-  final VoidCallback onTapUnit;
-  final ValueChanged<int> onSelectTopic;
-
-  const _TopicSelectorCard({
-    required this.topics,
-    required this.selectedTopicId,
-    required this.currentWeekTopicIds,
-    required this.currentWeek,
-    required this.palette,
-    required this.selectedUnitTitle,
-    required this.unitCount,
-    required this.onTapUnit,
-    required this.onSelectTopic,
-  });
-
-  @override
-  State<_TopicSelectorCard> createState() => _TopicSelectorCardState();
-}
-
-class _TopicSelectorCardState extends State<_TopicSelectorCard> {
-  String _statusLabel(Map<String, dynamic> topic) {
-    final topicId = topic['topic_id'] as int?;
-    if (topicId != null && widget.currentWeekTopicIds.contains(topicId)) {
-      return 'Bu Hafta';
-    }
-    final firstWeek = topic['first_week'] as int?;
-    final lastWeek = topic['last_week'] as int?;
-    if (firstWeek == null || lastWeek == null) return 'Plan Bekliyor';
-    if (widget.currentWeek < firstWeek) return '$firstWeek. Hafta';
-    if (widget.currentWeek > lastWeek) return 'Tamamlandı';
-    return 'Devam Ediyor';
-  }
-
-  String _weekRangeLabel(Map<String, dynamic> topic) {
-    final firstWeek = topic['first_week'] as int?;
-    final lastWeek = topic['last_week'] as int?;
-    if (firstWeek == null || lastWeek == null) return 'Hafta bilgisi yok';
-    if (firstWeek == lastWeek) return '$firstWeek. hafta';
-    return '$firstWeek-$lastWeek. hafta';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final selectedTopicTitle =
-        (widget.topics.firstWhere(
-                      (topic) => topic['topic_id'] == widget.selectedTopicId,
-                      orElse: () => <String, dynamic>{'topic_title': ''},
-                    )['topic_title']
-                    as String? ??
-                '')
-            .trim();
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Colors.white, widget.palette.soft, const Color(0xFFEEF5FF)],
-        ),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: widget.palette.border),
-        boxShadow: [
-          BoxShadow(
-            color: widget.palette.primary.withValues(alpha: 0.2),
-            blurRadius: 16,
-            offset: const Offset(0, 7),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -18,
-            right: -10,
-            child: Container(
-              width: 92,
-              height: 92,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFBFD6FF).withValues(alpha: 0.22),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -26,
-            left: -12,
-            child: Container(
-              width: 90,
-              height: 90,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFFFD9B8).withValues(alpha: 0.18),
-              ),
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: widget.onTapUnit,
-                child: Ink(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.72),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: widget.palette.border),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: widget.palette.primary.withValues(alpha: 0.13),
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                        child: Icon(
-                          Icons.folder_open_rounded,
-                          color: widget.palette.primary,
-                          size: 16,
-                        ),
-                      ),
-                      const SizedBox(width: 9),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Seçili Ünite',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              widget.selectedUnitTitle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        '${widget.unitCount} ünite',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: widget.palette.primary.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Menü',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: widget.palette.primary,
-                              ),
-                            ),
-                            const SizedBox(width: 3),
-                            Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              size: 14,
-                              color: widget.palette.primary,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              if (widget.topics.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Text(
-                    'Bu ünite için konu bulunamadı.',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                )
-              else
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 240),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  child: Column(
-                    key: ValueKey(
-                      '${widget.topics.first['unit_id']}_${widget.topics.length}',
-                    ),
-                    children: widget.topics.map((topic) {
-                      final topicId = topic['topic_id'] as int?;
-                      final title = (topic['topic_title'] as String? ?? 'Konu')
-                          .trim();
-                      final isSelected =
-                          topicId != null && topicId == widget.selectedTopicId;
-                      final status = _statusLabel(topic);
-                      final weekRange = _weekRangeLabel(topic);
-                      final bool isCurrent = status == 'Bu Hafta';
-                      return Container(
-                        margin: const EdgeInsets.only(top: 7),
-                        decoration: BoxDecoration(
-                          gradient: isSelected
-                              ? LinearGradient(
-                                  colors: [
-                                    widget.palette.soft,
-                                    const Color(0xFFF3F8FF),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                )
-                              : const LinearGradient(
-                                  colors: [
-                                    Color(0xFFFFFFFF),
-                                    Color(0xFFF8FBFF),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isSelected
-                                ? widget.palette.border
-                                : const Color(0xFFDDE8FB),
-                          ),
-                          boxShadow: [
-                            if (isSelected)
-                              BoxShadow(
-                                color: widget.palette.primary.withValues(
-                                  alpha: 0.18,
-                                ),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                          ],
-                        ),
-                        child: ListTile(
-                          dense: true,
-                          leading: Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? widget.palette.primary.withValues(
-                                      alpha: 0.12,
-                                    )
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(9),
-                            ),
-                            child: Icon(
-                              isSelected
-                                  ? Icons.bookmark_rounded
-                                  : Icons.book_outlined,
-                              color: isSelected
-                                  ? widget.palette.primary
-                                  : Colors.grey.shade700,
-                              size: 18,
-                            ),
-                          ),
-                          title: Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: isSelected
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '$status • $weekRange',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isCurrent
-                                  ? widget.palette.primary
-                                  : Colors.grey.shade600,
-                              fontWeight: isCurrent
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                            ),
-                          ),
-                          trailing: Icon(
-                            Icons.chevron_right_rounded,
-                            size: 18,
-                            color: isSelected
-                                ? widget.palette.primary
-                                : Colors.grey.shade500,
-                          ),
-                          onTap: topicId == null
-                              ? null
-                              : () => widget.onSelectTopic(topicId),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              if (selectedTopicTitle.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(
-                  'Seçili konu: $selectedTopicTitle',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade700,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ],
           ),
         ],
       ),
