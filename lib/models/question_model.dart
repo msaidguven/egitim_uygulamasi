@@ -167,6 +167,7 @@ class Question {
   final List<QuestionBlankOption> blankOptions;
   final String? modelAnswer;
   final List<MatchingPair>? matchingPairs;
+  final String? solutionText; // YENİ: Çözüm açıklaması
   final UserQuestionStats? userStats; // YENİ: Kullanıcı istatistikleri alanı
 
   Question({
@@ -179,6 +180,7 @@ class Question {
     this.blankOptions = const [],
     this.modelAnswer,
     this.matchingPairs,
+    this.solutionText, // YENİ
     this.userStats, // YENİ
   });
 
@@ -228,6 +230,7 @@ class Question {
       blankOptions: blankOptionsList,
       modelAnswer: modelAnswer,
       matchingPairs: matchingPairsList,
+      solutionText: map['solution_text'] as String?, // YENİ
       userStats: userStats, // YENİ
     );
   }
@@ -243,6 +246,7 @@ class Question {
       'question_blank_options': blankOptions.map((b) => b.toMap()).toList(),
       'question_matching_pairs': matchingPairs?.map((p) => p.toMap()).toList(),
       'question_classical': modelAnswer != null ? [{'model_answer': modelAnswer}] : null,
+      'solution_text': solutionText, // YENİ
       'user_stats': userStats?.toMap(),
     };
   }

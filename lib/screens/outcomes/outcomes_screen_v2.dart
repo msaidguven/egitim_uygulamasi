@@ -14,9 +14,8 @@ import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:egitim_uygulamasi/admin/pages/smart_question_addition/smart_question_addition_page.dart';
-import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 
-const bool _enableOutcomesV2Entry = true;
+const bool _enableOutcomesV2Entry = false;
 
 class _LessonThemePalette {
   final Color primary;
@@ -70,14 +69,14 @@ _LessonThemePalette _paletteForLesson(int lessonId) {
   return _lessonPalettes[index];
 }
 
-class OutcomesScreen extends ConsumerStatefulWidget {
+class OutcomesScreenV2 extends ConsumerStatefulWidget {
   final int lessonId;
   final int gradeId;
   final String gradeName;
   final String lessonName;
   final int? initialCurriculumWeek;
 
-  const OutcomesScreen({
+  const OutcomesScreenV2({
     super.key,
     required this.lessonId,
     required this.gradeId,
@@ -87,11 +86,12 @@ class OutcomesScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<OutcomesScreen> createState() => _OutcomesScreenState();
+  ConsumerState<OutcomesScreenV2> createState() => _OutcomesScreenV2State();
 }
 
-class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
+class _OutcomesScreenV2State extends ConsumerState<OutcomesScreenV2> {
   double _textScale = 1.0;
+  final String _providerInstanceKey = UniqueKey().toString();
   double get _maxScale => kIsWeb ? 4.0 : 1.3;
 
   void _increaseTextScale() {
@@ -153,6 +153,7 @@ class _OutcomesScreenState extends ConsumerState<OutcomesScreen> {
       lessonId: widget.lessonId,
       gradeId: widget.gradeId,
       initialCurriculumWeek: widget.initialCurriculumWeek,
+      instanceKey: _providerInstanceKey,
     );
     final viewModel = ref.watch(outcomesViewModelProvider(viewModelArgs));
     final mediaQuery = MediaQuery.of(context);
@@ -1131,6 +1132,34 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             )['topic_title']
             as String? ??
         '';
+    final selectedTopicMeta = topicMenu.firstWhere(
+      (t) => t['topic_id'] == selectedTopicId,
+      orElse: () => <String, dynamic>{},
+    );
+    final selectedTopicWeeks =
+        (selectedTopicMeta['weeks'] as List? ?? const <dynamic>[])
+            .whereType<num>()
+            .map((w) => w.toInt())
+            .toSet()
+            .toList()
+          ..sort();
+    final topicStartWeek = selectedTopicWeeks.isEmpty
+        ? widget.curriculumWeek
+        : selectedTopicWeeks.first;
+    final topicEndWeek = selectedTopicWeeks.isEmpty
+        ? widget.curriculumWeek
+        : selectedTopicWeeks.last;
+    final topicWeekCount = selectedTopicWeeks.isEmpty
+        ? 1
+        : selectedTopicWeeks.length;
+    int topicWeekPosition =
+        selectedTopicWeeks.indexOf(widget.curriculumWeek) + 1;
+    if (topicWeekPosition <= 0) {
+      final passedWeekCount = selectedTopicWeeks
+          .where((w) => w <= widget.curriculumWeek)
+          .length;
+      topicWeekPosition = passedWeekCount.clamp(1, topicWeekCount);
+    }
     final selectedSectionUnitTitle =
         (selectedSection['unit_title'] as String? ?? '').trim();
     final selectedSectionTopicTitle =
@@ -1250,6 +1279,18 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               ),
             ),
           ),
+          if (!isSpecialPage)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              sliver: SliverToBoxAdapter(
+                child: _TopicProgressHintCard(
+                  startWeek: topicStartWeek,
+                  endWeek: topicEndWeek,
+                  totalWeeks: topicWeekCount,
+                  currentWeekPosition: topicWeekPosition,
+                ),
+              ),
+            ),
           if (!isSpecialPage && isAdmin)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
@@ -2026,6 +2067,111 @@ class _WeekStripBarState extends State<_WeekStripBar> {
   }
 }
 
+class _TopicProgressHintCard extends StatelessWidget {
+  final int startWeek;
+  final int endWeek;
+  final int totalWeeks;
+  final int currentWeekPosition;
+
+  const _TopicProgressHintCard({
+    required this.startWeek,
+    required this.endWeek,
+    required this.totalWeeks,
+    required this.currentWeekPosition,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final safeTotal = totalWeeks < 1 ? 1 : totalWeeks;
+    final safePosition = currentWeekPosition.clamp(1, safeTotal);
+
+    // Cok uzun surelerde ekrani sade tutmak icin nokta sayisini sinirliyoruz.
+    final nodeCount = safeTotal <= 5 ? safeTotal : 5;
+    final activeNodeIndex = safeTotal == 1
+        ? 0
+        : (((safePosition - 1) / (safeTotal - 1)) * (nodeCount - 1)).round();
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFDDE6F4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$safeTotal haftalik konu - $safePosition. hafta',
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF23344E),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Text(
+                '$startWeek',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade700,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Row(
+                  children: List.generate(nodeCount * 2 - 1, (index) {
+                    if (index.isEven) {
+                      final nodeIndex = index ~/ 2;
+                      final isActive = nodeIndex <= activeNodeIndex;
+                      return Container(
+                        width: isActive ? 8 : 7,
+                        height: isActive ? 8 : 7,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isActive
+                              ? const Color(0xFF2F6FE4)
+                              : const Color(0xFFBECDE7),
+                        ),
+                      );
+                    }
+                    final leftNodeIndex = (index - 1) ~/ 2;
+                    final isActive = leftNodeIndex < activeNodeIndex;
+                    return Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        height: 2,
+                        decoration: BoxDecoration(
+                          color: isActive
+                              ? const Color(0xFF2F6FE4)
+                              : const Color(0xFFD6E0F0),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '$endWeek',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade700,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _WeekSectionsBlock extends StatelessWidget {
   final List<Map<String, dynamic>> sections;
   final bool isAdmin;
@@ -2092,7 +2238,7 @@ class _WeekSectionsBlock extends StatelessWidget {
   }
 }
 
-class _SingleSectionContentCard extends StatelessWidget {
+class _SingleSectionContentCard extends StatefulWidget {
   final Map<String, dynamic> section;
   final List<TopicContent> contents;
   final bool isAdmin;
@@ -2106,9 +2252,100 @@ class _SingleSectionContentCard extends StatelessWidget {
   });
 
   @override
+  State<_SingleSectionContentCard> createState() =>
+      _SingleSectionContentCardState();
+}
+
+class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
+  late final PageController _contentPageController;
+  int _currentPageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _contentPageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _contentPageController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _goToPage(int index) async {
+    if (index < 0 || index >= widget.contents.length) return;
+    await _contentPageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  Widget _buildMiniPager() {
+    if (widget.contents.length <= 1) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          InkWell(
+            onTap: _currentPageIndex > 0
+                ? () => _goToPage(_currentPageIndex - 1)
+                : null,
+            borderRadius: BorderRadius.circular(999),
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Icon(
+                Icons.chevron_left_rounded,
+                size: 20,
+                color: _currentPageIndex > 0
+                    ? const Color(0xFF2F6FE4)
+                    : const Color(0xFFB8C6DF),
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          ...List.generate(widget.contents.length, (index) {
+            final isActive = index == _currentPageIndex;
+            return Container(
+              width: isActive ? 8 : 7,
+              height: isActive ? 8 : 7,
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isActive
+                    ? const Color(0xFF2F6FE4)
+                    : const Color(0xFFCAD7ED),
+              ),
+            );
+          }),
+          const SizedBox(width: 4),
+          InkWell(
+            onTap: _currentPageIndex < widget.contents.length - 1
+                ? () => _goToPage(_currentPageIndex + 1)
+                : null,
+            borderRadius: BorderRadius.circular(999),
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Icon(
+                Icons.chevron_right_rounded,
+                size: 20,
+                color: _currentPageIndex < widget.contents.length - 1
+                    ? const Color(0xFF2F6FE4)
+                    : const Color(0xFFB8C6DF),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final unitTitle = (section['unit_title'] as String? ?? '').trim();
-    final topicTitle = (section['topic_title'] as String? ?? '').trim();
+    final unitTitle = (widget.section['unit_title'] as String? ?? '').trim();
+    final topicTitle = (widget.section['topic_title'] as String? ?? '').trim();
 
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
@@ -2147,13 +2384,41 @@ class _SingleSectionContentCard extends StatelessWidget {
                 ],
               ),
             ),
-          for (var i = 0; i < contents.length; i++)
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.58,
+            child: PageView.builder(
+              controller: _contentPageController,
+              itemCount: widget.contents.length,
+              onPageChanged: (value) {
+                if (!mounted) return;
+                setState(() => _currentPageIndex = value);
+              },
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: SingleChildScrollView(
+                    child: TopicContentView(
+                      content: widget.contents[index],
+                      isAdmin: widget.isAdmin,
+                      onContentUpdated: widget.onContentUpdated,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          _buildMiniPager(),
+          if (widget.contents.length > 1)
             Padding(
-              padding: EdgeInsets.only(top: i == 0 ? 0 : 8),
-              child: TopicContentView(
-                content: contents[i],
-                isAdmin: isAdmin,
-                onContentUpdated: onContentUpdated,
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                '${_currentPageIndex + 1} / ${widget.contents.length}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
         ],

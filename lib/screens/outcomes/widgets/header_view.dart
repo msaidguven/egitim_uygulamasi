@@ -929,7 +929,7 @@ class HeaderView extends ConsumerWidget {
                               ),
                             ),
                           ),
-                        if (isAdmin)
+                        if (isAdmin) ...[
                           AdminCopyButton(
                             gradeName: gradeName,
                             lessonName: lessonName,
@@ -938,7 +938,19 @@ class HeaderView extends ConsumerWidget {
                             topicTitle: (data['topic_title'] as String? ?? '')
                                 .trim(),
                             outcomes: flatOutcomes,
+                            promptType: AdminPromptType.content,
                           ),
+                          AdminCopyButton(
+                            gradeName: gradeName,
+                            lessonName: lessonName,
+                            unitTitle:
+                                (data['unit_title'] as String? ?? '').trim(),
+                            topicTitle: (data['topic_title'] as String? ?? '')
+                                .trim(),
+                            outcomes: flatOutcomes,
+                            promptType: AdminPromptType.questions,
+                          ),
+                        ],
                       ],
                     ),
                   ),

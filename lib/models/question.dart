@@ -9,19 +9,16 @@ class Question {
   @JsonKey(name: 'question_text')
   final String questionText;
   final int difficulty;
-  @JsonKey(name: 'question_type_id')
-  final int questionTypeId;
-
-  // EKLENDİ: Soruya ait seçenekleri tutacak liste
-  @JsonKey(defaultValue: [])
-  final List<QuestionChoice> choices;
+  @JsonKey(name: 'solution_text')
+  final String? solutionText;
 
   Question({
     required this.id,
     required this.questionText,
     required this.difficulty,
     required this.questionTypeId,
-    required this.choices, // EKLENDİ
+    required this.choices,
+    this.solutionText,
   });
 
   factory Question.fromJson(Map<String, dynamic> json) =>

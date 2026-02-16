@@ -11,11 +11,13 @@ class OutcomesViewModelArgs {
   final int lessonId;
   final int gradeId;
   final int? initialCurriculumWeek;
+  final String? instanceKey;
 
   OutcomesViewModelArgs({
     required this.lessonId,
     required this.gradeId,
     this.initialCurriculumWeek,
+    this.instanceKey,
   });
 
   @override
@@ -25,11 +27,15 @@ class OutcomesViewModelArgs {
           runtimeType == other.runtimeType &&
           lessonId == other.lessonId &&
           gradeId == other.gradeId &&
-          initialCurriculumWeek == other.initialCurriculumWeek;
+          initialCurriculumWeek == other.initialCurriculumWeek &&
+          instanceKey == other.instanceKey;
 
   @override
   int get hashCode =>
-      lessonId.hashCode ^ gradeId.hashCode ^ initialCurriculumWeek.hashCode;
+      lessonId.hashCode ^
+      gradeId.hashCode ^
+      initialCurriculumWeek.hashCode ^
+      instanceKey.hashCode;
 }
 
 final outcomesViewModelProvider =

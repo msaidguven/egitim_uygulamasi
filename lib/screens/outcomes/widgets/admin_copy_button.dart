@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum AdminPromptType { content, questions }
+
 class AdminCopyButton extends StatelessWidget {
   final String gradeName;
   final String lessonName;
   final String unitTitle;
   final String topicTitle;
   final List<Map<String, dynamic>> outcomes;
+  final AdminPromptType promptType;
 
   const AdminCopyButton({
     super.key,
@@ -15,6 +18,7 @@ class AdminCopyButton extends StatelessWidget {
     required this.unitTitle,
     required this.topicTitle,
     required this.outcomes,
+    this.promptType = AdminPromptType.content,
   });
 
   Future<void> _copyToClipboard(BuildContext context) async {
@@ -30,7 +34,37 @@ class AdminCopyButton extends StatelessWidget {
       }
     }
 
-    final prompt = '''
+    final String prompt;
+    if (promptType == AdminPromptType.content) {
+      prompt = _getContentPrompt(outcomesBuffer.toString());
+    } else {
+      prompt = _getQuestionsPrompt(outcomesBuffer.toString());
+    }
+
+    try {
+      await Clipboard.setData(ClipboardData(text: prompt));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(promptType == AdminPromptType.content
+                ? 'İçerik bilgileri kopyalandı'
+                : 'Soru hazırlama promptu kopyalandı'),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Kopyalama hatası: $e')),
+        );
+      }
+    }
+  }
+
+  String _getContentPrompt(String outcomesText) {
+    return '''
 Sen deneyimli bir öğretmen, akademik içerik yazarı, ölçme-değerlendirme uzmanı ve pedagojik tasarımcısın.  
 Ortaokul ve lise seviyesinde, MEB kazanımlarına tam uyumlu, öğretici, akıcı ve derinlikli bir ders içeriği hazırlayacaksın.
 
@@ -41,7 +75,7 @@ Sana şu bilgileri vereceğim:
 - Ünite: $unitTitle
 - Konu: $topicTitle
 - Kazanımlar:
-${outcomesBuffer.toString()}
+$outcomesText
 ────────────────────────
 GENEL KURALLAR
 ────────────────────────
@@ -182,37 +216,145 @@ Ders: { $lessonName }
 Ünite: { $unitTitle }
 Konu: { $topicTitle }
 Kazanımlar: {
-${outcomesBuffer.toString()} }
+$outcomesText }
 
 Not: İçerik mobil uygulamada rahat okunabilecek şekilde hazırlanmalıdır.
 ''';
+  }
 
-    try {
-      await Clipboard.setData(ClipboardData(text: prompt));
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Haftalık bilgiler hazır ve kopyalandı'),
-            duration: Duration(seconds: 2),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+  String _getQuestionsPrompt(String outcomesText) {
+    return '''
+Sen deneyimli bir ölçme-değerlendirme uzmanı ve pedagojik içerik geliştiricisisin.
+
+Ortaokul ve lise seviyesinde, MEB kazanımlarına tam uyumlu, kavram yanılgılarını ölçebilen, düşünme becerisi geliştiren sorular üreteceksin.
+
+Aşağıda sistemin desteklediği soru tipleri ve ID’leri verilmiştir:
+
+- 1 = Çoktan Seçmeli
+- 2 = Doğru / Yanlış
+- 3 = Boşluk Doldurma (Drag & Drop)
+- 5 = Eşleştirme
+
+────────────────────────
+ZORUNLU KURALLAR
+────────────────────────
+
+1. Çıktı SADECE JSON formatında olmalı.
+2. JSON dışında hiçbir açıklama yazılmamalı.
+3. Format kesinlikle bozulmamalı.
+4. Alan isimleri değiştirilmemeli.
+5. question_type_id doğru kullanılmalı.
+6. difficulty değeri 1 (kolay), 2 (orta), 3 (zor) olabilir.
+7. score her soru için 1 olmalı.
+8. Çoktan seçmeli sorularda (ID: 1): 4 seçenek olmalı, sadece 1 doğru cevap olmalı. Format: "choices": [{"text": "...", "is_correct": bool}, ...]
+9. Doğru / Yanlış sorularda (ID: 2): "correct_answer": true/false şeklinde olmalı. (choices veya blank alanı OLMAYACAK)
+10. Boşluk doldurma sorularında (ID: 3): "blank": {"options": [{"text": "...", "is_correct": bool}, ...]} şeklinde olmalı. Options en az 3 seçenek içermeli, 1 tanesi doğru olmalı.
+11. Eşleştirme sorularında (ID: 5): "pairs": [{"left_text": "...", "right_text": "..."}, ...] şeklinde olmalı. En az 3 eşleştirme çifti olmalı.
+12. Her soru için mutlaka "solution_text" adında bir açıklama/çözüm alanı eklenmeli. Bu alanda sorunun neden o cevap olduğu ve çözüm yolu açıklanmalı.
+13. Sorular kazanımlarla doğrudan ilişkili olmalı.
+14. Sorular ezber değil, anlamaya dayalı olmalı.
+15. En az bir soru kavram yanılgısını ölçmeli.
+16. Zorluk dağılımı dengeli olmalı (kolay-orta-zor karışık).
+
+────────────────────────
+ÜRETİM YAPISI
+────────────────────────
+
+- Toplam 10 soru üret.
+- Her soru için mutlaka açıklayıcı bir "solution_text" ekle.
+- Soru tipleri dengeli dağıtılsın.
+- Günlük hayat bağlantılı sorulara yer ver.
+- En az 1 analiz düzeyi soru ekle.
+
+────────────────────────
+ŞİMDİ ŞU BİLGİLERE GÖRE ÜRET:
+────────────────────────
+
+Sınıf: { $gradeName }
+Ders: { $lessonName }
+Konu: { $topicTitle }
+Kazanımlar: {
+$outcomesText }
+
+────────────────────────
+ÇIKTI ŞU FORMATTA VE YAPIDA OLMALI:
+────────────────────────
+
+{
+  "topic": "$topicTitle",
+  "_supported_question_types": [
+    { "type": "Çoktan Seçmeli", "id": 1, "keyboard_input": false },
+    { "type": "Doğru / Yanlış", "id": 2, "keyboard_input": false },
+    { "type": "Boşluk Doldurma (Drag & Drop)", "id": 3, "keyboard_input": false },
+    { "type": "Eşleştirme", "id": 5, "keyboard_input": false }
+  ],
+  "questions": [
+    {
+      "question_type_id": 1,
+      "question_text": "Soru metni...",
+      "difficulty": 3,
+      "score": 1,
+      "solution_text": "Bu sorunun çözümü şöyledir çünkü...",
+      "choices": [
+        { "text": "Doğru Seçenek", "is_correct": true },
+        { "text": "Yanlış Seçenek 1", "is_correct": false },
+        { "text": "Yanlış Seçenek 2", "is_correct": false },
+        { "text": "Yanlış Seçenek 3", "is_correct": false }
+      ]
+    },
+    {
+      "question_type_id": 2,
+      "question_text": "Doğru yanlış soru metni...",
+      "difficulty": 2,
+      "score": 1,
+      "solution_text": "İfadenin doğruluğu/yanlışlığı şuna dayanır...",
+      "correct_answer": true
+    },
+    {
+      "question_type_id": 3,
+      "question_text": "Boşluk doldurma metni ____...",
+      "difficulty": 3,
+      "score": 1,
+      "solution_text": "Cümledeki boşluğa gelecek kavram şudur çünkü...",
+      "blank": {
+        "options": [
+          { "text": "Doğru", "is_correct": true },
+          { "text": "Yanlış 1", "is_correct": false },
+          { "text": "Yanlış 2", "is_correct": false }
+        ]
       }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Kopyalama hatası: $e')),
-        );
-      }
+    },
+    {
+      "question_type_id": 5,
+      "question_text": "Eşleştirme sorusu metni...",
+      "difficulty": 3,
+      "score": 1,
+      "solution_text": "Eşleştirmelerin mantığı şöyledir...",
+      "pairs": [
+        { "left_text": "Sol 1", "right_text": "Sağ 1" },
+        { "left_text": "Sol 2", "right_text": "Sağ 2" },
+        { "left_text": "Sol 3", "right_text": "Sağ 3" }
+      ]
     }
+  ]
+}
+
+JSON dışında hiçbir şey yazma.
+''';
   }
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
       onPressed: () => _copyToClipboard(context),
-      icon: const Icon(Icons.copy_rounded, size: 18),
-      label: const Text('Bilgileri Kopyala'),
+      icon: Icon(
+          promptType == AdminPromptType.content
+              ? Icons.copy_rounded
+              : Icons.quiz_outlined,
+          size: 18),
+      label: Text(promptType == AdminPromptType.content
+          ? 'İçerik Promptu'
+          : 'AI Questions Prompt'),
       style: OutlinedButton.styleFrom(
         foregroundColor: const Color(0xFF2F6FE4),
         side: const BorderSide(color: Color(0xFFC8DBFF)),
