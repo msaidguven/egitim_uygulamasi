@@ -81,15 +81,6 @@ CREATE TABLE public.number_composition_questions (
   max_digit smallint DEFAULT 9,
   CONSTRAINT number_composition_questions_pkey PRIMARY KEY (id)
 );
-CREATE TABLE public.outcome_weeks (
-  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-  outcome_id bigint NOT NULL,
-  start_week integer NOT NULL CHECK (start_week >= 1),
-  end_week integer NOT NULL,
-  created_at timestamp with time zone DEFAULT now(),
-  CONSTRAINT outcome_weeks_pkey PRIMARY KEY (id),
-  CONSTRAINT outcome_weeks_outcome_id_fkey FOREIGN KEY (outcome_id) REFERENCES public.outcomes(id)
-);
 CREATE TABLE public.outcomes (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   topic_id bigint NOT NULL,
@@ -186,6 +177,7 @@ CREATE TABLE public.questions (
   difficulty smallint DEFAULT 1 CHECK (difficulty >= 1 AND difficulty <= 5),
   score smallint DEFAULT 1 CHECK (score >= 1 AND score <= 10),
   created_at timestamp without time zone DEFAULT now(),
+  solution_text text,
   CONSTRAINT questions_pkey PRIMARY KEY (id),
   CONSTRAINT questions_question_type_id_fkey FOREIGN KEY (question_type_id) REFERENCES public.question_types(id)
 );

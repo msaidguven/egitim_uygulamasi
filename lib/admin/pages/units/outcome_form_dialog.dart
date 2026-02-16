@@ -207,11 +207,10 @@ class _UnitOutcomeFormPageState extends State<UnitOutcomeFormPage> {
       content = contentText.trim();
       title = content.length > 50 ? '${content.substring(0, 47)}...' : content;
     }
-    
+
     if (title.isEmpty) {
       title = content.length > 50 ? '${content.substring(0, 47)}...' : content;
     }
-
 
     // 1. Bu topic altında bu başlık veya içerik var mı?
     final existing = await supabase
@@ -229,21 +228,18 @@ class _UnitOutcomeFormPageState extends State<UnitOutcomeFormPage> {
     // 2. Yoksa oluştur ve haftasını ata
     final newRecord = await supabase
         .from('topic_contents')
-        .insert({
-          'topic_id': topicId,
-          'title': title,
-          'content': content,
-        })
+        .insert({'topic_id': topicId, 'title': title, 'content': content})
         .select('id')
         .single();
-    
+
     final newContentId = newRecord['id'] as int;
 
     // Haftayı ayrı tabloya ekle
     await supabase.from('topic_content_weeks').insert({
       'topic_content_id': newContentId,
       'start_week': week,
-      'end_week': week, // Bu formda tek hafta olduğu için başlangıç ve bitiş aynı
+      'end_week':
+          week, // Bu formda tek hafta olduğu için başlangıç ve bitiş aynı
     });
 
     return newContentId;
@@ -270,17 +266,22 @@ class _UnitOutcomeFormPageState extends State<UnitOutcomeFormPage> {
       );
 
       // 2. Adım: Topic Content ID'yi çöz (Bul veya Oluştur)
-      await _resolveContentId(
-        topicId,
-        _contentController.text,
-        week,
-      );
+      await _resolveContentId(topicId, _contentController.text, week);
 
-      // 3. Adım: Outcome (Kazanım) Oluştur
-      await supabase.from('outcomes').insert({
-        'topic_id': topicId,
-        'description': _outcomeDescriptionController.text.trim(),
-        'curriculum_week': week,
+      // 3. Adım: Outcome (Kazanım) Oluştur + outcome_weeks ata
+      final insertedOutcome = await supabase
+          .from('outcomes')
+          .insert({
+            'topic_id': topicId,
+            'description': _outcomeDescriptionController.text.trim(),
+          })
+          .select('id')
+          .single();
+
+      await supabase.from('outcome_weeks').insert({
+        'outcome_id': insertedOutcome['id'],
+        'start_week': week,
+        'end_week': week,
       });
 
       if (mounted) {

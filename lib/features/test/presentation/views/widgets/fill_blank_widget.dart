@@ -24,7 +24,8 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
   void initState() {
     super.initState();
     final question = widget.testQuestion.question;
-    final int blankCount = '______'.allMatches(question.text).length;
+    final blankRegex = RegExp(r'_{3,}');
+    final int blankCount = blankRegex.allMatches(question.text).length;
     _droppedAnswers = {for (var i = 0; i < blankCount; i++) i: null};
     _availableOptions = List.from(widget.testQuestion.shuffledBlankOptions);
   }
@@ -88,7 +89,8 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
     final isChecked = widget.testQuestion.isChecked;
     final isCorrect = widget.testQuestion.isCorrect;
 
-    final questionParts = question.text.split('______');
+    final blankRegex = RegExp(r'_{3,}');
+    final questionParts = question.text.split(blankRegex);
     List<Widget> questionWidgets = [];
 
     for (int i = 0; i < questionParts.length; i++) {
@@ -200,13 +202,13 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
         bool isMatched = false,
       }) {
     return Container(
-      constraints: const BoxConstraints(minWidth: 75), // Başlangıç genişliği artırıldı
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
+      constraints: const BoxConstraints(minWidth: 100), // Genişlik artırıldı (75 -> 100)
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13), // Yatay padding artırıldı (10 -> 16)
       margin: const EdgeInsets.symmetric(horizontal: 4.0),
       decoration: BoxDecoration(
         color: bgColor,
         border: Border.all(color: borderColor, width: 2),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10), // Yuvarlaklık artırıldı
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

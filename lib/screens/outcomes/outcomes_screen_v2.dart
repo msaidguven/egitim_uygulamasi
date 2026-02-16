@@ -1120,8 +1120,27 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final filteredTopics = effectiveUnitId == null
         ? topicMenu
         : topicMenu.where((t) => t['unit_id'] == effectiveUnitId).toList();
+    final starterTopicInWeek =
+        filteredTopics.where((t) {
+          final topicId = t['topic_id'] as int?;
+          if (topicId == null) return false;
+          final isInCurrentSections = sections.any(
+            (s) => s['topic_id'] == topicId,
+          );
+          if (!isInCurrentSections) return false;
+          return (t['first_week'] as int?) == widget.curriculumWeek;
+        }).toList()..sort((a, b) {
+          final aOrder = a['topic_order'] as int? ?? 0;
+          final bOrder = b['topic_order'] as int? ?? 0;
+          return aOrder.compareTo(bOrder);
+        });
+    final defaultFocusedTopicId = starterTopicInWeek.isNotEmpty
+        ? starterTopicInWeek.first['topic_id'] as int?
+        : null;
     final effectiveSelectedTopicId =
-        filteredTopics.any((t) => t['topic_id'] == baseSelectedTopicId)
+        _selectedSectionIndex == null && defaultFocusedTopicId != null
+        ? defaultFocusedTopicId
+        : filteredTopics.any((t) => t['topic_id'] == baseSelectedTopicId)
         ? baseSelectedTopicId
         : (filteredTopics.isNotEmpty
               ? filteredTopics.first['topic_id'] as int?
@@ -1362,6 +1381,22 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               sliver: SliverToBoxAdapter(
                 child: _WeekSectionsBlock(
                   sections: sections,
+                  currentWeek: widget.curriculumWeek,
+                  focusedTopicId: selectedTopicId,
+                  topicMetaByTopicId: {
+                    for (final topic in topicMenu)
+                      if (topic['topic_id'] is int)
+                        topic['topic_id'] as int: topic,
+                  },
+                  onFocusTopic: (topicId) {
+                    final index = sections.indexWhere(
+                      (s) => s['topic_id'] == topicId,
+                    );
+                    if (index == -1) return;
+                    if (mounted) {
+                      setState(() => _selectedSectionIndex = index);
+                    }
+                  },
                   isAdmin: isAdmin,
                   onContentUpdated: () => ref
                       .read(outcomesViewModelProvider(widget.args))
@@ -2210,14 +2245,36 @@ class _TopicProgressHintCard extends StatelessWidget {
 
 class _WeekSectionsBlock extends StatelessWidget {
   final List<Map<String, dynamic>> sections;
+  final int currentWeek;
+  final int? focusedTopicId;
+  final Map<int, Map<String, dynamic>> topicMetaByTopicId;
+  final ValueChanged<int> onFocusTopic;
   final bool isAdmin;
   final VoidCallback onContentUpdated;
 
   const _WeekSectionsBlock({
     required this.sections,
+    required this.currentWeek,
+    required this.focusedTopicId,
+    required this.topicMetaByTopicId,
+    required this.onFocusTopic,
     required this.isAdmin,
     required this.onContentUpdated,
   });
+
+  String _phaseForTopic(int? topicId) {
+    if (topicId == null) return 'Bu Hafta';
+    final meta = topicMetaByTopicId[topicId];
+    if (meta == null) return 'Bu Hafta';
+    final start = meta['first_week'] as int?;
+    final end = meta['last_week'] as int?;
+    if (start == null || end == null) return 'Bu Hafta';
+    if (start == end) return 'Tek Hafta';
+    if (currentWeek == start) return 'Başlangıç';
+    if (currentWeek == end) return 'Bitiş';
+    if (currentWeek > start && currentWeek < end) return 'Devam';
+    return 'Bu Hafta';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2227,7 +2284,11 @@ class _WeekSectionsBlock extends StatelessWidget {
               .whereType<Map>()
               .map((c) => TopicContent.fromJson(Map<String, dynamic>.from(c)))
               .toList();
-          return {'section': section, 'contents': contents};
+          return {
+            'section': section,
+            'contents': contents,
+            'topic_id': section['topic_id'] as int?,
+          };
         })
         .where((entry) => (entry['contents'] as List).isNotEmpty)
         .toList();
@@ -2252,21 +2313,45 @@ class _WeekSectionsBlock extends StatelessWidget {
       );
     }
 
+    final resolvedFocusedTopicId =
+        (focusedTopicId != null &&
+            visibleSections.any((e) => e['topic_id'] == focusedTopicId))
+        ? focusedTopicId
+        : visibleSections.first['topic_id'] as int?;
+    final focusedEntry = visibleSections.firstWhere(
+      (e) => e['topic_id'] == resolvedFocusedTopicId,
+      orElse: () => visibleSections.first,
+    );
+    final secondaryEntries = visibleSections
+        .where((e) => e['topic_id'] != focusedEntry['topic_id'])
+        .toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (var i = 0; i < visibleSections.length; i++)
+        _SingleSectionContentCard(
+          section: Map<String, dynamic>.from(focusedEntry['section'] as Map),
+          contents: (focusedEntry['contents'] as List)
+              .whereType<TopicContent>()
+              .toList(),
+          phaseLabel: _phaseForTopic(focusedEntry['topic_id'] as int?),
+          isAdmin: isAdmin,
+          onContentUpdated: onContentUpdated,
+        ),
+        for (var i = 0; i < secondaryEntries.length; i++)
           Padding(
-            padding: EdgeInsets.only(top: i == 0 ? 0 : 12),
-            child: _SingleSectionContentCard(
+            padding: const EdgeInsets.only(top: 10),
+            child: _SectionSummaryCard(
               section: Map<String, dynamic>.from(
-                visibleSections[i]['section'] as Map,
+                secondaryEntries[i]['section'] as Map,
               ),
-              contents: (visibleSections[i]['contents'] as List)
-                  .whereType<TopicContent>()
-                  .toList(),
-              isAdmin: isAdmin,
-              onContentUpdated: onContentUpdated,
+              phaseLabel: _phaseForTopic(
+                secondaryEntries[i]['topic_id'] as int?,
+              ),
+              onTap: () {
+                final topicId = secondaryEntries[i]['topic_id'] as int?;
+                if (topicId != null) onFocusTopic(topicId);
+              },
             ),
           ),
       ],
@@ -2274,15 +2359,99 @@ class _WeekSectionsBlock extends StatelessWidget {
   }
 }
 
+class _SectionSummaryCard extends StatelessWidget {
+  final Map<String, dynamic> section;
+  final String phaseLabel;
+  final VoidCallback onTap;
+
+  const _SectionSummaryCard({
+    required this.section,
+    required this.phaseLabel,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final unitTitle = (section['unit_title'] as String? ?? '').trim();
+    final topicTitle = (section['topic_title'] as String? ?? 'Konu').trim();
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFDCE5F3)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (unitTitle.isNotEmpty)
+                    Text(
+                      unitTitle,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade700,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  Text(
+                    topicTitle,
+                    style: const TextStyle(
+                      fontSize: 14.5,
+                      color: Color(0xFF13243D),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEAF2FF),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(color: const Color(0xFFC8DBFF)),
+              ),
+              child: Text(
+                phaseLabel,
+                style: const TextStyle(
+                  fontSize: 11.5,
+                  color: Color(0xFF2F6FE4),
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            const SizedBox(width: 6),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: Color(0xFF2F6FE4),
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _SingleSectionContentCard extends StatefulWidget {
   final Map<String, dynamic> section;
   final List<TopicContent> contents;
+  final String phaseLabel;
   final bool isAdmin;
   final VoidCallback onContentUpdated;
 
   const _SingleSectionContentCard({
     required this.section,
     required this.contents,
+    required this.phaseLabel,
     required this.isAdmin,
     required this.onContentUpdated,
   });
@@ -2417,6 +2586,26 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEAF2FF),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: const Color(0xFFC8DBFF)),
+                    ),
+                    child: Text(
+                      widget.phaseLabel,
+                      style: const TextStyle(
+                        fontSize: 11.5,
+                        color: Color(0xFF2F6FE4),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

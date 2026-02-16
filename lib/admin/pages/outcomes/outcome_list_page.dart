@@ -209,13 +209,17 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
 
     final response = await supabase
         .from('outcomes')
-        .select('id, description, order_index, topic_id, topics!inner(id, title, unit_id, is_active)')
+        .select(
+          'id, description, order_index, topic_id, '
+          'topics!inner(id, title, unit_id, is_active), '
+          'outcome_weeks(start_week, end_week)',
+        )
         .eq('topics.unit_id', unitId)
         .eq('topics.is_active', true)
         .order('order_index', ascending: true);
 
     _outcomes = List<Map<String, dynamic>>.from(response);
-    if(mounted) {
+    if (mounted) {
       setState(() => _isLoadingOutcomes = false);
     }
   }
@@ -243,7 +247,21 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
       itemCount: _outcomes.length,
       itemBuilder: (context, index) {
         final outcome = _outcomes[index];
-        String subtitle = 'Konu: ${outcome['topics']['title'] ?? '-'}';
+        final topicTitle = outcome['topics']['title'] ?? '-';
+        final outcomeWeeks = (outcome['outcome_weeks'] as List? ?? [])
+            .whereType<Map>()
+            .map((w) => Map<String, dynamic>.from(w))
+            .toList();
+        final weekText = outcomeWeeks.isEmpty
+            ? 'Hafta aralığı yok'
+            : outcomeWeeks
+                  .map((w) {
+                    final start = w['start_week'];
+                    final end = w['end_week'];
+                    return start == end ? '$start' : '$start-$end';
+                  })
+                  .join(', ');
+        final subtitle = 'Konu: $topicTitle • Hafta: $weekText';
 
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 4),
@@ -328,7 +346,10 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                         isDense: true,
                       ),
                       keyboardType: TextInputType.number,
-                      validator: (val) => (val == null || int.tryParse(val.trim()) == null) ? 'Sayı girin' : null,
+                      validator: (val) =>
+                          (val == null || int.tryParse(val.trim()) == null)
+                          ? 'Sayı girin'
+                          : null,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -342,10 +363,14 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
                       ),
                       keyboardType: TextInputType.number,
                       validator: (val) {
-                        if (val == null || int.tryParse(val.trim()) == null) return 'Sayı girin';
-                        final start = int.tryParse(_startWeekController.text.trim());
+                        if (val == null || int.tryParse(val.trim()) == null)
+                          return 'Sayı girin';
+                        final start = int.tryParse(
+                          _startWeekController.text.trim(),
+                        );
                         final end = int.tryParse(val.trim());
-                        if (start != null && end != null && end < start) return 'Bitiş < Başlangıç olamaz';
+                        if (start != null && end != null && end < start)
+                          return 'Bitiş < Başlangıç olamaz';
                         return null;
                       },
                     ),
@@ -394,7 +419,8 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
   }
 
   Widget _buildTopicRadioList() {
-    if (_isLoadingTopics) return const Center(child: CircularProgressIndicator());
+    if (_isLoadingTopics)
+      return const Center(child: CircularProgressIndicator());
     if (_topics.isEmpty) return const Text('Bu üniteye ait konu bulunamadı.');
 
     return Column(
@@ -420,9 +446,9 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedTopicId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lütfen bir konu seçin.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Lütfen bir konu seçin.')));
       return;
     }
 
@@ -445,24 +471,12 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
     try {
       final startWeek = int.parse(_startWeekController.text.trim());
       final endWeek = int.parse(_endWeekController.text.trim());
-      if (startWeek != endWeek) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Yeni yapıda kazanım tek haftaya atanır. Başlangıç ve bitiş haftası aynı olmalı.',
-              ),
-              backgroundColor: Colors.orange,
-            ),
-          );
-        }
-        return;
-      }
 
       await _insertOutcomes(
         topicId: _selectedTopicId!,
         texts: finalOutcomeTexts,
-        curriculumWeek: startWeek,
+        startWeek: startWeek,
+        endWeek: endWeek,
       );
 
       if (mounted) {
@@ -492,7 +506,8 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
   Future<List<int>> _insertOutcomes({
     required int topicId,
     required List<String> texts,
-    required int curriculumWeek,
+    required int startWeek,
+    required int endWeek,
   }) async {
     if (texts.isEmpty) return [];
 
@@ -516,7 +531,6 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
         'topic_id': topicId,
         'description': text,
         'order_index': currentMaxOrder + 1 + index,
-        'curriculum_week': curriculumWeek,
       };
     }).toList();
 
@@ -525,6 +539,21 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
         .insert(records)
         .select('id');
 
-    return (response as List).map((e) => e['id'] as int).toList();
+    final insertedIds = (response as List).map((e) => e['id'] as int).toList();
+
+    if (insertedIds.isNotEmpty) {
+      final weekRows = insertedIds
+          .map(
+            (id) => {
+              'outcome_id': id,
+              'start_week': startWeek,
+              'end_week': endWeek,
+            },
+          )
+          .toList();
+      await supabase.from('outcome_weeks').insert(weekRows);
+    }
+
+    return insertedIds;
   }
 }

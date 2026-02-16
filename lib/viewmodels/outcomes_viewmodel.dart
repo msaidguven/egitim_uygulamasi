@@ -575,15 +575,23 @@ class OutcomesViewModel extends ChangeNotifier {
       if (topicIds.isNotEmpty) {
         final outcomesRes = await Supabase.instance.client
             .from('outcomes')
-            .select('topic_id, curriculum_week')
+            .select('topic_id, outcome_weeks(start_week, end_week)')
             .inFilter('topic_id', topicIds);
 
         for (final raw in (outcomesRes as List)) {
           final row = Map<String, dynamic>.from(raw as Map);
           final topicId = row['topic_id'] as int?;
           if (topicId == null) continue;
-          final week = row['curriculum_week'] as int?;
-          if (week != null) weeksByTopic[topicId]?.add(week);
+          final owList = (row['outcome_weeks'] as List? ?? []);
+          for (final rawOw in owList) {
+            final ow = Map<String, dynamic>.from(rawOw as Map);
+            final startWeek = ow['start_week'] as int?;
+            final endWeek = ow['end_week'] as int?;
+            if (startWeek == null || endWeek == null) continue;
+            for (var week = startWeek; week <= endWeek; week++) {
+              weeksByTopic[topicId]?.add(week);
+            }
+          }
         }
 
         final topicContentsRes = await Supabase.instance.client
