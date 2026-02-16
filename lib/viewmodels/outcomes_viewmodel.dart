@@ -800,14 +800,18 @@ class OutcomesViewModel extends ChangeNotifier {
     if (weekData['type'] != 'week') return;
 
     final curriculumWeek = weekData['curriculum_week'] as int;
+    final userProfile = _ref.read(profileViewModelProvider).profile;
+    final isAdmin = userProfile?.role == 'admin';
+    final isGuest = userProfile == null;
 
     final existingWeekData = _weekMainContents[curriculumWeek];
     final existingSections = existingWeekData?['sections'];
     final hasSectionedWeekData =
         existingSections is List && existingSections.isNotEmpty;
 
-    if ((_weekMainContents.containsKey(curriculumWeek) &&
-            hasSectionedWeekData) ||
+    if (((_weekMainContents.containsKey(curriculumWeek) &&
+                hasSectionedWeekData) &&
+            !isAdmin) ||
         (_weekLoadingStatus[curriculumWeek] ?? false)) {
       return;
     }
@@ -817,9 +821,6 @@ class OutcomesViewModel extends ChangeNotifier {
     _safeNotifyListeners();
 
     try {
-      final userProfile = _ref.read(profileViewModelProvider).profile;
-      final isGuest = userProfile == null;
-
       final cachedData = await _cacheService.getWeeklyCurriculumData(
         curriculumWeek: curriculumWeek,
         lessonId: lessonId,
@@ -835,7 +836,33 @@ class OutcomesViewModel extends ChangeNotifier {
           _weekMainContents[curriculumWeek] = cachedData;
           _weekUnitIds[curriculumWeek] = cachedData['unit_id'];
           _safeNotifyListeners();
-          await _fetchDynamicData(curriculumWeek, isGuest);
+          if (isAdmin) {
+            final fullData = await _fetchNetworkDataWithoutCaching(
+              curriculumWeek: curriculumWeek,
+            );
+            if (fullData.isNotEmpty) {
+              final contentToCache = Map<String, dynamic>.from(fullData);
+              contentToCache.remove('mini_quiz_questions');
+              _weekMainContents[curriculumWeek] = contentToCache;
+              _weekUnitIds[curriculumWeek] = contentToCache['unit_id'];
+              await _cacheService.saveWeeklyCurriculumData(
+                curriculumWeek: curriculumWeek,
+                lessonId: lessonId,
+                gradeId: gradeId,
+                data: contentToCache,
+              );
+              _weekQuestions[curriculumWeek] =
+                  (fullData['mini_quiz_questions'] as List? ?? [])
+                      .map((q) => Question.fromMap(q as Map<String, dynamic>))
+                      .toList();
+            }
+            if (!isGuest) {
+              await _loadWeeklyStats(curriculumWeek);
+            }
+            _safeNotifyListeners();
+          } else {
+            await _fetchDynamicData(curriculumWeek, isGuest);
+          }
           return;
         }
       }
@@ -1100,6 +1127,40 @@ class OutcomesViewModel extends ChangeNotifier {
     );
     if (index != -1) {
       await _fetchWeekContent(index);
+    }
+  }
+
+  Future<void> refreshWeeksAround(int centerWeek, {int radius = 1}) async {
+    final targetWeeks = <int>{};
+    for (var offset = -radius; offset <= radius; offset++) {
+      targetWeeks.add(centerWeek + offset);
+    }
+
+    for (final week in targetWeeks) {
+      if (week < 1) continue;
+      _weekMainContents.remove(week);
+      _weekQuestions.remove(week);
+      _weekStats.remove(week);
+      _weekUnitIds.remove(week);
+      _weekLoadingStatus.remove(week);
+      _weekErrorMessages.remove(week);
+      await _cacheService.clearWeeklyCurriculumData(
+        curriculumWeek: week,
+        lessonId: lessonId,
+        gradeId: gradeId,
+      );
+    }
+
+    await _fetchLessonTopics();
+
+    for (final week in targetWeeks.toList()..sort()) {
+      if (week < 1) continue;
+      final index = _allWeeksData.indexWhere(
+        (w) => w['type'] == 'week' && w['curriculum_week'] == week,
+      );
+      if (index != -1) {
+        await _fetchWeekContent(index);
+      }
     }
   }
 }

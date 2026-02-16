@@ -891,6 +891,10 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         ),
       ),
     );
+    if (!mounted) return;
+    await ref
+        .read(outcomesViewModelProvider(widget.args))
+        .refreshWeeksAround(widget.curriculumWeek, radius: 1);
   }
 
   Future<void> _openSmartContentUpdate({
@@ -909,6 +913,10 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         ),
       ),
     );
+    if (!mounted) return;
+    await ref
+        .read(outcomesViewModelProvider(widget.args))
+        .refreshWeeksAround(widget.curriculumWeek, radius: 1);
   }
 
   @override
@@ -1175,12 +1183,10 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     }
 
     final selectedSection = sections[safeSelectedIndex];
-    final firstSection = sections.isNotEmpty ? sections.first : null;
     final selectedUnitId = selectedSection['unit_id'] as int?;
     final selectedTopicId = selectedSection['topic_id'] as int?;
-    final shortcutUnitId = (firstSection?['unit_id'] as int?) ?? selectedUnitId;
-    final shortcutTopicId =
-        (firstSection?['topic_id'] as int?) ?? selectedTopicId;
+    final shortcutUnitId = selectedUnitId;
+    final shortcutTopicId = selectedTopicId;
     final selectedUnitTitle =
         unitOptions.firstWhere(
               (u) => u['unit_id'] == effectiveUnitId,
@@ -1417,6 +1423,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                       (s) => s['topic_id'] == topicId,
                     );
                     if (index == -1) return;
+                    if (_selectedSectionIndex == index) return;
                     if (mounted) {
                       setState(() => _selectedSectionIndex = index);
                     }
@@ -2319,105 +2326,37 @@ class _WeekSectionsBlock extends StatelessWidget {
       );
     }
 
-    final resolvedFocusedTopicId =
+    final focusedEntry =
         (focusedTopicId != null &&
             visibleSections.any((e) => e['topic_id'] == focusedTopicId))
-        ? focusedTopicId
-        : visibleSections.first['topic_id'] as int?;
-    final focusedEntry = visibleSections.firstWhere(
-      (e) => e['topic_id'] == resolvedFocusedTopicId,
-      orElse: () => visibleSections.first,
-    );
-    final secondaryEntries = visibleSections
-        .where((e) => e['topic_id'] != focusedEntry['topic_id'])
-        .toList();
+        ? visibleSections.firstWhere((e) => e['topic_id'] == focusedTopicId)
+        : visibleSections.first;
+
+    final mergedContents = <TopicContent>[];
+    final seenContentIds = <int>{};
+    for (final entry in visibleSections) {
+      final contents = (entry['contents'] as List).whereType<TopicContent>();
+      for (final content in contents) {
+        final id = content.id;
+        if (id != null && seenContentIds.contains(id)) continue;
+        if (id != null) seenContentIds.add(id);
+        mergedContents.add(content);
+      }
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _SingleSectionContentCard(
           section: Map<String, dynamic>.from(focusedEntry['section'] as Map),
-          contents: (focusedEntry['contents'] as List)
-              .whereType<TopicContent>()
-              .toList(),
+          contents: mergedContents,
           isAdmin: isAdmin,
           onContentUpdated: onContentUpdated,
+          onActiveTopicChanged: (topicId) {
+            if (topicId != null) onFocusTopic(topicId);
+          },
         ),
-        for (var i = 0; i < secondaryEntries.length; i++)
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: _SectionSummaryCard(
-              section: Map<String, dynamic>.from(
-                secondaryEntries[i]['section'] as Map,
-              ),
-              onTap: () {
-                final topicId = secondaryEntries[i]['topic_id'] as int?;
-                if (topicId != null) onFocusTopic(topicId);
-              },
-            ),
-          ),
       ],
-    );
-  }
-}
-
-class _SectionSummaryCard extends StatelessWidget {
-  final Map<String, dynamic> section;
-  final VoidCallback onTap;
-
-  const _SectionSummaryCard({required this.section, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final unitTitle = (section['unit_title'] as String? ?? '').trim();
-    final topicTitle = (section['topic_title'] as String? ?? 'Konu').trim();
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFDCE5F3)),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (unitTitle.isNotEmpty)
-                    Text(
-                      unitTitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade700,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  Text(
-                    topicTitle,
-                    style: const TextStyle(
-                      fontSize: 14.5,
-                      color: Color(0xFF13243D),
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            const SizedBox(width: 6),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: Color(0xFF2F6FE4),
-              size: 20,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -2427,12 +2366,14 @@ class _SingleSectionContentCard extends StatefulWidget {
   final List<TopicContent> contents;
   final bool isAdmin;
   final VoidCallback onContentUpdated;
+  final ValueChanged<int?>? onActiveTopicChanged;
 
   const _SingleSectionContentCard({
     required this.section,
     required this.contents,
     required this.isAdmin,
     required this.onContentUpdated,
+    this.onActiveTopicChanged,
   });
 
   @override
@@ -2442,6 +2383,24 @@ class _SingleSectionContentCard extends StatefulWidget {
 
 class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
   int _currentPageIndex = 0;
+  int? _lastNotifiedTopicId;
+
+  void _notifyActiveTopic() {
+    if (widget.onActiveTopicChanged == null) return;
+    if (widget.contents.isEmpty) {
+      final topicId = widget.section['topic_id'] as int?;
+      if (_lastNotifiedTopicId == topicId) return;
+      _lastNotifiedTopicId = topicId;
+      widget.onActiveTopicChanged!(topicId);
+      return;
+    }
+    final activeTopicId =
+        widget.contents[_currentPageIndex].topicId ??
+        (widget.section['topic_id'] as int?);
+    if (_lastNotifiedTopicId == activeTopicId) return;
+    _lastNotifiedTopicId = activeTopicId;
+    widget.onActiveTopicChanged!(activeTopicId);
+  }
 
   @override
   void initState() {
@@ -2464,6 +2423,7 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
     if (index < 0 || index >= widget.contents.length) return;
     if (!mounted) return;
     setState(() => _currentPageIndex = index);
+    _notifyActiveTopic();
   }
 
   Widget _buildMiniPager() {

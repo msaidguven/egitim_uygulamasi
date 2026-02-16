@@ -890,6 +890,10 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         ),
       ),
     );
+    if (!mounted) return;
+    await ref
+        .read(outcomesViewModelProvider(widget.args))
+        .refreshWeeksAround(widget.curriculumWeek, radius: 1);
   }
 
   Future<void> _openSmartContentUpdate({
@@ -908,6 +912,10 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         ),
       ),
     );
+    if (!mounted) return;
+    await ref
+        .read(outcomesViewModelProvider(widget.args))
+        .refreshWeeksAround(widget.curriculumWeek, radius: 1);
   }
 
   @override

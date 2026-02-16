@@ -80,11 +80,19 @@ BEGIN
           '[]'::jsonb
         )
         FROM public.topic_contents tc
-        JOIN public.topic_content_outcomes tco
-          ON tco.topic_content_id = tc.id
-         AND tco.outcome_id = o.id
         WHERE tc.topic_id = t.id
           AND (p_is_admin OR tc.is_published = true)
+          AND EXISTS (
+            SELECT 1
+            FROM public.topic_content_outcomes tco
+            JOIN public.outcomes o2
+              ON o2.id = tco.outcome_id
+             AND o2.topic_id = t.id
+            JOIN public.outcome_weeks ow2
+              ON ow2.outcome_id = o2.id
+            WHERE tco.topic_content_id = tc.id
+              AND p_curriculum_week BETWEEN ow2.start_week AND ow2.end_week
+          )
       ) AS contents,
       (
         SELECT jsonb_agg(public.get_question_details(q.id, p_user_id))
