@@ -10,7 +10,22 @@ import 'package:egitim_uygulamasi/services/unit_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SmartContentAdditionPage extends StatefulWidget {
-  const SmartContentAdditionPage({super.key});
+  final int? initialGradeId;
+  final int? initialLessonId;
+  final int? initialUnitId;
+  final int? initialTopicId;
+  final int? initialCurriculumWeek;
+  final String? initialUsageType;
+
+  const SmartContentAdditionPage({
+    super.key,
+    this.initialGradeId,
+    this.initialLessonId,
+    this.initialUnitId,
+    this.initialTopicId,
+    this.initialCurriculumWeek,
+    this.initialUsageType,
+  });
 
   @override
   State<SmartContentAdditionPage> createState() =>
@@ -44,6 +59,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   bool _isSubmitting = false;
   String? _unitSelectionType = 'existing';
   String? _topicSelectionType = 'existing';
+  bool _initialSelectionAttempted = false;
 
   // Text Editing Controllers
   final _newUnitTitleController = TextEditingController();
@@ -51,6 +67,13 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   final _curriculumWeekController = TextEditingController();
   final _topicContentTitleController = TextEditingController();
   final _rawTopicContentController = TextEditingController();
+
+  T? _firstOrNull<T>(Iterable<T> list, bool Function(T item) predicate) {
+    for (final item in list) {
+      if (predicate(item)) return item;
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -74,11 +97,86 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     setState(() => _isLoadingGrades = true);
     try {
       _availableGrades = await _gradeService.getGradesWithLessons();
+      await _applyInitialSelectionIfNeeded();
     } catch (e) {
       _showError('Sınıflar ve dersler yüklenemedi: $e');
     } finally {
       if (mounted) setState(() => _isLoadingGrades = false);
     }
+  }
+
+  Future<void> _applyInitialSelectionIfNeeded() async {
+    if (_initialSelectionAttempted) return;
+    _initialSelectionAttempted = true;
+
+    final hasPreset =
+        widget.initialGradeId != null ||
+        widget.initialLessonId != null ||
+        widget.initialUnitId != null ||
+        widget.initialTopicId != null ||
+        widget.initialCurriculumWeek != null;
+    if (!hasPreset) return;
+
+    final presetGradeId = widget.initialGradeId;
+    final presetLessonId = widget.initialLessonId;
+    final presetUnitId = widget.initialUnitId;
+    final presetTopicId = widget.initialTopicId;
+
+    final grade = presetGradeId == null
+        ? null
+        : _firstOrNull(_availableGrades, (g) => g.id == presetGradeId);
+    if (grade == null) return;
+
+    _selectedGrade = grade;
+    _availableLessons = grade.lessons;
+
+    final lesson = presetLessonId == null
+        ? null
+        : _firstOrNull(_availableLessons, (l) => l.id == presetLessonId);
+    if (lesson == null) {
+      if (mounted) setState(() {});
+      return;
+    }
+
+    _selectedLesson = lesson;
+    _unitSelectionType = 'existing';
+    _topicSelectionType = 'existing';
+    _availableUnits = [];
+    _selectedUnit = null;
+    _availableTopics = [];
+    _selectedTopic = null;
+    if (widget.initialCurriculumWeek != null) {
+      _curriculumWeekController.text = widget.initialCurriculumWeek.toString();
+    }
+
+    if (mounted) setState(() {});
+
+    await _loadAvailableUnits(grade.id, lesson.id);
+    if (!mounted) return;
+
+    final unit = presetUnitId == null
+        ? null
+        : _firstOrNull(_availableUnits, (u) => u.id == presetUnitId);
+    if (unit == null) {
+      setState(() {});
+      return;
+    }
+
+    _selectedUnit = unit;
+    _availableTopics = [];
+    _selectedTopic = null;
+    setState(() {});
+
+    await _loadAvailableTopics(unit.id);
+    if (!mounted) return;
+
+    final topic = presetTopicId == null
+        ? null
+        : _firstOrNull(_availableTopics, (t) => t.id == presetTopicId);
+    if (topic != null) {
+      _selectedTopic = topic;
+    }
+    setState(() {});
   }
 
   Future<void> _loadAvailableUnits(int gradeId, int lessonId) async {
@@ -88,8 +186,10 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       _selectedUnit = null;
     });
     try {
-      _availableUnits =
-          await _unitService.getUnitsForGradeAndLesson(gradeId, lessonId);
+      _availableUnits = await _unitService.getUnitsForGradeAndLesson(
+        gradeId,
+        lessonId,
+      );
     } catch (e) {
       _showError('Üniteler yüklenemedi: $e');
     } finally {
@@ -140,7 +240,9 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       final lessonId = _selectedLesson!.id;
       final newUnitTitle = _newUnitTitleController.text.trim();
       final newTopicTitle = _newTopicTitleController.text.trim();
-      final curriculumWeek = int.tryParse(_curriculumWeekController.text.trim());
+      final curriculumWeek = int.tryParse(
+        _curriculumWeekController.text.trim(),
+      );
       final contentText = _rawTopicContentController.text.trim();
       final contentTitle = _topicContentTitleController.text.trim();
 
@@ -155,11 +257,15 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       // --- Step 1: Resolve Unit ID ---
       int unitId;
       if (_unitSelectionType == 'existing') {
-        if (_selectedUnit == null) throw Exception('Lütfen mevcut bir ünite seçin.');
+        if (_selectedUnit == null) {
+          throw Exception('Lütfen mevcut bir ünite seçin.');
+        }
         unitId = _selectedUnit!.id;
       } else {
-        if (newUnitTitle.isEmpty) throw Exception('Lütfen yeni ünite başlığı girin.');
-        
+        if (newUnitTitle.isEmpty) {
+          throw Exception('Lütfen yeni ünite başlığı girin.');
+        }
+
         final existingUnit = await supabase
             .from('units')
             .select('id, unit_grades!inner(grade_id)')
@@ -179,31 +285,38 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
           unitId = newUnit['id'];
         }
       }
-      await supabase.from('unit_grades').upsert({'unit_id': unitId, 'grade_id': gradeId});
+      await supabase.from('unit_grades').upsert({
+        'unit_id': unitId,
+        'grade_id': gradeId,
+      });
 
       // --- Step 2: Resolve Topic ID ---
       int topicId;
       if (_topicSelectionType == 'existing') {
-        if (_selectedTopic == null) throw Exception('Lütfen mevcut bir konu seçin.');
+        if (_selectedTopic == null) {
+          throw Exception('Lütfen mevcut bir konu seçin.');
+        }
         topicId = _selectedTopic!.id;
       } else {
-        if (newTopicTitle.isEmpty) throw Exception('Lütfen yeni konu başlığı girin.');
+        if (newTopicTitle.isEmpty) {
+          throw Exception('Lütfen yeni konu başlığı girin.');
+        }
         final existingTopic = await supabase
             .from('topics')
             .select('id')
             .eq('unit_id', unitId)
             .eq('title', newTopicTitle)
             .maybeSingle();
-        
+
         if (existingTopic != null) {
           topicId = existingTopic['id'];
         } else {
           final newTopic = await supabase
               .from('topics')
               .insert({
-                'unit_id': unitId, 
+                'unit_id': unitId,
                 'title': newTopicTitle,
-                'slug': newTopicTitle.toLowerCase().replaceAll(' ', '-')
+                'slug': newTopicTitle.toLowerCase().replaceAll(' ', '-'),
               })
               .select('id')
               .single();
@@ -219,20 +332,30 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         decodedContent = null;
       }
 
-      if (decodedContent is Map<String, dynamic> && decodedContent.containsKey('questions')) {
+      if (decodedContent is Map<String, dynamic> &&
+          decodedContent.containsKey('questions')) {
         // It's a JSON for questions, process it
-        await _processAndInsertQuestions(decodedContent, topicId, curriculumWeek);
+        await _processAndInsertQuestions(
+          decodedContent,
+          topicId,
+          curriculumWeek,
+        );
       } else {
         // It's regular HTML content
-        await _insertTopicContent(topicId, contentTitle, contentText, curriculumWeek);
+        await _insertTopicContent(
+          topicId,
+          contentTitle,
+          contentText,
+          curriculumWeek,
+        );
       }
-
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('İçerik başarıyla eklendi!'),
-              backgroundColor: Colors.green),
+            content: Text('İçerik başarıyla eklendi!'),
+            backgroundColor: Colors.green,
+          ),
         );
         _resetForm();
       }
@@ -241,8 +364,9 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('İşlem sırasında hata oluştu: $e'),
-              backgroundColor: Colors.red),
+            content: Text('İşlem sırasında hata oluştu: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -250,43 +374,52 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     }
   }
 
-  Future<void> _insertTopicContent(int topicId, String title, String content, int curriculumWeek) async {
-      final supabase = Supabase.instance.client;
-      final orderNoRes = await supabase
-          .from('topic_contents')
-          .select('order_no')
-          .eq('topic_id', topicId)
-          .order('order_no', ascending: false)
-          .limit(1)
-          .maybeSingle();
-      
-      final nextOrderNo = (orderNoRes?['order_no'] ?? -1) + 1;
+  Future<void> _insertTopicContent(
+    int topicId,
+    String title,
+    String content,
+    int curriculumWeek,
+  ) async {
+    final supabase = Supabase.instance.client;
+    final orderNoRes = await supabase
+        .from('topic_contents')
+        .select('order_no')
+        .eq('topic_id', topicId)
+        .order('order_no', ascending: false)
+        .limit(1)
+        .maybeSingle();
 
-      final newContent = await supabase
-          .from('topic_contents')
-          .insert({
-            'topic_id': topicId,
-            'title': title,
-            'content': content,
-            'order_no': nextOrderNo,
-          })
-          .select('id')
-          .single();
-      final newContentId = newContent['id'];
+    final nextOrderNo = (orderNoRes?['order_no'] ?? -1) + 1;
 
-      await supabase.from('topic_content_weeks').insert({
-        'topic_content_id': newContentId,
-        'curriculum_week': curriculumWeek,
-      });
+    final newContent = await supabase
+        .from('topic_contents')
+        .insert({
+          'topic_id': topicId,
+          'title': title,
+          'content': content,
+          'order_no': nextOrderNo,
+        })
+        .select('id')
+        .single();
+    final newContentId = newContent['id'];
+
+    await supabase.from('topic_content_weeks').insert({
+      'topic_content_id': newContentId,
+      'curriculum_week': curriculumWeek,
+    });
   }
 
-  Future<void> _processAndInsertQuestions(Map<String, dynamic> data, int topicId, int curriculumWeek) async {
+  Future<void> _processAndInsertQuestions(
+    Map<String, dynamic> data,
+    int topicId,
+    int curriculumWeek,
+  ) async {
     final supabase = Supabase.instance.client;
     final questions = data['questions'] as List<dynamic>;
 
     for (final q in questions) {
       final questionData = q as Map<String, dynamic>;
-      
+
       // 1. Insert the base question
       final Map<String, dynamic> questionToInsert = {
         'question_type_id': questionData['question_type_id'],
@@ -299,27 +432,40 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         questionToInsert['correct_answer'] = questionData['correct_answer'];
       }
 
-      final newQuestion = await supabase.from('questions').insert(questionToInsert).select('id').single();
+      final newQuestion = await supabase
+          .from('questions')
+          .insert(questionToInsert)
+          .select('id')
+          .single();
       final questionId = newQuestion['id'];
 
       // 2. Insert question details based on type
       final typeId = questionData['question_type_id'];
 
-      if (typeId == 1 && questionData.containsKey('choices')) { // Multiple Choice
-        final choices = (questionData['choices'] as List).map((c) => {
-          'question_id': questionId,
-          'choice_text': c['text'],
-          'is_correct': c['is_correct'],
-        }).toList();
+      if (typeId == 1 && questionData.containsKey('choices')) {
+        // Multiple Choice
+        final choices = (questionData['choices'] as List)
+            .map(
+              (c) => {
+                'question_id': questionId,
+                'choice_text': c['text'],
+                'is_correct': c['is_correct'],
+              },
+            )
+            .toList();
         await supabase.from('question_choices').insert(choices);
-      } 
-      else if (typeId == 3 && questionData.containsKey('blank')) { // Fill in the Blank
+      } else if (typeId == 3 && questionData.containsKey('blank')) {
+        // Fill in the Blank
         final blankData = questionData['blank'] as Map<String, dynamic>;
-        final options = (blankData['options'] as List).map((opt) => {
-          'question_id': questionId, // Use question_id directly
-          'option_text': opt['text'],
-          'is_correct': opt['is_correct'],
-        }).toList();
+        final options = (blankData['options'] as List)
+            .map(
+              (opt) => {
+                'question_id': questionId, // Use question_id directly
+                'option_text': opt['text'],
+                'is_correct': opt['is_correct'],
+              },
+            )
+            .toList();
         await supabase.from('question_blank_options').insert(options);
       }
       // ... handle other question types like matching, classical etc.
@@ -333,7 +479,6 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       });
     }
   }
-
 
   void _resetForm() {
     _formKey.currentState?.reset();
@@ -365,9 +510,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Akıllı İçerik Ekleme'),
-      ),
+      appBar: AppBar(title: const Text('Akıllı İçerik Ekleme')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -404,7 +547,9 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+        style: Theme.of(
+          context,
+        ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -428,7 +573,10 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
               });
             },
             items: _availableGrades.map((grade) {
-              return DropdownMenuItem<Grade>(value: grade, child: Text(grade.name));
+              return DropdownMenuItem<Grade>(
+                value: grade,
+                child: Text(grade.name),
+              );
             }).toList(),
             validator: (val) => val == null ? 'Lütfen bir sınıf seçin.' : null,
           );
@@ -452,7 +600,10 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
               });
             },
       items: _availableLessons.map((lesson) {
-        return DropdownMenuItem<Lesson>(value: lesson, child: Text(lesson.name));
+        return DropdownMenuItem<Lesson>(
+          value: lesson,
+          child: Text(lesson.name),
+        );
       }).toList(),
       validator: (val) => val == null ? 'Lütfen bir ders seçin.' : null,
       decoration: InputDecoration(
@@ -467,87 +618,170 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Expanded(child: RadioListTile<String>(
-            title: const Text('Mevcut Ünite'), value: 'existing', groupValue: _unitSelectionType,
-            onChanged: !isEnabled ? null : (val) => setState(() => _unitSelectionType = val),
-          )),
-          Expanded(child: RadioListTile<String>(
-            title: const Text('Yeni Ünite'), value: 'new', groupValue: _unitSelectionType,
-            onChanged: !isEnabled ? null : (val) => setState(() => _unitSelectionType = val),
-          )),
-        ]),
+        Row(
+          children: [
+            Expanded(
+              child: RadioListTile<String>(
+                title: const Text('Mevcut Ünite'),
+                value: 'existing',
+                groupValue: _unitSelectionType,
+                onChanged: !isEnabled
+                    ? null
+                    : (val) => setState(() => _unitSelectionType = val),
+              ),
+            ),
+            Expanded(
+              child: RadioListTile<String>(
+                title: const Text('Yeni Ünite'),
+                value: 'new',
+                groupValue: _unitSelectionType,
+                onChanged: !isEnabled
+                    ? null
+                    : (val) => setState(() => _unitSelectionType = val),
+              ),
+            ),
+          ],
+        ),
         if (_unitSelectionType == 'existing')
           _isLoadingUnits
               ? const Center(child: CircularProgressIndicator())
               : DropdownButtonFormField<Unit>(
                   initialValue: _selectedUnit,
                   hint: const Text('Mevcut Üniteyi Seçin'),
-                  onChanged: !isEnabled ? null : (unit) {
-                    if (unit == null) return;
-                    setState(() {
-                      _selectedUnit = unit;
-                      _loadAvailableTopics(unit.id);
-                    });
-                  },
-                  items: _availableUnits.map((unit) => DropdownMenuItem<Unit>(value: unit, child: Text(unit.title))).toList(),
-                  validator: (val) => _unitSelectionType == 'existing' && val == null ? 'Lütfen bir ünite seçin.' : null,
-                  decoration: InputDecoration(enabled: isEnabled, border: const OutlineInputBorder()),
+                  onChanged: !isEnabled
+                      ? null
+                      : (unit) {
+                          if (unit == null) return;
+                          setState(() {
+                            _selectedUnit = unit;
+                            _loadAvailableTopics(unit.id);
+                          });
+                        },
+                  items: _availableUnits
+                      .map(
+                        (unit) => DropdownMenuItem<Unit>(
+                          value: unit,
+                          child: Text(unit.title),
+                        ),
+                      )
+                      .toList(),
+                  validator: (val) =>
+                      _unitSelectionType == 'existing' && val == null
+                      ? 'Lütfen bir ünite seçin.'
+                      : null,
+                  decoration: InputDecoration(
+                    enabled: isEnabled,
+                    border: const OutlineInputBorder(),
+                  ),
                 )
         else
           TextFormField(
             controller: _newUnitTitleController,
             enabled: isEnabled,
-            decoration: const InputDecoration(labelText: 'Yeni Ünite Adı', border: OutlineInputBorder()),
-            validator: (val) => _unitSelectionType == 'new' && (val == null || val.trim().isEmpty) ? 'Yeni ünite adı boş olamaz.' : null,
+            decoration: const InputDecoration(
+              labelText: 'Yeni Ünite Adı',
+              border: OutlineInputBorder(),
+            ),
+            validator: (val) =>
+                _unitSelectionType == 'new' &&
+                    (val == null || val.trim().isEmpty)
+                ? 'Yeni ünite adı boş olamaz.'
+                : null,
           ),
       ],
     );
   }
 
   Widget _buildTopicBlock() {
-    bool isEnabled = (_unitSelectionType == 'existing' && _selectedUnit != null) || (_unitSelectionType == 'new' && _newUnitTitleController.text.isNotEmpty);
+    bool isEnabled =
+        (_unitSelectionType == 'existing' && _selectedUnit != null) ||
+        (_unitSelectionType == 'new' &&
+            _newUnitTitleController.text.isNotEmpty);
     Widget topicSelector;
     if (_isLoadingTopics) {
       topicSelector = const Center(child: CircularProgressIndicator());
     } else if (_topicError != null) {
       topicSelector = Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(child: Text('HATA: $_topicError', style: const TextStyle(color: Colors.red))));
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Text(
+            'HATA: $_topicError',
+            style: const TextStyle(color: Colors.red),
+          ),
+        ),
+      );
     } else if (_availableTopics.isEmpty) {
-      topicSelector = const Padding(padding: EdgeInsets.symmetric(vertical: 16.0), child: Text('Bu ünite için konu bulunamadı.'));
+      topicSelector = const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        child: Text('Bu ünite için konu bulunamadı.'),
+      );
     } else {
       topicSelector = Card(
-        elevation: 0, clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(side: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.5)), borderRadius: const BorderRadius.all(Radius.circular(8))),
-        child: Column(children: _availableTopics.map((topic) {
-          return RadioListTile<Topic>(
-            title: Text(topic.title), value: topic, groupValue: _selectedTopic,
-            onChanged: !isEnabled ? null : (newlySelectedTopic) => setState(() => _selectedTopic = newlySelectedTopic),
-          );
-        }).toList()),
+        elevation: 0,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: Theme.of(context).colorScheme.outline.withOpacity(0.5),
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+        ),
+        child: Column(
+          children: _availableTopics.map((topic) {
+            return RadioListTile<Topic>(
+              title: Text(topic.title),
+              value: topic,
+              groupValue: _selectedTopic,
+              onChanged: !isEnabled
+                  ? null
+                  : (newlySelectedTopic) =>
+                        setState(() => _selectedTopic = newlySelectedTopic),
+            );
+          }).toList(),
+        ),
       );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Expanded(child: RadioListTile<String>(
-            title: const Text('Mevcut Konu'), value: 'existing', groupValue: _topicSelectionType,
-            onChanged: !isEnabled ? null : (val) => setState(() => _topicSelectionType = val),
-          )),
-          Expanded(child: RadioListTile<String>(
-            title: const Text('Yeni Konu'), value: 'new', groupValue: _topicSelectionType,
-            onChanged: !isEnabled ? null : (val) => setState(() => _topicSelectionType = val),
-          )),
-        ]),
+        Row(
+          children: [
+            Expanded(
+              child: RadioListTile<String>(
+                title: const Text('Mevcut Konu'),
+                value: 'existing',
+                groupValue: _topicSelectionType,
+                onChanged: !isEnabled
+                    ? null
+                    : (val) => setState(() => _topicSelectionType = val),
+              ),
+            ),
+            Expanded(
+              child: RadioListTile<String>(
+                title: const Text('Yeni Konu'),
+                value: 'new',
+                groupValue: _topicSelectionType,
+                onChanged: !isEnabled
+                    ? null
+                    : (val) => setState(() => _topicSelectionType = val),
+              ),
+            ),
+          ],
+        ),
         if (_topicSelectionType == 'existing')
           topicSelector
         else
           TextFormField(
-            controller: _newTopicTitleController, enabled: isEnabled,
-            decoration: const InputDecoration(labelText: 'Yeni Konu Adı', border: OutlineInputBorder()),
-            validator: (val) => _topicSelectionType == 'new' && (val == null || val.trim().isEmpty) ? 'Yeni konu adı boş olamaz.' : null,
+            controller: _newTopicTitleController,
+            enabled: isEnabled,
+            decoration: const InputDecoration(
+              labelText: 'Yeni Konu Adı',
+              border: OutlineInputBorder(),
+            ),
+            validator: (val) =>
+                _topicSelectionType == 'new' &&
+                    (val == null || val.trim().isEmpty)
+                ? 'Yeni konu adı boş olamaz.'
+                : null,
           ),
       ],
     );
@@ -556,9 +790,17 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   Widget _buildWeekSelector() {
     return TextFormField(
       controller: _curriculumWeekController,
-      decoration: const InputDecoration(labelText: 'Hafta Numarası', border: OutlineInputBorder()),
+      decoration: const InputDecoration(
+        labelText: 'Hafta Numarası',
+        border: OutlineInputBorder(),
+      ),
       keyboardType: TextInputType.number,
-      validator: (val) => (val == null || int.tryParse(val.trim()) == null || int.parse(val.trim()) < 1) ? 'Geçerli bir hafta girin.' : null,
+      validator: (val) =>
+          (val == null ||
+              int.tryParse(val.trim()) == null ||
+              int.parse(val.trim()) < 1)
+          ? 'Geçerli bir hafta girin.'
+          : null,
     );
   }
 
@@ -568,15 +810,27 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       children: [
         TextFormField(
           controller: _topicContentTitleController,
-          decoration: const InputDecoration(labelText: 'İçerik Başlığı', hintText: 'İsteğe bağlı içerik başlığı', border: OutlineInputBorder()),
+          decoration: const InputDecoration(
+            labelText: 'İçerik Başlığı',
+            hintText: 'İsteğe bağlı içerik başlığı',
+            border: OutlineInputBorder(),
+          ),
         ),
         const SizedBox(height: 12),
         TextFormField(
           controller: _rawTopicContentController,
-          decoration: const InputDecoration(labelText: 'Konu İçeriği (HTML veya JSON)', hintText: 'HTML içeriği veya soru JSON\'u buraya girin...', border: OutlineInputBorder(), alignLabelWithHint: true),
-          maxLines: 20, minLines: 10,
+          decoration: const InputDecoration(
+            labelText: 'Konu İçeriği (HTML veya JSON)',
+            hintText: 'HTML içeriği veya soru JSON\'u buraya girin...',
+            border: OutlineInputBorder(),
+            alignLabelWithHint: true,
+          ),
+          maxLines: 20,
+          minLines: 10,
           textAlignVertical: TextAlignVertical.top,
-          validator: (val) => (val == null || val.trim().isEmpty) ? 'İçerik metni boş olamaz.' : null,
+          validator: (val) => (val == null || val.trim().isEmpty)
+              ? 'İçerik metni boş olamaz.'
+              : null,
         ),
       ],
     );
@@ -587,9 +841,18 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: _isSubmitting ? null : _submitForm,
-        icon: _isSubmitting ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.add_box),
+        icon: _isSubmitting
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : const Icon(Icons.add_box),
         label: Text(_isSubmitting ? 'Kaydediliyor...' : 'İçerik Oluştur'),
-        style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16), textStyle: const TextStyle(fontSize: 18)),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          textStyle: const TextStyle(fontSize: 18),
+        ),
       ),
     );
   }
