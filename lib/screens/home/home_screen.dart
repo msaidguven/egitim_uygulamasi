@@ -17,7 +17,7 @@ import 'package:egitim_uygulamasi/screens/home/widgets/unfinished_tests_section.
 import 'package:egitim_uygulamasi/screens/home/widgets/weekly_agenda_overview_card.dart';
 
 import 'package:egitim_uygulamasi/screens/home/widgets/week_info_card.dart';
-import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -219,7 +219,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => OutcomesScreen(
+        builder: (_) => OutcomesScreenV2(
           lessonId: item['lesson_id'] as int? ?? 0,
           gradeId: item['grade_id'] as int? ?? 0,
           gradeName: item['grade_name'] as String? ?? '',

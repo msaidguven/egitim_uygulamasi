@@ -34,10 +34,14 @@ class WeeklyOutcomesScreen extends ConsumerWidget {
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
-                  title: Text('Hafta ${week.startWeek}'),
-                  subtitle: week.outcomeId != null 
-                            ? Text('Kazanım ID: ${week.outcomeId}')
-                            : null,
+                  title: Text(
+                    week.startWeek == week.endWeek
+                        ? 'Hafta ${week.startWeek}'
+                        : 'Hafta ${week.startWeek}-${week.endWeek}',
+                  ),
+                  subtitle: week.outcomeId != null
+                      ? Text('Kazanım ID: ${week.outcomeId}')
+                      : null,
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     Navigator.push(

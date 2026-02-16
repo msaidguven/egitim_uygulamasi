@@ -16,6 +16,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:egitim_uygulamasi/admin/pages/smart_question_addition/smart_question_addition_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
+import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_update_page.dart';
 
 const bool _enableOutcomesV2Entry = false;
 
@@ -892,6 +893,24 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     );
   }
 
+  Future<void> _openSmartContentUpdate({
+    required int selectedUnitId,
+    required int selectedTopicId,
+  }) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SmartContentUpdatePage(
+          initialGradeId: widget.args.gradeId,
+          initialLessonId: widget.args.lessonId,
+          initialUnitId: selectedUnitId,
+          initialTopicId: selectedTopicId,
+          initialCurriculumWeek: widget.curriculumWeek,
+        ),
+      ),
+    );
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -1156,8 +1175,12 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     }
 
     final selectedSection = sections[safeSelectedIndex];
+    final firstSection = sections.isNotEmpty ? sections.first : null;
     final selectedUnitId = selectedSection['unit_id'] as int?;
     final selectedTopicId = selectedSection['topic_id'] as int?;
+    final shortcutUnitId = (firstSection?['unit_id'] as int?) ?? selectedUnitId;
+    final shortcutTopicId =
+        (firstSection?['topic_id'] as int?) ?? selectedTopicId;
     final selectedUnitTitle =
         unitOptions.firstWhere(
               (u) => u['unit_id'] == effectiveUnitId,
@@ -1352,11 +1375,18 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               sliver: SliverToBoxAdapter(
                 child: AdminContentShortcutCard(
                   curriculumWeek: widget.curriculumWeek,
-                  onTap: (selectedUnitId == null || selectedTopicId == null)
+                  onTapAdd: (shortcutUnitId == null || shortcutTopicId == null)
                       ? null
                       : () => _openSmartContentAddition(
-                          selectedUnitId: selectedUnitId,
-                          selectedTopicId: selectedTopicId,
+                          selectedUnitId: shortcutUnitId,
+                          selectedTopicId: shortcutTopicId,
+                        ),
+                  onTapUpdate:
+                      (shortcutUnitId == null || shortcutTopicId == null)
+                      ? null
+                      : () => _openSmartContentUpdate(
+                          selectedUnitId: shortcutUnitId,
+                          selectedTopicId: shortcutTopicId,
                         ),
                 ),
               ),
@@ -1381,13 +1411,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               sliver: SliverToBoxAdapter(
                 child: _WeekSectionsBlock(
                   sections: sections,
-                  currentWeek: widget.curriculumWeek,
                   focusedTopicId: selectedTopicId,
-                  topicMetaByTopicId: {
-                    for (final topic in topicMenu)
-                      if (topic['topic_id'] is int)
-                        topic['topic_id'] as int: topic,
-                  },
                   onFocusTopic: (topicId) {
                     final index = sections.indexWhere(
                       (s) => s['topic_id'] == topicId,
@@ -2245,36 +2269,18 @@ class _TopicProgressHintCard extends StatelessWidget {
 
 class _WeekSectionsBlock extends StatelessWidget {
   final List<Map<String, dynamic>> sections;
-  final int currentWeek;
   final int? focusedTopicId;
-  final Map<int, Map<String, dynamic>> topicMetaByTopicId;
   final ValueChanged<int> onFocusTopic;
   final bool isAdmin;
   final VoidCallback onContentUpdated;
 
   const _WeekSectionsBlock({
     required this.sections,
-    required this.currentWeek,
     required this.focusedTopicId,
-    required this.topicMetaByTopicId,
     required this.onFocusTopic,
     required this.isAdmin,
     required this.onContentUpdated,
   });
-
-  String _phaseForTopic(int? topicId) {
-    if (topicId == null) return 'Bu Hafta';
-    final meta = topicMetaByTopicId[topicId];
-    if (meta == null) return 'Bu Hafta';
-    final start = meta['first_week'] as int?;
-    final end = meta['last_week'] as int?;
-    if (start == null || end == null) return 'Bu Hafta';
-    if (start == end) return 'Tek Hafta';
-    if (currentWeek == start) return 'Başlangıç';
-    if (currentWeek == end) return 'Bitiş';
-    if (currentWeek > start && currentWeek < end) return 'Devam';
-    return 'Bu Hafta';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -2334,7 +2340,6 @@ class _WeekSectionsBlock extends StatelessWidget {
           contents: (focusedEntry['contents'] as List)
               .whereType<TopicContent>()
               .toList(),
-          phaseLabel: _phaseForTopic(focusedEntry['topic_id'] as int?),
           isAdmin: isAdmin,
           onContentUpdated: onContentUpdated,
         ),
@@ -2344,9 +2349,6 @@ class _WeekSectionsBlock extends StatelessWidget {
             child: _SectionSummaryCard(
               section: Map<String, dynamic>.from(
                 secondaryEntries[i]['section'] as Map,
-              ),
-              phaseLabel: _phaseForTopic(
-                secondaryEntries[i]['topic_id'] as int?,
               ),
               onTap: () {
                 final topicId = secondaryEntries[i]['topic_id'] as int?;
@@ -2361,14 +2363,9 @@ class _WeekSectionsBlock extends StatelessWidget {
 
 class _SectionSummaryCard extends StatelessWidget {
   final Map<String, dynamic> section;
-  final String phaseLabel;
   final VoidCallback onTap;
 
-  const _SectionSummaryCard({
-    required this.section,
-    required this.phaseLabel,
-    required this.onTap,
-  });
+  const _SectionSummaryCard({required this.section, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -2412,22 +2409,6 @@ class _SectionSummaryCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-              decoration: BoxDecoration(
-                color: const Color(0xFFEAF2FF),
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: const Color(0xFFC8DBFF)),
-              ),
-              child: Text(
-                phaseLabel,
-                style: const TextStyle(
-                  fontSize: 11.5,
-                  color: Color(0xFF2F6FE4),
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
             const SizedBox(width: 6),
             const Icon(
               Icons.chevron_right_rounded,
@@ -2444,14 +2425,12 @@ class _SectionSummaryCard extends StatelessWidget {
 class _SingleSectionContentCard extends StatefulWidget {
   final Map<String, dynamic> section;
   final List<TopicContent> contents;
-  final String phaseLabel;
   final bool isAdmin;
   final VoidCallback onContentUpdated;
 
   const _SingleSectionContentCard({
     required this.section,
     required this.contents,
-    required this.phaseLabel,
     required this.isAdmin,
     required this.onContentUpdated,
   });
@@ -2462,32 +2441,33 @@ class _SingleSectionContentCard extends StatefulWidget {
 }
 
 class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
-  late final PageController _contentPageController;
   int _currentPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _contentPageController = PageController();
   }
 
   @override
-  void dispose() {
-    _contentPageController.dispose();
-    super.dispose();
+  void didUpdateWidget(covariant _SingleSectionContentCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.contents.isEmpty) {
+      _currentPageIndex = 0;
+      return;
+    }
+    if (_currentPageIndex >= widget.contents.length) {
+      _currentPageIndex = widget.contents.length - 1;
+    }
   }
 
   Future<void> _goToPage(int index) async {
     if (index < 0 || index >= widget.contents.length) return;
-    await _contentPageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOutCubic,
-    );
+    if (!mounted) return;
+    setState(() => _currentPageIndex = index);
   }
 
   Widget _buildMiniPager() {
-    if (widget.contents.length <= 1) return const SizedBox.shrink();
+    if (widget.contents.isEmpty) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.only(top: 8),
@@ -2586,56 +2566,13 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEAF2FF),
-                      borderRadius: BorderRadius.circular(999),
-                      border: Border.all(color: const Color(0xFFC8DBFF)),
-                    ),
-                    child: Text(
-                      widget.phaseLabel,
-                      style: const TextStyle(
-                        fontSize: 11.5,
-                        color: Color(0xFF2F6FE4),
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.58,
-            child: PageView.builder(
-              controller: _contentPageController,
-              itemCount: widget.contents.length,
-              onPageChanged: (value) {
-                if (!mounted) return;
-                setState(() => _currentPageIndex = value);
-              },
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: SingleChildScrollView(
-                    child: TopicContentView(
-                      content: widget.contents[index],
-                      isAdmin: widget.isAdmin,
-                      onContentUpdated: widget.onContentUpdated,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
           _buildMiniPager(),
-          if (widget.contents.length > 1)
+          if (widget.contents.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 4),
+              padding: const EdgeInsets.only(top: 4, bottom: 6),
               child: Text(
                 '${_currentPageIndex + 1} / ${widget.contents.length}',
                 textAlign: TextAlign.center,
@@ -2643,6 +2580,41 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
                   fontSize: 11,
                   color: Colors.grey.shade600,
                   fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          if (widget.contents.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF6F8FC),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFFDCE5F3)),
+                ),
+                child: Text(
+                  'Bu konu için içerik bulunamadı.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 180),
+                child: TopicContentView(
+                  key: ValueKey(
+                    widget.contents[_currentPageIndex].id ?? _currentPageIndex,
+                  ),
+                  content: widget.contents[_currentPageIndex],
+                  isAdmin: widget.isAdmin,
+                  onContentUpdated: widget.onContentUpdated,
                 ),
               ),
             ),

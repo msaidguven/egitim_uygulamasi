@@ -1,6 +1,6 @@
 // lib/screens/units_for_lesson_screen.dart
 
-import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 import 'package:egitim_uygulamasi/screens/units_for_lesson_screen.dart'
     as units_screen;
 import 'package:egitim_uygulamasi/models/grade_model.dart';
@@ -246,8 +246,9 @@ class _LessonsScreenState extends State<LessonsScreen> {
                     ? LayoutBuilder(
                         builder: (context, constraints) {
                           final maxWidth = constraints.maxWidth;
-                          final contentWidth =
-                              maxWidth > 1200 ? 1200.0 : maxWidth;
+                          final contentWidth = maxWidth > 1200
+                              ? 1200.0
+                              : maxWidth;
 
                           int crossAxisCount;
                           double childAspectRatio;
@@ -336,9 +337,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(
-                      0xFF6366F1,
-                    ).withOpacity(0.08),
+                    color: const Color(0xFF6366F1).withOpacity(0.08),
                     blurRadius: 25,
                     offset: const Offset(0, 10),
                   ),
@@ -350,9 +349,7 @@ class _LessonsScreenState extends State<LessonsScreen> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: const Color(
-                        0xFF6366F1,
-                      ).withOpacity(0.1),
+                      color: const Color(0xFF6366F1).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
@@ -496,7 +493,7 @@ class _LessonCard extends StatelessWidget {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: lessonIcon != null 
+                    child: lessonIcon != null
                         ? Center(
                             child: Text(
                               lessonIcon!,
@@ -537,11 +534,12 @@ class _LessonCard extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              final currentWeek = calculateCurrentAcademicWeek();
+                              final currentWeek =
+                                  calculateCurrentAcademicWeek();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => OutcomesScreen(
+                                  builder: (context) => OutcomesScreenV2(
                                     gradeId: grade.id,
                                     lessonId: lessonId,
                                     gradeName: grade.name,

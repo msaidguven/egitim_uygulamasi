@@ -9,7 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-enum _AdminMenuAction { update, publish, downloadPdf, copy }
+enum _AdminMenuAction { update, publish, downloadPdf, copy, delete }
 
 class TopicContentView extends StatelessWidget {
   final TopicContent content;
@@ -214,6 +214,57 @@ class TopicContentView extends StatelessWidget {
     }
   }
 
+  Future<void> _deleteContent(BuildContext context) async {
+    if (content.id == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('İçerik ID bulunamadı.')));
+      return;
+    }
+
+    final approved = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('İçeriği Sil'),
+          content: const Text(
+            'Bu içerik silinecek. İlgili eşlemeler de kaldırılacak. Devam edilsin mi?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: FilledButton.styleFrom(backgroundColor: Colors.red),
+              child: const Text('Sil'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (approved != true) return;
+
+    try {
+      await Supabase.instance.client
+          .from('topic_contents')
+          .delete()
+          .eq('id', content.id!);
+      if (!context.mounted) return;
+      onContentUpdated?.call();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('İçerik silindi.')));
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Silme hatası: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Determine colors based on content type or use default red
@@ -266,8 +317,11 @@ class TopicContentView extends StatelessWidget {
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.grey.shade200),
                       ),
-                      child: Icon(Icons.more_horiz_rounded,
-                          color: Colors.grey.shade700, size: 20),
+                      child: Icon(
+                        Icons.more_horiz_rounded,
+                        color: Colors.grey.shade700,
+                        size: 20,
+                      ),
                     ),
                     onSelected: (action) async {
                       switch (action) {
@@ -282,6 +336,9 @@ class TopicContentView extends StatelessWidget {
                           break;
                         case _AdminMenuAction.copy:
                           await _copyContent(context);
+                          break;
+                        case _AdminMenuAction.delete:
+                          await _deleteContent(context);
                           break;
                       }
                     },
@@ -339,11 +396,29 @@ class TopicContentView extends StatelessWidget {
                           ],
                         ),
                       ),
+                      const PopupMenuDivider(),
+                      const PopupMenuItem<_AdminMenuAction>(
+                        value: _AdminMenuAction.delete,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.delete_outline,
+                              size: 18,
+                              color: Colors.red,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'İçeriği Sil',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ],
-              ),
+              ],
             ),
+          ),
 
           RepaintBoundary(
             child: Html(
@@ -354,8 +429,9 @@ class TopicContentView extends StatelessWidget {
                   tagsToExtend: {"section"},
                   builder: (context) {
                     final element = context.node as dom.Element;
-                    final h2Element =
-                        element.children.where((e) => e.localName == "h2");
+                    final h2Element = element.children.where(
+                      (e) => e.localName == "h2",
+                    );
                     final title = h2Element.isNotEmpty
                         ? h2Element.first.text.trim()
                         : "Bilgi";
@@ -364,7 +440,9 @@ class TopicContentView extends StatelessWidget {
                       title: title,
                       child: Html(
                         data: element.innerHtml.replaceAll(
-                            RegExp(r'<h2[^>]*>.*?</h2>', dotAll: true), ''),
+                          RegExp(r'<h2[^>]*>.*?</h2>', dotAll: true),
+                          '',
+                        ),
                         extensions: const [TableHtmlExtension()],
                         style: {
                           ...getBaseHtmlStyle(context.buildContext!),
@@ -426,8 +504,9 @@ class _PedagogicalCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: type.color.withOpacity(0.06),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(18)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(18),
+              ),
             ),
             child: Row(
               children: [

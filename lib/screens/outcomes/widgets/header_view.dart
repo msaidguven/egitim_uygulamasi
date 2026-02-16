@@ -106,8 +106,12 @@ class HeaderView extends ConsumerWidget {
     );
   }
 
-  Widget _buildHierarchyRow(IconData icon, List<String> items) {
-    final text = items.map((item) => '• $item').join('\n');
+  Widget _buildHierarchyRow(
+    IconData icon,
+    List<String> items, {
+    String? activeItem,
+  }) {
+    final normalizedActive = (activeItem ?? '').trim().toLowerCase();
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Row(
@@ -124,14 +128,42 @@ class HeaderView extends ConsumerWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                height: 1.35,
-                color: Colors.grey.shade800,
-              ),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: items.map((item) {
+                final label = item.trim();
+                final isActive =
+                    label.toLowerCase() == normalizedActive &&
+                    normalizedActive.isNotEmpty;
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isActive
+                        ? const Color(0xFFEAF2FF)
+                        : Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: isActive
+                          ? const Color(0xFF2F6FE4)
+                          : Colors.grey.shade300,
+                    ),
+                  ),
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
+                      color: isActive
+                          ? const Color(0xFF2F6FE4)
+                          : Colors.grey.shade800,
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -302,6 +334,21 @@ class HeaderView extends ConsumerWidget {
   }) {
     final description = (outcome['description'] as String? ?? '').trim();
     final outcomeId = outcome['id'] as int?;
+    final weekRanges = (outcome['week_ranges'] as List? ?? const <dynamic>[])
+        .whereType<Map>()
+        .map((w) => Map<String, dynamic>.from(w))
+        .toList();
+    final weekText = weekRanges.isEmpty
+        ? null
+        : weekRanges
+              .map((w) {
+                final start = w['start_week'] as int?;
+                final end = w['end_week'] as int?;
+                if (start == null || end == null) return '';
+                return start == end ? '$start' : '$start-$end';
+              })
+              .where((s) => s.isNotEmpty)
+              .join(', ');
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -329,14 +376,30 @@ class HeaderView extends ConsumerWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              description,
-              style: TextStyle(
-                fontSize: 13.5,
-                height: 1.35,
-                color: Colors.grey.shade900,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    height: 1.35,
+                    color: Colors.grey.shade900,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (weekText != null && weekText.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Hafta: $weekText',
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
           if (isAdmin) ...[
@@ -382,13 +445,63 @@ class HeaderView extends ConsumerWidget {
     );
   }
 
-  void _showOutcomesSheet(
+  Future<void> _showOutcomesSheet(
     BuildContext context,
     List<Map<String, dynamic>> sections,
     List<Map<String, dynamic>> flatOutcomes, {
     required bool isAdmin,
     required VoidCallback onRefreshWeek,
-  }) {
+  }) async {
+    final outcomeIds = <int>{};
+    for (final section in sections) {
+      final normalized = _normalizeOutcomeList(
+        section['outcomes'] as List?,
+        fallbackTopicId: section['topic_id'] as int?,
+        fallbackTopicTitle: section['topic_title'] as String?,
+      );
+      for (final o in normalized) {
+        final id = o['id'] as int?;
+        if (id != null) outcomeIds.add(id);
+      }
+    }
+    for (final o in flatOutcomes) {
+      final id = o['id'] as int?;
+      if (id != null) outcomeIds.add(id);
+    }
+
+    final weekRangesByOutcomeId = <int, List<Map<String, dynamic>>>{};
+    if (outcomeIds.isNotEmpty) {
+      try {
+        final rows = await Supabase.instance.client
+            .from('outcome_weeks')
+            .select('outcome_id, start_week, end_week')
+            .inFilter('outcome_id', outcomeIds.toList());
+        for (final raw in (rows as List)) {
+          final row = Map<String, dynamic>.from(raw as Map);
+          final id = row['outcome_id'] as int?;
+          if (id == null) continue;
+          weekRangesByOutcomeId.putIfAbsent(id, () => []).add({
+            'start_week': row['start_week'],
+            'end_week': row['end_week'],
+          });
+        }
+        for (final entry in weekRangesByOutcomeId.entries) {
+          entry.value.sort((a, b) {
+            final aStart = a['start_week'] as int? ?? 0;
+            final bStart = b['start_week'] as int? ?? 0;
+            if (aStart != bStart) return aStart.compareTo(bStart);
+            final aEnd = a['end_week'] as int? ?? 0;
+            final bEnd = b['end_week'] as int? ?? 0;
+            return aEnd.compareTo(bEnd);
+          });
+        }
+      } catch (_) {
+        // Sessiz fallback: hafta araligi gosterimi olmadan acilir.
+      }
+    }
+
+    if (!context.mounted) return;
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -413,7 +526,16 @@ class HeaderView extends ConsumerWidget {
                       section['outcomes'] as List?,
                       fallbackTopicId: section['topic_id'] as int?,
                       fallbackTopicTitle: section['topic_title'] as String?,
-                    ),
+                    ).map((o) {
+                      final id = o['id'] as int?;
+                      return {
+                        ...o,
+                        'week_ranges': id == null
+                            ? const <Map<String, dynamic>>[]
+                            : (weekRangesByOutcomeId[id] ??
+                                  const <Map<String, dynamic>>[]),
+                      };
+                    }).toList(),
                   ),
                 },
               )
@@ -866,9 +988,17 @@ class HeaderView extends ConsumerWidget {
                 ],
                 const SizedBox(height: 12),
                 if (!isSpecialPage && unitTitles.isNotEmpty)
-                  _buildHierarchyRow(Icons.folder_open_outlined, unitTitles),
+                  _buildHierarchyRow(
+                    Icons.folder_open_outlined,
+                    unitTitles,
+                    activeItem: data['unit_title'] as String?,
+                  ),
                 if (!isSpecialPage && topicTitles.isNotEmpty)
-                  _buildHierarchyRow(Icons.article_outlined, topicTitles),
+                  _buildHierarchyRow(
+                    Icons.article_outlined,
+                    topicTitles,
+                    activeItem: data['topic_title'] as String?,
+                  ),
                 if (!isSpecialPage) ...[
                   const SizedBox(height: 10),
                   Align(
@@ -933,8 +1063,8 @@ class HeaderView extends ConsumerWidget {
                           AdminCopyButton(
                             gradeName: gradeName,
                             lessonName: lessonName,
-                            unitTitle:
-                                (data['unit_title'] as String? ?? '').trim(),
+                            unitTitle: (data['unit_title'] as String? ?? '')
+                                .trim(),
                             topicTitle: (data['topic_title'] as String? ?? '')
                                 .trim(),
                             outcomes: flatOutcomes,
@@ -943,8 +1073,8 @@ class HeaderView extends ConsumerWidget {
                           AdminCopyButton(
                             gradeName: gradeName,
                             lessonName: lessonName,
-                            unitTitle:
-                                (data['unit_title'] as String? ?? '').trim(),
+                            unitTitle: (data['unit_title'] as String? ?? '')
+                                .trim(),
                             topicTitle: (data['topic_title'] as String? ?? '')
                                 .trim(),
                             outcomes: flatOutcomes,

@@ -2,7 +2,7 @@
 
 import 'package:egitim_uygulamasi/screens/home/models/home_models.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/common_widgets.dart';
-import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 import 'lesson_card.dart';
 import 'package:flutter/material.dart';
 
@@ -201,14 +201,15 @@ class StudentContentView extends StatelessWidget {
     await Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => OutcomesScreen(
-          lessonId: data['lesson_id'],
-          gradeId: data['grade_id'],
-          lessonName: data['lesson_name'],
-          gradeName: data['grade_name'],
-          initialCurriculumWeek:
-              data['curriculum_week'] ?? currentCurriculumWeek,
-        ),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            OutcomesScreenV2(
+              lessonId: data['lesson_id'],
+              gradeId: data['grade_id'],
+              lessonName: data['lesson_name'],
+              gradeName: data['grade_name'],
+              initialCurriculumWeek:
+                  data['curriculum_week'] ?? currentCurriculumWeek,
+            ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;

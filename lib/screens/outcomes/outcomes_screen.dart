@@ -16,6 +16,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:egitim_uygulamasi/admin/pages/smart_question_addition/smart_question_addition_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
+import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_update_page.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 
 const bool _enableOutcomesV2Entry = true;
@@ -891,6 +892,24 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     );
   }
 
+  Future<void> _openSmartContentUpdate({
+    required int selectedUnitId,
+    required int selectedTopicId,
+  }) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SmartContentUpdatePage(
+          initialGradeId: widget.args.gradeId,
+          initialLessonId: widget.args.lessonId,
+          initialUnitId: selectedUnitId,
+          initialTopicId: selectedTopicId,
+          initialCurriculumWeek: widget.curriculumWeek,
+        ),
+      ),
+    );
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -1292,9 +1311,16 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               sliver: SliverToBoxAdapter(
                 child: AdminContentShortcutCard(
                   curriculumWeek: widget.curriculumWeek,
-                  onTap: (selectedUnitId == null || selectedTopicId == null)
+                  onTapAdd: (selectedUnitId == null || selectedTopicId == null)
                       ? null
                       : () => _openSmartContentAddition(
+                          selectedUnitId: selectedUnitId,
+                          selectedTopicId: selectedTopicId,
+                        ),
+                  onTapUpdate:
+                      (selectedUnitId == null || selectedTopicId == null)
+                      ? null
+                      : () => _openSmartContentUpdate(
                           selectedUnitId: selectedUnitId,
                           selectedTopicId: selectedTopicId,
                         ),

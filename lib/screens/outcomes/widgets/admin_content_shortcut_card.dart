@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 
 class AdminContentShortcutCard extends StatelessWidget {
   final int curriculumWeek;
-  final VoidCallback? onTap;
+  final VoidCallback? onTapAdd;
+  final VoidCallback? onTapUpdate;
 
   const AdminContentShortcutCard({
     super.key,
     required this.curriculumWeek,
-    this.onTap,
+    this.onTapAdd,
+    this.onTapUpdate,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isEnabled = onTap != null;
+    final isAddEnabled = onTapAdd != null;
+    final isUpdateEnabled = onTapUpdate != null;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
@@ -55,7 +58,7 @@ class AdminContentShortcutCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '$curriculumWeek. hafta için içerik ekle',
+                  '$curriculumWeek. hafta içerik işlemleri',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
@@ -66,19 +69,48 @@ class AdminContentShortcutCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          FilledButton(
-            onPressed: onTap,
-            style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF16A085),
-              foregroundColor: Colors.white,
-              disabledBackgroundColor: Colors.grey.shade300,
-              disabledForegroundColor: Colors.grey.shade600,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FilledButton(
+                onPressed: onTapAdd,
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF16A085),
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: Colors.grey.shade300,
+                  disabledForegroundColor: Colors.grey.shade600,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(isAddEnabled ? 'Ekle' : 'Seçim'),
               ),
-            ),
-            child: Text(isEnabled ? 'Aç' : 'Seçim Gerekli'),
+              const SizedBox(width: 8),
+              OutlinedButton(
+                onPressed: onTapUpdate,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF16A085),
+                  disabledForegroundColor: Colors.grey.shade600,
+                  side: BorderSide(
+                    color: isUpdateEnabled
+                        ? const Color(0xFF16A085)
+                        : Colors.grey.shade400,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text('Güncelle'),
+              ),
+            ],
           ),
         ],
       ),

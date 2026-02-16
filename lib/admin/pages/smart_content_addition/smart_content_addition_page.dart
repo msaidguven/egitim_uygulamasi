@@ -50,12 +50,15 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   List<Lesson> _availableLessons = [];
   List<Unit> _availableUnits = [];
   List<Topic> _availableTopics = [];
+  List<Map<String, dynamic>> _availableOutcomes = [];
 
   // State Variables for UI Control
   bool _isLoadingGrades = true;
   bool _isLoadingUnits = false;
   bool _isLoadingTopics = false;
+  bool _isLoadingOutcomes = false;
   String? _topicError;
+  String? _outcomeError;
   bool _isSubmitting = false;
   String? _unitSelectionType = 'existing';
   String? _topicSelectionType = 'existing';
@@ -64,9 +67,9 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   // Text Editing Controllers
   final _newUnitTitleController = TextEditingController();
   final _newTopicTitleController = TextEditingController();
-  final _curriculumWeekController = TextEditingController();
   final _topicContentTitleController = TextEditingController();
   final _rawTopicContentController = TextEditingController();
+  final Set<int> _selectedOutcomeIds = <int>{};
 
   T? _firstOrNull<T>(Iterable<T> list, bool Function(T item) predicate) {
     for (final item in list) {
@@ -85,7 +88,6 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   void dispose() {
     _newUnitTitleController.dispose();
     _newTopicTitleController.dispose();
-    _curriculumWeekController.dispose();
     _topicContentTitleController.dispose();
     _rawTopicContentController.dispose();
     super.dispose();
@@ -145,18 +147,18 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     _selectedUnit = null;
     _availableTopics = [];
     _selectedTopic = null;
-    if (widget.initialCurriculumWeek != null) {
-      _curriculumWeekController.text = widget.initialCurriculumWeek.toString();
-    }
-
+    _availableOutcomes = [];
+    _selectedOutcomeIds.clear();
     if (mounted) setState(() {});
 
     await _loadAvailableUnits(grade.id, lesson.id);
     if (!mounted) return;
 
-    final unit = presetUnitId == null
-        ? null
-        : _firstOrNull(_availableUnits, (u) => u.id == presetUnitId);
+    final unit =
+        (presetUnitId == null
+            ? null
+            : _firstOrNull(_availableUnits, (u) => u.id == presetUnitId)) ??
+        (_availableUnits.isNotEmpty ? _availableUnits.first : null);
     if (unit == null) {
       setState(() {});
       return;
@@ -170,11 +172,18 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     await _loadAvailableTopics(unit.id);
     if (!mounted) return;
 
-    final topic = presetTopicId == null
-        ? null
-        : _firstOrNull(_availableTopics, (t) => t.id == presetTopicId);
+    final topic =
+        (presetTopicId == null
+            ? null
+            : _firstOrNull(_availableTopics, (t) => t.id == presetTopicId)) ??
+        (_availableTopics.isNotEmpty ? _availableTopics.first : null);
     if (topic != null) {
       _selectedTopic = topic;
+      await _loadOutcomesForTopic(
+        topic.id,
+        preselectWeek: widget.initialCurriculumWeek,
+        autoSelectIfEmpty: true,
+      );
     }
     setState(() {});
   }
@@ -203,6 +212,8 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       _topicError = null;
       _availableTopics = [];
       _selectedTopic = null;
+      _availableOutcomes = [];
+      _selectedOutcomeIds.clear();
     });
     try {
       _availableTopics = await _topicService.getTopicsForUnit(unitId);
@@ -212,6 +223,79 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       setState(() => _topicError = errorMessage);
     } finally {
       if (mounted) setState(() => _isLoadingTopics = false);
+    }
+  }
+
+  Future<void> _loadOutcomesForTopic(
+    int topicId, {
+    int? preselectWeek,
+    bool autoSelectIfEmpty = false,
+  }) async {
+    setState(() {
+      _isLoadingOutcomes = true;
+      _outcomeError = null;
+      _availableOutcomes = [];
+      _selectedOutcomeIds.clear();
+    });
+    try {
+      final rows = await Supabase.instance.client
+          .from('outcomes')
+          .select('id, description, order_index')
+          .eq('topic_id', topicId)
+          .order('order_index', ascending: true);
+      _availableOutcomes = (rows as List)
+          .map((row) => Map<String, dynamic>.from(row as Map))
+          .toList();
+
+      if (preselectWeek != null && _availableOutcomes.isNotEmpty) {
+        final outcomeIds = _availableOutcomes
+            .map((o) => o['id'])
+            .whereType<int>()
+            .toList();
+        if (outcomeIds.isNotEmpty) {
+          final weekRows = await Supabase.instance.client
+              .from('outcome_weeks')
+              .select('outcome_id, start_week, end_week')
+              .inFilter('outcome_id', outcomeIds);
+          final matching = <int>{};
+          for (final raw in (weekRows as List)) {
+            final row = Map<String, dynamic>.from(raw as Map);
+            final id = row['outcome_id'] as int?;
+            final start = row['start_week'] as int?;
+            final end = row['end_week'] as int?;
+            if (id == null || start == null || end == null) continue;
+            if (preselectWeek >= start && preselectWeek <= end) {
+              matching.add(id);
+            }
+          }
+          if (matching.isNotEmpty) {
+            _selectedOutcomeIds
+              ..clear()
+              ..addAll(matching);
+          } else if (autoSelectIfEmpty && _availableOutcomes.isNotEmpty) {
+            final firstId = _availableOutcomes.first['id'] as int?;
+            if (firstId != null) {
+              _selectedOutcomeIds
+                ..clear()
+                ..add(firstId);
+            }
+          }
+        }
+      } else if (autoSelectIfEmpty && _availableOutcomes.isNotEmpty) {
+        final firstId = _availableOutcomes.first['id'] as int?;
+        if (firstId != null) {
+          _selectedOutcomeIds
+            ..clear()
+            ..add(firstId);
+        }
+      }
+    } catch (e, st) {
+      debugPrint('Kazanımlar yüklenemedi: $e\n$st');
+      _outcomeError = 'Kazanımlar yüklenemedi: $e';
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingOutcomes = false);
+      }
     }
   }
 
@@ -240,16 +324,10 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       final lessonId = _selectedLesson!.id;
       final newUnitTitle = _newUnitTitleController.text.trim();
       final newTopicTitle = _newTopicTitleController.text.trim();
-      final curriculumWeek = int.tryParse(
-        _curriculumWeekController.text.trim(),
-      );
+      int? curriculumWeek = widget.initialCurriculumWeek;
       final contentText = _rawTopicContentController.text.trim();
       final contentTitle = _topicContentTitleController.text.trim();
 
-      // --- Validate data ---
-      if (curriculumWeek == null || curriculumWeek < 1) {
-        throw Exception('Geçerli bir hafta numarası girin.');
-      }
       if (contentText.isEmpty) {
         throw Exception('İçerik metni boş olamaz.');
       }
@@ -332,13 +410,29 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         decodedContent = null;
       }
 
-      if (decodedContent is Map<String, dynamic> &&
-          decodedContent.containsKey('questions')) {
+      final isQuestionPayload =
+          decodedContent is Map<String, dynamic> &&
+          decodedContent.containsKey('questions');
+
+      if (isQuestionPayload) {
+        if (curriculumWeek == null || curriculumWeek < 1) {
+          curriculumWeek = await _resolveDefaultWeekFromSelectedOutcomes();
+        }
+        if (curriculumWeek == null || curriculumWeek < 1) {
+          throw Exception('Soru JSON\'u için hafta çözümlenemedi.');
+        }
+      } else {
+        if (_selectedOutcomeIds.isEmpty) {
+          throw Exception('İçerik için en az bir kazanım seçin.');
+        }
+      }
+
+      if (isQuestionPayload) {
         // It's a JSON for questions, process it
         await _processAndInsertQuestions(
           decodedContent,
           topicId,
-          curriculumWeek,
+          curriculumWeek!,
         );
       } else {
         // It's regular HTML content
@@ -346,7 +440,8 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
           topicId,
           contentTitle,
           contentText,
-          curriculumWeek,
+          curriculumWeek: curriculumWeek,
+          selectedOutcomeIds: _selectedOutcomeIds.toList(),
         );
       }
 
@@ -377,9 +472,10 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
   Future<void> _insertTopicContent(
     int topicId,
     String title,
-    String content,
-    int curriculumWeek,
-  ) async {
+    String content, {
+    int? curriculumWeek,
+    required List<int> selectedOutcomeIds,
+  }) async {
     final supabase = Supabase.instance.client;
     final orderNoRes = await supabase
         .from('topic_contents')
@@ -403,10 +499,57 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         .single();
     final newContentId = newContent['id'];
 
-    await supabase.from('topic_content_weeks').insert({
-      'topic_content_id': newContentId,
-      'curriculum_week': curriculumWeek,
-    });
+    if (selectedOutcomeIds.isNotEmpty) {
+      await supabase
+          .from('topic_content_outcomes')
+          .insert(
+            selectedOutcomeIds
+                .map(
+                  (outcomeId) => {
+                    'topic_content_id': newContentId,
+                    'outcome_id': outcomeId,
+                  },
+                )
+                .toList(),
+          );
+
+      final weekRows = await supabase
+          .from('outcome_weeks')
+          .select('start_week, end_week')
+          .inFilter('outcome_id', selectedOutcomeIds);
+      final weekSet = <int>{};
+      for (final raw in (weekRows as List)) {
+        final row = Map<String, dynamic>.from(raw as Map);
+        final start = row['start_week'] as int?;
+        final end = row['end_week'] as int?;
+        if (start == null || end == null) continue;
+        for (var week = start; week <= end; week++) {
+          weekSet.add(week);
+        }
+      }
+      if (weekSet.isNotEmpty) {
+        await supabase
+            .from('topic_content_weeks')
+            .insert(
+              weekSet
+                  .map(
+                    (week) => {
+                      'topic_content_id': newContentId,
+                      'curriculum_week': week,
+                    },
+                  )
+                  .toList(),
+            );
+      }
+      return;
+    }
+
+    if (curriculumWeek != null && curriculumWeek >= 1) {
+      await supabase.from('topic_content_weeks').insert({
+        'topic_content_id': newContentId,
+        'curriculum_week': curriculumWeek,
+      });
+    }
   }
 
   Future<void> _processAndInsertQuestions(
@@ -484,9 +627,9 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     _formKey.currentState?.reset();
     _newUnitTitleController.clear();
     _newTopicTitleController.clear();
-    _curriculumWeekController.clear();
     _topicContentTitleController.clear();
     _rawTopicContentController.clear();
+    _selectedOutcomeIds.clear();
 
     Future.delayed(const Duration(milliseconds: 50), () {
       if (mounted) {
@@ -500,6 +643,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
           _topicSelectionType = 'existing';
           _selectedTopic = null;
           _availableTopics.clear();
+          _availableOutcomes.clear();
         });
       }
     });
@@ -529,9 +673,10 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
               _buildSectionTitle('3. Konu'),
               _buildTopicBlock(),
               const SizedBox(height: 24),
-              _buildSectionTitle('4. Konu İçeriği'),
-              _buildWeekSelector(),
-              const SizedBox(height: 12),
+              _buildSectionTitle('4. Kazanım Eşlemesi'),
+              _buildOutcomeSelector(),
+              const SizedBox(height: 24),
+              _buildSectionTitle('5. Konu İçeriği'),
               _buildContentInput(),
               const SizedBox(height: 24),
               _buildSubmitButton(),
@@ -570,6 +715,8 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
                 _selectedUnit = null;
                 _availableTopics.clear();
                 _selectedTopic = null;
+                _availableOutcomes.clear();
+                _selectedOutcomeIds.clear();
               });
             },
             items: _availableGrades.map((grade) {
@@ -596,6 +743,8 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
                 _selectedUnit = null;
                 _availableTopics.clear();
                 _selectedTopic = null;
+                _availableOutcomes.clear();
+                _selectedOutcomeIds.clear();
                 _loadAvailableUnits(_selectedGrade!.id, lesson.id);
               });
             },
@@ -637,7 +786,15 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
                 groupValue: _unitSelectionType,
                 onChanged: !isEnabled
                     ? null
-                    : (val) => setState(() => _unitSelectionType = val),
+                    : (val) => setState(() {
+                        _unitSelectionType = val;
+                        if (val == 'new') {
+                          _availableTopics.clear();
+                          _selectedTopic = null;
+                          _availableOutcomes.clear();
+                          _selectedOutcomeIds.clear();
+                        }
+                      }),
               ),
             ),
           ],
@@ -733,8 +890,16 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
               groupValue: _selectedTopic,
               onChanged: !isEnabled
                   ? null
-                  : (newlySelectedTopic) =>
-                        setState(() => _selectedTopic = newlySelectedTopic),
+                  : (newlySelectedTopic) async {
+                      if (newlySelectedTopic == null) return;
+                      setState(() => _selectedTopic = newlySelectedTopic);
+                      final preselectWeek = widget.initialCurriculumWeek;
+                      await _loadOutcomesForTopic(
+                        newlySelectedTopic.id,
+                        preselectWeek: preselectWeek,
+                        autoSelectIfEmpty: true,
+                      );
+                    },
             );
           }).toList(),
         ),
@@ -762,7 +927,13 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
                 groupValue: _topicSelectionType,
                 onChanged: !isEnabled
                     ? null
-                    : (val) => setState(() => _topicSelectionType = val),
+                    : (val) => setState(() {
+                        _topicSelectionType = val;
+                        if (val == 'new') {
+                          _availableOutcomes = [];
+                          _selectedOutcomeIds.clear();
+                        }
+                      }),
               ),
             ),
           ],
@@ -787,20 +958,77 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     );
   }
 
-  Widget _buildWeekSelector() {
-    return TextFormField(
-      controller: _curriculumWeekController,
-      decoration: const InputDecoration(
-        labelText: 'Hafta Numarası',
-        border: OutlineInputBorder(),
+  Future<int?> _resolveDefaultWeekFromSelectedOutcomes() async {
+    if (_selectedOutcomeIds.isEmpty) return null;
+    final rows = await Supabase.instance.client
+        .from('outcome_weeks')
+        .select('start_week')
+        .inFilter('outcome_id', _selectedOutcomeIds.toList())
+        .order('start_week', ascending: true)
+        .limit(1);
+    final rowList = rows as List;
+    if (rowList.isEmpty) return null;
+    final firstRow = Map<String, dynamic>.from(rowList.first as Map);
+    return firstRow['start_week'] as int?;
+  }
+
+  Widget _buildOutcomeSelector() {
+    if (_topicSelectionType != 'existing' || _selectedTopic == null) {
+      return const Text(
+        'Kazanım seçmek için mevcut bir konu seçin. (Yeni konu için önce kazanımları oluşturun.)',
+      );
+    }
+
+    if (_isLoadingOutcomes) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_outcomeError != null) {
+      return Text(_outcomeError!, style: const TextStyle(color: Colors.red));
+    }
+
+    if (_availableOutcomes.isEmpty) {
+      return const Text(
+        'Bu konu için kazanım bulunamadı. İçerik hafta bazlı eklenecek.',
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(8),
       ),
-      keyboardType: TextInputType.number,
-      validator: (val) =>
-          (val == null ||
-              int.tryParse(val.trim()) == null ||
-              int.parse(val.trim()) < 1)
-          ? 'Geçerli bir hafta girin.'
-          : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Bu içerik hangi kazanımları kapsıyor?',
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 8),
+          ..._availableOutcomes.map((outcome) {
+            final outcomeId = outcome['id'] as int;
+            final desc = (outcome['description'] as String? ?? '').trim();
+            return CheckboxListTile(
+              value: _selectedOutcomeIds.contains(outcomeId),
+              contentPadding: EdgeInsets.zero,
+              title: Text(desc.isEmpty ? 'Kazanım #$outcomeId' : desc),
+              onChanged: (checked) {
+                setState(() {
+                  if (checked == true) {
+                    _selectedOutcomeIds.add(outcomeId);
+                  } else {
+                    _selectedOutcomeIds.remove(outcomeId);
+                  }
+                });
+              },
+            );
+          }),
+        ],
+      ),
     );
   }
 

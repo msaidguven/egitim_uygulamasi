@@ -6,11 +6,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class TopicWeekInfo {
   final int id;
   final int startWeek;
+  final int endWeek;
   final int? outcomeId; // Kazanım ID'si, şimdilik opsiyonel
 
   TopicWeekInfo({
     required this.id,
     required this.startWeek,
+    required this.endWeek,
     this.outcomeId,
   });
 
@@ -18,6 +20,7 @@ class TopicWeekInfo {
     return TopicWeekInfo(
       id: json['id'] as int,
       startWeek: json['start_week'] as int,
+      endWeek: (json['end_week'] as int?) ?? (json['start_week'] as int),
       outcomeId: json['outcome_id'] as int?,
     );
   }
@@ -25,8 +28,10 @@ class TopicWeekInfo {
 
 /// Bir topicId'ye göre o konunun işlendiği haftaları getiren FutureProvider.
 /// .family değiştiricisi, provider'a dışarıdan bir parametre (topicId) geçmemizi sağlar.
-final weeksForTopicProvider =
-    FutureProvider.family<List<TopicWeekInfo>, int>((ref, topicId) async {
+final weeksForTopicProvider = FutureProvider.family<List<TopicWeekInfo>, int>((
+  ref,
+  topicId,
+) async {
   final supabase = Supabase.instance.client;
 
   try {
@@ -45,7 +50,7 @@ final weeksForTopicProvider =
     final weeks = response
         .map((item) => TopicWeekInfo.fromJson(item as Map<String, dynamic>))
         .toList();
-        
+
     return weeks;
   } catch (e) {
     // Hata durumunda konsola yazdır ve hatayı yeniden fırlat.
