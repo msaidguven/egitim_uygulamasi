@@ -2291,20 +2291,23 @@ class _WeekSectionsBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final visibleSections = sections
-        .map((section) {
-          final contents = (section['contents'] as List? ?? [])
-              .whereType<Map>()
-              .map((c) => TopicContent.fromJson(Map<String, dynamic>.from(c)))
-              .toList();
-          return {
-            'section': section,
-            'contents': contents,
-            'topic_id': section['topic_id'] as int?,
-          };
-        })
-        .where((entry) => (entry['contents'] as List).isNotEmpty)
-        .toList();
+    final visibleSections = <Map<String, dynamic>>[];
+    for (final section in sections) {
+      final rawContents = (section['contents'] as List? ?? []).whereType<Map>();
+      if (rawContents.isEmpty) continue;
+
+      final parsedContents = rawContents
+          .map((c) => TopicContent.fromJson(Map<String, dynamic>.from(c)))
+          .toList();
+      if (parsedContents.isEmpty) continue;
+
+      final entry = <String, dynamic>{
+        'section': section,
+        'contents': parsedContents,
+        'topic_id': section['topic_id'] as int?,
+      };
+      visibleSections.add(entry);
+    }
 
     if (visibleSections.isEmpty) {
       return Container(

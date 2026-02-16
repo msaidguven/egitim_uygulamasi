@@ -504,6 +504,8 @@ class OutcomesViewModel extends ChangeNotifier {
         final initialData = _allWeeksData[_initialPageIndex];
         if (initialData['type'] == 'week') {
           _currentWeek = initialData['curriculum_week'] as int?;
+          _fetchWeekContent(_initialPageIndex);
+          _prefetchAroundWeeks(_initialPageIndex, radius: 2);
         }
       }
     } catch (e) {
@@ -707,31 +709,29 @@ class OutcomesViewModel extends ChangeNotifier {
     final weekData = _allWeeksData[index];
     if (weekData['type'] == 'week') {
       final curriculumWeek = weekData['curriculum_week'] as int;
+      final hasWeekChanged = _currentWeek != curriculumWeek;
       _currentWeek = curriculumWeek;
       _fetchWeekContent(index);
+      if (hasWeekChanged) {
+        _safeNotifyListeners();
+      }
     }
-    _prefetchNeighborWeeks(index);
-    _safeNotifyListeners();
+    _prefetchAroundWeeks(index, radius: 2);
   }
 
-  void _prefetchNeighborWeeks(int centerIndex) {
-    int? prevWeekIndex;
-    for (var i = centerIndex - 1; i >= 0; i--) {
-      if (_allWeeksData[i]['type'] == 'week') {
-        prevWeekIndex = i;
-        break;
+  void _prefetchAroundWeeks(int centerIndex, {int radius = 1}) {
+    final neighborIndexes = <int>{};
+    for (final direction in const <int>[-1, 1]) {
+      var found = 0;
+      var i = centerIndex + direction;
+      while (i >= 0 && i < _allWeeksData.length && found < radius) {
+        if (_allWeeksData[i]['type'] == 'week') {
+          neighborIndexes.add(i);
+          found++;
+        }
+        i += direction;
       }
     }
-
-    int? nextWeekIndex;
-    for (var i = centerIndex + 1; i < _allWeeksData.length; i++) {
-      if (_allWeeksData[i]['type'] == 'week') {
-        nextWeekIndex = i;
-        break;
-      }
-    }
-
-    final neighborIndexes = <int>[?prevWeekIndex, ?nextWeekIndex];
 
     for (final index in neighborIndexes) {
       if (index < 0 || index >= _allWeeksData.length) continue;
@@ -1005,6 +1005,10 @@ class OutcomesViewModel extends ChangeNotifier {
     final allContents = <int, Map<String, dynamic>>{};
     final allMiniQuizQuestions = <int, Map<String, dynamic>>{};
     final allUnitIds = <int>{};
+    final topicMetaById = <int, Map<String, dynamic>>{
+      for (final topic in _lessonTopics)
+        if (topic['topic_id'] is int) topic['topic_id'] as int: topic,
+    };
 
     for (final rawItem in response) {
       final item = rawItem as Map<String, dynamic>;
@@ -1015,11 +1019,15 @@ class OutcomesViewModel extends ChangeNotifier {
       allUnitIds.add(unitId);
       final sectionKey = '$unitId-$topicId';
       final section = sectionMap.putIfAbsent(sectionKey, () {
+        final topicMeta = topicMetaById[topicId];
         return {
           'unit_id': unitId,
           'unit_title': item['unit_title'],
           'topic_id': topicId,
           'topic_title': item['topic_title'],
+          'unit_order': topicMeta?['unit_order'] as int? ?? 0,
+          'topic_order': topicMeta?['topic_order'] as int? ?? 0,
+          'first_week': topicMeta?['first_week'] as int?,
           'outcomes': <String, Map<String, dynamic>>{},
           'contents': <Map<String, dynamic>>[],
         };
@@ -1066,18 +1074,42 @@ class OutcomesViewModel extends ChangeNotifier {
       }
     }
 
-    final sections = sectionMap.values.map((section) {
-      return {
-        'unit_id': section['unit_id'],
-        'unit_title': section['unit_title'],
-        'topic_id': section['topic_id'],
-        'topic_title': section['topic_title'],
-        'outcomes': (section['outcomes'] as Map<String, Map<String, dynamic>>)
-            .values
-            .toList(),
-        'contents': section['contents'],
-      };
-    }).toList();
+    final sections =
+        sectionMap.values.map((section) {
+          return {
+            'unit_id': section['unit_id'],
+            'unit_title': section['unit_title'],
+            'topic_id': section['topic_id'],
+            'topic_title': section['topic_title'],
+            'unit_order': section['unit_order'],
+            'topic_order': section['topic_order'],
+            'first_week': section['first_week'],
+            'outcomes':
+                (section['outcomes'] as Map<String, Map<String, dynamic>>)
+                    .values
+                    .toList(),
+            'contents': section['contents'],
+          };
+        }).toList()..sort((a, b) {
+          final unitCmp = (a['unit_order'] as int? ?? 0).compareTo(
+            b['unit_order'] as int? ?? 0,
+          );
+          if (unitCmp != 0) return unitCmp;
+
+          final aFirstWeek = a['first_week'] as int? ?? 999;
+          final bFirstWeek = b['first_week'] as int? ?? 999;
+          final firstWeekCmp = aFirstWeek.compareTo(bFirstWeek);
+          if (firstWeekCmp != 0) return firstWeekCmp;
+
+          final topicOrderCmp = (a['topic_order'] as int? ?? 0).compareTo(
+            b['topic_order'] as int? ?? 0,
+          );
+          if (topicOrderCmp != 0) return topicOrderCmp;
+
+          return (a['topic_id'] as int? ?? 0).compareTo(
+            b['topic_id'] as int? ?? 0,
+          );
+        });
 
     final allOutcomeMaps = <Map<String, dynamic>>[];
     for (final section in sections) {
@@ -1135,32 +1167,37 @@ class OutcomesViewModel extends ChangeNotifier {
     for (var offset = -radius; offset <= radius; offset++) {
       targetWeeks.add(centerWeek + offset);
     }
+    final validWeeks = (targetWeeks.where((week) => week >= 1).toList()
+      ..sort());
 
-    for (final week in targetWeeks) {
-      if (week < 1) continue;
+    for (final week in validWeeks) {
       _weekMainContents.remove(week);
       _weekQuestions.remove(week);
       _weekStats.remove(week);
       _weekUnitIds.remove(week);
       _weekLoadingStatus.remove(week);
       _weekErrorMessages.remove(week);
-      await _cacheService.clearWeeklyCurriculumData(
-        curriculumWeek: week,
-        lessonId: lessonId,
-        gradeId: gradeId,
-      );
     }
+    await Future.wait(
+      validWeeks.map(
+        (week) => _cacheService.clearWeeklyCurriculumData(
+          curriculumWeek: week,
+          lessonId: lessonId,
+          gradeId: gradeId,
+        ),
+      ),
+    );
 
     await _fetchLessonTopics();
 
-    for (final week in targetWeeks.toList()..sort()) {
-      if (week < 1) continue;
-      final index = _allWeeksData.indexWhere(
-        (w) => w['type'] == 'week' && w['curriculum_week'] == week,
-      );
-      if (index != -1) {
-        await _fetchWeekContent(index);
-      }
-    }
+    final fetchIndexes = validWeeks
+        .map(
+          (week) => _allWeeksData.indexWhere(
+            (w) => w['type'] == 'week' && w['curriculum_week'] == week,
+          ),
+        )
+        .where((index) => index != -1)
+        .toList();
+    await Future.wait(fetchIndexes.map(_fetchWeekContent));
   }
 }
