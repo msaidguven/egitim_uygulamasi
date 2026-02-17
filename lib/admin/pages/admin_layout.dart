@@ -33,10 +33,19 @@ class _AdminLayoutState extends State<AdminLayout> {
         context.go(AdminRoutes.outcomes);
         break;
       case 5:
+        context.go(AdminRoutes.contentOverview);
+        break;
+      case 6:
+        context.go(AdminRoutes.bulkDelete);
+        break;
+      case 7:
         context.go(AdminRoutes.smartContentAddition);
         break;
-      case 6: // New case for Smart Question Addition
+      case 8: // New case for Smart Question Addition
         context.go(AdminRoutes.smartQuestionAddition);
+        break;
+      case 9:
+        context.go(AdminRoutes.specialWeeks);
         break;
     }
   }
@@ -55,10 +64,17 @@ class _AdminLayoutState extends State<AdminLayout> {
       selectedIndex = 3;
     } else if (location.startsWith(AdminRoutes.outcomes)) {
       selectedIndex = 4;
-    } else if (location.startsWith(AdminRoutes.smartContentAddition)) {
+    } else if (location.startsWith(AdminRoutes.contentOverview)) {
       selectedIndex = 5;
-    } else if (location.startsWith(AdminRoutes.smartQuestionAddition)) { // New else if for Smart Question Addition
+    } else if (location.startsWith(AdminRoutes.bulkDelete)) {
       selectedIndex = 6;
+    } else if (location.startsWith(AdminRoutes.smartContentAddition)) {
+      selectedIndex = 7;
+    } else if (location.startsWith(AdminRoutes.smartQuestionAddition)) {
+      // New else if for Smart Question Addition
+      selectedIndex = 8;
+    } else if (location.startsWith(AdminRoutes.specialWeeks)) {
+      selectedIndex = 9;
     }
 
     return Scaffold(

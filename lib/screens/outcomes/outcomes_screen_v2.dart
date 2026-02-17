@@ -17,6 +17,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:egitim_uygulamasi/admin/pages/smart_question_addition/smart_question_addition_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_update_page.dart';
+import 'package:egitim_uygulamasi/widgets/question_text.dart';
+import 'package:egitim_uygulamasi/utils/html_fraction_utils.dart';
 
 const bool _enableOutcomesV2Entry = false;
 
@@ -1652,7 +1654,16 @@ class _SpecialInfoContentCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Html(
-            data: htmlContent,
+            data: wrapFractionsForHtml(htmlContent),
+            extensions: [
+              TagExtension(
+                tagsToExtend: {"fraction"},
+                builder: (ctx) => QuestionText(
+                  text: ctx.innerHtml,
+                  fontSize: 13,
+                ),
+              ),
+            ],
             style: {
               'body': Style(
                 margin: Margins.zero,

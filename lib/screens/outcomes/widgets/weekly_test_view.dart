@@ -173,7 +173,10 @@ class WeeklyTestView extends ConsumerWidget {
           children: [
             Text(
               'Haftalık Pekiştirme Testi',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             if (isGuest)
               Padding(

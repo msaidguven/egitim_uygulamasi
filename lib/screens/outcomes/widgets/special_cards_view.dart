@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:html/dom.dart' as dom;
 
 class AppleStyleSocialActivityCard extends StatelessWidget {
   final String title;
@@ -130,6 +131,7 @@ class AppleStyleSpecialContentCard extends StatelessWidget {
     required this.content,
     required this.icon,
   });
+
 
   @override
   Widget build(BuildContext context) {

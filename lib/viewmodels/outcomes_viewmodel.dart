@@ -108,18 +108,6 @@ class SuccessLevel {
   }
 }
 
-final List<Map<String, dynamic>> _specialWeeks = [
-  {
-    'grade_id': 5,
-    'lesson_id': 3,
-    'curriculum_week': 1,
-    'type': 'special_content',
-    'title': 'FEN LABORATUVARI KURALLARI',
-    'icon': Icons.science,
-    'content': "<ul><li>...</li></ul>",
-  },
-];
-
 class TimelineItem {
   final String id;
   final String type;
@@ -258,6 +246,53 @@ class OutcomesViewModel extends ChangeNotifier {
     return null;
   }
 
+  Future<List<Map<String, dynamic>>> _fetchSpecialWeekEvents() async {
+    try {
+      final response = await Supabase.instance.client
+          .from('special_week_events')
+          .select(
+            'grade_id, lesson_id, curriculum_week, event_type, title, subtitle, content_html, priority',
+          )
+          .eq('is_active', true)
+          .order('curriculum_week', ascending: true)
+          .order('priority', ascending: true);
+
+      final result = <Map<String, dynamic>>[];
+      for (final raw in (response as List)) {
+        final row = Map<String, dynamic>.from(raw as Map);
+        final grade = row['grade_id'] as int?;
+        final lesson = row['lesson_id'] as int?;
+
+        if (grade != null && grade != gradeId) continue;
+        if (lesson != null && lesson != lessonId) continue;
+
+        final week = row['curriculum_week'] as int?;
+        if (week == null) continue;
+
+        final eventType = (row['event_type'] as String? ?? '').trim();
+        if (eventType != 'special_content' &&
+            eventType != 'break' &&
+            eventType != 'social_activity') {
+          continue;
+        }
+
+        result.add({
+          'type': eventType,
+          'curriculum_week': week,
+          'title': (row['title'] as String? ?? '').trim(),
+          'duration': (row['subtitle'] as String? ?? '').trim(),
+          'content': (row['content_html'] as String? ?? '').trim(),
+          'priority': row['priority'] as int? ?? 0,
+          if (eventType == 'special_content') 'icon': Icons.school_rounded,
+        });
+      }
+      return result;
+    } catch (e) {
+      debugPrint('Error loading special week events: $e');
+      return [];
+    }
+  }
+
   void _rebuildTimelineMeta() {
     final weekNumbersSet = <int>{};
     final weekPageMap = <int, int>{};
@@ -389,64 +424,87 @@ class OutcomesViewModel extends ChangeNotifier {
         ),
       );
 
-      // Özel içerikleri ilgili haftadan sonra timeline'a ekle (haftayı ezmeden).
-      final specialWeeks = _specialWeeks
-          .where(
-            (specialWeek) =>
-                specialWeek['grade_id'] == gradeId &&
-                specialWeek['lesson_id'] == lessonId,
-          )
-          .toList();
-      specialWeeks.sort(
-        (a, b) => (a['curriculum_week'] as int).compareTo(
-          b['curriculum_week'] as int,
-        ),
-      );
-      for (final specialWeek in specialWeeks.reversed) {
-        final specialWeekNo = specialWeek['curriculum_week'] as int?;
-        if (specialWeekNo == null) continue;
-        final insertIndex = processedWeeks.indexWhere(
-          (w) => w['type'] == 'week' && w['curriculum_week'] == specialWeekNo,
-        );
-        final specialMap = Map<String, dynamic>.from(specialWeek);
-        if (insertIndex == -1) {
-          processedWeeks.insert(0, specialMap);
-        } else {
-          processedWeeks.insert(insertIndex + 1, specialMap);
-        }
-      }
+      // Dynamic special/break/social events (DB). If empty, keep current static behavior.
+      var specialEntries = await _fetchSpecialWeekEvents();
 
-      // TATİL HAFTALARINI EKLEME MANTIĞI
-      // Ters sıralama ile ekliyoruz ki indexler kaymasın.
-      final breakEntries = getAcademicBreakEntries();
-      for (final breakEntry in breakEntries.reversed) {
-        final int breakAfterWeek = breakEntry['insert_after_week'] as int;
-
-        // Hangi index'ten sonraya ekleneceğini bul
-        int breakIndex = processedWeeks.indexWhere(
-          (week) =>
-              week['type'] == 'week' &&
-              week['curriculum_week'] == breakAfterWeek,
-        );
-
-        if (breakIndex != -1) {
+      if (specialEntries.isEmpty) {
+        // Static fallback for break cards.
+        final breakEntries = getAcademicBreakEntries();
+        for (final breakEntry in breakEntries) {
           final breakMap = Map<String, dynamic>.from(
             breakEntry['break'] as Map,
           );
-          // Bulunan index'in bir sonrasına ekle
-          processedWeeks.insert(breakIndex + 1, breakMap);
+          final insertAfterWeek = breakEntry['insert_after_week'] as int;
+          breakMap['curriculum_week'] = insertAfterWeek;
+          specialEntries.add(breakMap);
         }
-      }
-
-      int week36Index = processedWeeks.indexWhere(
-        (w) => w['type'] == 'week' && w['curriculum_week'] == 36,
-      );
-      if (week36Index != -1) {
-        processedWeeks.insert(week36Index + 1, {
+        specialEntries.add({
           'type': 'social_activity',
           'curriculum_week': 37,
           'title': 'SOSYAL ETKİNLİK HAFTASI',
+          'duration': '',
+          'content': '',
+          'priority': 999,
         });
+      }
+
+      specialEntries.sort((a, b) {
+        final weekCompare = (a['curriculum_week'] as int).compareTo(
+          b['curriculum_week'] as int,
+        );
+        if (weekCompare != 0) return weekCompare;
+        return (a['priority'] as int? ?? 0).compareTo(
+          b['priority'] as int? ?? 0,
+        );
+      });
+
+      for (final entry in specialEntries) {
+        final eventWeek = entry['curriculum_week'] as int?;
+        if (eventWeek == null) continue;
+        final type = entry['type'] as String? ?? 'special_content';
+
+        int insertIndex = processedWeeks.indexWhere(
+          (w) => w['type'] == 'week' && w['curriculum_week'] == eventWeek,
+        );
+
+        if (insertIndex != -1) {
+          // Insert after base week and keep same-week extras in declared order.
+          insertIndex += 1;
+          while (insertIndex < processedWeeks.length) {
+            final next = processedWeeks[insertIndex];
+            final nextWeek = next['curriculum_week'] as int?;
+            if (next['type'] == 'week' || nextWeek != eventWeek) break;
+            insertIndex++;
+          }
+          processedWeeks.insert(insertIndex, {
+            'type': type,
+            'curriculum_week': eventWeek,
+            'title': entry['title'],
+            'duration': entry['duration'],
+            'content': entry['content'],
+            if (entry['icon'] != null) 'icon': entry['icon'],
+          });
+          continue;
+        }
+
+        // If there is no base week card, keep sorted order by curriculum_week.
+        final sortedInsertIndex = processedWeeks.indexWhere((w) {
+          final week = w['curriculum_week'] as int?;
+          return week != null && week > eventWeek;
+        });
+        final specialMap = {
+          'type': type,
+          'curriculum_week': eventWeek,
+          'title': entry['title'],
+          'duration': entry['duration'],
+          'content': entry['content'],
+          if (entry['icon'] != null) 'icon': entry['icon'],
+        };
+        if (sortedInsertIndex == -1) {
+          processedWeeks.add(specialMap);
+        } else {
+          processedWeeks.insert(sortedInsertIndex, specialMap);
+        }
       }
 
       _allWeeksData = processedWeeks;

@@ -18,6 +18,7 @@ class AdminSidebar extends StatelessWidget {
       selectedIndex: selectedIndex,
       onDestinationSelected: onDestinationSelected,
       labelType: NavigationRailLabelType.all,
+      scrollable: true,
       leading: const Padding(
         padding: EdgeInsets.symmetric(vertical: 20.0),
         child: Icon(Icons.admin_panel_settings, size: 32),
@@ -49,6 +50,16 @@ class AdminSidebar extends StatelessWidget {
           label: Text('Outcomes'),
         ),
         NavigationRailDestination(
+          icon: Icon(Icons.dashboard_outlined),
+          selectedIcon: Icon(Icons.dashboard),
+          label: Text('İçerik Özeti'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.delete_sweep_outlined),
+          selectedIcon: Icon(Icons.delete_sweep),
+          label: Text('Toplu Silme'),
+        ),
+        NavigationRailDestination(
           icon: Icon(Icons.auto_awesome_outlined),
           selectedIcon: Icon(Icons.auto_awesome),
           label: Text('Akıllı İçerik Ekleme'),
@@ -57,6 +68,11 @@ class AdminSidebar extends StatelessWidget {
           icon: Icon(Icons.quiz_outlined),
           selectedIcon: Icon(Icons.quiz),
           label: Text('Akıllı Soru Ekleme'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.event_note_outlined),
+          selectedIcon: Icon(Icons.event_note),
+          label: Text('Özel Haftalar'),
         ),
       ],
     );

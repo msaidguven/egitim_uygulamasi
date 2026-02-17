@@ -8,6 +8,8 @@ import 'package:egitim_uygulamasi/utils/html_style.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:egitim_uygulamasi/widgets/question_text.dart';
+import 'package:egitim_uygulamasi/utils/html_fraction_utils.dart';
 
 enum _AdminMenuAction { update, publish, downloadPdf, copy, delete }
 
@@ -422,7 +424,7 @@ class TopicContentView extends StatelessWidget {
 
           RepaintBoundary(
             child: Html(
-              data: content.content,
+              data: wrapFractionsForHtml(content.content),
               extensions: [
                 const TableHtmlExtension(),
                 TagExtension(
@@ -439,11 +441,22 @@ class TopicContentView extends StatelessWidget {
                     return _PedagogicalCard(
                       title: title,
                       child: Html(
-                        data: element.innerHtml.replaceAll(
-                          RegExp(r'<h2[^>]*>.*?</h2>', dotAll: true),
-                          '',
+                        data: wrapFractionsForHtml(
+                          element.innerHtml.replaceAll(
+                            RegExp(r'<h2[^>]*>.*?</h2>', dotAll: true),
+                            '',
+                          ),
                         ),
-                        extensions: const [TableHtmlExtension()],
+                        extensions: [
+                          const TableHtmlExtension(),
+                          TagExtension(
+                            tagsToExtend: {"fraction"},
+                            builder: (ctx) => QuestionText(
+                              text: ctx.innerHtml,
+                              fontSize: 15.5,
+                            ),
+                          ),
+                        ],
                         style: {
                           ...getBaseHtmlStyle(context.buildContext!),
                           "p": Style(
@@ -461,6 +474,13 @@ class TopicContentView extends StatelessWidget {
                       ),
                     );
                   },
+                ),
+                TagExtension(
+                  tagsToExtend: {"fraction"},
+                  builder: (ctx) => QuestionText(
+                    text: ctx.innerHtml,
+                    fontSize: 16,
+                  ),
                 ),
               ],
               style: getBaseHtmlStyle(context),
