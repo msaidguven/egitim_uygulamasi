@@ -708,12 +708,13 @@ class _WeeklyContentStatusCard extends StatelessWidget {
           .putIfAbsent(item.gradeName, () => <_LessonWeekStatus>[])
           .add(item);
     }
+    final isMobile = MediaQuery.of(context).size.width < 760;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          '$week. Hafta İçerik Tablosu',
+          '$week. Hafta İçerik Özeti',
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 10),
@@ -739,26 +740,143 @@ class _WeeklyContentStatusCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 6,
+                  if (!isMobile) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF4F6F8),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Row(
+                        children: [
+                          Expanded(flex: 3, child: Text('Ders')),
+                          Expanded(flex: 2, child: Text('İçerik')),
+                          Expanded(flex: 1, child: Text('Soru')),
+                          Expanded(flex: 2, child: Text('İşlemler')),
+                        ],
+                      ),
                     ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF4F6F8),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Row(
-                      children: [
-                        Expanded(flex: 3, child: Text('Ders')),
-                        Expanded(flex: 2, child: Text('İçerik')),
-                        Expanded(flex: 1, child: Text('Soru')),
-                        Expanded(flex: 2, child: Text('İşlemler')),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 6),
+                    const SizedBox(height: 6),
+                  ],
                   ...gradeLessons.map((lesson) {
+                    if (isMobile) {
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey.shade200),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InkWell(
+                              onTap: () => onTapLesson(lesson),
+                              child: Text(
+                                lesson.lessonName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: lesson.hasContent
+                                        ? const Color(0xFFE8F7ED)
+                                        : const Color(0xFFFDECEC),
+                                    borderRadius: BorderRadius.circular(999),
+                                    border: Border.all(
+                                      color: lesson.hasContent
+                                          ? const Color(0xFFBEE5C9)
+                                          : const Color(0xFFF4C7C7),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        lesson.hasContent
+                                            ? Icons.check_circle
+                                            : Icons.cancel,
+                                        size: 16,
+                                        color: lesson.hasContent
+                                            ? Colors.green
+                                            : Colors.red,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        lesson.hasContent
+                                            ? 'İçerik var'
+                                            : 'İçerik yok',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: lesson.hasContent
+                                              ? Colors.green.shade800
+                                              : Colors.red.shade800,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF4F6F8),
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                  child: Text(
+                                    'Soru: ${lesson.questionCount}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade800,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _QuickActionButton(
+                                    label: 'Soru Ekle',
+                                    enabled: lesson.preferredTopicId != null,
+                                    onTap: () => onTapLessonQuestion(lesson),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: _QuickActionButton(
+                                    label: 'İçerik Ekle',
+                                    enabled: lesson.preferredTopicId != null,
+                                    onTap: () => onTapLessonContent(lesson),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
                     return Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
@@ -939,7 +1057,8 @@ class _QuickActionButton extends StatelessWidget {
         disabledForegroundColor: Colors.grey.shade500,
         disabledBackgroundColor: Colors.grey.shade200,
         visualDensity: VisualDensity.compact,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        minimumSize: const Size(0, 36),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       ),
       child: Text(label),
     );

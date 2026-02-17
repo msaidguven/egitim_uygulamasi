@@ -1588,6 +1588,7 @@ class _SpecialInfoContentCard extends StatelessWidget {
                 builder: (ctx) => QuestionText(
                   text: ctx.innerHtml,
                   fontSize: 13,
+                  useBaselineFractionLayout: true,
                 ),
               ),
             ],

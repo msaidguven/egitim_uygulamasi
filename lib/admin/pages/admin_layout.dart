@@ -15,6 +15,15 @@ class AdminLayout extends StatefulWidget {
 }
 
 class _AdminLayoutState extends State<AdminLayout> {
+  bool _isSidebarVisible = true;
+
+  void _goToHome() {
+    final navigator = Navigator.of(context, rootNavigator: true);
+    if (navigator.canPop()) {
+      navigator.popUntil((route) => route.isFirst);
+    }
+  }
+
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       case 0:
@@ -78,14 +87,37 @@ class _AdminLayoutState extends State<AdminLayout> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Admin Panel')),
+      appBar: AppBar(
+        leading: IconButton(
+          tooltip: 'Ana sayfa',
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: _goToHome,
+        ),
+        title: const Text('Admin Panel'),
+        actions: [
+          IconButton(
+            tooltip: _isSidebarVisible ? 'Menüyü gizle' : 'Menüyü göster',
+            icon: Icon(
+              _isSidebarVisible
+                  ? Icons.menu_open_rounded
+                  : Icons.menu_rounded,
+            ),
+            onPressed: () {
+              setState(() {
+                _isSidebarVisible = !_isSidebarVisible;
+              });
+            },
+          ),
+        ],
+      ),
       body: Row(
         children: [
-          AdminSidebar(
-            selectedIndex: selectedIndex,
-            onDestinationSelected: (index) => _onItemTapped(index, context),
-          ),
-          const VerticalDivider(thickness: 1, width: 1),
+          if (_isSidebarVisible)
+            AdminSidebar(
+              selectedIndex: selectedIndex,
+              onDestinationSelected: (index) => _onItemTapped(index, context),
+            ),
+          if (_isSidebarVisible) const VerticalDivider(thickness: 1, width: 1),
           Expanded(child: widget.child),
         ],
       ),

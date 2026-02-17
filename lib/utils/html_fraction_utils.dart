@@ -6,7 +6,22 @@ final RegExp _fractionRegex = RegExp(r'\b(\d{1,3}\/\d{1,3})\b');
 String wrapFractionsForHtml(String html) {
   if (html.trim().isEmpty) return html;
 
-  final fragment = html_parser.parseFragment(html);
+  // Clean previously injected/escaped fraction tags if they exist in stored content.
+  final sanitized = html
+      .replaceAll(
+        RegExp(r'<\s*/?\s*fraction\s*>', caseSensitive: false),
+        '',
+      )
+      .replaceAll(
+        RegExp(r'&lt;\s*/?\s*fraction\s*&gt;', caseSensitive: false),
+        '',
+      )
+      .replaceAll(
+        RegExp(r'&amp;lt;\s*/?\s*fraction\s*&amp;gt;', caseSensitive: false),
+        '',
+      );
+
+  final fragment = html_parser.parseFragment(sanitized);
 
   void processNode(dom.Node node) {
     // Clone child list because we mutate the tree while iterating.
@@ -54,4 +69,3 @@ String wrapFractionsForHtml(String html) {
   processNode(fragment);
   return fragment.outerHtml;
 }
-

@@ -454,6 +454,7 @@ class TopicContentView extends StatelessWidget {
                             builder: (ctx) => QuestionText(
                               text: ctx.innerHtml,
                               fontSize: 15.5,
+                              useBaselineFractionLayout: true,
                             ),
                           ),
                         ],
@@ -480,6 +481,7 @@ class TopicContentView extends StatelessWidget {
                   builder: (ctx) => QuestionText(
                     text: ctx.innerHtml,
                     fontSize: 16,
+                    useBaselineFractionLayout: true,
                   ),
                 ),
               ],

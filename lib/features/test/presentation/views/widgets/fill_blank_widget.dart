@@ -94,10 +94,13 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
     List<Widget> questionWidgets = [];
 
     for (int i = 0; i < questionParts.length; i++) {
-      questionWidgets.add(Text(
-        questionParts[i],
-        style: const TextStyle(fontSize: 18, height: 1.6),
-      ));
+      questionWidgets.add(
+        QuestionText(
+          text: questionParts[i],
+          fontSize: 18,
+          textColor: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black,
+        ),
+      );
 
       if (i < questionParts.length - 1) {
         final blankIndex = i;
