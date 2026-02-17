@@ -7,8 +7,6 @@ import 'package:egitim_uygulamasi/screens/outcomes/widgets/weekly_test_view.dart
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/unit_test_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/special_cards_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/app_bar_view.dart';
-import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_question_shortcut_card.dart';
-import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_content_shortcut_card.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart'; // profileViewModelProvider için
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
@@ -338,6 +336,10 @@ class _WeekContentView extends ConsumerStatefulWidget {
 
 class _WeekContentViewState extends ConsumerState<_WeekContentView>
     with AutomaticKeepAliveClientMixin {
+  static const String _adminActionAddQuestion = 'add_question';
+  static const String _adminActionAddContent = 'add_content';
+  static const String _adminActionUpdateContent = 'update_content';
+
   int? _selectedSectionIndex;
   int? _selectedUnitId;
 
@@ -1187,8 +1189,6 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final selectedSection = sections[safeSelectedIndex];
     final selectedUnitId = selectedSection['unit_id'] as int?;
     final selectedTopicId = selectedSection['topic_id'] as int?;
-    final shortcutUnitId = selectedUnitId;
-    final shortcutTopicId = selectedTopicId;
     final selectedUnitTitle =
         unitOptions.firstWhere(
               (u) => u['unit_id'] == effectiveUnitId,
@@ -1350,6 +1350,106 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               ),
             ),
           ),
+          if (!isSpecialPage && isAdmin)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              sliver: SliverToBoxAdapter(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: PopupMenuButton<String>(
+                    tooltip: 'Yönetici menüsü',
+                    onSelected: (value) {
+                      if (selectedUnitId == null || selectedTopicId == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Önce bir ünite/konu seçin.'),
+                          ),
+                        );
+                        return;
+                      }
+                      if (value == _adminActionAddQuestion) {
+                        _openSmartQuestionAddition(
+                          selectedUnitId: selectedUnitId,
+                          selectedTopicId: selectedTopicId,
+                        );
+                      } else if (value == _adminActionAddContent) {
+                        _openSmartContentAddition(
+                          selectedUnitId: selectedUnitId,
+                          selectedTopicId: selectedTopicId,
+                        );
+                      } else if (value == _adminActionUpdateContent) {
+                        _openSmartContentUpdate(
+                          selectedUnitId: selectedUnitId,
+                          selectedTopicId: selectedTopicId,
+                        );
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem<String>(
+                        value: _adminActionAddQuestion,
+                        enabled:
+                            selectedUnitId != null && selectedTopicId != null,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.quiz_outlined, size: 18),
+                            SizedBox(width: 8),
+                            Text('Soru Ekle'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<String>(
+                        value: _adminActionAddContent,
+                        enabled:
+                            selectedUnitId != null && selectedTopicId != null,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.note_add_outlined, size: 18),
+                            SizedBox(width: 8),
+                            Text('İçerik Ekle'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<String>(
+                        value: _adminActionUpdateContent,
+                        enabled:
+                            selectedUnitId != null && selectedTopicId != null,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.edit_note_outlined, size: 18),
+                            SizedBox(width: 8),
+                            Text('İçerik Güncelle'),
+                          ],
+                        ),
+                      ),
+                    ],
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEAF2FF),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFBFD6FF)),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.admin_panel_settings_outlined, size: 18),
+                          SizedBox(width: 8),
+                          Text(
+                            'Yönetici Menüsü',
+                            style: TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(width: 6),
+                          Icon(Icons.arrow_drop_down_rounded),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           if (!isSpecialPage)
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
@@ -1359,43 +1459,6 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                   endWeek: topicEndWeek,
                   totalWeeks: topicWeekCount,
                   currentWeekPosition: topicWeekPosition,
-                ),
-              ),
-            ),
-          if (!isSpecialPage && isAdmin)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-              sliver: SliverToBoxAdapter(
-                child: AdminQuestionShortcutCard(
-                  curriculumWeek: widget.curriculumWeek,
-                  onTap: (selectedUnitId == null || selectedTopicId == null)
-                      ? null
-                      : () => _openSmartQuestionAddition(
-                          selectedUnitId: selectedUnitId,
-                          selectedTopicId: selectedTopicId,
-                        ),
-                ),
-              ),
-            ),
-          if (!isSpecialPage && isAdmin)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-              sliver: SliverToBoxAdapter(
-                child: AdminContentShortcutCard(
-                  curriculumWeek: widget.curriculumWeek,
-                  onTapAdd: (shortcutUnitId == null || shortcutTopicId == null)
-                      ? null
-                      : () => _openSmartContentAddition(
-                          selectedUnitId: shortcutUnitId,
-                          selectedTopicId: shortcutTopicId,
-                        ),
-                  onTapUpdate:
-                      (shortcutUnitId == null || shortcutTopicId == null)
-                      ? null
-                      : () => _openSmartContentUpdate(
-                          selectedUnitId: shortcutUnitId,
-                          selectedTopicId: shortcutTopicId,
-                        ),
                 ),
               ),
             ),

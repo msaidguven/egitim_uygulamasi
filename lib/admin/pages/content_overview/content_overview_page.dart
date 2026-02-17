@@ -20,6 +20,7 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
   String? _error;
   List<_LessonWeekStatus> _statuses = const [];
   List<_TopicSelectionOption> _topicOptions = const [];
+  String _selectedGradeFilter = 'Tümü';
 
   @override
   void initState() {
@@ -89,16 +90,36 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
       final questionsByTopic = <int, Set<int>>{};
 
       if (topicIds.isNotEmpty) {
-        final contentsRaw = await _client
-            .from('topic_contents')
-            .select('topic_id, topic_content_weeks!inner(curriculum_week)')
+        // Outcomes ekranındaki hafta çözümlemesiyle aynı mantık:
+        // selectedWeek aralığına düşen outcome'lara bağlı içerikleri içerik var kabul et.
+        final activeOutcomeIds = <int>{};
+        final activeOutcomesRaw = await _client
+            .from('outcomes')
+            .select('id, topic_id, outcome_weeks!inner(start_week, end_week)')
             .inFilter('topic_id', topicIds)
-            .eq('topic_content_weeks.curriculum_week', _selectedWeek);
+            .lte('outcome_weeks.start_week', _selectedWeek)
+            .gte('outcome_weeks.end_week', _selectedWeek);
 
         for (final row
-            in (contentsRaw as List).whereType<Map<String, dynamic>>()) {
-          final topicId = _toInt(row['topic_id']);
-          if (topicId != null) topicsWithContent.add(topicId);
+            in (activeOutcomesRaw as List).whereType<Map<String, dynamic>>()) {
+          final outcomeId = _toInt(row['id']);
+          if (outcomeId != null) activeOutcomeIds.add(outcomeId);
+        }
+
+        if (activeOutcomeIds.isNotEmpty) {
+          final contentOutcomeRaw = await _client
+              .from('topic_content_outcomes')
+              .select('outcome_id, topic_contents!inner(topic_id)')
+              .inFilter('outcome_id', activeOutcomeIds.toList());
+
+          for (final row
+              in (contentOutcomeRaw as List)
+                  .whereType<Map<String, dynamic>>()) {
+            final topicContentRaw = row['topic_contents'];
+            if (topicContentRaw is! Map<String, dynamic>) continue;
+            final topicId = _toInt(topicContentRaw['topic_id']);
+            if (topicId != null) topicsWithContent.add(topicId);
+          }
         }
 
         final usagesRaw = await _client
@@ -612,12 +633,31 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
       );
     }
 
+    final gradeNames = _statuses
+        .map((s) => (order: s.gradeOrder, name: s.gradeName))
+        .toSet()
+        .toList()
+      ..sort((a, b) => a.order.compareTo(b.order));
+
+    final filteredStatuses = _selectedGradeFilter == 'Tümü'
+        ? _statuses
+        : _statuses.where((s) => s.gradeName == _selectedGradeFilter).toList();
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
       children: [
+        _GradeFilterBar(
+          selectedGrade: _selectedGradeFilter,
+          grades: ['Tümü', ...gradeNames.map((g) => g.name)],
+          onSelected: (value) {
+            if (value == _selectedGradeFilter) return;
+            setState(() => _selectedGradeFilter = value);
+          },
+        ),
+        const SizedBox(height: 10),
         _WeeklyContentStatusCard(
           week: _selectedWeek,
-          statuses: _statuses,
+          statuses: filteredStatuses,
           onTapLesson: _openOutcomesForLesson,
           onTapLessonQuestion: _openSmartQuestionAdditionForLesson,
           onTapLessonContent: _openSmartContentAdditionForLesson,
@@ -634,6 +674,59 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _GradeFilterBar extends StatelessWidget {
+  final String selectedGrade;
+  final List<String> grades;
+  final ValueChanged<String> onSelected;
+
+  const _GradeFilterBar({
+    required this.selectedGrade,
+    required this.grades,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Sınıf Akışı',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Colors.grey.shade800,
+            ),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 36,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: grades.length,
+              separatorBuilder: (_, index) => const SizedBox(width: 6),
+              itemBuilder: (context, index) {
+                final grade = grades[index];
+                return ChoiceChip(
+                  label: Text(grade),
+                  selected: grade == selectedGrade,
+                  onSelected: (_) => onSelected(grade),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

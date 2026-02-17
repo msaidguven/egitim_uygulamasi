@@ -21,6 +21,8 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
   int? _selectedLessonId;
   _DeleteScope? _scope;
   bool _allowSharedUnits = false;
+  bool _deleteContents = false;
+  bool _deleteOutcomes = false;
 
   @override
   void initState() {
@@ -82,6 +84,8 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
       _error = null;
       _scope = null;
       _allowSharedUnits = false;
+      _deleteContents = false;
+      _deleteOutcomes = false;
     });
 
     try {
@@ -213,6 +217,14 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
   Future<void> _deleteAll() async {
     final scope = _scope;
     if (scope == null) return;
+    if (!_deleteContents && !_deleteOutcomes) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('En az bir silme türü seçin (içerik veya kazanım).'),
+        ),
+      );
+      return;
+    }
     if (scope.sharedUnitIds.isNotEmpty && !_allowSharedUnits) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -233,8 +245,8 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
           title: const Text('Toplu Silmeyi Onayla'),
           content: Text(
             '$gradeName - $lessonName için:\n'
-            '- ${scope.contentIds.length} içerik\n'
-            '- ${scope.outcomeIds.length} kazanım\n'
+            '${_deleteContents ? '- ${scope.contentIds.length} içerik\n' : ''}'
+            '${_deleteOutcomes ? '- ${scope.outcomeIds.length} kazanım\n' : ''}'
             'kalıcı olarak silinecek.',
           ),
           actions: [
@@ -259,24 +271,28 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
     });
 
     try {
-      await _deleteInChunks(
-        'topic_content_outcomes',
-        'topic_content_id',
-        scope.contentIds,
-      );
-      await _deleteInChunks(
-        'topic_content_weeks',
-        'topic_content_id',
-        scope.contentIds,
-      );
-      await _deleteInChunks(
-        'topic_content_outcomes',
-        'outcome_id',
-        scope.outcomeIds,
-      );
-      await _deleteInChunks('outcome_weeks', 'outcome_id', scope.outcomeIds);
-      await _deleteInChunks('topic_contents', 'id', scope.contentIds);
-      await _deleteInChunks('outcomes', 'id', scope.outcomeIds);
+      if (_deleteContents) {
+        await _deleteInChunks(
+          'topic_content_outcomes',
+          'topic_content_id',
+          scope.contentIds,
+        );
+        await _deleteInChunks(
+          'topic_content_weeks',
+          'topic_content_id',
+          scope.contentIds,
+        );
+        await _deleteInChunks('topic_contents', 'id', scope.contentIds);
+      }
+      if (_deleteOutcomes) {
+        await _deleteInChunks(
+          'topic_content_outcomes',
+          'outcome_id',
+          scope.outcomeIds,
+        );
+        await _deleteInChunks('outcome_weeks', 'outcome_id', scope.outcomeIds);
+        await _deleteInChunks('outcomes', 'id', scope.outcomeIds);
+      }
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -456,6 +472,34 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
                       ),
                     ),
                   if (_scope != null) _PreviewCard(scope: _scope!),
+                  if (_scope != null)
+                    Card(
+                      child: Column(
+                        children: [
+                          CheckboxListTile(
+                            value: _deleteContents,
+                            onChanged: (v) => setState(
+                              () => _deleteContents = v ?? false,
+                            ),
+                            title: Text(
+                              'İçerikleri Sil (${_scope!.contentIds.length})',
+                            ),
+                            subtitle: const Text('Sadece konu içerik kayıtlarını siler.'),
+                          ),
+                          const Divider(height: 1),
+                          CheckboxListTile(
+                            value: _deleteOutcomes,
+                            onChanged: (v) => setState(
+                              () => _deleteOutcomes = v ?? false,
+                            ),
+                            title: Text(
+                              'Kazanımları Sil (${_scope!.outcomeIds.length})',
+                            ),
+                            subtitle: const Text('Sadece kazanım kayıtlarını siler.'),
+                          ),
+                        ],
+                      ),
+                    ),
                   if (_scope != null && _scope!.sharedUnitIds.isNotEmpty)
                     CheckboxListTile(
                       value: _allowSharedUnits,
@@ -471,7 +515,10 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
                   const SizedBox(height: 12),
                   FilledButton.icon(
                     onPressed:
-                        (_scope == null || _isDeleting || _isLoadingPreview)
+                        (_scope == null ||
+                                _isDeleting ||
+                                _isLoadingPreview ||
+                                (!_deleteContents && !_deleteOutcomes))
                         ? null
                         : _deleteAll,
                     style: FilledButton.styleFrom(
@@ -488,7 +535,11 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
                     label: Text(
                       _isDeleting
                           ? 'Siliniyor...'
-                          : 'Seçili İçerik ve Kazanımları Sil',
+                          : _deleteContents && _deleteOutcomes
+                          ? 'Seçili İçerik ve Kazanımları Sil'
+                          : _deleteContents
+                          ? 'Seçili İçerikleri Sil'
+                          : 'Seçili Kazanımları Sil',
                     ),
                   ),
                 ],
