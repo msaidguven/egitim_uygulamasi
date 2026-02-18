@@ -419,6 +419,8 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
                                 _selectedLessonId = null;
                                 _scope = null;
                                 _allowSharedUnits = false;
+                                _deleteContents = false;
+                                _deleteOutcomes = false;
                               });
                             },
                           ),
@@ -441,6 +443,8 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
                                 _selectedLessonId = value;
                                 _scope = null;
                                 _allowSharedUnits = false;
+                                _deleteContents = false;
+                                _deleteOutcomes = false;
                               });
                             },
                           ),
@@ -478,24 +482,26 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
                         children: [
                           CheckboxListTile(
                             value: _deleteContents,
-                            onChanged: (v) => setState(
-                              () => _deleteContents = v ?? false,
-                            ),
+                            onChanged: (v) =>
+                                setState(() => _deleteContents = v ?? false),
                             title: Text(
                               'İçerikleri Sil (${_scope!.contentIds.length})',
                             ),
-                            subtitle: const Text('Sadece konu içerik kayıtlarını siler.'),
+                            subtitle: const Text(
+                              'Sadece konu içerik kayıtlarını siler.',
+                            ),
                           ),
                           const Divider(height: 1),
                           CheckboxListTile(
                             value: _deleteOutcomes,
-                            onChanged: (v) => setState(
-                              () => _deleteOutcomes = v ?? false,
-                            ),
+                            onChanged: (v) =>
+                                setState(() => _deleteOutcomes = v ?? false),
                             title: Text(
                               'Kazanımları Sil (${_scope!.outcomeIds.length})',
                             ),
-                            subtitle: const Text('Sadece kazanım kayıtlarını siler.'),
+                            subtitle: const Text(
+                              'Sadece kazanım kayıtlarını siler.',
+                            ),
                           ),
                         ],
                       ),
@@ -516,9 +522,9 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
                   FilledButton.icon(
                     onPressed:
                         (_scope == null ||
-                                _isDeleting ||
-                                _isLoadingPreview ||
-                                (!_deleteContents && !_deleteOutcomes))
+                            _isDeleting ||
+                            _isLoadingPreview ||
+                            (!_deleteContents && !_deleteOutcomes))
                         ? null
                         : _deleteAll,
                     style: FilledButton.styleFrom(

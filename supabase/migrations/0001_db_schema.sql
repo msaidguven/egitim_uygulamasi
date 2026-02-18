@@ -33,6 +33,7 @@ CREATE TABLE public.grades (
   is_active boolean NOT NULL DEFAULT true,
   question_count integer NOT NULL DEFAULT 0,
   icon text,
+  slug text UNIQUE,
   CONSTRAINT grades_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.lesson_grades (
@@ -81,12 +82,20 @@ CREATE TABLE public.number_composition_questions (
   max_digit smallint DEFAULT 9,
   CONSTRAINT number_composition_questions_pkey PRIMARY KEY (id)
 );
+CREATE TABLE public.outcome_weeks (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  outcome_id bigint NOT NULL,
+  start_week integer NOT NULL CHECK (start_week >= 1),
+  end_week integer NOT NULL CHECK (end_week >= 1),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT outcome_weeks_pkey PRIMARY KEY (id),
+  CONSTRAINT outcome_weeks_outcome_id_fkey FOREIGN KEY (outcome_id) REFERENCES public.outcomes(id)
+);
 CREATE TABLE public.outcomes (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   topic_id bigint NOT NULL,
   description text NOT NULL,
   order_index integer CHECK (order_index >= 0),
-  curriculum_week integer CHECK (curriculum_week >= 1),
   CONSTRAINT outcomes_pkey PRIMARY KEY (id),
   CONSTRAINT fk_outcomes_topic FOREIGN KEY (topic_id) REFERENCES public.topics(id)
 );
@@ -181,6 +190,25 @@ CREATE TABLE public.questions (
   CONSTRAINT questions_pkey PRIMARY KEY (id),
   CONSTRAINT questions_question_type_id_fkey FOREIGN KEY (question_type_id) REFERENCES public.question_types(id)
 );
+CREATE TABLE public.special_week_events (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  grade_id bigint,
+  lesson_id bigint,
+  curriculum_week integer NOT NULL CHECK (curriculum_week >= 1 AND curriculum_week <= 52),
+  event_type text NOT NULL CHECK (event_type = ANY (ARRAY['special_content'::text, 'break'::text, 'social_activity'::text])),
+  title text NOT NULL,
+  subtitle text,
+  content_html text,
+  is_active boolean NOT NULL DEFAULT true,
+  priority integer NOT NULL DEFAULT 0,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  created_by uuid,
+  CONSTRAINT special_week_events_pkey PRIMARY KEY (id),
+  CONSTRAINT special_week_events_grade_id_fkey FOREIGN KEY (grade_id) REFERENCES public.grades(id),
+  CONSTRAINT special_week_events_lesson_id_fkey FOREIGN KEY (lesson_id) REFERENCES public.lessons(id),
+  CONSTRAINT special_week_events_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.profiles(id)
+);
 CREATE TABLE public.test_session_answers (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   test_session_id bigint NOT NULL,
@@ -226,11 +254,19 @@ CREATE TABLE public.test_sessions (
   CONSTRAINT fk_test_sessions_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id),
   CONSTRAINT fk_test_sessions_grade FOREIGN KEY (grade_id) REFERENCES public.grades(id)
 );
+CREATE TABLE public.topic_content_outcomes (
+  topic_content_id bigint NOT NULL,
+  outcome_id bigint NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT topic_content_outcomes_pkey PRIMARY KEY (topic_content_id, outcome_id),
+  CONSTRAINT topic_content_outcomes_topic_content_id_fkey FOREIGN KEY (topic_content_id) REFERENCES public.topic_contents(id),
+  CONSTRAINT topic_content_outcomes_outcome_id_fkey FOREIGN KEY (outcome_id) REFERENCES public.outcomes(id)
+);
 CREATE TABLE public.topic_content_weeks (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   topic_content_id bigint NOT NULL,
   created_at timestamp with time zone DEFAULT now(),
-  curriculum_week integer,
+  curriculum_week integer NOT NULL CHECK (curriculum_week >= 1),
   CONSTRAINT topic_content_weeks_pkey PRIMARY KEY (id),
   CONSTRAINT topic_content_weeks_topic_content_id_fkey FOREIGN KEY (topic_content_id) REFERENCES public.topic_contents(id)
 );

@@ -84,7 +84,10 @@ class _UnitListPageState extends State<UnitListPage> {
           .eq('lesson_id', lessonId)
           .eq('unit_grades.grade_id', _selectedGrade!.id)
           .eq('is_active', true)
-          .order('order_no', ascending: true); // Sıralamayı order_no'ya göre yap
+          .order(
+            'order_no',
+            ascending: true,
+          ); // Sıralamayı order_no'ya göre yap
 
       final units = (response as List)
           .map((data) => Unit.fromMap(data as Map<String, dynamic>))
@@ -145,7 +148,9 @@ class _UnitListPageState extends State<UnitListPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Üniteyi Sil'),
-        content: const Text('Bu üniteyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'),
+        content: const Text(
+          'Bu üniteyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -165,7 +170,10 @@ class _UnitListPageState extends State<UnitListPage> {
         await _unitService.deleteUnit(id);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Ünite başarıyla silindi.'), backgroundColor: Colors.green),
+            const SnackBar(
+              content: Text('Ünite başarıyla silindi.'),
+              backgroundColor: Colors.green,
+            ),
           );
         }
         _refreshUnitList();
@@ -200,7 +208,10 @@ class _UnitListPageState extends State<UnitListPage> {
       await supabase.rpc('update_unit_order', params: {'p_unit_ids': unitIds});
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sıralama güncellendi.'), backgroundColor: Colors.green),
+          const SnackBar(
+            content: Text('Sıralama güncellendi.'),
+            backgroundColor: Colors.green,
+          ),
         );
       }
     } catch (e, st) {
@@ -230,7 +241,9 @@ class _UnitListPageState extends State<UnitListPage> {
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: FilledButton.icon(
-              onPressed: _selectedLesson == null ? null : () => _showFormDialog(),
+              onPressed: _selectedLesson == null
+                  ? null
+                  : () => _showFormDialog(),
               icon: const Icon(Icons.add),
               label: const Text('Yeni Ünite'),
             ),
@@ -268,12 +281,17 @@ class _UnitListPageState extends State<UnitListPage> {
         final grades = snapshot.data ?? [];
         return DropdownButtonFormField<Grade>(
           initialValue: _selectedGrade,
+          isExpanded: true,
           hint: const Text('Lütfen bir sınıf seçin'),
           onChanged: _onGradeSelected,
           items: grades.map((grade) {
             return DropdownMenuItem<Grade>(
               value: grade,
-              child: Text(grade.name),
+              child: Text(
+                grade.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             );
           }).toList(),
           decoration: const InputDecoration(
@@ -301,12 +319,17 @@ class _UnitListPageState extends State<UnitListPage> {
 
     return DropdownButtonFormField<Lesson>(
       initialValue: _selectedLesson,
+      isExpanded: true,
       hint: const Text('Lütfen bir ders seçin'),
       onChanged: _onLessonSelected,
       items: _lessons.map((lesson) {
         return DropdownMenuItem<Lesson>(
           value: lesson,
-          child: Text(lesson.name),
+          child: Text(
+            lesson.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         );
       }).toList(),
       decoration: const InputDecoration(
