@@ -1,6 +1,3 @@
-import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
-import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_update_page.dart';
-import 'package:egitim_uygulamasi/admin/pages/smart_question_addition/smart_question_addition_page.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,7 +16,6 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
   bool _isLoading = false;
   String? _error;
   List<_LessonWeekStatus> _statuses = const [];
-  List<_TopicSelectionOption> _topicOptions = const [];
   String _selectedGradeFilter = 'Tümü';
 
   @override
@@ -86,7 +82,8 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
         topicsByUnit.putIfAbsent(topic.unitId, () => <_TopicRow>[]).add(topic);
       }
 
-      final topicsWithContent = <int>{};
+      final topicsWithPublishedContent = <int>{};
+      final topicsWithDraftContent = <int>{};
       final questionsByTopic = <int, Set<int>>{};
 
       if (topicIds.isNotEmpty) {
@@ -109,7 +106,7 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
         if (activeOutcomeIds.isNotEmpty) {
           final contentOutcomeRaw = await _client
               .from('topic_content_outcomes')
-              .select('outcome_id, topic_contents!inner(topic_id)')
+              .select('outcome_id, topic_contents!inner(topic_id, is_published)')
               .inFilter('outcome_id', activeOutcomeIds.toList());
 
           for (final row
@@ -118,7 +115,13 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
             final topicContentRaw = row['topic_contents'];
             if (topicContentRaw is! Map<String, dynamic>) continue;
             final topicId = _toInt(topicContentRaw['topic_id']);
-            if (topicId != null) topicsWithContent.add(topicId);
+            if (topicId == null) continue;
+            final isPublished = topicContentRaw['is_published'] == true;
+            if (isPublished) {
+              topicsWithPublishedContent.add(topicId);
+            } else {
+              topicsWithDraftContent.add(topicId);
+            }
           }
         }
 
@@ -139,7 +142,6 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
       }
 
       final statuses = <_LessonWeekStatus>[];
-      final topicOptions = <_TopicSelectionOption>[];
       final pairByGradeLessonKey = <String, _LessonGradePair>{
         for (final pair in lessonGradePairs)
           '${pair.gradeId}-${pair.lessonId}': pair,
@@ -149,24 +151,7 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
         final pair = pairByGradeLessonKey['${unit.gradeId}-${unit.lessonId}'];
         if (pair == null) continue;
         final unitTopics = topicsByUnit[unit.unitId] ?? const <_TopicRow>[];
-        for (final topic in unitTopics) {
-          topicOptions.add(
-            _TopicSelectionOption(
-              gradeId: pair.gradeId,
-              gradeName: pair.gradeName,
-              gradeOrder: pair.gradeOrder,
-              lessonId: pair.lessonId,
-              lessonName: pair.lessonName,
-              lessonOrder: pair.lessonOrder,
-              unitId: unit.unitId,
-              unitTitle: unit.unitTitle,
-              unitOrder: unit.unitOrder,
-              topicId: topic.topicId,
-              topicTitle: topic.title,
-              topicOrder: topic.orderNo,
-            ),
-          );
-        }
+        // içerik güncelle akışı kaldırıldı, topic seçenek listesine gerek yok
       }
 
       for (final pair in lessonGradePairs) {
@@ -180,8 +165,6 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
         );
 
         final topicSetInWeek = <int>{};
-        final topicCandidates = <_TopicSelectionOption>[];
-
         for (final unit in weekRelatedUnits) {
           final unitTopics = topicsByUnit[unit.unitId] ?? const <_TopicRow>[];
           for (final topic in unitTopics) {
@@ -189,43 +172,11 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
           }
         }
 
-        for (final unit in allRelatedUnits) {
-          final unitTopics = topicsByUnit[unit.unitId] ?? const <_TopicRow>[];
-          for (final topic in unitTopics) {
-            topicCandidates.add(
-              _TopicSelectionOption(
-                gradeId: pair.gradeId,
-                gradeName: pair.gradeName,
-                gradeOrder: pair.gradeOrder,
-                lessonId: pair.lessonId,
-                lessonName: pair.lessonName,
-                lessonOrder: pair.lessonOrder,
-                unitId: unit.unitId,
-                unitTitle: unit.unitTitle,
-                unitOrder: unit.unitOrder,
-                topicId: topic.topicId,
-                topicTitle: topic.title,
-                topicOrder: topic.orderNo,
-              ),
-            );
-          }
-        }
-
-        topicCandidates.sort((a, b) {
-          final byUnit = a.unitOrder.compareTo(b.unitOrder);
-          if (byUnit != 0) return byUnit;
-          return a.topicOrder.compareTo(b.topicOrder);
-        });
-
-        _TopicSelectionOption? preferredTopic;
-        if (topicCandidates.isNotEmpty) {
-          preferredTopic = topicCandidates.firstWhere(
-            (c) => topicsWithContent.contains(c.topicId),
-            orElse: () => topicCandidates.first,
-          );
-        }
-
-        final hasContent = topicSetInWeek.any(topicsWithContent.contains);
+        final hasPublishedContent =
+            topicSetInWeek.any(topicsWithPublishedContent.contains);
+        final hasDraftContent =
+            topicSetInWeek.any(topicsWithDraftContent.contains);
+        final hasContent = hasPublishedContent || hasDraftContent;
         final questionIds = <int>{};
         for (final topicId in topicSetInWeek) {
           questionIds.addAll(questionsByTopic[topicId] ?? const <int>{});
@@ -238,13 +189,14 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
             lessonName: pair.lessonName,
             lessonOrder: pair.lessonOrder,
             hasContent: hasContent,
+            hasDraftContent: hasDraftContent && !hasPublishedContent,
             questionCount: questionIds.length,
             gradeId: pair.gradeId,
             gradeNameForNav: pair.gradeName,
             lessonId: pair.lessonId,
             lessonNameForNav: pair.lessonName,
-            preferredUnitId: preferredTopic?.unitId,
-            preferredTopicId: preferredTopic?.topicId,
+            preferredUnitId: null,
+            preferredTopicId: null,
           ),
         );
       }
@@ -255,20 +207,9 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
         return a.lessonOrder.compareTo(b.lessonOrder);
       });
 
-      topicOptions.sort((a, b) {
-        final byGrade = a.gradeOrder.compareTo(b.gradeOrder);
-        if (byGrade != 0) return byGrade;
-        final byLesson = a.lessonOrder.compareTo(b.lessonOrder);
-        if (byLesson != 0) return byLesson;
-        final byUnit = a.unitOrder.compareTo(b.unitOrder);
-        if (byUnit != 0) return byUnit;
-        return a.topicOrder.compareTo(b.topicOrder);
-      });
-
       if (!mounted) return;
       setState(() {
         _statuses = statuses;
-        _topicOptions = topicOptions;
       });
     } catch (e) {
       if (!mounted) return;
@@ -297,291 +238,6 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
         ),
       ),
     );
-  }
-
-  Future<void> _openSmartQuestionAdditionForLesson(
-    _LessonWeekStatus status,
-  ) async {
-    final topicId = status.preferredTopicId;
-    final unitId = status.preferredUnitId;
-    if (topicId == null || unitId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bu ders için uygun konu bulunamadı.')),
-      );
-      return;
-    }
-
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SmartQuestionAdditionPage(
-          initialGradeId: status.gradeId,
-          initialLessonId: status.lessonId,
-          initialUnitId: unitId,
-          initialTopicId: topicId,
-          initialCurriculumWeek: _selectedWeek,
-          initialUsageType: 'weekly',
-        ),
-      ),
-    );
-    if (!mounted) return;
-    await _loadWeekSummary();
-  }
-
-  Future<void> _openSmartContentAdditionForLesson(
-    _LessonWeekStatus status,
-  ) async {
-    final topicId = status.preferredTopicId;
-    final unitId = status.preferredUnitId;
-    if (topicId == null || unitId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bu ders için uygun konu bulunamadı.')),
-      );
-      return;
-    }
-
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SmartContentAdditionPage(
-          initialGradeId: status.gradeId,
-          initialLessonId: status.lessonId,
-          initialUnitId: unitId,
-          initialTopicId: topicId,
-          initialCurriculumWeek: _selectedWeek,
-          initialUsageType: 'weekly',
-        ),
-      ),
-    );
-    if (!mounted) return;
-    await _loadWeekSummary();
-  }
-
-  Future<void> _openSmartContentUpdate(_TopicSelectionOption option) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SmartContentUpdatePage(
-          initialGradeId: option.gradeId,
-          initialLessonId: option.lessonId,
-          initialUnitId: option.unitId,
-          initialTopicId: option.topicId,
-          initialCurriculumWeek: _selectedWeek,
-        ),
-      ),
-    );
-    if (!mounted) return;
-    await _loadWeekSummary();
-  }
-
-  Future<void> _showUpdateSelectionDialog() async {
-    if (_topicOptions.isEmpty) return;
-
-    final selected = await showDialog<_TopicSelectionOption>(
-      context: context,
-      builder: (dialogContext) {
-        int? selectedGradeId;
-        int? selectedLessonId;
-        int? selectedUnitId;
-        int? selectedTopicId;
-
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            final gradeOptions =
-                _topicOptions
-                    .map(
-                      (o) => (
-                        id: o.gradeId,
-                        order: o.gradeOrder,
-                        name: o.gradeName,
-                      ),
-                    )
-                    .toSet()
-                    .toList()
-                  ..sort((a, b) => a.order.compareTo(b.order));
-            selectedGradeId ??= gradeOptions.isNotEmpty
-                ? gradeOptions.first.id
-                : null;
-
-            final lessonOptions =
-                _topicOptions
-                    .where((o) => o.gradeId == selectedGradeId)
-                    .map(
-                      (o) => (
-                        id: o.lessonId,
-                        order: o.lessonOrder,
-                        name: o.lessonName,
-                      ),
-                    )
-                    .toSet()
-                    .toList()
-                  ..sort((a, b) => a.order.compareTo(b.order));
-            if (!lessonOptions.any((l) => l.id == selectedLessonId)) {
-              selectedLessonId = lessonOptions.isNotEmpty
-                  ? lessonOptions.first.id
-                  : null;
-            }
-
-            final unitOptions =
-                _topicOptions
-                    .where(
-                      (o) =>
-                          o.gradeId == selectedGradeId &&
-                          o.lessonId == selectedLessonId,
-                    )
-                    .map(
-                      (o) =>
-                          (id: o.unitId, order: o.unitOrder, name: o.unitTitle),
-                    )
-                    .toSet()
-                    .toList()
-                  ..sort((a, b) => a.order.compareTo(b.order));
-            if (!unitOptions.any((u) => u.id == selectedUnitId)) {
-              selectedUnitId = unitOptions.isNotEmpty
-                  ? unitOptions.first.id
-                  : null;
-            }
-
-            final topicOptions =
-                _topicOptions
-                    .where(
-                      (o) =>
-                          o.gradeId == selectedGradeId &&
-                          o.lessonId == selectedLessonId &&
-                          o.unitId == selectedUnitId,
-                    )
-                    .toList()
-                  ..sort((a, b) => a.topicOrder.compareTo(b.topicOrder));
-
-            if (!topicOptions.any((t) => t.topicId == selectedTopicId)) {
-              selectedTopicId = topicOptions.isNotEmpty
-                  ? topicOptions.first.topicId
-                  : null;
-            }
-
-            final selectedOption = topicOptions.firstWhere(
-              (o) => o.topicId == selectedTopicId,
-              orElse: () => topicOptions.isNotEmpty
-                  ? topicOptions.first
-                  : _topicOptions.first,
-            );
-
-            return AlertDialog(
-              title: const Text('Güncellenecek Konuyu Seç'),
-              content: SizedBox(
-                width: 420,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    DropdownButtonFormField<int>(
-                      initialValue: selectedGradeId,
-                      decoration: const InputDecoration(labelText: 'Sınıf'),
-                      items: gradeOptions
-                          .map(
-                            (g) => DropdownMenuItem<int>(
-                              value: g.id,
-                              child: Text(g.name),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        setDialogState(() {
-                          selectedGradeId = value;
-                          selectedLessonId = null;
-                          selectedUnitId = null;
-                          selectedTopicId = null;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    DropdownButtonFormField<int>(
-                      initialValue: selectedLessonId,
-                      decoration: const InputDecoration(labelText: 'Ders'),
-                      items: lessonOptions
-                          .map(
-                            (l) => DropdownMenuItem<int>(
-                              value: l.id,
-                              child: Text(l.name),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        setDialogState(() {
-                          selectedLessonId = value;
-                          selectedUnitId = null;
-                          selectedTopicId = null;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    DropdownButtonFormField<int>(
-                      initialValue: selectedUnitId,
-                      decoration: const InputDecoration(labelText: 'Ünite'),
-                      items: unitOptions
-                          .map(
-                            (u) => DropdownMenuItem<int>(
-                              value: u.id,
-                              child: Text(u.name),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        setDialogState(() {
-                          selectedUnitId = value;
-                          selectedTopicId = null;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    DropdownButtonFormField<int>(
-                      initialValue: selectedTopicId,
-                      decoration: const InputDecoration(labelText: 'Konu'),
-                      items: topicOptions
-                          .map(
-                            (t) => DropdownMenuItem<int>(
-                              value: t.topicId,
-                              child: Text(t.topicTitle),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        setDialogState(() => selectedTopicId = value);
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '$_selectedWeek. hafta için içerikler açılacak.',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Vazgeç'),
-                ),
-                FilledButton(
-                  onPressed: topicOptions.isEmpty
-                      ? null
-                      : () => Navigator.of(dialogContext).pop(selectedOption),
-                  child: const Text('Aç'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-
-    if (selected == null) return;
-    await _openSmartContentUpdate(selected);
   }
 
   @override
@@ -659,19 +315,6 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
           week: _selectedWeek,
           statuses: filteredStatuses,
           onTapLesson: _openOutcomesForLesson,
-          onTapLessonQuestion: _openSmartQuestionAdditionForLesson,
-          onTapLessonContent: _openSmartContentAdditionForLesson,
-        ),
-        const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerRight,
-          child: OutlinedButton.icon(
-            onPressed: _topicOptions.isEmpty
-                ? null
-                : _showUpdateSelectionDialog,
-            icon: const Icon(Icons.edit_note_rounded),
-            label: const Text('İçerik Güncelle'),
-          ),
         ),
       ],
     );
@@ -782,16 +425,45 @@ class _WeeklyContentStatusCard extends StatelessWidget {
   final int week;
   final List<_LessonWeekStatus> statuses;
   final ValueChanged<_LessonWeekStatus> onTapLesson;
-  final ValueChanged<_LessonWeekStatus> onTapLessonQuestion;
-  final ValueChanged<_LessonWeekStatus> onTapLessonContent;
 
   const _WeeklyContentStatusCard({
     required this.week,
     required this.statuses,
     required this.onTapLesson,
-    required this.onTapLessonQuestion,
-    required this.onTapLessonContent,
   });
+
+  Color _questionColor(int count) {
+    if (count >= 30) return Colors.green;
+    if (count >= 20) return Colors.amber.shade700;
+    if (count >= 10) return Colors.orange;
+    return Colors.red;
+  }
+
+  Color _questionBackground(Color base) => base.withAlpha(26);
+
+  Color _questionBorder(Color base) => base.withAlpha(90);
+
+  Color _contentColor(_LessonWeekStatus lesson) {
+    if (!lesson.hasContent) return Colors.red;
+    if (lesson.hasDraftContent) return Colors.amber.shade700;
+    return Colors.green;
+  }
+
+  Color _contentBackground(Color base) => base.withAlpha(26);
+
+  Color _contentBorder(Color base) => base.withAlpha(90);
+
+  String _contentLabel(_LessonWeekStatus lesson) {
+    if (!lesson.hasContent) return 'İçerik yok';
+    if (lesson.hasDraftContent) return 'Taslak';
+    return 'İçerik var';
+  }
+
+  IconData _contentIcon(_LessonWeekStatus lesson) {
+    if (!lesson.hasContent) return Icons.cancel;
+    if (lesson.hasDraftContent) return Icons.timelapse_rounded;
+    return Icons.check_circle;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -856,6 +528,10 @@ class _WeeklyContentStatusCard extends StatelessWidget {
                   ],
                   ...gradeLessons.map((lesson) {
                     if (isMobile) {
+                      final questionColor = _questionColor(
+                        lesson.questionCount,
+                      );
+                      final contentColor = _contentColor(lesson);
                       return Container(
                         margin: const EdgeInsets.only(bottom: 8),
                         padding: const EdgeInsets.all(12),
@@ -867,57 +543,49 @@ class _WeeklyContentStatusCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InkWell(
-                              onTap: () => onTapLesson(lesson),
-                              child: Text(
-                                lesson.lessonName,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
                             Row(
                               children: [
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () => onTapLesson(lesson),
+                                    child: Text(
+                                      lesson.lessonName,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 10,
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: lesson.hasContent
-                                        ? const Color(0xFFE8F7ED)
-                                        : const Color(0xFFFDECEC),
+                                    color: _contentBackground(contentColor),
                                     borderRadius: BorderRadius.circular(999),
                                     border: Border.all(
-                                      color: lesson.hasContent
-                                          ? const Color(0xFFBEE5C9)
-                                          : const Color(0xFFF4C7C7),
+                                      color: _contentBorder(contentColor),
                                     ),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(
-                                        lesson.hasContent
-                                            ? Icons.check_circle
-                                            : Icons.cancel,
+                                        _contentIcon(lesson),
                                         size: 16,
-                                        color: lesson.hasContent
-                                            ? Colors.green
-                                            : Colors.red,
+                                        color: contentColor,
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
-                                        lesson.hasContent
-                                            ? 'İçerik var'
-                                            : 'İçerik yok',
+                                        _contentLabel(lesson),
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: lesson.hasContent
-                                              ? Colors.green.shade800
-                                              : Colors.red.shade800,
+                                          color: contentColor,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
@@ -931,36 +599,19 @@ class _WeeklyContentStatusCard extends StatelessWidget {
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFF4F6F8),
+                                    color: _questionBackground(questionColor),
                                     borderRadius: BorderRadius.circular(999),
+                                    border: Border.all(
+                                      color: _questionBorder(questionColor),
+                                    ),
                                   ),
                                   child: Text(
                                     'Soru: ${lesson.questionCount}',
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: Colors.grey.shade800,
+                                      color: questionColor,
                                       fontWeight: FontWeight.w700,
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _QuickActionButton(
-                                    label: 'Soru Ekle',
-                                    enabled: lesson.preferredTopicId != null,
-                                    onTap: () => onTapLessonQuestion(lesson),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: _QuickActionButton(
-                                    label: 'İçerik Ekle',
-                                    enabled: lesson.preferredTopicId != null,
-                                    onTap: () => onTapLessonContent(lesson),
                                   ),
                                 ),
                               ],
@@ -982,73 +633,10 @@ class _WeeklyContentStatusCard extends StatelessWidget {
                       ),
                       child: LayoutBuilder(
                         builder: (context, constraints) {
-                          final isNarrow = constraints.maxWidth < 720;
-
-                          if (isNarrow) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () => onTapLesson(lesson),
-                                  child: Text(
-                                    lesson.lessonName,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            lesson.hasContent
-                                                ? Icons.check_circle
-                                                : Icons.cancel,
-                                            size: 16,
-                                            color: lesson.hasContent
-                                                ? Colors.green
-                                                : Colors.red,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            lesson.hasContent ? 'Var' : 'Yok',
-                                            style: TextStyle(
-                                              color: lesson.hasContent
-                                                  ? Colors.green.shade700
-                                                  : Colors.red.shade700,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Text('${lesson.questionCount}'),
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    _QuickActionButton(
-                                      label: 'Soru',
-                                      enabled: lesson.preferredTopicId != null,
-                                      onTap: () => onTapLessonQuestion(lesson),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    _QuickActionButton(
-                                      label: 'İçerik',
-                                      enabled: lesson.preferredTopicId != null,
-                                      onTap: () => onTapLessonContent(lesson),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            );
-                          }
+                          final questionColor = _questionColor(
+                            lesson.questionCount,
+                          );
+                          final contentColor = _contentColor(lesson);
 
                           return Row(
                             children: [
@@ -1070,21 +658,19 @@ class _WeeklyContentStatusCard extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      lesson.hasContent
-                                          ? Icons.check_circle
-                                          : Icons.cancel,
+                                      _contentIcon(lesson),
                                       size: 16,
-                                      color: lesson.hasContent
-                                          ? Colors.green
-                                          : Colors.red,
+                                      color: contentColor,
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      lesson.hasContent ? 'Var' : 'Yok',
+                                      lesson.hasContent
+                                          ? (lesson.hasDraftContent
+                                              ? 'Taslak'
+                                              : 'Var')
+                                          : 'Yok',
                                       style: TextStyle(
-                                        color: lesson.hasContent
-                                            ? Colors.green.shade700
-                                            : Colors.red.shade700,
+                                        color: contentColor,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -1093,24 +679,12 @@ class _WeeklyContentStatusCard extends StatelessWidget {
                               ),
                               Expanded(
                                 flex: 1,
-                                child: Text('${lesson.questionCount}'),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Row(
-                                  children: [
-                                    _QuickActionButton(
-                                      label: 'Soru',
-                                      enabled: lesson.preferredTopicId != null,
-                                      onTap: () => onTapLessonQuestion(lesson),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    _QuickActionButton(
-                                      label: 'İçerik',
-                                      enabled: lesson.preferredTopicId != null,
-                                      onTap: () => onTapLessonContent(lesson),
-                                    ),
-                                  ],
+                                child: Text(
+                                  '${lesson.questionCount}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: questionColor,
+                                  ),
                                 ),
                               ),
                             ],
@@ -1125,35 +699,6 @@ class _WeeklyContentStatusCard extends StatelessWidget {
           );
         }),
       ],
-    );
-  }
-}
-
-class _QuickActionButton extends StatelessWidget {
-  final String label;
-  final bool enabled;
-  final VoidCallback onTap;
-
-  const _QuickActionButton({
-    required this.label,
-    required this.enabled,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: enabled ? onTap : null,
-      style: TextButton.styleFrom(
-        foregroundColor: const Color(0xFF1D4ED8),
-        backgroundColor: const Color(0xFFEAF2FF),
-        disabledForegroundColor: Colors.grey.shade500,
-        disabledBackgroundColor: Colors.grey.shade200,
-        visualDensity: VisualDensity.compact,
-        minimumSize: const Size(0, 36),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      ),
-      child: Text(label),
     );
   }
 }
@@ -1253,6 +798,7 @@ class _LessonWeekStatus {
   final String lessonName;
   final int lessonOrder;
   final bool hasContent;
+  final bool hasDraftContent;
   final int questionCount;
   final int gradeId;
   final String gradeNameForNav;
@@ -1267,6 +813,7 @@ class _LessonWeekStatus {
     required this.lessonName,
     required this.lessonOrder,
     required this.hasContent,
+    required this.hasDraftContent,
     required this.questionCount,
     required this.gradeId,
     required this.gradeNameForNav,
@@ -1274,36 +821,6 @@ class _LessonWeekStatus {
     required this.lessonNameForNav,
     required this.preferredUnitId,
     required this.preferredTopicId,
-  });
-}
-
-class _TopicSelectionOption {
-  final int gradeId;
-  final String gradeName;
-  final int gradeOrder;
-  final int lessonId;
-  final String lessonName;
-  final int lessonOrder;
-  final int unitId;
-  final String unitTitle;
-  final int unitOrder;
-  final int topicId;
-  final String topicTitle;
-  final int topicOrder;
-
-  const _TopicSelectionOption({
-    required this.gradeId,
-    required this.gradeName,
-    required this.gradeOrder,
-    required this.lessonId,
-    required this.lessonName,
-    required this.lessonOrder,
-    required this.unitId,
-    required this.unitTitle,
-    required this.unitOrder,
-    required this.topicId,
-    required this.topicTitle,
-    required this.topicOrder,
   });
 }
 

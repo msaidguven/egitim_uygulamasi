@@ -323,7 +323,7 @@ CREATE TABLE public.units (
   is_active boolean NOT NULL DEFAULT true,
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now(),
-  slug text UNIQUE,
+  slug text,
   question_count integer NOT NULL DEFAULT 0,
   CONSTRAINT units_pkey PRIMARY KEY (id),
   CONSTRAINT fk_units_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id)

@@ -14,6 +14,9 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
   bool _isLoadingOptions = true;
   bool _isLoadingPreview = false;
   bool _isDeleting = false;
+  bool _isDeletingQuestions = false;
+  bool _isDeletingTopics = false;
+  bool _isDeletingUnits = false;
   String? _error;
 
   List<_GradeLessonOption> _options = const [];
@@ -134,9 +137,11 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
         topicIds: [],
         contentIds: [],
         outcomeIds: [],
+        questionIds: [],
         sharedUnitIds: [],
         contentSamples: [],
         outcomeSamples: [],
+        questionSamples: [],
       );
     }
 
@@ -153,8 +158,10 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
 
     List<int> contentIds = const [];
     List<int> outcomeIds = const [];
+    List<int> questionIds = const [];
     List<String> contentSamples = const [];
     List<String> outcomeSamples = const [];
+    List<String> questionSamples = const [];
     if (topicIds.isNotEmpty) {
       final contentRows = await _client
           .from('topic_contents')
@@ -189,6 +196,31 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
           .where((t) => t.isNotEmpty)
           .take(20)
           .toList();
+
+      final usageRows = await _client
+          .from('question_usages')
+          .select('question_id')
+          .inFilter('topic_id', topicIds);
+      questionIds = (usageRows as List)
+          .whereType<Map<String, dynamic>>()
+          .map((r) => _toInt(r['question_id']))
+          .whereType<int>()
+          .toSet()
+          .toList();
+
+      if (questionIds.isNotEmpty) {
+        final questionRows = await _client
+            .from('questions')
+            .select('question_text')
+            .inFilter('id', questionIds)
+            .limit(20);
+        questionSamples = (questionRows as List)
+            .whereType<Map<String, dynamic>>()
+            .map((r) => (r['question_text'] as String? ?? '').trim())
+            .where((t) => t.isNotEmpty)
+            .take(20)
+            .toList();
+      }
     }
 
     final sharedRows = await _client
@@ -208,9 +240,11 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
       topicIds: topicIds,
       contentIds: contentIds,
       outcomeIds: outcomeIds,
+      questionIds: questionIds,
       sharedUnitIds: sharedUnitIds,
       contentSamples: contentSamples,
       outcomeSamples: outcomeSamples,
+      questionSamples: questionSamples,
     );
   }
 
@@ -311,6 +345,298 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
       if (mounted) {
         setState(() {
           _isDeleting = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _deleteQuestions() async {
+    final scope = _scope;
+    if (scope == null) return;
+    if (scope.questionIds.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bu seçimde silinecek soru bulunamadı.')),
+      );
+      return;
+    }
+    if (scope.sharedUnitIds.isNotEmpty && !_allowSharedUnits) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Paylaşılan üniteler bulundu. Silmek için önce onay kutusunu işaretleyin.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final approved = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final gradeName = _selectedGradeName;
+        final lessonName = _selectedLessonName;
+        return AlertDialog(
+          title: const Text('Soruları Silmeyi Onayla'),
+          content: Text(
+            '$gradeName - $lessonName için:\n'
+            '- ${scope.questionIds.length} soru\n'
+            'kalıcı olarak silinecek.\n\n'
+            'Bu işlem geri alınamaz.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Sil'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (approved != true) return;
+
+    setState(() {
+      _isDeletingQuestions = true;
+      _error = null;
+    });
+
+    try {
+      await _client.rpc(
+        'admin_delete_cwqc_for_units',
+        params: {'p_unit_ids': scope.unitIds},
+      );
+      await _deleteInChunks(
+        'question_blank_options',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks(
+        'question_choices',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks(
+        'question_matching_pairs',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks(
+        'question_classical',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks(
+        'question_usages',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks(
+        'user_question_stats',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks(
+        'user_weekly_question_progress',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks(
+        'user_answers',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks(
+        'test_session_answers',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks(
+        'test_session_questions',
+        'question_id',
+        scope.questionIds,
+      );
+      await _deleteInChunks('questions', 'id', scope.questionIds);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sorular başarıyla silindi.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      await _loadPreview();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Soru silme işlemi başarısız: $e';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeletingQuestions = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _deleteTopics() async {
+    final scope = _scope;
+    if (scope == null) return;
+    if (scope.topicIds.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bu seçimde silinecek konu yok.')),
+      );
+      return;
+    }
+    if (scope.sharedUnitIds.isNotEmpty && !_allowSharedUnits) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Paylaşılan üniteler bulundu. Silmek için önce onay kutusunu işaretleyin.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final approved = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final gradeName = _selectedGradeName;
+        final lessonName = _selectedLessonName;
+        return AlertDialog(
+          title: const Text('Konuları Silmeyi Onayla'),
+          content: Text(
+            '$gradeName - $lessonName için:\n'
+            '- ${scope.topicIds.length} konu\n'
+            'kalıcı olarak silinecek.\n\n'
+            'Bu işlem geri alınamaz.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Sil'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (approved != true) return;
+
+    setState(() {
+      _isDeletingTopics = true;
+      _error = null;
+    });
+
+    try {
+      await _deleteInChunks('topics', 'id', scope.topicIds);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Konular başarıyla silindi.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      await _loadPreview();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Konu silme işlemi başarısız: $e';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeletingTopics = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _deleteUnits() async {
+    final scope = _scope;
+    if (scope == null) return;
+    if (scope.unitIds.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bu seçimde silinecek ünite yok.')),
+      );
+      return;
+    }
+    if (scope.sharedUnitIds.isNotEmpty && !_allowSharedUnits) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Paylaşılan üniteler bulundu. Silmek için önce onay kutusunu işaretleyin.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final approved = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final gradeName = _selectedGradeName;
+        final lessonName = _selectedLessonName;
+        return AlertDialog(
+          title: const Text('Üniteleri Silmeyi Onayla'),
+          content: Text(
+            '$gradeName - $lessonName için:\n'
+            '- ${scope.unitIds.length} ünite\n'
+            'kalıcı olarak silinecek.\n\n'
+            'Bu işlem geri alınamaz.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Sil'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (approved != true) return;
+
+    setState(() {
+      _isDeletingUnits = true;
+      _error = null;
+    });
+
+    try {
+      await _deleteInChunks('unit_grades', 'unit_id', scope.unitIds);
+      await _deleteInChunks('units', 'id', scope.unitIds);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Üniteler başarıyla silindi.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      await _loadPreview();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Ünite silme işlemi başarısız: $e';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeletingUnits = false;
         });
       }
     }
@@ -523,6 +849,9 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
                     onPressed:
                         (_scope == null ||
                             _isDeleting ||
+                            _isDeletingQuestions ||
+                            _isDeletingTopics ||
+                            _isDeletingUnits ||
                             _isLoadingPreview ||
                             (!_deleteContents && !_deleteOutcomes))
                         ? null
@@ -546,6 +875,78 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
                           : _deleteContents
                           ? 'Seçili İçerikleri Sil'
                           : 'Seçili Kazanımları Sil',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed:
+                        (_scope == null ||
+                            _isDeletingQuestions ||
+                            _isDeleting ||
+                            _isDeletingTopics ||
+                            _isDeletingUnits ||
+                            _isLoadingPreview)
+                        ? null
+                        : _deleteQuestions,
+                    icon: _isDeletingQuestions
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.delete_outline),
+                    label: Text(
+                      _isDeletingQuestions
+                          ? 'Sorular Siliniyor...'
+                          : 'Bu Dersin Tüm Sorularını Sil',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed:
+                        (_scope == null ||
+                            _isDeletingTopics ||
+                            _isDeleting ||
+                            _isDeletingQuestions ||
+                            _isDeletingUnits ||
+                            _isLoadingPreview)
+                        ? null
+                        : _deleteTopics,
+                    icon: _isDeletingTopics
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.topic_outlined),
+                    label: Text(
+                      _isDeletingTopics
+                          ? 'Konular Siliniyor...'
+                          : 'Bu Dersin Tüm Konularını Sil',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  OutlinedButton.icon(
+                    onPressed:
+                        (_scope == null ||
+                            _isDeletingUnits ||
+                            _isDeleting ||
+                            _isDeletingQuestions ||
+                            _isDeletingTopics ||
+                            _isLoadingPreview)
+                        ? null
+                        : _deleteUnits,
+                    icon: _isDeletingUnits
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.folder_delete_outlined),
+                    label: Text(
+                      _isDeletingUnits
+                          ? 'Üniteler Siliniyor...'
+                          : 'Bu Dersin Tüm Ünitelerini Sil',
                     ),
                   ),
                 ],
@@ -577,6 +978,7 @@ class _PreviewCard extends StatelessWidget {
             Text('Konu: ${scope.topicIds.length}'),
             Text('İçerik: ${scope.contentIds.length}'),
             Text('Kazanım: ${scope.outcomeIds.length}'),
+            Text('Soru: ${scope.questionIds.length}'),
             if (scope.contentSamples.isNotEmpty) ...[
               const SizedBox(height: 10),
               const Text(
@@ -607,10 +1009,27 @@ class _PreviewCard extends StatelessWidget {
                 ),
               ),
             ],
-            if (scope.contentIds.isEmpty && scope.outcomeIds.isEmpty)
+            if (scope.questionSamples.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              const Text(
+                'Örnek Sorular (ilk 20):',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 6),
+              ...scope.questionSamples.map(
+                (item) => Text(
+                  '• $item',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+            if (scope.contentIds.isEmpty &&
+                scope.outcomeIds.isEmpty &&
+                scope.questionIds.isEmpty)
               const Padding(
                 padding: EdgeInsets.only(top: 8),
-                child: Text('Bu seçimde silinecek içerik/kazanım bulunamadı.'),
+                child: Text('Bu seçimde silinecek içerik/kazanım/soru yok.'),
               ),
           ],
         ),
@@ -664,18 +1083,22 @@ class _DeleteScope {
   final List<int> topicIds;
   final List<int> contentIds;
   final List<int> outcomeIds;
+  final List<int> questionIds;
   final List<int> sharedUnitIds;
   final List<String> contentSamples;
   final List<String> outcomeSamples;
+  final List<String> questionSamples;
 
   const _DeleteScope({
     required this.unitIds,
     required this.topicIds,
     required this.contentIds,
     required this.outcomeIds,
+    required this.questionIds,
     required this.sharedUnitIds,
     required this.contentSamples,
     required this.outcomeSamples,
+    required this.questionSamples,
   });
 }
 

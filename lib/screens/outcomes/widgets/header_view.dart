@@ -202,39 +202,137 @@ class HeaderView extends ConsumerWidget {
         .toList();
   }
 
-  Future<String?> _showEditOutcomeDialog(
+  Future<_OutcomeEditResult?> _showEditOutcomeDialog(
     BuildContext context, {
     required String initialText,
+    required List<Map<String, dynamic>> initialWeekRanges,
   }) async {
     final controller = TextEditingController(text: initialText);
-    return showDialog<String>(
+    final initialStart = initialWeekRanges.isEmpty
+        ? null
+        : initialWeekRanges
+            .map((w) => w['start_week'] as int?)
+            .whereType<int>()
+            .fold<int?>(null, (min, v) => min == null ? v : (v < min ? v : min));
+    final initialEnd = initialWeekRanges.isEmpty
+        ? null
+        : initialWeekRanges
+            .map((w) => w['end_week'] as int?)
+            .whereType<int>()
+            .fold<int?>(null, (max, v) => max == null ? v : (v > max ? v : max));
+    final startController =
+        TextEditingController(text: initialStart?.toString() ?? '');
+    final endController =
+        TextEditingController(text: initialEnd?.toString() ?? '');
+    String? weekError;
+
+    return showDialog<_OutcomeEditResult>(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Kazanımı Güncelle'),
-          content: TextField(
-            controller: controller,
-            minLines: 2,
-            maxLines: 6,
-            decoration: const InputDecoration(
-              hintText: 'Kazanım metnini girin',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('İptal'),
-            ),
-            FilledButton(
-              onPressed: () {
-                final text = controller.text.trim();
-                if (text.isEmpty) return;
-                Navigator.of(dialogContext).pop(text);
-              },
-              child: const Text('Kaydet'),
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Kazanımı Güncelle'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: controller,
+                      minLines: 2,
+                      maxLines: 6,
+                      decoration: const InputDecoration(
+                        hintText: 'Kazanım metnini girin',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: startController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Başlangıç hafta',
+                              border: const OutlineInputBorder(),
+                              errorText: weekError,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextField(
+                            controller: endController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Bitiş hafta',
+                              border: const OutlineInputBorder(),
+                              errorText: weekError,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('İptal'),
+                ),
+                FilledButton(
+                  onPressed: () {
+                    final text = controller.text.trim();
+                    if (text.isEmpty) return;
+                    final startRaw = startController.text.trim();
+                    final endRaw = endController.text.trim();
+                    final startWeek =
+                        startRaw.isEmpty ? null : int.tryParse(startRaw);
+                    final endWeek =
+                        endRaw.isEmpty ? null : int.tryParse(endRaw);
+                    if (startRaw.isNotEmpty && startWeek == null) {
+                      setState(() => weekError = 'Geçersiz hafta');
+                      return;
+                    }
+                    if (endRaw.isNotEmpty && endWeek == null) {
+                      setState(() => weekError = 'Geçersiz hafta');
+                      return;
+                    }
+                    if ((startWeek == null) != (endWeek == null)) {
+                      setState(() => weekError = 'İki hafta da girilmeli');
+                      return;
+                    }
+                    if (startWeek != null && startWeek < 1) {
+                      setState(() => weekError = 'Hafta 1 veya üzeri olmalı');
+                      return;
+                    }
+                    if (endWeek != null && endWeek < 1) {
+                      setState(() => weekError = 'Hafta 1 veya üzeri olmalı');
+                      return;
+                    }
+                    if (startWeek != null &&
+                        endWeek != null &&
+                        startWeek > endWeek) {
+                      setState(
+                        () => weekError = 'Başlangıç > bitiş olamaz',
+                      );
+                      return;
+                    }
+                    Navigator.of(dialogContext).pop(
+                      _OutcomeEditResult(
+                        description: text,
+                        startWeek: startWeek,
+                        endWeek: endWeek,
+                      ),
+                    );
+                  },
+                  child: const Text('Kaydet'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -244,6 +342,8 @@ class HeaderView extends ConsumerWidget {
     BuildContext context, {
     required int? outcomeId,
     required String description,
+    required int? startWeek,
+    required int? endWeek,
   }) async {
     if (outcomeId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -257,6 +357,17 @@ class HeaderView extends ConsumerWidget {
           .from('outcomes')
           .update({'description': description})
           .eq('id', outcomeId);
+      await Supabase.instance.client
+          .from('outcome_weeks')
+          .delete()
+          .eq('outcome_id', outcomeId);
+      if (startWeek != null && endWeek != null) {
+        await Supabase.instance.client.from('outcome_weeks').insert({
+          'outcome_id': outcomeId,
+          'start_week': startWeek,
+          'end_week': endWeek,
+        });
+      }
       if (!context.mounted) return false;
       ScaffoldMessenger.of(
         context,
@@ -409,16 +520,29 @@ class HeaderView extends ConsumerWidget {
                 final next = await _showEditOutcomeDialog(
                   context,
                   initialText: description,
+                  initialWeekRanges: weekRanges,
                 );
-                if (next == null || next == description) return;
+                if (next == null) return;
+                final unchangedText = next.description == description;
+                final currentStart = weekRanges.isEmpty
+                    ? null
+                    : weekRanges.first['start_week'] as int?;
+                final currentEnd = weekRanges.isEmpty
+                    ? null
+                    : weekRanges.first['end_week'] as int?;
+                final sameWeeks =
+                    currentStart == next.startWeek && currentEnd == next.endWeek;
+                if (unchangedText && sameWeeks) return;
                 if (!context.mounted) return;
                 final ok = await _updateOutcome(
                   context,
                   outcomeId: outcomeId,
-                  description: next,
+                  description: next.description,
+                  startWeek: next.startWeek,
+                  endWeek: next.endWeek,
                 );
                 if (ok) {
-                  onEdited(next);
+                  onEdited(next.description);
                   onRefreshWeek();
                 }
               },
@@ -1092,4 +1216,16 @@ class HeaderView extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _OutcomeEditResult {
+  final String description;
+  final int? startWeek;
+  final int? endWeek;
+
+  const _OutcomeEditResult({
+    required this.description,
+    required this.startWeek,
+    required this.endWeek,
+  });
 }
