@@ -16,7 +16,6 @@ import 'package:egitim_uygulamasi/screens/home/widgets/teacher_content_view.dart
 import 'package:egitim_uygulamasi/screens/home/widgets/unfinished_tests_section.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/weekly_agenda_overview_card.dart';
 
-import 'package:egitim_uygulamasi/screens/home/widgets/week_info_card.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -445,16 +444,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       loading: () => const SizedBox.shrink(),
                       error: (error, stackTrace) => const SizedBox.shrink(),
-                    ),
-                  ),
-
-                // 5. Week Info Card Section (Sadece giriş yapan kullanıcılar)
-                if (isLoggedIn)
-                  SliverToBoxAdapter(
-                    child: WeekInfoCard(
-                      profile: widget.profile,
-                      agendaData: widget.agendaData,
-                      completedLessons: _calculateCompletedLessons(),
                     ),
                   ),
 

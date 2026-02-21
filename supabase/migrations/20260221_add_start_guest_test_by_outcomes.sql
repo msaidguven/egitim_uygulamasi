@@ -1,5 +1,5 @@
 -- Guest weekly test alternative for multi-content weeks:
--- strictly filters by selected topic + selected outcomes + curriculum week.
+-- strictly filters by selected outcomes + curriculum week (topic-independent).
 
 CREATE OR REPLACE FUNCTION public.start_guest_test_by_outcomes(
   p_unit_id bigint,
@@ -21,13 +21,12 @@ BEGIN
     RETURN '[]'::jsonb;
   END IF;
 
-  -- Keep only valid outcomes that belong to selected topic.
+  -- Keep only valid outcomes that belong to selected unit.
   SELECT array_agg(o.id ORDER BY o.id)
   INTO v_outcome_ids
   FROM public.outcomes o
   JOIN public.topics t ON t.id = o.topic_id
-  WHERE o.topic_id = p_topic_id
-    AND o.id = ANY(p_outcome_ids)
+  WHERE o.id = ANY(p_outcome_ids)
     AND t.unit_id = p_unit_id;
 
   IF v_outcome_ids IS NULL OR array_length(v_outcome_ids, 1) IS NULL THEN
@@ -40,7 +39,8 @@ BEGIN
     JOIN public.question_outcomes qo
       ON qo.question_id = qu.question_id
      AND qo.outcome_id = ANY(v_outcome_ids)
-    WHERE qu.topic_id = p_topic_id
+    JOIN public.topics t ON t.id = qu.topic_id
+    WHERE t.unit_id = p_unit_id
       AND qu.usage_type = 'weekly'
       AND qu.curriculum_week = p_curriculum_week
   ),

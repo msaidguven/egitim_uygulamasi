@@ -1,3 +1,4 @@
+import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 
 class WeeklyAgendaOverviewCard extends StatelessWidget {
@@ -81,13 +82,27 @@ class WeeklyAgendaOverviewCard extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  '$currentWeek. Hafta Ozeti',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$currentWeek. Hafta Özeti',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${getWeekDateRangeForAcademicWeek(currentWeek).$1.day} ${aylar[getWeekDateRangeForAcademicWeek(currentWeek).$1.month - 1]} - ${getWeekDateRangeForAcademicWeek(currentWeek).$2.day} ${aylar[getWeekDateRangeForAcademicWeek(currentWeek).$2.month - 1]} ${getWeekDateRangeForAcademicWeek(currentWeek).$2.year} • ${getCurrentPeriodInfo().displayTitle}',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               if (weekCompleted)
@@ -122,7 +137,7 @@ class WeeklyAgendaOverviewCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           Wrap(
             spacing: 8,
             runSpacing: 8,

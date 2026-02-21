@@ -1007,10 +1007,26 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     if (questions.isEmpty) return questions;
 
     final questionIds = questions.map((q) => q.id).toList();
+
+    // Hard filter: only keep questions explicitly mapped to this topic+week.
+    final usageRows = await Supabase.instance.client
+        .from('question_usages')
+        .select('question_id')
+        .eq('topic_id', topicId)
+        .eq('usage_type', 'weekly')
+        .eq('curriculum_week', curriculumWeek)
+        .inFilter('question_id', questionIds);
+
+    final weeklyQuestionIds = (usageRows as List)
+        .map((r) => (r as Map<String, dynamic>)['question_id'] as int?)
+        .whereType<int>()
+        .toSet();
+    if (weeklyQuestionIds.isEmpty) return const [];
+
     final rows = await Supabase.instance.client
         .from('question_outcomes')
         .select('question_id, outcome_id')
-        .inFilter('question_id', questionIds)
+        .inFilter('question_id', weeklyQuestionIds.toList())
         .inFilter('outcome_id', selectedOutcomeIds);
 
     final matchedQuestionIds = (rows as List)
@@ -1024,7 +1040,6 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
 
   Future<_OutcomeActiveSession?> _loadOutcomeActiveSession({
     required int unitId,
-    required int topicId,
     required int curriculumWeek,
     required List<int> selectedOutcomeIds,
   }) async {
@@ -1039,26 +1054,16 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         .eq('unit_id', unitId)
         .isFilter('completed_at', null)
         .eq('settings->>curriculum_week', curriculumWeek.toString())
-        .or('settings->>type.eq.weekly_outcome,settings->>type.eq.weekly')
+        .eq('settings->>type', 'weekly_outcome')
         .order('created_at', ascending: false)
         .limit(10);
 
     Map<String, dynamic>? matched;
-    Map<String, dynamic>? legacyWeeklyFallback;
     for (final raw in (rows as List)) {
       final row = Map<String, dynamic>.from(raw as Map);
       final settings = Map<String, dynamic>.from(
         row['settings'] as Map? ?? const {},
       );
-      final type = settings['type'] as String?;
-
-      if (type == 'weekly') {
-        legacyWeeklyFallback ??= row;
-        continue;
-      }
-      if ((settings['topic_id']?.toString() ?? '') != topicId.toString()) {
-        continue;
-      }
       final outcomeIds =
           (settings['outcome_ids'] as List? ?? const <dynamic>[])
               .map((e) => e as int?)
@@ -1070,8 +1075,6 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         break;
       }
     }
-
-    matched ??= legacyWeeklyFallback;
 
     if (matched == null) return null;
     final sessionId = matched['id'] as int?;
@@ -1112,11 +1115,13 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     );
     final activeSession = await _loadOutcomeActiveSession(
       unitId: unitId,
-      topicId: topicId,
       curriculumWeek: curriculumWeek,
       selectedOutcomeIds: selectedOutcomeIds,
     );
     final progressStats = await _loadOutcomeProgressStats(
+      unitId: unitId,
+      curriculumWeek: curriculumWeek,
+      selectedOutcomeIds: selectedOutcomeIds,
       questionIds: questions.map((q) => q.id).toList(),
     );
     return _OutcomeQuestionPanelData(
@@ -1127,39 +1132,31 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   }
 
   Future<_OutcomeProgressStats?> _loadOutcomeProgressStats({
+    required int unitId,
+    required int curriculumWeek,
+    required List<int> selectedOutcomeIds,
     required List<int> questionIds,
   }) async {
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null || questionIds.isEmpty) return null;
+    final response = await Supabase.instance.client.rpc(
+      'get_outcome_scope_stats_v2',
+      params: {
+        'p_user_id': user.id,
+        'p_unit_id': unitId,
+        'p_curriculum_week': curriculumWeek,
+        'p_outcome_ids': selectedOutcomeIds,
+        'p_question_ids': questionIds,
+      },
+    );
 
-    final rows = await Supabase.instance.client
-        .from('test_session_answers')
-        .select('question_id, is_correct, created_at')
-        .eq('user_id', user.id)
-        .inFilter('question_id', questionIds)
-        .order('created_at', ascending: false);
-
-    final latestByQuestion = <int, bool>{};
-    for (final raw in (rows as List)) {
-      final row = Map<String, dynamic>.from(raw as Map);
-      final qid = row['question_id'] as int?;
-      if (qid == null || latestByQuestion.containsKey(qid)) continue;
-      latestByQuestion[qid] = row['is_correct'] as bool? ?? false;
-    }
-
-    if (latestByQuestion.isEmpty) {
-      return const _OutcomeProgressStats(
-        solvedUnique: 0,
-        correctCount: 0,
-        wrongCount: 0,
-      );
-    }
-
-    final correctCount = latestByQuestion.values.where((v) => v).length;
+    final data = Map<String, dynamic>.from(
+      (response as Map?) ?? const <String, dynamic>{},
+    );
     return _OutcomeProgressStats(
-      solvedUnique: latestByQuestion.length,
-      correctCount: correctCount,
-      wrongCount: latestByQuestion.length - correctCount,
+      solvedUnique: (data['solved_unique'] as num?)?.toInt() ?? 0,
+      correctCount: (data['correct_count'] as num?)?.toInt() ?? 0,
+      wrongCount: (data['wrong_count'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -1488,6 +1485,15 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
               (o) => ((o['description'] as String?) ?? '').trim().isNotEmpty,
             )
             .toList();
+    final selectedSectionOutcomeIds = selectedSectionOutcomes
+        .map((o) {
+          final raw = o['id'] ?? o['outcome_id'];
+          if (raw is int) return raw;
+          if (raw is num) return raw.toInt();
+          return null;
+        })
+        .whereType<int>()
+        .toList();
     final selectedUnitTitle =
         unitOptions.firstWhere(
               (u) => u['unit_id'] == effectiveUnitId,
@@ -1923,10 +1929,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                             unitId: unitId,
                             topicId: selectedTopicId,
                             curriculumWeek: widget.curriculumWeek,
-                            selectedOutcomeIds: selectedSectionOutcomes
-                                .map((o) => o['id'] as int?)
-                                .whereType<int>()
-                                .toList(),
+                            selectedOutcomeIds: selectedSectionOutcomeIds,
                           ),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
@@ -1990,9 +1993,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                                 effectiveCount > 0 &&
                                 solvedUnique >= effectiveCount;
                             final hasStartableTest =
-                                (questions.isNotEmpty ||
-                                    activeSession != null) &&
-                                !allSolved;
+                                questions.isNotEmpty && !allSolved;
                             return Container(
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
@@ -2144,16 +2145,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                                                         'topic_id':
                                                             selectedTopicId,
                                                         'outcome_ids':
-                                                            selectedSectionOutcomes
-                                                                .map(
-                                                                  (o) =>
-                                                                      o['id']
-                                                                          as int?,
-                                                                )
-                                                                .whereType<
-                                                                  int
-                                                                >()
-                                                                .toList(),
+                                                            selectedSectionOutcomeIds,
                                                       },
                                                     ),
                                                   ),

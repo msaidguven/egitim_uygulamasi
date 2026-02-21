@@ -1,5 +1,5 @@
 -- Weekly test session alternative for multi-content weeks:
--- strictly filters by selected topic + selected outcomes + curriculum week.
+-- strictly filters by selected outcomes + curriculum week (topic-independent).
 
 CREATE OR REPLACE FUNCTION public.start_weekly_test_session_by_outcomes(
   p_user_id uuid,
@@ -26,11 +26,12 @@ BEGIN
     RETURN NULL;
   END IF;
 
-  -- Keep only valid outcomes that belong to selected topic; sort for stable matching.
+  -- Keep only valid outcomes that belong to selected unit; sort for stable matching.
   SELECT array_agg(o.id ORDER BY o.id)
   INTO v_outcome_ids
   FROM public.outcomes o
-  WHERE o.topic_id = p_topic_id
+  JOIN public.topics t ON t.id = o.topic_id
+  WHERE t.unit_id = p_unit_id
     AND o.id = ANY(p_outcome_ids);
 
   IF v_outcome_ids IS NULL OR array_length(v_outcome_ids, 1) IS NULL THEN
@@ -46,7 +47,6 @@ BEGIN
     AND ts.completed_at IS NULL
     AND ts.settings->>'type' = 'weekly_outcome'
     AND (ts.settings->>'curriculum_week')::integer = p_curriculum_week
-    AND (ts.settings->>'topic_id')::bigint = p_topic_id
     AND ts.settings->'outcome_ids' = to_jsonb(v_outcome_ids)
   LIMIT 1;
 
@@ -60,7 +60,8 @@ BEGIN
     JOIN public.question_outcomes qo
       ON qo.question_id = qu.question_id
      AND qo.outcome_id = ANY(v_outcome_ids)
-    WHERE qu.topic_id = p_topic_id
+    JOIN public.topics t ON t.id = qu.topic_id
+    WHERE t.unit_id = p_unit_id
       AND qu.usage_type = 'weekly'
       AND qu.curriculum_week = p_curriculum_week
   ),
@@ -114,7 +115,6 @@ BEGIN
     jsonb_build_object(
       'type', 'weekly_outcome',
       'curriculum_week', p_curriculum_week,
-      'topic_id', p_topic_id,
       'outcome_ids', v_outcome_ids
     )
   )
