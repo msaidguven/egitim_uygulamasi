@@ -19,19 +19,31 @@ class TestRepositoryImpl implements TestRepository {
   Future<List<Question>> startGuestTest({
     required int unitId,
     required int curriculumWeek,
+    int? topicId,
+    List<int>? outcomeIds,
   }) async {
     try {
       log(
-        'TestRepositoryImpl.startGuestTest (weekly): unitId=$unitId, curriculumWeek=$curriculumWeek',
+        'TestRepositoryImpl.startGuestTest (weekly): unitId=$unitId, curriculumWeek=$curriculumWeek, topicId=$topicId, outcomeCount=${outcomeIds?.length ?? 0}',
       );
 
+      final hasOutcomeFilter =
+          topicId != null && outcomeIds != null && outcomeIds.isNotEmpty;
       final response = await _supabase.rpc(
-        'start_guest_test',
-        params: {
-          'p_unit_id': unitId,
-          'p_type': 'weekly',
-          'p_curriculum_week': curriculumWeek,
-        },
+        hasOutcomeFilter ? 'start_guest_test_by_outcomes' : 'start_guest_test',
+        params: hasOutcomeFilter
+            ? {
+                'p_unit_id': unitId,
+                'p_topic_id': topicId,
+                'p_curriculum_week': curriculumWeek,
+                'p_outcome_ids': outcomeIds,
+                'p_limit': 10,
+              }
+            : {
+                'p_unit_id': unitId,
+                'p_type': 'weekly',
+                'p_curriculum_week': curriculumWeek,
+              },
       );
 
       if (response == null) {
@@ -114,6 +126,8 @@ class TestRepositoryImpl implements TestRepository {
     required TestMode testMode,
     required int unitId,
     int? curriculumWeek,
+    int? topicId,
+    List<int>? outcomeIds,
     String? clientId,
     String? userId,
   }) async {
@@ -123,13 +137,28 @@ class TestRepositoryImpl implements TestRepository {
 
       switch (testMode) {
         case TestMode.weekly:
-          rpcName = 'start_weekly_test_session';
-          params = {
-            'p_user_id': userId,
-            'p_unit_id': unitId,
-            'p_curriculum_week': curriculumWeek ?? 1,
-            'p_client_id': clientId,
-          };
+          final hasOutcomeFilter =
+              topicId != null && outcomeIds != null && outcomeIds.isNotEmpty;
+          if (hasOutcomeFilter) {
+            rpcName = 'start_weekly_test_session_by_outcomes';
+            params = {
+              'p_user_id': userId,
+              'p_unit_id': unitId,
+              'p_topic_id': topicId,
+              'p_curriculum_week': curriculumWeek ?? 1,
+              'p_outcome_ids': outcomeIds,
+              'p_client_id': clientId,
+              'p_limit': 10,
+            };
+          } else {
+            rpcName = 'start_weekly_test_session';
+            params = {
+              'p_user_id': userId,
+              'p_unit_id': unitId,
+              'p_curriculum_week': curriculumWeek ?? 1,
+              'p_client_id': clientId,
+            };
+          }
           break;
 
         case TestMode.normal:
@@ -306,17 +335,18 @@ class TestRepositoryImpl implements TestRepository {
       dynamic encodableAnswer = userAnswer;
 
       if (userAnswer is Map && userAnswer.values.isNotEmpty) {
-        final hasMatchingPair =
-            userAnswer.values.any((v) => v is MatchingPair);
-        final hasBlankOption =
-            userAnswer.values.any((v) => v is QuestionBlankOption);
+        final hasMatchingPair = userAnswer.values.any((v) => v is MatchingPair);
+        final hasBlankOption = userAnswer.values.any(
+          (v) => v is QuestionBlankOption,
+        );
 
         if (hasMatchingPair) {
           final Map<String, String?> serializableMap = {};
           userAnswer.forEach((key, value) {
             if (key is String) {
-              serializableMap[key] =
-                  value is MatchingPair ? value.rightText : null;
+              serializableMap[key] = value is MatchingPair
+                  ? value.rightText
+                  : null;
             }
           });
           encodableAnswer = serializableMap;
@@ -327,8 +357,9 @@ class TestRepositoryImpl implements TestRepository {
           final Map<String, String?> serializableMap = {};
           userAnswer.forEach((key, value) {
             if (key != null) {
-              serializableMap[key.toString()] =
-                  value is QuestionBlankOption ? value.optionText : null;
+              serializableMap[key.toString()] = value is QuestionBlankOption
+                  ? value.optionText
+                  : null;
             }
           });
           encodableAnswer = serializableMap;
@@ -437,11 +468,15 @@ class TestRepositoryImpl implements TestRepository {
     required int curriculumWeek,
     required String? userId,
     required String clientId,
+    int? topicId,
+    List<int>? outcomeIds,
   }) async {
     return await startTestSession(
       testMode: TestMode.weekly,
       unitId: unitId,
       curriculumWeek: curriculumWeek,
+      topicId: topicId,
+      outcomeIds: outcomeIds,
       userId: userId,
       clientId: clientId,
     );
@@ -519,7 +554,9 @@ class TestRepositoryImpl implements TestRepository {
     required String clientId,
   }) async {
     try {
-      log('TestRepositoryImpl.startSrsTestSession: userId=$userId, clientId=$clientId');
+      log(
+        'TestRepositoryImpl.startSrsTestSession: userId=$userId, clientId=$clientId',
+      );
 
       final response = await _supabase.rpc(
         'start_srs_test_session',
@@ -536,7 +573,9 @@ class TestRepositoryImpl implements TestRepository {
       }
 
       final sessionId = response as int;
-      log('TestRepositoryImpl.startSrsTestSession: Yeni sessionId = $sessionId');
+      log(
+        'TestRepositoryImpl.startSrsTestSession: Yeni sessionId = $sessionId',
+      );
 
       return sessionId;
     } catch (e, stackTrace) {

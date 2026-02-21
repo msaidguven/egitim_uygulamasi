@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:egitim_uygulamasi/viewmodels/outcomes_viewmodel.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/header_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/topic_content_view.dart';
-import 'package:egitim_uygulamasi/screens/outcomes/widgets/weekly_test_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/unit_test_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/special_cards_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/app_bar_view.dart';
@@ -12,12 +11,17 @@ import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart'; // profile
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, listEquals;
 import 'package:egitim_uygulamasi/admin/pages/smart_question_addition/smart_question_addition_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_update_page.dart';
 import 'package:egitim_uygulamasi/widgets/question_text.dart';
 import 'package:egitim_uygulamasi/utils/html_fraction_utils.dart';
+import 'package:egitim_uygulamasi/services/question_service.dart';
+import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
+import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
+import 'package:egitim_uygulamasi/models/question_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 const bool _enableOutcomesV2Entry = false;
 
@@ -342,9 +346,13 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   static const String _adminActionUpdateContent = 'update_content';
   static const String _adminActionCopyContentPrompt = 'copy_content_prompt';
   static const String _adminActionCopyQuestionPrompt = 'copy_question_prompt';
+  static const String _panelTabContent = 'content';
+  static const String _panelTabQuestions = 'questions';
 
   int? _selectedSectionIndex;
   int? _selectedUnitId;
+  String _activePanelTab = _panelTabContent;
+  final QuestionService _questionService = QuestionService();
 
   int _pickDefaultSectionIndex(
     List<Map<String, dynamic>> sections, {
@@ -984,6 +992,177 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         .refreshWeeksAround(widget.curriculumWeek, radius: 1);
   }
 
+  Future<List<Question>> _loadTopicQuestions({
+    required int topicId,
+    required int curriculumWeek,
+    required List<int> selectedOutcomeIds,
+  }) async {
+    // Sorular sekmesinde yalnızca aktif hafta + aktif kazanım eşleşmeleri gösterilir.
+    if (selectedOutcomeIds.isEmpty) return const [];
+
+    final questions = await _questionService.getQuestionsForWeek(
+      topicId,
+      curriculumWeek,
+    );
+    if (questions.isEmpty) return questions;
+
+    final questionIds = questions.map((q) => q.id).toList();
+    final rows = await Supabase.instance.client
+        .from('question_outcomes')
+        .select('question_id, outcome_id')
+        .inFilter('question_id', questionIds)
+        .inFilter('outcome_id', selectedOutcomeIds);
+
+    final matchedQuestionIds = (rows as List)
+        .map((r) => (r as Map<String, dynamic>)['question_id'] as int?)
+        .whereType<int>()
+        .toSet();
+
+    if (matchedQuestionIds.isEmpty) return const [];
+    return questions.where((q) => matchedQuestionIds.contains(q.id)).toList();
+  }
+
+  Future<_OutcomeActiveSession?> _loadOutcomeActiveSession({
+    required int unitId,
+    required int topicId,
+    required int curriculumWeek,
+    required List<int> selectedOutcomeIds,
+  }) async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null || selectedOutcomeIds.isEmpty) return null;
+
+    final normalizedOutcomes = [...selectedOutcomeIds]..sort();
+    final rows = await Supabase.instance.client
+        .from('test_sessions')
+        .select('id, settings, question_ids')
+        .eq('user_id', user.id)
+        .eq('unit_id', unitId)
+        .isFilter('completed_at', null)
+        .eq('settings->>curriculum_week', curriculumWeek.toString())
+        .or('settings->>type.eq.weekly_outcome,settings->>type.eq.weekly')
+        .order('created_at', ascending: false)
+        .limit(10);
+
+    Map<String, dynamic>? matched;
+    Map<String, dynamic>? legacyWeeklyFallback;
+    for (final raw in (rows as List)) {
+      final row = Map<String, dynamic>.from(raw as Map);
+      final settings = Map<String, dynamic>.from(
+        row['settings'] as Map? ?? const {},
+      );
+      final type = settings['type'] as String?;
+
+      if (type == 'weekly') {
+        legacyWeeklyFallback ??= row;
+        continue;
+      }
+      if ((settings['topic_id']?.toString() ?? '') != topicId.toString()) {
+        continue;
+      }
+      final outcomeIds =
+          (settings['outcome_ids'] as List? ?? const <dynamic>[])
+              .map((e) => e as int?)
+              .whereType<int>()
+              .toList()
+            ..sort();
+      if (listEquals(outcomeIds, normalizedOutcomes)) {
+        matched = row;
+        break;
+      }
+    }
+
+    matched ??= legacyWeeklyFallback;
+
+    if (matched == null) return null;
+    final sessionId = matched['id'] as int?;
+    if (sessionId == null) return null;
+
+    final questionIds = (matched['question_ids'] as List? ?? const <dynamic>[])
+        .whereType<int>()
+        .toList();
+    final totalQuestions = questionIds.length;
+
+    final answers = await Supabase.instance.client
+        .from('test_session_answers')
+        .select('question_id')
+        .eq('test_session_id', sessionId);
+    final answeredQuestions = (answers as List)
+        .map((r) => (r as Map<String, dynamic>)['question_id'] as int?)
+        .whereType<int>()
+        .toSet()
+        .length;
+
+    return _OutcomeActiveSession(
+      id: sessionId,
+      answeredQuestions: answeredQuestions,
+      totalQuestions: totalQuestions,
+    );
+  }
+
+  Future<_OutcomeQuestionPanelData> _loadOutcomeQuestionPanelData({
+    required int unitId,
+    required int topicId,
+    required int curriculumWeek,
+    required List<int> selectedOutcomeIds,
+  }) async {
+    final questions = await _loadTopicQuestions(
+      topicId: topicId,
+      curriculumWeek: curriculumWeek,
+      selectedOutcomeIds: selectedOutcomeIds,
+    );
+    final activeSession = await _loadOutcomeActiveSession(
+      unitId: unitId,
+      topicId: topicId,
+      curriculumWeek: curriculumWeek,
+      selectedOutcomeIds: selectedOutcomeIds,
+    );
+    final progressStats = await _loadOutcomeProgressStats(
+      questionIds: questions.map((q) => q.id).toList(),
+    );
+    return _OutcomeQuestionPanelData(
+      questions: questions,
+      activeSession: activeSession,
+      progressStats: progressStats,
+    );
+  }
+
+  Future<_OutcomeProgressStats?> _loadOutcomeProgressStats({
+    required List<int> questionIds,
+  }) async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null || questionIds.isEmpty) return null;
+
+    final rows = await Supabase.instance.client
+        .from('test_session_answers')
+        .select('question_id, is_correct, created_at')
+        .eq('user_id', user.id)
+        .inFilter('question_id', questionIds)
+        .order('created_at', ascending: false);
+
+    final latestByQuestion = <int, bool>{};
+    for (final raw in (rows as List)) {
+      final row = Map<String, dynamic>.from(raw as Map);
+      final qid = row['question_id'] as int?;
+      if (qid == null || latestByQuestion.containsKey(qid)) continue;
+      latestByQuestion[qid] = row['is_correct'] as bool? ?? false;
+    }
+
+    if (latestByQuestion.isEmpty) {
+      return const _OutcomeProgressStats(
+        solvedUnique: 0,
+        correctCount: 0,
+        wrongCount: 0,
+      );
+    }
+
+    final correctCount = latestByQuestion.values.where((v) => v).length;
+    return _OutcomeProgressStats(
+      solvedUnique: latestByQuestion.length,
+      correctCount: correctCount,
+      wrongCount: latestByQuestion.length - correctCount,
+    );
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -1034,9 +1213,6 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
       outcomesViewModelProvider(
         widget.args,
       ).select((vm) => vm.getWeekContent(widget.curriculumWeek)),
-    );
-    final isGuest = ref.watch(
-      profileViewModelProvider.select((p) => p.profile == null),
     );
     final isAdmin = ref.watch(
       profileViewModelProvider.select((p) => p.profile?.role == 'admin'),
@@ -1667,57 +1843,451 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             ),
           if (!isSpecialPage)
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
               sliver: SliverToBoxAdapter(
-                child: _WeekSectionsBlock(
-                  sections: sections,
-                  focusedTopicId: selectedTopicId,
-                  onFocusTopic: (topicId) {
-                    final index = sections.indexWhere(
-                      (s) => s['topic_id'] == topicId,
-                    );
-                    if (index == -1) return;
-                    if (_selectedSectionIndex == index) return;
-                    if (mounted) {
-                      setState(() => _selectedSectionIndex = index);
-                    }
-                  },
-                  isAdmin: isAdmin,
-                  onContentUpdated: () => ref
-                      .read(outcomesViewModelProvider(widget.args))
-                      .refreshCurrentWeekData(widget.curriculumWeek),
-                ),
-              ),
-            ),
-          if (!isSpecialPage && unitId != null)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-              sliver: SliverToBoxAdapter(
-                child: MediaQuery(
-                  data: mediaQuery.copyWith(textScaler: TextScaler.noScaling),
-                  child: WeeklyTestView(
-                    unitId: unitId,
-                    curriculumWeek: widget.curriculumWeek,
-                    args: widget.args,
-                    isGuest: isGuest,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFD8E3F8)),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _buildPanelTabButton(
+                          label: 'İçerik',
+                          icon: Icons.auto_stories_rounded,
+                          isActive: _activePanelTab == _panelTabContent,
+                          onTap: () {
+                            if (_activePanelTab == _panelTabContent) return;
+                            setState(() => _activePanelTab = _panelTabContent);
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _buildPanelTabButton(
+                          label: 'Sorular',
+                          icon: Icons.quiz_rounded,
+                          isActive: _activePanelTab == _panelTabQuestions,
+                          onTap: () {
+                            if (_activePanelTab == _panelTabQuestions) return;
+                            setState(
+                              () => _activePanelTab = _panelTabQuestions,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
+          if (!isSpecialPage)
+            if (_activePanelTab == _panelTabContent)
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                sliver: SliverToBoxAdapter(
+                  child: _WeekSectionsBlock(
+                    sections: sections,
+                    focusedTopicId: selectedTopicId,
+                    onFocusTopic: (topicId) {
+                      final index = sections.indexWhere(
+                        (s) => s['topic_id'] == topicId,
+                      );
+                      if (index == -1) return;
+                      if (_selectedSectionIndex == index) return;
+                      if (mounted) {
+                        setState(() => _selectedSectionIndex = index);
+                      }
+                    },
+                    isAdmin: isAdmin,
+                    onContentUpdated: () => ref
+                        .read(outcomesViewModelProvider(widget.args))
+                        .refreshCurrentWeekData(widget.curriculumWeek),
+                  ),
+                ),
+              ),
+          if (!isSpecialPage && unitId != null)
+            if (_activePanelTab == _panelTabQuestions)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (selectedTopicId != null)
+                        FutureBuilder<_OutcomeQuestionPanelData>(
+                          future: _loadOutcomeQuestionPanelData(
+                            unitId: unitId,
+                            topicId: selectedTopicId,
+                            curriculumWeek: widget.curriculumWeek,
+                            selectedOutcomeIds: selectedSectionOutcomes
+                                .map((o) => o['id'] as int?)
+                                .whereType<int>()
+                                .toList(),
+                          ),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Container(
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: const Color(0xFFDDE8FB),
+                                  ),
+                                ),
+                                child: const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                ),
+                              );
+                            }
+
+                            if (snapshot.hasError) {
+                              return Container(
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: const Color(0xFFDDE8FB),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Soru listesi alınamadı: ${snapshot.error}',
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    color: Colors.red.shade700,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              );
+                            }
+
+                            final panelData =
+                                snapshot.data ??
+                                const _OutcomeQuestionPanelData(
+                                  questions: [],
+                                  activeSession: null,
+                                  progressStats: null,
+                                );
+                            final questions = panelData.questions;
+                            final activeSession = panelData.activeSession;
+                            final progressStats = panelData.progressStats;
+                            final hasActiveSession = activeSession != null;
+                            final solvedUnique =
+                                progressStats?.solvedUnique ??
+                                (activeSession?.answeredQuestions ?? 0);
+                            final correctCount =
+                                progressStats?.correctCount ?? 0;
+                            final wrongCount = progressStats?.wrongCount ?? 0;
+                            final effectiveCount = questions.length;
+                            final allSolved =
+                                !hasActiveSession &&
+                                effectiveCount > 0 &&
+                                solvedUnique >= effectiveCount;
+                            final hasStartableTest =
+                                (questions.isNotEmpty ||
+                                    activeSession != null) &&
+                                !allSolved;
+                            return Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: const Color(0xFFDDE8FB),
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.quiz_outlined,
+                                        size: 18,
+                                        color: Color(0xFF2F6FE4),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Konu ve kazanıma göre sorular',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.grey.shade900,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(
+                                            0xFF2F6FE4,
+                                          ).withValues(alpha: 0.12),
+                                          borderRadius: BorderRadius.circular(
+                                            999,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '$effectiveCount soru',
+                                          style: const TextStyle(
+                                            fontSize: 11.5,
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xFF2F6FE4),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  if (effectiveCount > 0)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 10,
+                                      ),
+                                      child: Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: [
+                                          _buildOutcomeStatChip(
+                                            label: 'Toplam',
+                                            value: effectiveCount.toString(),
+                                            color: Colors.blue.shade700,
+                                          ),
+                                          _buildOutcomeStatChip(
+                                            label: 'Çözülen',
+                                            value: solvedUnique.toString(),
+                                            color: Colors.grey.shade800,
+                                          ),
+                                          _buildOutcomeStatChip(
+                                            label: 'Doğru',
+                                            value: correctCount.toString(),
+                                            color: Colors.green.shade700,
+                                          ),
+                                          _buildOutcomeStatChip(
+                                            label: 'Yanlış',
+                                            value: wrongCount.toString(),
+                                            color: Colors.red.shade700,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  if (!hasStartableTest)
+                                    Text(
+                                      allSolved
+                                          ? 'Bu kapsamdaki soruların tamamı çözüldü.'
+                                          : 'Bu konu/kazanım için soru bulunamadı.',
+                                      style: TextStyle(
+                                        fontSize: 12.5,
+                                        color: Colors.grey.shade700,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  else
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          activeSession != null
+                                              ? 'Yarım kalan test bulundu. Kaldığın yerden devam edebilirsin.'
+                                              : 'Seçili hafta ve kazanımlar için ${questions.length} soru hazır.',
+                                          style: TextStyle(
+                                            fontSize: 12.5,
+                                            color: Colors.grey.shade800,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: ElevatedButton.icon(
+                                            onPressed: () async {
+                                              if (activeSession != null) {
+                                                await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        QuestionsScreen(
+                                                          unitId: unitId,
+                                                          testMode:
+                                                              TestMode.weekly,
+                                                          sessionId:
+                                                              activeSession.id,
+                                                        ),
+                                                  ),
+                                                );
+                                              } else {
+                                                await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        QuestionsScreen(
+                                                          unitId: unitId,
+                                                          testMode:
+                                                              TestMode.weekly,
+                                                          sessionId: null,
+                                                        ),
+                                                    settings: RouteSettings(
+                                                      arguments: {
+                                                        'curriculum_week':
+                                                            widget
+                                                                .curriculumWeek,
+                                                        'topic_id':
+                                                            selectedTopicId,
+                                                        'outcome_ids':
+                                                            selectedSectionOutcomes
+                                                                .map(
+                                                                  (o) =>
+                                                                      o['id']
+                                                                          as int?,
+                                                                )
+                                                                .whereType<
+                                                                  int
+                                                                >()
+                                                                .toList(),
+                                                      },
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              if (!context.mounted) return;
+                                              ref
+                                                  .read(
+                                                    outcomesViewModelProvider(
+                                                      widget.args,
+                                                    ),
+                                                  )
+                                                  .refreshCurrentWeekData(
+                                                    widget.curriculumWeek,
+                                                  );
+                                            },
+                                            icon: const Icon(
+                                              Icons.play_arrow_rounded,
+                                            ),
+                                            label: Text(
+                                              activeSession != null
+                                                  ? 'Teste Devam Et (${activeSession.answeredQuestions}/${activeSession.totalQuestions})'
+                                                  : 'Teste Başla',
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: const Color(
+                                                0xFF2F6FE4,
+                                              ),
+                                              foregroundColor: Colors.white,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 12,
+                                                  ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+              ),
           if (!isSpecialPage &&
               isLastWeek &&
               unitSummary != null &&
               unitId != null)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-              sliver: SliverToBoxAdapter(
-                child: MediaQuery(
-                  data: mediaQuery.copyWith(textScaler: TextScaler.noScaling),
-                  child: UnitTestView(unitSummary: unitSummary, unitId: unitId),
+            if (_activePanelTab == _panelTabQuestions)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+                sliver: SliverToBoxAdapter(
+                  child: MediaQuery(
+                    data: mediaQuery.copyWith(textScaler: TextScaler.noScaling),
+                    child: UnitTestView(
+                      unitSummary: unitSummary,
+                      unitId: unitId,
+                    ),
+                  ),
                 ),
               ),
-            ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPanelTabButton({
+    required String label,
+    required IconData icon,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 170),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: isActive
+              ? const Color(0xFF2F6FE4).withValues(alpha: 0.14)
+              : Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isActive ? const Color(0xFF2F6FE4) : Colors.grey.shade700,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
+                color: isActive
+                    ? const Color(0xFF2F6FE4)
+                    : Colors.grey.shade800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOutcomeStatChip({
+    required String label,
+    required String value,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        '$label: $value',
+        style: TextStyle(
+          fontSize: 11.5,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
       ),
     );
   }
@@ -2431,6 +3001,42 @@ class _WeekStripBarState extends State<_WeekStripBar> {
       ),
     );
   }
+}
+
+class _OutcomeActiveSession {
+  final int id;
+  final int answeredQuestions;
+  final int totalQuestions;
+
+  const _OutcomeActiveSession({
+    required this.id,
+    required this.answeredQuestions,
+    required this.totalQuestions,
+  });
+}
+
+class _OutcomeQuestionPanelData {
+  final List<Question> questions;
+  final _OutcomeActiveSession? activeSession;
+  final _OutcomeProgressStats? progressStats;
+
+  const _OutcomeQuestionPanelData({
+    required this.questions,
+    required this.activeSession,
+    required this.progressStats,
+  });
+}
+
+class _OutcomeProgressStats {
+  final int solvedUnique;
+  final int correctCount;
+  final int wrongCount;
+
+  const _OutcomeProgressStats({
+    required this.solvedUnique,
+    required this.correctCount,
+    required this.wrongCount,
+  });
 }
 
 class _WeekSectionsBlock extends StatelessWidget {

@@ -3,11 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/viewmodels/outcomes_viewmodel.dart';
-import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 
 class WeeklyTestView extends ConsumerWidget {
   final int unitId;
   final int curriculumWeek;
+  final int? topicId;
+  final List<int> selectedOutcomeIds;
   final OutcomesViewModelArgs args;
   final bool isGuest;
 
@@ -15,6 +16,8 @@ class WeeklyTestView extends ConsumerWidget {
     Key? key,
     required this.unitId,
     required this.curriculumWeek,
+    this.topicId,
+    this.selectedOutcomeIds = const [],
     required this.args,
     this.isGuest = false,
   }) : super(key: key);
@@ -99,6 +102,13 @@ class WeeklyTestView extends ConsumerWidget {
       buttonIcon = Icons.visibility_rounded;
       buttonColor = Colors.grey.shade600;
       onPressedAction = () {
+        final routeArgs = topicId != null && selectedOutcomeIds.isNotEmpty
+            ? {
+                'curriculum_week': curriculumWeek,
+                'topic_id': topicId,
+                'outcome_ids': selectedOutcomeIds,
+              }
+            : curriculumWeek;
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -107,7 +117,7 @@ class WeeklyTestView extends ConsumerWidget {
               testMode: TestMode.weekly,
               sessionId: null,
             ),
-            settings: RouteSettings(arguments: curriculumWeek),
+            settings: RouteSettings(arguments: routeArgs),
           ),
         );
       };
@@ -139,6 +149,13 @@ class WeeklyTestView extends ConsumerWidget {
         buttonText = 'Kalan Soruları Çöz';
       }
       onPressedAction = () async {
+        final routeArgs = topicId != null && selectedOutcomeIds.isNotEmpty
+            ? {
+                'curriculum_week': curriculumWeek,
+                'topic_id': topicId,
+                'outcome_ids': selectedOutcomeIds,
+              }
+            : curriculumWeek;
         await Navigator.push(
           context,
           MaterialPageRoute(
@@ -147,7 +164,7 @@ class WeeklyTestView extends ConsumerWidget {
               testMode: TestMode.weekly,
               sessionId: null,
             ),
-            settings: RouteSettings(arguments: curriculumWeek),
+            settings: RouteSettings(arguments: routeArgs),
           ),
         );
         onRefresh(curriculumWeek);
@@ -173,10 +190,7 @@ class WeeklyTestView extends ConsumerWidget {
           children: [
             Text(
               'Haftalık Pekiştirme Testi',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             if (isGuest)
               Padding(

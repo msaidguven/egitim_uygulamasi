@@ -162,6 +162,14 @@ CREATE TABLE public.question_matching_pairs (
   CONSTRAINT question_matching_pairs_pkey PRIMARY KEY (id),
   CONSTRAINT fk_qmp_question FOREIGN KEY (question_id) REFERENCES public.questions(id)
 );
+CREATE TABLE public.question_outcomes (
+  question_id bigint NOT NULL,
+  outcome_id bigint NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT question_outcomes_pkey PRIMARY KEY (question_id, outcome_id),
+  CONSTRAINT question_outcomes_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id),
+  CONSTRAINT question_outcomes_outcome_id_fkey FOREIGN KEY (outcome_id) REFERENCES public.outcomes(id)
+);
 CREATE TABLE public.question_types (
   id smallint NOT NULL,
   code text NOT NULL UNIQUE,

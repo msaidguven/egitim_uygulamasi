@@ -286,7 +286,20 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
       }
       debugPrint("QuestionsScreen: Client ID alındı: $clientIdAsync");
 
-      final curriculumWeek = ModalRoute.of(context)?.settings.arguments as int?;
+      final routeArgs = ModalRoute.of(context)?.settings.arguments;
+      int? curriculumWeek;
+      int? topicId;
+      List<int>? outcomeIds;
+      if (routeArgs is int) {
+        curriculumWeek = routeArgs;
+      } else if (routeArgs is Map) {
+        curriculumWeek = routeArgs['curriculum_week'] as int?;
+        topicId = routeArgs['topic_id'] as int?;
+        final rawOutcomeIds = routeArgs['outcome_ids'];
+        if (rawOutcomeIds is List) {
+          outcomeIds = rawOutcomeIds.whereType<int>().toList();
+        }
+      }
 
       if (widget.sessionId == null && userId == null) {
         if (widget.testMode == TestMode.weekly) {
@@ -301,6 +314,8 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           await viewModel.startGuestTest(
             unitId: widget.unitId,
             curriculumWeek: curriculumWeek,
+            topicId: topicId,
+            outcomeIds: outcomeIds,
           );
         } else if (widget.testMode == TestMode.normal) {
           debugPrint(
@@ -346,6 +361,8 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           curriculumWeek: widget.testMode == TestMode.weekly
               ? curriculumWeek
               : null,
+          topicId: widget.testMode == TestMode.weekly ? topicId : null,
+          outcomeIds: widget.testMode == TestMode.weekly ? outcomeIds : null,
         );
         _isStartingNewTest = false;
       }

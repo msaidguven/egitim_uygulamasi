@@ -85,18 +85,32 @@ class QuestionService {
     if (questionIds.isEmpty) return [];
 
     try {
-      final response = await _client.rpc(
-        'get_questions_details',
-        params: {'p_question_ids': questionIds},
-      );
+      final response = await _client
+          .from('questions')
+          .select('''
+            id,
+            question_text,
+            difficulty,
+            score,
+            solution_text,
+            question_type:question_types(code),
+            question_choices(id, choice_text, is_correct),
+            question_blank_options(id, option_text, is_correct, order_no),
+            question_matching_pairs(id, left_text, right_text, order_no),
+            question_classical(model_answer)
+            ''')
+          .inFilter('id', questionIds);
 
-      if (response is List) {
-        final questions = response
-            .map((data) => Question.fromMap(data as Map<String, dynamic>))
-            .toList();
-        return questions;
+      final byId = <int, Question>{};
+      for (final raw in response) {
+        final question = Question.fromMap(Map<String, dynamic>.from(raw));
+        byId[question.id] = question;
       }
-      return [];
+
+      return questionIds
+          .where(byId.containsKey)
+          .map((id) => byId[id]!)
+          .toList();
     } catch (e) {
       debugPrint('Error in _getQuestionsDetailsByIds: $e');
       rethrow;

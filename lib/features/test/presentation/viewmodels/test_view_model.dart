@@ -39,11 +39,13 @@ class TestViewModel extends ChangeNotifier {
     final incorrect = _answeredCount - _score;
     return incorrect < 0 ? 0 : incorrect;
   }
+
   double get successPercentage {
     final denominator = _answeredCount > 0 ? _answeredCount : _totalQuestions;
     if (denominator <= 0) return 0;
     return (_score / denominator) * 100;
   }
+
   bool get isSaving => _isSaving;
   int get answeredCount => _answeredCount;
   int get totalQuestions => _totalQuestions;
@@ -85,20 +87,24 @@ class TestViewModel extends ChangeNotifier {
       // Oturum geçerliliğini kontrol et
       final isValid = await _repository.resumeTestSession(sessionId);
       if (!isValid) {
-        _setError("Bu test oturumu artık geçerli değil. Yeni bir test başlatın.");
+        _setError(
+          "Bu test oturumu artık geçerli değil. Yeni bir test başlatın.",
+        );
         return;
       }
 
       await _fetchInitialQuestion();
     } catch (e, stackTrace) {
-      log('TestViewModel.startSrsTest ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestViewModel.startSrsTest ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _setError("SRS testi başlatılamadı: ${_getErrorMessage(e)}");
     }
   }
 
-  Future<void> startGuestUnitTest({
-    required int unitId,
-  }) async {
+  Future<void> startGuestUnitTest({required int unitId}) async {
     log('TestViewModel.startGuestUnitTest: unitId=$unitId');
     _isLoading = true;
     _error = null;
@@ -109,9 +115,7 @@ class TestViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final questions = await _repository.startGuestUnitTest(
-        unitId: unitId,
-      );
+      final questions = await _repository.startGuestUnitTest(unitId: unitId);
 
       if (questions.isEmpty) {
         throw Exception("Bu test için soru bulunamadı.");
@@ -124,10 +128,16 @@ class TestViewModel extends ChangeNotifier {
       _isLoading = false;
       _questionTimer.reset();
       _questionTimer.start();
-      log('TestViewModel.startGuestUnitTest: Misafir ünite testi başarıyla başlatıldı. Toplam $_totalQuestions soru yüklendi.');
+      log(
+        'TestViewModel.startGuestUnitTest: Misafir ünite testi başarıyla başlatıldı. Toplam $_totalQuestions soru yüklendi.',
+      );
       notifyListeners();
     } catch (e, stackTrace) {
-      log('TestViewModel.startGuestUnitTest ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestViewModel.startGuestUnitTest ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _setError("Misafir ünite testi başlatılamadı: ${_getErrorMessage(e)}");
     }
   }
@@ -135,8 +145,12 @@ class TestViewModel extends ChangeNotifier {
   Future<void> startGuestTest({
     required int unitId,
     required int curriculumWeek,
+    int? topicId,
+    List<int>? outcomeIds,
   }) async {
-    log('TestViewModel.startGuestTest: unitId=$unitId, curriculumWeek=$curriculumWeek');
+    log(
+      'TestViewModel.startGuestTest: unitId=$unitId, curriculumWeek=$curriculumWeek',
+    );
     _isLoading = true;
     _error = null;
     _testMode = TestMode.weekly; // Misafir testi her zaman haftalık modda
@@ -149,6 +163,8 @@ class TestViewModel extends ChangeNotifier {
       final questions = await _repository.startGuestTest(
         unitId: unitId,
         curriculumWeek: curriculumWeek,
+        topicId: topicId,
+        outcomeIds: outcomeIds,
       );
 
       if (questions.isEmpty) {
@@ -162,10 +178,16 @@ class TestViewModel extends ChangeNotifier {
       _isLoading = false;
       _questionTimer.reset();
       _questionTimer.start();
-      log('TestViewModel.startGuestTest: Misafir testi başarıyla başlatıldı. Toplam $_totalQuestions soru yüklendi.');
+      log(
+        'TestViewModel.startGuestTest: Misafir testi başarıyla başlatıldı. Toplam $_totalQuestions soru yüklendi.',
+      );
       notifyListeners();
     } catch (e, stackTrace) {
-      log('TestViewModel.startGuestTest ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestViewModel.startGuestTest ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _setError("Misafir testi başlatılamadı: ${_getErrorMessage(e)}");
     }
   }
@@ -174,6 +196,8 @@ class TestViewModel extends ChangeNotifier {
     required TestMode testMode,
     required int unitId,
     int? curriculumWeek,
+    int? topicId,
+    List<int>? outcomeIds,
     required String? userId,
     required String clientId,
   }) async {
@@ -184,11 +208,15 @@ class TestViewModel extends ChangeNotifier {
     }
 
     if (clientId.isEmpty) {
-      _setError("Cihaz kimliği bulunamadı. Lütfen uygulamayı yeniden başlatın.");
+      _setError(
+        "Cihaz kimliği bulunamadı. Lütfen uygulamayı yeniden başlatın.",
+      );
       return;
     }
 
-    log('TestViewModel.startNewTest: unitId=$unitId, testMode=$testMode, userId=$userId');
+    log(
+      'TestViewModel.startNewTest: unitId=$unitId, testMode=$testMode, userId=$userId',
+    );
 
     _isLoading = true;
     _error = null;
@@ -204,6 +232,8 @@ class TestViewModel extends ChangeNotifier {
         testMode: testMode,
         unitId: unitId,
         curriculumWeek: curriculumWeek,
+        topicId: topicId,
+        outcomeIds: outcomeIds,
         clientId: clientId,
         userId: userId,
       );
@@ -212,7 +242,11 @@ class TestViewModel extends ChangeNotifier {
 
       await _fetchInitialQuestion();
     } catch (e, stackTrace) {
-      log('TestViewModel.startNewTest ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestViewModel.startNewTest ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _setError("Test başlatılamadı: ${_getErrorMessage(e)}");
     }
   }
@@ -236,14 +270,20 @@ class TestViewModel extends ChangeNotifier {
       if (userId != null) {
         final isValid = await _repository.resumeTestSession(sessionId);
         if (!isValid) {
-          _setError("Bu test oturumu artık geçerli değil. Yeni bir test başlatın.");
+          _setError(
+            "Bu test oturumu artık geçerli değil. Yeni bir test başlatın.",
+          );
           return;
         }
       }
 
       await _fetchInitialQuestion();
     } catch (e, stackTrace) {
-      log('TestViewModel.resumeTest ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestViewModel.resumeTest ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _setError("Teste devam edilemedi: ${_getErrorMessage(e)}");
     }
   }
@@ -257,19 +297,25 @@ class TestViewModel extends ChangeNotifier {
     }
 
     try {
-      log('TestViewModel._fetchInitialQuestion: sessionId=$_sessionId, userId=$_userId');
+      log(
+        'TestViewModel._fetchInitialQuestion: sessionId=$_sessionId, userId=$_userId',
+      );
 
       final response = await _repository.getNextQuestion(_sessionId!, _userId);
       final questionData = response['question'];
       final answeredCount = response['answered_count'] as int;
       final correctCount = response['correct_count'] as int;
 
-      log('TestViewModel._fetchInitialQuestion: answeredCount=$answeredCount, correctCount=$correctCount');
+      log(
+        'TestViewModel._fetchInitialQuestion: answeredCount=$answeredCount, correctCount=$correctCount',
+      );
 
       if (questionData == null) {
         // Eğer hiç soru cevaplanmadıysa ve ilk soru da null geldiyse, bu testte hiç soru yok demektir.
         if (answeredCount == 0) {
-          log('TestViewModel._fetchInitialQuestion: Test için hiç soru bulunamadı.');
+          log(
+            'TestViewModel._fetchInitialQuestion: Test için hiç soru bulunamadı.',
+          );
           throw Exception('Bu test için soru bulunamadı.');
         }
         log('TestViewModel._fetchInitialQuestion: Tüm sorular tamamlandı');
@@ -284,7 +330,9 @@ class TestViewModel extends ChangeNotifier {
       _isLoading = false;
       _error = null;
 
-      log('TestViewModel._fetchInitialQuestion: Soru yüklendi - id=${question.id}, type=${question.type}');
+      log(
+        'TestViewModel._fetchInitialQuestion: Soru yüklendi - id=${question.id}, type=${question.type}',
+      );
 
       _questionTimer.reset();
       _questionTimer.start();
@@ -293,7 +341,11 @@ class TestViewModel extends ChangeNotifier {
 
       _prefetchRestOfQuestions();
     } catch (e, stackTrace) {
-      log('TestViewModel._fetchInitialQuestion ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestViewModel._fetchInitialQuestion ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _setError("İlk soru yüklenemedi: ${_getErrorMessage(e)}");
     }
   }
@@ -308,27 +360,41 @@ class TestViewModel extends ChangeNotifier {
 
       final results = await Future.wait([
         _repository.getAllSessionQuestions(_sessionId!, _userId),
-        if (_userId != null) _repository.getAnsweredQuestionIds(_sessionId!) else Future.value(<int>{}),
+        if (_userId != null)
+          _repository.getAnsweredQuestionIds(_sessionId!)
+        else
+          Future.value(<int>{}),
       ]);
 
       final allQuestions = results[0] as List<Question>;
       final answeredQuestionIds = results[1] as Set<int>;
 
       _totalQuestions = allQuestions.length;
-      log('TestViewModel._prefetchRestOfQuestions: Toplam $totalQuestions soru bulundu. ${answeredQuestionIds.length} tanesi cevaplanmış.');
+      log(
+        'TestViewModel._prefetchRestOfQuestions: Toplam $totalQuestions soru bulundu. ${answeredQuestionIds.length} tanesi cevaplanmış.',
+      );
 
       final currentQuestionId = _currentTestQuestion?.question.id;
       _questionQueue = allQuestions
-          .where((q) =>
-              q.id != currentQuestionId && !answeredQuestionIds.contains(q.id))
+          .where(
+            (q) =>
+                q.id != currentQuestionId &&
+                !answeredQuestionIds.contains(q.id),
+          )
           .map((q) => TestQuestion(question: q))
           .toList();
 
-      log('TestViewModel._prefetchRestOfQuestions: ${allQuestions.length} sorudan, ${answeredQuestionIds.length} cevaplanmış ve 1 mevcut soru filtrelendi. Kuyrukta ${_questionQueue.length} soru kaldı.');
+      log(
+        'TestViewModel._prefetchRestOfQuestions: ${allQuestions.length} sorudan, ${answeredQuestionIds.length} cevaplanmış ve 1 mevcut soru filtrelendi. Kuyrukta ${_questionQueue.length} soru kaldı.',
+      );
 
       notifyListeners();
     } catch (e, stackTrace) {
-      log('TestViewModel._prefetchRestOfQuestions ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestViewModel._prefetchRestOfQuestions ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
     } finally {
       _isPrefetching = false;
     }
@@ -350,7 +416,9 @@ class TestViewModel extends ChangeNotifier {
 
     final isCorrect = _checkIfAnswerIsCorrect();
 
-    log('TestViewModel.checkAnswer: Cevap ${isCorrect ? 'DOĞRU' : 'YANLIŞ'}, duration=$duration saniye');
+    log(
+      'TestViewModel.checkAnswer: Cevap ${isCorrect ? 'DOĞRU' : 'YANLIŞ'}, duration=$duration saniye',
+    );
 
     _currentTestQuestion = _currentTestQuestion!.copyWith(
       isChecked: true,
@@ -378,7 +446,9 @@ class TestViewModel extends ChangeNotifier {
       switch (question.type) {
         case QuestionType.multiple_choice:
         case QuestionType.true_false:
-          final correctChoice = question.choices.firstWhereOrNull((c) => c.isCorrect);
+          final correctChoice = question.choices.firstWhereOrNull(
+            (c) => c.isCorrect,
+          );
           if (correctChoice == null) return false;
           return (testQuestion.userAnswer == correctChoice.id);
 
@@ -386,17 +456,23 @@ class TestViewModel extends ChangeNotifier {
           if (testQuestion.userAnswer is! Map<int, dynamic>) return false;
           final userAnswer = testQuestion.userAnswer as Map<int, dynamic>;
 
-          final correctOptions = question.blankOptions.where((opt) => opt.isCorrect).toList();
+          final correctOptions = question.blankOptions
+              .where((opt) => opt.isCorrect)
+              .toList();
 
           for (int i = 0; i < userAnswer.length; i++) {
             final userOption = userAnswer[i];
             if (userOption == null) return false;
 
             if (userOption is QuestionBlankOption) {
-              final correctOption = correctOptions.firstWhereOrNull((opt) => opt.id == userOption.id);
+              final correctOption = correctOptions.firstWhereOrNull(
+                (opt) => opt.id == userOption.id,
+              );
               if (correctOption == null) return false;
             } else if (userOption is String) {
-              final correctOption = correctOptions.firstWhereOrNull((opt) => opt.id.toString() == userOption);
+              final correctOption = correctOptions.firstWhereOrNull(
+                (opt) => opt.id.toString() == userOption,
+              );
               if (correctOption == null) return false;
             }
           }
@@ -407,7 +483,8 @@ class TestViewModel extends ChangeNotifier {
           final userMatches = testQuestion.userAnswer as Map;
 
           if (question.matchingPairs == null) return false;
-          if (userMatches.length != question.matchingPairs!.length) return false;
+          if (userMatches.length != question.matchingPairs!.length)
+            return false;
 
           for (final correctPair in question.matchingPairs!) {
             final userMatchedPair = userMatches[correctPair.leftText];
@@ -433,15 +510,22 @@ class TestViewModel extends ChangeNotifier {
 
   Future<void> _saveAnswer(bool isCorrect, int duration) async {
     // userId null ise (misafir ise) cevapları kaydetme.
-    if (_sessionId == null || _currentTestQuestion == null || _userId == null || _clientId == null) {
-      log('TestViewModel._saveAnswer: Kaydetme işlemi iptal edildi. Eksik bilgi veya misafir kullanıcısı. SessionId: $_sessionId, UserId: $_userId, ClientId: $_clientId');
+    if (_sessionId == null ||
+        _currentTestQuestion == null ||
+        _userId == null ||
+        _clientId == null) {
+      log(
+        'TestViewModel._saveAnswer: Kaydetme işlemi iptal edildi. Eksik bilgi veya misafir kullanıcısı. SessionId: $_sessionId, UserId: $_userId, ClientId: $_clientId',
+      );
       return;
     }
 
     try {
       _isSaving = true;
       notifyListeners();
-      log('TestViewModel._saveAnswer: Dahili (repository) kaydetme fonksiyonu kullanılıyor (test_session_answers).');
+      log(
+        'TestViewModel._saveAnswer: Dahili (repository) kaydetme fonksiyonu kullanılıyor (test_session_answers).',
+      );
       await _repository.saveAnswer(
         sessionId: _sessionId!,
         questionId: _currentTestQuestion!.question.id,
@@ -451,11 +535,13 @@ class TestViewModel extends ChangeNotifier {
         isCorrect: isCorrect,
         durationSeconds: duration,
       );
-      log('TestViewModel._saveAnswer: test_session_answers tablosuna kayıt başarıyla yapıldı.');
+      log(
+        'TestViewModel._saveAnswer: test_session_answers tablosuna kayıt başarıyla yapıldı.',
+      );
     } catch (e, stackTrace) {
       final errorMessage = "Cevap kaydedilirken bir hata oluştu.";
       log('$errorMessage\nDETAYLAR: $e', error: e, stackTrace: stackTrace);
-      
+
       debugPrint("**************************************************");
       debugPrint("HATA: CEVAP KAYDEDİLEMEDİ");
       debugPrint("**************************************************");
@@ -483,7 +569,9 @@ class TestViewModel extends ChangeNotifier {
       _currentTestQuestion = _questionQueue.removeAt(0);
       _answeredCount++;
 
-      log('TestViewModel.nextQuestion: Yeni soru - id=${_currentTestQuestion!.question.id}, answeredCount=$_answeredCount');
+      log(
+        'TestViewModel.nextQuestion: Yeni soru - id=${_currentTestQuestion!.question.id}, answeredCount=$_answeredCount',
+      );
 
       _questionTimer.reset();
       _questionTimer.start();
@@ -500,12 +588,16 @@ class TestViewModel extends ChangeNotifier {
     // bu son sorunun da çözüldüğünü say.
     if (_currentTestQuestion != null) {
       _answeredCount++;
-      log('TestViewModel.finishTest: Son soru da sayıldı, yeni answeredCount=$_answeredCount');
+      log(
+        'TestViewModel.finishTest: Son soru da sayıldı, yeni answeredCount=$_answeredCount',
+      );
     }
 
     // Misafir testleri (sessionId == null ve userId == null) için veritabanı işlemi yapma
     if (_userId == null) {
-      log('TestViewModel.finishTest: Misafir testi, veritabanı işlemi atlanıyor.');
+      log(
+        'TestViewModel.finishTest: Misafir testi, veritabanı işlemi atlanıyor.',
+      );
       _currentTestQuestion = null;
       _isLoading = false;
       notifyListeners();
@@ -513,7 +605,9 @@ class TestViewModel extends ChangeNotifier {
     }
 
     if (sessionId == null) {
-      log('TestViewModel.finishTest: Oturum ID yok, veritabanı işlemi atlanıyor.');
+      log(
+        'TestViewModel.finishTest: Oturum ID yok, veritabanı işlemi atlanıyor.',
+      );
       _currentTestQuestion = null;
       _isLoading = false;
       notifyListeners();
@@ -527,11 +621,17 @@ class TestViewModel extends ChangeNotifier {
       _currentTestQuestion = null;
       _isLoading = false;
 
-      log('TestViewModel.finishTest: Test başarıyla tamamlandı (UserId: $_userId)');
+      log(
+        'TestViewModel.finishTest: Test başarıyla tamamlandı (UserId: $_userId)',
+      );
 
       notifyListeners();
     } catch (e, stackTrace) {
-      log('TestViewModel.finishTest ERROR: $e', error: e, stackTrace: stackTrace);
+      log(
+        'TestViewModel.finishTest ERROR: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
       debugPrint('--- HATA DETAYI --- Stack Trace: $stackTrace');
       _error = "Test bitirilirken hata: ${_getErrorMessage(e)}";
       notifyListeners();
@@ -545,7 +645,9 @@ class TestViewModel extends ChangeNotifier {
 
     _currentTestQuestion = _currentTestQuestion!.copyWith(userAnswer: answer);
 
-    log('TestViewModel.updateUserAnswer: Cevap güncellendi - type=${answer.runtimeType}');
+    log(
+      'TestViewModel.updateUserAnswer: Cevap güncellendi - type=${answer.runtimeType}',
+    );
 
     notifyListeners();
   }
@@ -588,16 +690,23 @@ class TestViewModel extends ChangeNotifier {
   String _getErrorMessage(dynamic error) {
     final errorStr = error.toString();
 
-    if (errorStr.contains('network') || errorStr.contains('internet') || errorStr.contains('Connection')) {
+    if (errorStr.contains('network') ||
+        errorStr.contains('internet') ||
+        errorStr.contains('Connection')) {
       return 'İnternet bağlantınızı kontrol edin.';
-    } else if (errorStr.contains('auth') || errorStr.contains('login') || errorStr.contains('unauthorized')) {
+    } else if (errorStr.contains('auth') ||
+        errorStr.contains('login') ||
+        errorStr.contains('unauthorized')) {
       return 'Oturumunuz sonlandırılmış. Lütfen tekrar giriş yapın.';
-    } else if (errorStr.contains('no questions') || errorStr.contains('soru bulunamadı')) {
+    } else if (errorStr.contains('no questions') ||
+        errorStr.contains('soru bulunamadı')) {
       return 'Bu ünitede çözülebilecek soru bulunamadı.';
     } else if (errorStr.contains('timeout') || errorStr.contains('time out')) {
       return 'Sunucuya bağlanılamıyor. Lütfen tekrar deneyin.';
     } else {
-      return errorStr.length > 100 ? '${errorStr.substring(0, 100)}...' : errorStr;
+      return errorStr.length > 100
+          ? '${errorStr.substring(0, 100)}...'
+          : errorStr;
     }
   }
 

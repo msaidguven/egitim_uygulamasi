@@ -9,6 +9,8 @@ abstract class TestRepository {
     required TestMode testMode,
     required int unitId,
     int? curriculumWeek,
+    int? topicId,
+    List<int>? outcomeIds,
     String? clientId,
     String? userId,
   });
@@ -24,12 +26,12 @@ abstract class TestRepository {
   Future<List<Question>> startGuestTest({
     required int unitId,
     required int curriculumWeek,
+    int? topicId,
+    List<int>? outcomeIds,
   });
 
   // YENİ: Misafir ünite testi için soruları getiren metot
-  Future<List<Question>> startGuestUnitTest({
-    required int unitId,
-  });
+  Future<List<Question>> startGuestUnitTest({required int unitId});
 
   // Cevap işlemleri
   Future<void> saveAnswer({
