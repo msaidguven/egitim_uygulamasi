@@ -4,7 +4,6 @@ import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:egitim_uygulamasi/viewmodels/outcomes_viewmodel.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_copy_button.dart';
 
 class HeaderView extends ConsumerWidget {
   final int curriculumWeek;
@@ -15,6 +14,12 @@ class HeaderView extends ConsumerWidget {
   final int unitCount;
   final String gradeName;
   final String lessonName;
+  final List<Map<String, dynamic>> unitOptions;
+  final List<Map<String, dynamic>> topicOptions;
+  final int? selectedUnitId;
+  final int? selectedTopicId;
+  final ValueChanged<int?>? onSelectUnit;
+  final ValueChanged<int?>? onSelectTopic;
 
   const HeaderView({
     super.key,
@@ -26,6 +31,12 @@ class HeaderView extends ConsumerWidget {
     this.unitCount = 0,
     required this.gradeName,
     required this.lessonName,
+    this.unitOptions = const [],
+    this.topicOptions = const [],
+    this.selectedUnitId,
+    this.selectedTopicId,
+    this.onSelectUnit,
+    this.onSelectTopic,
   });
 
   (DateTime, DateTime) _getWeekDateRange(int curriculumWeek) {
@@ -106,65 +117,58 @@ class HeaderView extends ConsumerWidget {
     );
   }
 
-  Widget _buildHierarchyRow(
-    IconData icon,
-    List<String> items, {
-    String? activeItem,
+  Widget _buildSelectionChips({
+    required String label,
+    required List<Map<String, dynamic>> options,
+    required int? selectedId,
+    required ValueChanged<int?>? onSelect,
+    required String titleKey,
+    required String idKey,
   }) {
-    final normalizedActive = (activeItem ?? '').trim().toLowerCase();
+    if (options.isEmpty) return const SizedBox.shrink();
+
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 26,
-            height: 26,
-            decoration: BoxDecoration(
-              color: const Color(0xFF2F6FE4).withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w700,
+              color: Colors.grey.shade700,
             ),
-            child: Icon(icon, color: const Color(0xFF2F6FE4), size: 16),
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: items.map((item) {
-                final label = item.trim();
-                final isActive =
-                    label.toLowerCase() == normalizedActive &&
-                    normalizedActive.isNotEmpty;
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isActive
-                        ? const Color(0xFFEAF2FF)
-                        : Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: isActive
-                          ? const Color(0xFF2F6FE4)
-                          : Colors.grey.shade300,
-                    ),
-                  ),
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-                      color: isActive
-                          ? const Color(0xFF2F6FE4)
-                          : Colors.grey.shade800,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: options.map((option) {
+              final id = option[idKey] as int?;
+              final title = (option[titleKey] as String? ?? '').trim();
+              if (id == null || title.isEmpty) return const SizedBox.shrink();
+              final isSelected = id == selectedId;
+              return ChoiceChip(
+                label: Text(title, overflow: TextOverflow.ellipsis),
+                selected: isSelected,
+                onSelected: onSelect == null ? null : (_) => onSelect(id),
+                selectedColor: const Color(0xFF2F6FE4).withValues(alpha: 0.18),
+                backgroundColor: Colors.grey.shade100,
+                labelStyle: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                  color: isSelected
+                      ? const Color(0xFF2F6FE4)
+                      : Colors.grey.shade800,
+                ),
+                side: BorderSide(
+                  color: isSelected
+                      ? const Color(0xFF2F6FE4)
+                      : Colors.grey.shade300,
+                ),
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -211,19 +215,27 @@ class HeaderView extends ConsumerWidget {
     final initialStart = initialWeekRanges.isEmpty
         ? null
         : initialWeekRanges
-            .map((w) => w['start_week'] as int?)
-            .whereType<int>()
-            .fold<int?>(null, (min, v) => min == null ? v : (v < min ? v : min));
+              .map((w) => w['start_week'] as int?)
+              .whereType<int>()
+              .fold<int?>(
+                null,
+                (min, v) => min == null ? v : (v < min ? v : min),
+              );
     final initialEnd = initialWeekRanges.isEmpty
         ? null
         : initialWeekRanges
-            .map((w) => w['end_week'] as int?)
-            .whereType<int>()
-            .fold<int?>(null, (max, v) => max == null ? v : (v > max ? v : max));
-    final startController =
-        TextEditingController(text: initialStart?.toString() ?? '');
-    final endController =
-        TextEditingController(text: initialEnd?.toString() ?? '');
+              .map((w) => w['end_week'] as int?)
+              .whereType<int>()
+              .fold<int?>(
+                null,
+                (max, v) => max == null ? v : (v > max ? v : max),
+              );
+    final startController = TextEditingController(
+      text: initialStart?.toString() ?? '',
+    );
+    final endController = TextEditingController(
+      text: initialEnd?.toString() ?? '',
+    );
     String? weekError;
 
     return showDialog<_OutcomeEditResult>(
@@ -288,10 +300,12 @@ class HeaderView extends ConsumerWidget {
                     if (text.isEmpty) return;
                     final startRaw = startController.text.trim();
                     final endRaw = endController.text.trim();
-                    final startWeek =
-                        startRaw.isEmpty ? null : int.tryParse(startRaw);
-                    final endWeek =
-                        endRaw.isEmpty ? null : int.tryParse(endRaw);
+                    final startWeek = startRaw.isEmpty
+                        ? null
+                        : int.tryParse(startRaw);
+                    final endWeek = endRaw.isEmpty
+                        ? null
+                        : int.tryParse(endRaw);
                     if (startRaw.isNotEmpty && startWeek == null) {
                       setState(() => weekError = 'Geçersiz hafta');
                       return;
@@ -315,9 +329,7 @@ class HeaderView extends ConsumerWidget {
                     if (startWeek != null &&
                         endWeek != null &&
                         startWeek > endWeek) {
-                      setState(
-                        () => weekError = 'Başlangıç > bitiş olamaz',
-                      );
+                      setState(() => weekError = 'Başlangıç > bitiş olamaz');
                       return;
                     }
                     Navigator.of(dialogContext).pop(
@@ -531,7 +543,8 @@ class HeaderView extends ConsumerWidget {
                     ? null
                     : weekRanges.first['end_week'] as int?;
                 final sameWeeks =
-                    currentStart == next.startWeek && currentEnd == next.endWeek;
+                    currentStart == next.startWeek &&
+                    currentEnd == next.endWeek;
                 if (unchangedText && sameWeeks) return;
                 if (!context.mounted) return;
                 final ok = await _updateOutcome(
@@ -866,6 +879,7 @@ class HeaderView extends ConsumerWidget {
       required String titleKey,
       required String idKey,
       required String orderKey,
+      String? secondaryOrderKey,
       String? fallback,
     }) {
       final values = <Map<String, dynamic>>[];
@@ -882,12 +896,19 @@ class HeaderView extends ConsumerWidget {
           'title': value,
           'id': row[idKey] as int? ?? 1 << 30,
           'order': row[orderKey] as int? ?? 1 << 30,
+          'secondary_order': secondaryOrderKey == null
+              ? (1 << 30)
+              : (row[secondaryOrderKey] as int? ?? 1 << 30),
         });
       }
 
       values.sort((a, b) {
         final byOrder = (a['order'] as int).compareTo(b['order'] as int);
         if (byOrder != 0) return byOrder;
+        final bySecondary = (a['secondary_order'] as int).compareTo(
+          b['secondary_order'] as int,
+        );
+        if (bySecondary != 0) return bySecondary;
         final byId = (a['id'] as int).compareTo(b['id'] as int);
         if (byId != 0) return byId;
         return (a['title'] as String).compareTo(b['title'] as String);
@@ -913,8 +934,37 @@ class HeaderView extends ConsumerWidget {
       titleKey: 'topic_title',
       idKey: 'topic_id',
       orderKey: 'topic_order',
+      secondaryOrderKey: 'unit_order',
       fallback: data['topic_title'] as String?,
     );
+    final totalContents = sections.fold<int>(
+      0,
+      (sum, s) => sum + ((s['contents'] as List?)?.length ?? 0),
+    );
+    final hasMultipleContents = totalContents > 1;
+    final availableUnits = unitOptions.isNotEmpty
+        ? unitOptions
+        : unitTitles
+              .asMap()
+              .entries
+              .map((e) => {'unit_id': e.key, 'unit_title': e.value})
+              .toList();
+    final availableTopics = topicOptions.isNotEmpty
+        ? topicOptions
+        : topicTitles
+              .asMap()
+              .entries
+              .map(
+                (e) => {
+                  'topic_id': e.key,
+                  'topic_title': e.value,
+                  'unit_id': selectedUnitId,
+                },
+              )
+              .toList();
+    final filteredTopics = selectedUnitId == null
+        ? availableTopics
+        : availableTopics.where((t) => t['unit_id'] == selectedUnitId).toList();
     final flatOutcomes = _normalizeOutcomeList(
       data['outcomes'] as List?,
       fallbackTopicId: data['topic_id'] as int?,
@@ -1111,17 +1161,55 @@ class HeaderView extends ConsumerWidget {
                   ),
                 ],
                 const SizedBox(height: 12),
-                if (!isSpecialPage && unitTitles.isNotEmpty)
-                  _buildHierarchyRow(
-                    Icons.folder_open_outlined,
-                    unitTitles,
-                    activeItem: data['unit_title'] as String?,
+                if (!isSpecialPage && hasMultipleContents)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF4E5),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFFF7D7AD)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.device_hub_rounded,
+                          size: 16,
+                          color: Color(0xFFB45309),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            'Bu hafta birden fazla içerik var.',
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.orange.shade900,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                if (!isSpecialPage && topicTitles.isNotEmpty)
-                  _buildHierarchyRow(
-                    Icons.article_outlined,
-                    topicTitles,
-                    activeItem: data['topic_title'] as String?,
+                if (!isSpecialPage)
+                  _buildSelectionChips(
+                    label: 'Ünite',
+                    options: availableUnits,
+                    selectedId: selectedUnitId,
+                    onSelect: onSelectUnit,
+                    titleKey: 'unit_title',
+                    idKey: 'unit_id',
+                  ),
+                if (!isSpecialPage)
+                  _buildSelectionChips(
+                    label: 'Konu',
+                    options: filteredTopics,
+                    selectedId: selectedTopicId,
+                    onSelect: onSelectTopic,
+                    titleKey: 'topic_title',
+                    idKey: 'topic_id',
                   ),
                 if (!isSpecialPage) ...[
                   const SizedBox(height: 10),
@@ -1183,28 +1271,6 @@ class HeaderView extends ConsumerWidget {
                               ),
                             ),
                           ),
-                        if (isAdmin) ...[
-                          AdminCopyButton(
-                            gradeName: gradeName,
-                            lessonName: lessonName,
-                            unitTitle: (data['unit_title'] as String? ?? '')
-                                .trim(),
-                            topicTitle: (data['topic_title'] as String? ?? '')
-                                .trim(),
-                            outcomes: flatOutcomes,
-                            promptType: AdminPromptType.content,
-                          ),
-                          AdminCopyButton(
-                            gradeName: gradeName,
-                            lessonName: lessonName,
-                            unitTitle: (data['unit_title'] as String? ?? '')
-                                .trim(),
-                            topicTitle: (data['topic_title'] as String? ?? '')
-                                .trim(),
-                            outcomes: flatOutcomes,
-                            promptType: AdminPromptType.questions,
-                          ),
-                        ],
                       ],
                     ),
                   ),

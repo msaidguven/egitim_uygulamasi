@@ -7,6 +7,7 @@ import 'package:egitim_uygulamasi/screens/outcomes/widgets/weekly_test_view.dart
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/unit_test_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/special_cards_view.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/app_bar_view.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_copy_button.dart';
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart'; // profileViewModelProvider için
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
@@ -339,6 +340,8 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   static const String _adminActionAddQuestion = 'add_question';
   static const String _adminActionAddContent = 'add_content';
   static const String _adminActionUpdateContent = 'update_content';
+  static const String _adminActionCopyContentPrompt = 'copy_content_prompt';
+  static const String _adminActionCopyQuestionPrompt = 'copy_question_prompt';
 
   int? _selectedSectionIndex;
   int? _selectedUnitId;
@@ -386,6 +389,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     BuildContext context,
     List<Map<String, dynamic>> units,
     int? selectedUnitId,
+    int? selectedTopicId,
     List<Map<String, dynamic>> allTopics,
     List<Map<String, dynamic>> currentSections,
   ) async {
@@ -394,16 +398,15 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             _selectedSectionIndex! >= 0 &&
             _selectedSectionIndex! < currentSections.length)
         ? currentSections[_selectedSectionIndex!]['topic_id'] as int?
-        : null;
+        : selectedTopicId;
 
-    final picked = await showModalBottomSheet<Map<String, int>>(
+    final picked = await showGeneralDialog<Map<String, int>>(
       context: context,
-      isDismissible: true,
-      isScrollControlled: true,
-      enableDrag: true,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.black54,
-      builder: (context) {
+      barrierDismissible: true,
+      barrierLabel: 'Ünite seçici',
+      barrierColor: Colors.black.withValues(alpha: 0.46),
+      transitionDuration: const Duration(milliseconds: 220),
+      pageBuilder: (context, animation, secondaryAnimation) {
         const unitIcons = <IconData>[
           Icons.auto_stories_rounded,
           Icons.public_rounded,
@@ -421,363 +424,419 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
           Color(0xFF1F7A8C),
         ];
 
-        return Stack(
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => Navigator.of(context).pop(),
-                child: const SizedBox.expand(),
+        return SafeArea(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              margin: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF7FAFF),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: const Color(0xFFD4E3FF)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.14),
+                    blurRadius: 28,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
               ),
-            ),
-            SafeArea(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Material(
-                  color: Colors.transparent,
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.86,
-                    child: DraggableScrollableSheet(
-                      initialChildSize: 0.64,
-                      minChildSize: 0.42,
-                      maxChildSize: 0.95,
-                      expand: false,
-                      builder: (context, scrollController) {
-                        return GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(24),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(18, 16, 10, 10),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFFFFFFF), Color(0xFFEFF5FF)],
+                      ),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(24),
+                      ),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x1A2F6FE4),
+                          blurRadius: 10,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Ünite ve Konu Seçimi',
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF1E2E4B),
+                                ),
                               ),
+                              const SizedBox(height: 3),
+                              Text(
+                                '${units.length} ünite • tüm konu listesi',
+                                style: TextStyle(
+                                  fontSize: 12.5,
+                                  color: Colors.grey.shade700,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Kapat',
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(Icons.close_rounded, size: 22),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                      itemCount: units.length,
+                      itemBuilder: (context, index) {
+                        final unit = units[index];
+                        final unitId = unit['unit_id'] as int?;
+                        final isSelected =
+                            unitId != null && unitId == selectedUnitId;
+                        final unitTopics =
+                            allTopics
+                                .where((t) => t['unit_id'] == unitId)
+                                .toList()
+                              ..sort((a, b) {
+                                final aOrder = a['topic_order'] as int? ?? 0;
+                                final bOrder = b['topic_order'] as int? ?? 0;
+                                return aOrder.compareTo(bOrder);
+                              });
+                        final icon = unitIcons[index % unitIcons.length];
+                        final iconColor = unitColors[index % unitColors.length];
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFF2F6FE4)
+                                  : const Color(0xFFDDE8FB),
+                              width: isSelected ? 1.5 : 1,
                             ),
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 10),
-                                Container(
-                                  width: 40,
-                                  height: 4,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              InkWell(
+                                borderRadius: BorderRadius.circular(12),
+                                onTap: unitId == null
+                                    ? null
+                                    : () => Navigator.of(
+                                        context,
+                                      ).pop({'unit_id': unitId}),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                    vertical: 2,
                                   ),
-                                ),
-                                const SizedBox(height: 14),
-                                const Text(
-                                  'Ünite Seç',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Expanded(
-                                  child: ListView.builder(
-                                    controller: scrollController,
-                                    padding: const EdgeInsets.fromLTRB(
-                                      14,
-                                      4,
-                                      14,
-                                      16,
-                                    ),
-                                    itemCount: units.length,
-                                    itemBuilder: (context, index) {
-                                      final unit = units[index];
-                                      final unitId = unit['unit_id'] as int?;
-                                      final isSelected =
-                                          unitId != null &&
-                                          unitId == selectedUnitId;
-                                      final unitTopics = allTopics
-                                          .where((t) => t['unit_id'] == unitId)
-                                          .toList();
-                                      final icon =
-                                          unitIcons[index % unitIcons.length];
-                                      final iconColor =
-                                          unitColors[index % unitColors.length];
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 5,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 34,
+                                        height: 34,
+                                        decoration: BoxDecoration(
+                                          color: iconColor.withValues(
+                                            alpha: 0.14,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            InkWell(
-                                              borderRadius:
-                                                  BorderRadius.circular(14),
-                                              onTap: unitId == null
-                                                  ? null
-                                                  : () => Navigator.of(
-                                                      context,
-                                                    ).pop({'unit_id': unitId}),
-                                              child: AnimatedContainer(
-                                                duration: const Duration(
-                                                  milliseconds: 180,
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 14,
-                                                      vertical: 12,
+                                        child: Icon(
+                                          icon,
+                                          color: iconColor,
+                                          size: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          (unit['unit_title'] as String? ??
+                                                  'Ünite')
+                                              .trim(),
+                                          style: TextStyle(
+                                            fontSize: 14.5,
+                                            fontWeight: isSelected
+                                                ? FontWeight.w800
+                                                : FontWeight.w600,
+                                            color: const Color(0xFF1F2A44),
+                                          ),
+                                        ),
+                                      ),
+                                      if (isSelected)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: const Color(
+                                              0xFF2F6FE4,
+                                            ).withValues(alpha: 0.14),
+                                            borderRadius: BorderRadius.circular(
+                                              999,
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'Aktif',
+                                            style: TextStyle(
+                                              fontSize: 11.5,
+                                              fontWeight: FontWeight.w700,
+                                              color: Color(0xFF2F6FE4),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              if (unitTopics.isNotEmpty) ...[
+                                const SizedBox(height: 10),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: unitTopics.map((topic) {
+                                    final topicId = topic['topic_id'] as int?;
+                                    final topicTitle =
+                                        (topic['topic_title'] as String? ??
+                                                'Konu')
+                                            .trim();
+                                    final topicWeeksRaw =
+                                        (topic['weeks'] as List?)
+                                            ?.whereType<num>()
+                                            .map((w) => w.toInt())
+                                            .toSet()
+                                            .toList() ??
+                                        <int>[];
+                                    topicWeeksRaw.sort();
+                                    final topicWeeksText = topicWeeksRaw.isEmpty
+                                        ? ''
+                                        : topicWeeksRaw.join(', ');
+                                    final isTopicSelected =
+                                        topicId != null &&
+                                        topicId == selectedTopicIdInWeek;
+                                    final isInCurrentWeek =
+                                        topicId != null &&
+                                        currentSections.any(
+                                          (s) => s['topic_id'] == topicId,
+                                        );
+                                    final maxChipWidth =
+                                        MediaQuery.of(context).size.width - 84;
+                                    return InkWell(
+                                      borderRadius: BorderRadius.circular(999),
+                                      onTap: (unitId == null || topicId == null)
+                                          ? null
+                                          : () => Navigator.of(context).pop({
+                                              'unit_id': unitId,
+                                              'topic_id': topicId,
+                                            }),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 11,
+                                          vertical: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            999,
+                                          ),
+                                        ),
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: maxChipWidth,
+                                          ),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              if (isTopicSelected)
+                                                Container(
+                                                  width: 2,
+                                                  height: isTopicSelected
+                                                      ? 34
+                                                      : 28,
+                                                  margin: const EdgeInsets.only(
+                                                    top: 2,
+                                                    right: 8,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(
+                                                      0xFFF59E0B,
                                                     ),
-                                                decoration: BoxDecoration(
-                                                  gradient: isSelected
-                                                      ? const LinearGradient(
-                                                          colors: [
-                                                            Color(0xFFEAF2FF),
-                                                            Color(0xFFF2F7FF),
-                                                          ],
-                                                        )
-                                                      : null,
-                                                  color: isSelected
-                                                      ? null
-                                                      : Colors.grey.shade50,
-                                                  borderRadius:
-                                                      BorderRadius.circular(14),
-                                                  border: Border.all(
-                                                    color: isSelected
-                                                        ? const Color(
-                                                            0xFF2F6FE4,
-                                                          )
-                                                        : Colors.grey.shade300,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          2,
+                                                        ),
                                                   ),
                                                 ),
-                                                child: Row(
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    Container(
-                                                      width: 34,
-                                                      height: 34,
-                                                      decoration: BoxDecoration(
-                                                        color: iconColor
-                                                            .withValues(
-                                                              alpha: 0.14,
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Icon(
+                                                          isTopicSelected
+                                                              ? Icons
+                                                                    .check_circle_rounded
+                                                              : Icons
+                                                                    .book_rounded,
+                                                          size: 14,
+                                                          color: isInCurrentWeek
+                                                              ? const Color(
+                                                                  0xFF16A085,
+                                                                )
+                                                              : Colors
+                                                                    .grey
+                                                                    .shade700,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 6,
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            topicTitle,
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                              fontSize: 12.5,
+                                                              fontWeight:
+                                                                  isTopicSelected
+                                                                  ? FontWeight
+                                                                        .w800
+                                                                  : FontWeight
+                                                                        .w600,
+                                                              color: Colors
+                                                                  .grey
+                                                                  .shade900,
                                                             ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              10,
-                                                            ),
-                                                      ),
-                                                      child: Icon(
-                                                        icon,
-                                                        color: iconColor,
-                                                        size: 18,
-                                                      ),
+                                                          ),
+                                                        ),
+                                                        if (isInCurrentWeek)
+                                                          Container(
+                                                            width: 6,
+                                                            height: 6,
+                                                            margin:
+                                                                const EdgeInsets.only(
+                                                                  left: 6,
+                                                                ),
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                                  color: Color(
+                                                                    0xFFF59E0B,
+                                                                  ),
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                ),
+                                                          ),
+                                                      ],
                                                     ),
-                                                    const SizedBox(width: 10),
-                                                    Expanded(
-                                                      child: Text(
-                                                        (unit['unit_title']
-                                                                    as String? ??
-                                                                'Ünite')
-                                                            .trim(),
+                                                    if (topicWeeksText
+                                                        .isNotEmpty) ...[
+                                                      const SizedBox(height: 2),
+                                                      Text(
+                                                        'Hafta: $topicWeeksText',
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight: isSelected
-                                                              ? FontWeight.w700
-                                                              : FontWeight.w500,
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors
+                                                              .grey
+                                                              .shade700,
                                                         ),
                                                       ),
-                                                    ),
-                                                    Icon(
-                                                      isSelected
-                                                          ? Icons
-                                                                .check_circle_rounded
-                                                          : Icons
-                                                                .radio_button_unchecked_rounded,
-                                                      color: isSelected
-                                                          ? const Color(
-                                                              0xFF2F6FE4,
-                                                            )
-                                                          : Colors
-                                                                .grey
-                                                                .shade600,
-                                                    ),
+                                                    ],
+                                                    if (isTopicSelected) ...[
+                                                      const SizedBox(height: 4),
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 7,
+                                                              vertical: 3,
+                                                            ),
+                                                        decoration: BoxDecoration(
+                                                          color:
+                                                              const Color(
+                                                                0xFFF59E0B,
+                                                              ).withValues(
+                                                                alpha: 0.16,
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                999,
+                                                              ),
+                                                        ),
+                                                        child: const Text(
+                                                          'Aktif Konu',
+                                                          style: TextStyle(
+                                                            fontSize: 10.5,
+                                                            fontWeight:
+                                                                FontWeight.w800,
+                                                            color: Color(
+                                                              0xFFB45309,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ],
                                                 ),
                                               ),
-                                            ),
-                                            if (unitTopics.isNotEmpty)
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                  left: 16,
-                                                  right: 6,
-                                                  top: 6,
-                                                ),
-                                                child: Column(
-                                                  children: unitTopics.map((
-                                                    topic,
-                                                  ) {
-                                                    final topicId =
-                                                        topic['topic_id']
-                                                            as int?;
-                                                    final topicTitle =
-                                                        (topic['topic_title']
-                                                                    as String? ??
-                                                                'Konu')
-                                                            .trim();
-                                                    final topicWeeksRaw =
-                                                        (topic['weeks']
-                                                                as List?)
-                                                            ?.whereType<num>()
-                                                            .map(
-                                                              (w) => w.toInt(),
-                                                            )
-                                                            .toSet()
-                                                            .toList() ??
-                                                        <int>[];
-                                                    topicWeeksRaw.sort();
-                                                    final topicWeeksText =
-                                                        topicWeeksRaw.isEmpty
-                                                        ? ''
-                                                        : topicWeeksRaw.join(
-                                                            ', ',
-                                                          );
-                                                    final isTopicSelected =
-                                                        topicId != null &&
-                                                        topicId ==
-                                                            selectedTopicIdInWeek;
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                            bottom: 4,
-                                                          ),
-                                                      child: InkWell(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              10,
-                                                            ),
-                                                        onTap:
-                                                            (unitId == null ||
-                                                                topicId == null)
-                                                            ? null
-                                                            : () =>
-                                                                  Navigator.of(
-                                                                    context,
-                                                                  ).pop({
-                                                                    'unit_id':
-                                                                        unitId,
-                                                                    'topic_id':
-                                                                        topicId,
-                                                                  }),
-                                                        child: Container(
-                                                          width:
-                                                              double.infinity,
-                                                          padding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal: 10,
-                                                                vertical: 8,
-                                                              ),
-                                                          decoration: BoxDecoration(
-                                                            color:
-                                                                isTopicSelected
-                                                                ? const Color(
-                                                                    0xFFEAF2FF,
-                                                                  )
-                                                                : Colors.white,
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  10,
-                                                                ),
-                                                            border: Border.all(
-                                                              color:
-                                                                  isTopicSelected
-                                                                  ? const Color(
-                                                                      0xFF2F6FE4,
-                                                                    )
-                                                                  : const Color(
-                                                                      0xFFDDE8FB,
-                                                                    ),
-                                                            ),
-                                                          ),
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .article_outlined,
-                                                                size: 16,
-                                                                color:
-                                                                    isTopicSelected
-                                                                    ? const Color(
-                                                                        0xFF2F6FE4,
-                                                                      )
-                                                                    : Colors
-                                                                          .grey
-                                                                          .shade700,
-                                                              ),
-                                                              const SizedBox(
-                                                                width: 8,
-                                                              ),
-                                                              Expanded(
-                                                                child: Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Text(
-                                                                      topicTitle,
-                                                                      style: TextStyle(
-                                                                        fontSize:
-                                                                            12.5,
-                                                                        fontWeight:
-                                                                            isTopicSelected
-                                                                            ? FontWeight.w700
-                                                                            : FontWeight.w500,
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .shade900,
-                                                                      ),
-                                                                    ),
-                                                                    if (topicWeeksText
-                                                                        .isNotEmpty) ...[
-                                                                      const SizedBox(
-                                                                        height:
-                                                                            2,
-                                                                      ),
-                                                                      Text(
-                                                                        'Hafta: $topicWeeksText',
-                                                                        style: TextStyle(
-                                                                          fontSize:
-                                                                              11.5,
-                                                                          fontWeight:
-                                                                              FontWeight.w600,
-                                                                          color:
-                                                                              isTopicSelected
-                                                                              ? const Color(
-                                                                                  0xFF2F6FE4,
-                                                                                )
-                                                                              : Colors.grey.shade600,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
                               ],
-                            ),
+                            ],
                           ),
                         );
                       },
                     ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final curve = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        );
+        return FadeTransition(
+          opacity: curve,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.98, end: 1).animate(curve),
+            child: child,
+          ),
         );
       },
     );
@@ -862,6 +921,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   Future<void> _openSmartQuestionAddition({
     required int selectedUnitId,
     required int selectedTopicId,
+    List<int> selectedOutcomeIds = const [],
   }) async {
     await Navigator.push(
       context,
@@ -871,6 +931,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
           initialLessonId: widget.args.lessonId,
           initialUnitId: selectedUnitId,
           initialTopicId: selectedTopicId,
+          initialOutcomeIds: selectedOutcomeIds,
           initialCurriculumWeek: widget.curriculumWeek,
           initialUsageType: 'weekly',
         ),
@@ -1123,6 +1184,59 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                 },
               )
               .toList();
+
+    final sectionsWithOutcomes = sections.where((section) {
+      final outcomes = (section['outcomes'] as List? ?? const <dynamic>[])
+          .whereType<dynamic>()
+          .toList();
+      return outcomes.isNotEmpty;
+    }).toList();
+
+    final headerTopicIds = sectionsWithOutcomes
+        .map((s) => s['topic_id'] as int?)
+        .whereType<int>()
+        .toSet();
+    final headerUnitIds = sectionsWithOutcomes
+        .map((s) => s['unit_id'] as int?)
+        .whereType<int>()
+        .toSet();
+
+    var headerTopicOptions = topicMenu.where((topic) {
+      final topicId = topic['topic_id'] as int?;
+      if (topicId == null) return false;
+      return headerTopicIds.contains(topicId);
+    }).toList();
+    if (headerTopicOptions.isEmpty) {
+      headerTopicOptions = sectionsWithOutcomes
+          .map(
+            (s) => {
+              'topic_id': s['topic_id'],
+              'topic_title': s['topic_title'],
+              'unit_id': s['unit_id'],
+              'unit_title': s['unit_title'],
+              'unit_order': s['unit_order'] ?? 0,
+              'topic_order': s['topic_order'] ?? 0,
+            },
+          )
+          .toList();
+    }
+
+    final headerUnitOptions = <Map<String, dynamic>>[];
+    for (final topic in headerTopicOptions) {
+      final unitId = topic['unit_id'] as int?;
+      if (unitId == null) continue;
+      if (!headerUnitIds.contains(unitId)) continue;
+      if (headerUnitOptions.any((u) => u['unit_id'] == unitId)) continue;
+      headerUnitOptions.add({
+        'unit_id': unitId,
+        'unit_title': topic['unit_title'],
+        'unit_order': topic['unit_order'] as int? ?? 0,
+      });
+    }
+    headerUnitOptions.sort(
+      (a, b) => (a['unit_order'] as int).compareTo(b['unit_order'] as int),
+    );
+
     final unitOptions = <Map<String, dynamic>>[];
     for (final topic in topicMenu) {
       final unitId = topic['unit_id'] as int?;
@@ -1151,31 +1265,30 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final filteredTopics = effectiveUnitId == null
         ? topicMenu
         : topicMenu.where((t) => t['unit_id'] == effectiveUnitId).toList();
-    final starterTopicInWeek =
+    final topicsInCurrentWeek =
         filteredTopics.where((t) {
           final topicId = t['topic_id'] as int?;
           if (topicId == null) return false;
-          final isInCurrentSections = sections.any(
-            (s) => s['topic_id'] == topicId,
-          );
-          if (!isInCurrentSections) return false;
-          return (t['first_week'] as int?) == widget.curriculumWeek;
+          return sections.any((s) => s['topic_id'] == topicId);
         }).toList()..sort((a, b) {
           final aOrder = a['topic_order'] as int? ?? 0;
           final bOrder = b['topic_order'] as int? ?? 0;
-          return aOrder.compareTo(bOrder);
+          final byOrder = aOrder.compareTo(bOrder);
+          if (byOrder != 0) return byOrder;
+          final aId = a['topic_id'] as int? ?? 1 << 30;
+          final bId = b['topic_id'] as int? ?? 1 << 30;
+          return aId.compareTo(bId);
         });
-    final defaultFocusedTopicId = starterTopicInWeek.isNotEmpty
-        ? starterTopicInWeek.first['topic_id'] as int?
-        : null;
-    final effectiveSelectedTopicId =
-        _selectedSectionIndex == null && defaultFocusedTopicId != null
-        ? defaultFocusedTopicId
-        : filteredTopics.any((t) => t['topic_id'] == baseSelectedTopicId)
-        ? baseSelectedTopicId
+    final defaultFocusedTopicId = topicsInCurrentWeek.isNotEmpty
+        ? topicsInCurrentWeek.first['topic_id'] as int?
         : (filteredTopics.isNotEmpty
               ? filteredTopics.first['topic_id'] as int?
               : null);
+    final effectiveSelectedTopicId = _selectedSectionIndex == null
+        ? defaultFocusedTopicId
+        : filteredTopics.any((t) => t['topic_id'] == baseSelectedTopicId)
+        ? baseSelectedTopicId
+        : defaultFocusedTopicId;
     final resolvedSectionIndex = effectiveSelectedTopicId == null
         ? -1
         : sections.indexWhere((s) => s['topic_id'] == effectiveSelectedTopicId);
@@ -1189,6 +1302,16 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final selectedSection = sections[safeSelectedIndex];
     final selectedUnitId = selectedSection['unit_id'] as int?;
     final selectedTopicId = selectedSection['topic_id'] as int?;
+    final selectedSectionOutcomes =
+        ((selectedSection['outcomes'] as List?) ?? const <dynamic>[])
+            .map((o) {
+              if (o is Map) return Map<String, dynamic>.from(o);
+              return <String, dynamic>{'description': o.toString()};
+            })
+            .where(
+              (o) => ((o['description'] as String?) ?? '').trim().isNotEmpty,
+            )
+            .toList();
     final selectedUnitTitle =
         unitOptions.firstWhere(
               (u) => u['unit_id'] == effectiveUnitId,
@@ -1203,38 +1326,31 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
             )['topic_title']
             as String? ??
         '';
-    final selectedTopicMeta = topicMenu.firstWhere(
-      (t) => t['topic_id'] == selectedTopicId,
-      orElse: () => <String, dynamic>{},
-    );
-    final selectedTopicWeeks =
-        (selectedTopicMeta['weeks'] as List? ?? const <dynamic>[])
-            .whereType<num>()
-            .map((w) => w.toInt())
-            .toSet()
-            .toList()
-          ..sort();
-    final topicStartWeek = selectedTopicWeeks.isEmpty
-        ? widget.curriculumWeek
-        : selectedTopicWeeks.first;
-    final topicEndWeek = selectedTopicWeeks.isEmpty
-        ? widget.curriculumWeek
-        : selectedTopicWeeks.last;
-    final topicWeekCount = selectedTopicWeeks.isEmpty
-        ? 1
-        : selectedTopicWeeks.length;
-    int topicWeekPosition =
-        selectedTopicWeeks.indexOf(widget.curriculumWeek) + 1;
-    if (topicWeekPosition <= 0) {
-      final passedWeekCount = selectedTopicWeeks
-          .where((w) => w <= widget.curriculumWeek)
-          .length;
-      topicWeekPosition = passedWeekCount.clamp(1, topicWeekCount);
-    }
     final selectedSectionUnitTitle =
         (selectedSection['unit_title'] as String? ?? '').trim();
     final selectedSectionTopicTitle =
         (selectedSection['topic_title'] as String? ?? '').trim();
+    final promptUnitTitle = selectedSectionUnitTitle.isNotEmpty
+        ? selectedSectionUnitTitle
+        : (selectedUnitTitle.trim().isNotEmpty
+              ? selectedUnitTitle.trim()
+              : ((safeData['unit_title'] as String? ?? '').trim()));
+    final promptTopicTitle = selectedSectionTopicTitle.isNotEmpty
+        ? selectedSectionTopicTitle
+        : (selectedTopicTitleFromMenu.trim().isNotEmpty
+              ? selectedTopicTitleFromMenu.trim()
+              : ((safeData['topic_title'] as String? ?? '').trim()));
+    final promptOutcomes = selectedSectionOutcomes.isNotEmpty
+        ? selectedSectionOutcomes
+        : ((safeData['outcomes'] as List?) ?? const <dynamic>[])
+              .map((o) {
+                if (o is Map) return Map<String, dynamic>.from(o);
+                return <String, dynamic>{'description': o.toString()};
+              })
+              .where(
+                (o) => ((o['description'] as String?) ?? '').trim().isNotEmpty,
+              )
+              .toList();
     final headerData = Map<String, dynamic>.from(safeData)
       ..['unit_id'] = selectedUnitId ?? safeData['unit_id']
       ..['topic_id'] = selectedTopicId ?? safeData['topic_id']
@@ -1337,12 +1453,46 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                 args: widget.args,
                 gradeName: widget.gradeName,
                 lessonName: widget.lessonName,
+                unitOptions: headerUnitOptions,
+                topicOptions: headerTopicOptions,
+                selectedUnitId: _selectedUnitId,
+                selectedTopicId: selectedTopicId,
+                onSelectUnit: (unitId) {
+                  if (unitId == null) return;
+                  final nextIndex = _pickDefaultSectionIndex(
+                    sections,
+                    preferredUnitId: unitId,
+                  );
+                  if (!mounted) return;
+                  setState(() {
+                    _selectedUnitId = unitId;
+                    _selectedSectionIndex = nextIndex;
+                  });
+                },
+                onSelectTopic: (topicId) {
+                  if (topicId == null) return;
+                  final index = sections.indexWhere(
+                    (s) => s['topic_id'] == topicId,
+                  );
+                  if (index == -1) return;
+                  final topicMeta = topicMenu.firstWhere(
+                    (t) => t['topic_id'] == topicId,
+                    orElse: () => const <String, dynamic>{},
+                  );
+                  final unitId = topicMeta['unit_id'] as int?;
+                  if (!mounted) return;
+                  setState(() {
+                    if (unitId != null) _selectedUnitId = unitId;
+                    _selectedSectionIndex = index;
+                  });
+                },
                 onTapUnits: unitOptions.isEmpty
                     ? null
                     : () => _showUnitPicker(
                         context,
                         unitOptions,
                         effectiveUnitId,
+                        selectedTopicId,
                         topicMenu,
                         sections,
                       ),
@@ -1358,8 +1508,33 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                   alignment: Alignment.centerRight,
                   child: PopupMenuButton<String>(
                     tooltip: 'Yönetici menüsü',
-                    onSelected: (value) {
+                    onSelected: (value) async {
+                      if (value == _adminActionCopyContentPrompt) {
+                        await AdminCopyButton.copyPrompt(
+                          context,
+                          gradeName: widget.gradeName,
+                          lessonName: widget.lessonName,
+                          unitTitle: promptUnitTitle,
+                          topicTitle: promptTopicTitle,
+                          outcomes: promptOutcomes,
+                          promptType: AdminPromptType.content,
+                        );
+                        return;
+                      }
+                      if (value == _adminActionCopyQuestionPrompt) {
+                        await AdminCopyButton.copyPrompt(
+                          context,
+                          gradeName: widget.gradeName,
+                          lessonName: widget.lessonName,
+                          unitTitle: promptUnitTitle,
+                          topicTitle: promptTopicTitle,
+                          outcomes: promptOutcomes,
+                          promptType: AdminPromptType.questions,
+                        );
+                        return;
+                      }
                       if (selectedUnitId == null || selectedTopicId == null) {
+                        if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Önce bir ünite/konu seçin.'),
@@ -1368,9 +1543,14 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                         return;
                       }
                       if (value == _adminActionAddQuestion) {
+                        final activeOutcomeIds = selectedSectionOutcomes
+                            .map((o) => o['id'] as int?)
+                            .whereType<int>()
+                            .toList();
                         _openSmartQuestionAddition(
                           selectedUnitId: selectedUnitId,
                           selectedTopicId: selectedTopicId,
+                          selectedOutcomeIds: activeOutcomeIds,
                         );
                       } else if (value == _adminActionAddContent) {
                         _openSmartContentAddition(
@@ -1421,6 +1601,27 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                           ],
                         ),
                       ),
+                      const PopupMenuDivider(),
+                      PopupMenuItem<String>(
+                        value: _adminActionCopyContentPrompt,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.copy_all_rounded, size: 18),
+                            SizedBox(width: 8),
+                            Text('İçerik Promptu Kopyala'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<String>(
+                        value: _adminActionCopyQuestionPrompt,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.quiz_outlined, size: 18),
+                            SizedBox(width: 8),
+                            Text('Soru Promptu Kopyala'),
+                          ],
+                        ),
+                      ),
                     ],
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -1447,18 +1648,6 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          if (!isSpecialPage)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-              sliver: SliverToBoxAdapter(
-                child: _TopicProgressHintCard(
-                  startWeek: topicStartWeek,
-                  endWeek: topicEndWeek,
-                  totalWeeks: topicWeekCount,
-                  currentWeekPosition: topicWeekPosition,
                 ),
               ),
             ),
@@ -2244,111 +2433,6 @@ class _WeekStripBarState extends State<_WeekStripBar> {
   }
 }
 
-class _TopicProgressHintCard extends StatelessWidget {
-  final int startWeek;
-  final int endWeek;
-  final int totalWeeks;
-  final int currentWeekPosition;
-
-  const _TopicProgressHintCard({
-    required this.startWeek,
-    required this.endWeek,
-    required this.totalWeeks,
-    required this.currentWeekPosition,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final safeTotal = totalWeeks < 1 ? 1 : totalWeeks;
-    final safePosition = currentWeekPosition.clamp(1, safeTotal);
-
-    // Cok uzun surelerde ekrani sade tutmak icin nokta sayisini sinirliyoruz.
-    final nodeCount = safeTotal <= 5 ? safeTotal : 5;
-    final activeNodeIndex = safeTotal == 1
-        ? 0
-        : (((safePosition - 1) / (safeTotal - 1)) * (nodeCount - 1)).round();
-
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFDDE6F4)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '$safeTotal haftalik konu - $safePosition. hafta',
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF23344E),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Text(
-                '$startWeek',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade700,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Row(
-                  children: List.generate(nodeCount * 2 - 1, (index) {
-                    if (index.isEven) {
-                      final nodeIndex = index ~/ 2;
-                      final isActive = nodeIndex <= activeNodeIndex;
-                      return Container(
-                        width: isActive ? 8 : 7,
-                        height: isActive ? 8 : 7,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isActive
-                              ? const Color(0xFF2F6FE4)
-                              : const Color(0xFFBECDE7),
-                        ),
-                      );
-                    }
-                    final leftNodeIndex = (index - 1) ~/ 2;
-                    final isActive = leftNodeIndex < activeNodeIndex;
-                    return Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        height: 2,
-                        decoration: BoxDecoration(
-                          color: isActive
-                              ? const Color(0xFF2F6FE4)
-                              : const Color(0xFFD6E0F0),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '$endWeek',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade700,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _WeekSectionsBlock extends StatelessWidget {
   final List<Map<String, dynamic>> sections;
   final int? focusedTopicId;
@@ -2404,15 +2488,19 @@ class _WeekSectionsBlock extends StatelessWidget {
       );
     }
 
-    final focusedEntry =
-        (focusedTopicId != null &&
-            visibleSections.any((e) => e['topic_id'] == focusedTopicId))
-        ? visibleSections.firstWhere((e) => e['topic_id'] == focusedTopicId)
-        : visibleSections.first;
+    final focusSections = focusedTopicId == null
+        ? visibleSections
+        : visibleSections
+              .where((e) => e['topic_id'] == focusedTopicId)
+              .toList();
+    final effectiveSections = focusSections.isNotEmpty
+        ? focusSections
+        : visibleSections;
+    final focusedEntry = effectiveSections.first;
 
     final mergedContents = <TopicContent>[];
     final seenContentIds = <int>{};
-    for (final entry in visibleSections) {
+    for (final entry in effectiveSections) {
       final contents = (entry['contents'] as List).whereType<TopicContent>();
       for (final content in contents) {
         final id = content.id;
@@ -2462,6 +2550,7 @@ class _SingleSectionContentCard extends StatefulWidget {
 class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
   int _currentPageIndex = 0;
   int? _lastNotifiedTopicId;
+  bool _hasAutoSelectedSingle = false;
 
   void _notifyActiveTopic() {
     if (widget.onActiveTopicChanged == null) return;
@@ -2483,6 +2572,10 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _notifyActiveTopic();
+    });
   }
 
   @override
@@ -2490,7 +2583,13 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
     super.didUpdateWidget(oldWidget);
     if (widget.contents.isEmpty) {
       _currentPageIndex = 0;
+      _hasAutoSelectedSingle = false;
       return;
+    }
+    if (widget.contents.length == 1 && !_hasAutoSelectedSingle) {
+      _currentPageIndex = 0;
+      _hasAutoSelectedSingle = true;
+      _notifyActiveTopic();
     }
     if (_currentPageIndex >= widget.contents.length) {
       _currentPageIndex = widget.contents.length - 1;
@@ -2502,6 +2601,163 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
     if (!mounted) return;
     setState(() => _currentPageIndex = index);
     _notifyActiveTopic();
+  }
+
+  String _plainPreview(String html, {int maxLength = 120}) {
+    final plain = html
+        .replaceAll(RegExp(r'<[^>]*>'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    if (plain.length <= maxLength) return plain;
+    return '${plain.substring(0, maxLength).trim()}...';
+  }
+
+  Widget _buildContentSelectionCard() {
+    final activeContent = widget.contents[_currentPageIndex];
+    final rawTitle = activeContent.title.trim();
+    final activeTitle = rawTitle.isEmpty
+        ? 'İçerik #${_currentPageIndex + 1}'
+        : rawTitle;
+    final preview = _plainPreview(activeContent.content);
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF6F8FC),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFDCE5F3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2F6FE4).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Icon(
+                  Icons.auto_stories_outlined,
+                  size: 15,
+                  color: Color(0xFF2F6FE4),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${widget.contents.length} içerik bulundu',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey.shade800,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Görmek istediğin içeriği seç.',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: List.generate(widget.contents.length, (index) {
+              final content = widget.contents[index];
+              final rawTitle = content.title.trim();
+              final title = rawTitle.isEmpty
+                  ? 'İçerik #${index + 1}'
+                  : rawTitle;
+              final isSelected = index == _currentPageIndex;
+              return ChoiceChip(
+                selected: isSelected,
+                label: Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                onSelected: (_) => _goToPage(index),
+                selectedColor: const Color(0xFF2F6FE4).withValues(alpha: 0.16),
+                backgroundColor: Colors.white,
+                labelStyle: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                  color: isSelected
+                      ? const Color(0xFF2F6FE4)
+                      : Colors.grey.shade800,
+                ),
+                side: BorderSide(
+                  color: isSelected
+                      ? const Color(0xFF2F6FE4)
+                      : const Color(0xFFD2DCEC),
+                ),
+                avatar: CircleAvatar(
+                  radius: 9,
+                  backgroundColor: isSelected
+                      ? const Color(0xFF2F6FE4)
+                      : const Color(0xFFE5EBF7),
+                  child: Text(
+                    '${index + 1}',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: isSelected ? Colors.white : Colors.grey.shade700,
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xFFD2DCEC)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  activeTitle,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1F2A44),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (preview.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    preview,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      color: Colors.grey.shade700,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildMiniPager(),
+        ],
+      ),
+    );
   }
 
   Widget _buildMiniPager() {
@@ -2567,9 +2823,6 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
 
   @override
   Widget build(BuildContext context) {
-    final unitTitle = (widget.section['unit_title'] as String? ?? '').trim();
-    final topicTitle = (widget.section['topic_title'] as String? ?? '').trim();
-
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
       decoration: BoxDecoration(
@@ -2580,47 +2833,6 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (unitTitle.isNotEmpty || topicTitle.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (unitTitle.isNotEmpty)
-                    Text(
-                      unitTitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade700,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  if (topicTitle.isNotEmpty)
-                    Text(
-                      topicTitle,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Color(0xFF13243D),
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          _buildMiniPager(),
-          if (widget.contents.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 6),
-              child: Text(
-                '${_currentPageIndex + 1} / ${widget.contents.length}',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.grey.shade600,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
           if (widget.contents.isEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 2),
@@ -2639,6 +2851,29 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+              ),
+            )
+          else if (widget.contents.length > 1)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildContentSelectionCard(),
+                  const SizedBox(height: 10),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 180),
+                    child: TopicContentView(
+                      key: ValueKey(
+                        widget.contents[_currentPageIndex].id ??
+                            _currentPageIndex,
+                      ),
+                      content: widget.contents[_currentPageIndex],
+                      isAdmin: widget.isAdmin,
+                      onContentUpdated: widget.onContentUpdated,
+                    ),
+                  ),
+                ],
               ),
             )
           else

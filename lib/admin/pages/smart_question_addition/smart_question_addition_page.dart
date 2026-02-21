@@ -18,6 +18,7 @@ class SmartQuestionAdditionPage extends StatefulWidget {
   final int? initialTopicId;
   final int? initialCurriculumWeek;
   final String? initialUsageType;
+  final List<int> initialOutcomeIds;
 
   const SmartQuestionAdditionPage({
     super.key,
@@ -27,6 +28,7 @@ class SmartQuestionAdditionPage extends StatefulWidget {
     this.initialTopicId,
     this.initialCurriculumWeek,
     this.initialUsageType,
+    this.initialOutcomeIds = const [],
   });
 
   @override
@@ -53,6 +55,8 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
   Unit? _selectedUnit;
   List<Topic> _availableTopics = [];
   Topic? _selectedTopic;
+  List<Map<String, dynamic>> _availableOutcomes = [];
+  Set<int> _selectedOutcomeIds = {};
 
   String? _usageType = 'weekly';
   List<Map<String, dynamic>> _previewQuestions = [];
@@ -71,6 +75,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
   @override
   void initState() {
     super.initState();
+    _selectedOutcomeIds = widget.initialOutcomeIds.toSet();
     _loadGrades();
   }
 
@@ -162,8 +167,74 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         : _firstOrNull(_availableTopics, (t) => t.id == presetTopicId);
     if (topic != null) {
       _selectedTopic = topic;
+      await _loadOutcomesForSelection();
     }
     setState(() {});
+  }
+
+  Future<void> _loadOutcomesForSelection() async {
+    final topic = _selectedTopic;
+    if (topic == null) {
+      if (!mounted) return;
+      setState(() {
+        _availableOutcomes = [];
+        _selectedOutcomeIds = {};
+      });
+      return;
+    }
+
+    final week = int.tryParse(_curriculumWeekController.text.trim());
+    final isWeekly = _usageType == 'weekly';
+
+    setState(() => _isLoading = true);
+    try {
+      final response = await Supabase.instance.client
+          .from('outcomes')
+          .select('id, description, outcome_weeks(start_week, end_week)')
+          .eq('topic_id', topic.id)
+          .order('id', ascending: true);
+
+      final loaded = <Map<String, dynamic>>[];
+      for (final raw in (response as List)) {
+        final row = Map<String, dynamic>.from(raw as Map);
+        final id = row['id'] as int?;
+        final description = (row['description'] as String? ?? '').trim();
+        if (id == null || description.isEmpty) continue;
+        if (isWeekly && week != null) {
+          final ranges = (row['outcome_weeks'] as List? ?? const <dynamic>[])
+              .whereType<Map>()
+              .map((r) => Map<String, dynamic>.from(r))
+              .toList();
+          final matchesWeek = ranges.any((r) {
+            final start = r['start_week'] as int?;
+            final end = r['end_week'] as int?;
+            if (start == null || end == null) return false;
+            return week >= start && week <= end;
+          });
+          if (!matchesWeek) continue;
+        }
+        loaded.add({'id': id, 'description': description});
+      }
+
+      final validIds = loaded.map((o) => o['id'] as int).toSet();
+      final presetIds = widget.initialOutcomeIds.toSet().intersection(validIds);
+      final nextSelected = _selectedOutcomeIds.intersection(validIds);
+      if (nextSelected.isEmpty && presetIds.isNotEmpty) {
+        nextSelected.addAll(presetIds);
+      } else if (nextSelected.isEmpty) {
+        nextSelected.addAll(validIds);
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _availableOutcomes = loaded;
+        _selectedOutcomeIds = nextSelected;
+      });
+    } catch (e) {
+      _showError('Kazanımlar yüklenemedi: $e');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _loadUnits(int gradeId, int lessonId) async {
@@ -241,6 +312,10 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
       _showError('Lütfen bir konu seçin.');
       return;
     }
+    if (_availableOutcomes.isNotEmpty && _selectedOutcomeIds.isEmpty) {
+      _showError('Lütfen en az bir kazanım seçin.');
+      return;
+    }
 
     Map<String, dynamic> payloadForSupabase;
 
@@ -271,24 +346,52 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
     setState(() => _isSubmitting = true);
 
     try {
-      // GEREKSİZ DÖNÜŞÜM KALDIRILDI. VERİ DOĞRUDAN GÖNDERİLİYOR.
-      await Supabase.instance.client.rpc(
-        'bulk_create_questions',
-        params: {
-          'p_topic_id': _selectedTopic!.id,
-          'p_usage_type': _usageType,
-          'p_curriculum_week': _usageType == 'weekly'
-              ? int.tryParse(_curriculumWeekController.text)
-              : null,
-          'p_questions_json': payloadForSupabase,
-        },
-      );
+      var usedLegacySignature = false;
+      try {
+        await Supabase.instance.client.rpc(
+          'bulk_create_questions',
+          params: {
+            'p_topic_id': _selectedTopic!.id,
+            'p_usage_type': _usageType,
+            'p_curriculum_week': _usageType == 'weekly'
+                ? int.tryParse(_curriculumWeekController.text)
+                : null,
+            'p_start_week': null,
+            'p_end_week': null,
+            'p_questions_json': payloadForSupabase,
+            'p_outcome_ids': _selectedOutcomeIds.toList(),
+          },
+        );
+      } on PostgrestException catch (e) {
+        final message = (e.message).toLowerCase();
+        final isSignatureMismatch =
+            e.code == 'PGRST202' && message.contains('p_outcome_ids');
+        if (!isSignatureMismatch) rethrow;
+
+        // DB eski fonksiyon imzasındaysa, outcomes parametresi olmadan tekrar dene.
+        await Supabase.instance.client.rpc(
+          'bulk_create_questions',
+          params: {
+            'p_topic_id': _selectedTopic!.id,
+            'p_usage_type': _usageType,
+            'p_curriculum_week': _usageType == 'weekly'
+                ? int.tryParse(_curriculumWeekController.text)
+                : null,
+            'p_questions_json': payloadForSupabase,
+          },
+        );
+        usedLegacySignature = true;
+      }
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sorular başarıyla eklendi!'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: Text(
+            usedLegacySignature
+                ? 'Sorular eklendi. Not: DB migration eksik olduğu için kazanım eşlemesi yapılmadı.'
+                : 'Sorular başarıyla eklendi!',
+          ),
+          backgroundColor: usedLegacySignature ? Colors.orange : Colors.green,
         ),
       );
       _resetForm();
@@ -324,6 +427,8 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
       _selectedUnit = null;
       _availableTopics = [];
       _selectedTopic = null;
+      _availableOutcomes = [];
+      _selectedOutcomeIds = {};
       _usageType = 'weekly';
       _previewQuestions = [];
       _showJsonInput = true;
@@ -486,6 +591,8 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
                     _selectedUnit = unit;
                     _availableTopics.clear();
                     _selectedTopic = null;
+                    _availableOutcomes = [];
+                    _selectedOutcomeIds = {};
                     if (unit != null) _loadTopics(unit.id);
                   });
                 },
@@ -506,7 +613,14 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
           onChanged: _selectedUnit == null
               ? null
               : (topic) {
-                  setState(() => _selectedTopic = topic);
+                  setState(() {
+                    _selectedTopic = topic;
+                    _availableOutcomes = [];
+                    _selectedOutcomeIds = {};
+                  });
+                  if (topic != null) {
+                    _loadOutcomesForSelection();
+                  }
                 },
           items: _availableTopics.map((topic) {
             return DropdownMenuItem<Topic>(
@@ -526,6 +640,9 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
           initialValue: _usageType,
           onChanged: (value) {
             setState(() => _usageType = value);
+            if (_selectedTopic != null) {
+              _loadOutcomesForSelection();
+            }
           },
           items: const [
             DropdownMenuItem(value: 'weekly', child: Text('Haftalık')),
@@ -549,6 +666,11 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
             ),
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (_) {
+              if (_selectedTopic != null) {
+                _loadOutcomesForSelection();
+              }
+            },
             validator: (val) {
               if (_usageType == 'weekly' &&
                   (val == null || val.trim().isEmpty)) {
@@ -557,7 +679,90 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
               return null;
             },
           ),
+        const SizedBox(height: 12),
+        _buildOutcomeSelector(),
       ],
+    );
+  }
+
+  Widget _buildOutcomeSelector() {
+    if (_selectedTopic == null) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.grey.shade50,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.flag_outlined, size: 18),
+              const SizedBox(width: 6),
+              Text(
+                'Kazanımlar',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.grey.shade900,
+                ),
+              ),
+              const Spacer(),
+              if (_availableOutcomes.isNotEmpty)
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _selectedOutcomeIds = _availableOutcomes
+                          .map((o) => o['id'] as int)
+                          .toSet();
+                    });
+                  },
+                  child: const Text('Tümünü Seç'),
+                ),
+            ],
+          ),
+          if (_availableOutcomes.isEmpty)
+            Text(
+              'Bu seçim için kazanım bulunamadı.',
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 12.5),
+            )
+          else
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _availableOutcomes.map((outcome) {
+                final id = outcome['id'] as int;
+                final description = outcome['description'] as String;
+                final selected = _selectedOutcomeIds.contains(id);
+                return FilterChip(
+                  label: SizedBox(
+                    width: 240,
+                    child: Text(
+                      description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  selected: selected,
+                  onSelected: (value) {
+                    setState(() {
+                      if (value) {
+                        _selectedOutcomeIds.add(id);
+                      } else {
+                        _selectedOutcomeIds.remove(id);
+                      }
+                    });
+                  },
+                  selectedColor: Colors.blue.shade50,
+                  checkmarkColor: Colors.blue.shade700,
+                );
+              }).toList(),
+            ),
+        ],
+      ),
     );
   }
 

@@ -21,7 +21,14 @@ class AdminCopyButton extends StatelessWidget {
     this.promptType = AdminPromptType.content,
   });
 
-  Future<void> _copyToClipboard(BuildContext context) async {
+  static String buildPrompt({
+    required String gradeName,
+    required String lessonName,
+    required String unitTitle,
+    required String topicTitle,
+    required List<Map<String, dynamic>> outcomes,
+    required AdminPromptType promptType,
+  }) {
     final outcomesBuffer = StringBuffer();
     if (outcomes.isEmpty) {
       outcomesBuffer.writeln('(Kazanım bulunamadı)');
@@ -34,21 +41,52 @@ class AdminCopyButton extends StatelessWidget {
       }
     }
 
-    final String prompt;
     if (promptType == AdminPromptType.content) {
-      prompt = _getContentPrompt(outcomesBuffer.toString());
-    } else {
-      prompt = _getQuestionsPrompt(outcomesBuffer.toString());
+      return _buildContentPrompt(
+        gradeName: gradeName,
+        lessonName: lessonName,
+        unitTitle: unitTitle,
+        topicTitle: topicTitle,
+        outcomesText: outcomesBuffer.toString(),
+      );
     }
+    return _buildQuestionsPrompt(
+      gradeName: gradeName,
+      lessonName: lessonName,
+      unitTitle: unitTitle,
+      topicTitle: topicTitle,
+      outcomesText: outcomesBuffer.toString(),
+    );
+  }
+
+  static Future<void> copyPrompt(
+    BuildContext context, {
+    required String gradeName,
+    required String lessonName,
+    required String unitTitle,
+    required String topicTitle,
+    required List<Map<String, dynamic>> outcomes,
+    required AdminPromptType promptType,
+  }) async {
+    final prompt = buildPrompt(
+      gradeName: gradeName,
+      lessonName: lessonName,
+      unitTitle: unitTitle,
+      topicTitle: topicTitle,
+      outcomes: outcomes,
+      promptType: promptType,
+    );
 
     try {
       await Clipboard.setData(ClipboardData(text: prompt));
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(promptType == AdminPromptType.content
-                ? 'İçerik bilgileri kopyalandı'
-                : 'Soru hazırlama promptu kopyalandı'),
+            content: Text(
+              promptType == AdminPromptType.content
+                  ? 'İçerik bilgileri kopyalandı'
+                  : 'Soru hazırlama promptu kopyalandı',
+            ),
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
           ),
@@ -56,14 +94,32 @@ class AdminCopyButton extends StatelessWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Kopyalama hatası: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Kopyalama hatası: $e')));
       }
     }
   }
 
-  String _getContentPrompt(String outcomesText) {
+  Future<void> _copyToClipboard(BuildContext context) {
+    return copyPrompt(
+      context,
+      gradeName: gradeName,
+      lessonName: lessonName,
+      unitTitle: unitTitle,
+      topicTitle: topicTitle,
+      outcomes: outcomes,
+      promptType: promptType,
+    );
+  }
+
+  static String _buildContentPrompt({
+    required String gradeName,
+    required String lessonName,
+    required String unitTitle,
+    required String topicTitle,
+    required String outcomesText,
+  }) {
     return '''
 Sen deneyimli bir öğretmen, akademik içerik yazarı, ölçme-değerlendirme uzmanı ve pedagojik tasarımcısın.  
 Ortaokul ve lise seviyesinde, MEB kazanımlarına tam uyumlu, öğretici, akıcı ve derinlikli bir ders içeriği hazırlayacaksın.
@@ -134,6 +190,15 @@ ZORUNLU İÇERİK YAPISI
 </section>
 
 <section>
+<h2>Anahtar Kavramlar</h2>
+<ul>
+<li>Kavram 1</li>
+<li>Kavram 2</li>
+<li>Kavram 3</li>
+</ul>
+</section>
+
+<section>
 <h2>Temel Bilgiler (Bilgi Basamağı)</h2>
 <p>Temel tanımlar ve kavramlar...</p>
 </section>
@@ -181,15 +246,6 @@ ZORUNLU İÇERİK YAPISI
 </section>
 
 <section>
-<h2>Anahtar Kavramlar</h2>
-<ul>
-<li>Kavram 1</li>
-<li>Kavram 2</li>
-<li>Kavram 3</li>
-</ul>
-</section>
-
-<section>
 <h2>Örnek Sorular</h2>
 <ol>
 <li>Soru 1</li>
@@ -222,7 +278,13 @@ Not: İçerik mobil uygulamada rahat okunabilecek şekilde hazırlanmalıdır.
 ''';
   }
 
-  String _getQuestionsPrompt(String outcomesText) {
+  static String _buildQuestionsPrompt({
+    required String gradeName,
+    required String lessonName,
+    required String unitTitle,
+    required String topicTitle,
+    required String outcomesText,
+  }) {
     return '''
 Sen deneyimli bir ölçme-değerlendirme uzmanı ve pedagojik içerik geliştiricisisin.
 
@@ -272,6 +334,7 @@ ZORUNLU KURALLAR
 
 Sınıf: { $gradeName }
 Ders: { $lessonName }
+Ünite: { $unitTitle }
 Konu: { $topicTitle }
 Kazanımlar: {
 $outcomesText }
@@ -348,23 +411,21 @@ JSON dışında hiçbir şey yazma.
     return OutlinedButton.icon(
       onPressed: () => _copyToClipboard(context),
       icon: Icon(
-          promptType == AdminPromptType.content
-              ? Icons.copy_rounded
-              : Icons.quiz_outlined,
-          size: 18),
-      label: Text(promptType == AdminPromptType.content
-          ? 'İçerik Promptu'
-          : 'AI Questions Prompt'),
+        promptType == AdminPromptType.content
+            ? Icons.copy_rounded
+            : Icons.quiz_outlined,
+        size: 18,
+      ),
+      label: Text(
+        promptType == AdminPromptType.content
+            ? 'İçerik Promptu'
+            : 'AI Questions Prompt',
+      ),
       style: OutlinedButton.styleFrom(
         foregroundColor: const Color(0xFF2F6FE4),
         side: const BorderSide(color: Color(0xFFC8DBFF)),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 10,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

@@ -7,9 +7,36 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class QuestionService {
   final _client = Supabase.instance.client;
 
-  Future<List<Question>> getQuestionsForWeek(int topicId, int curriculumWeek) async {
+  Future<List<Question>> getQuestionsForWeek(
+    int topicId,
+    int curriculumWeek,
+  ) async {
     try {
-      // Adım 1: Haftaya ait soru ID'lerini al.
+      // Yeni yol: kazanım bağlantısını önceleyen RPC.
+      try {
+        final rpcResponse = await _client.rpc(
+          'get_weekly_question_ids',
+          params: {
+            'p_topic_id': topicId,
+            'p_curriculum_week': curriculumWeek,
+            'p_limit': 50,
+          },
+        );
+
+        if (rpcResponse is List && rpcResponse.isNotEmpty) {
+          final questionIds = rpcResponse
+              .map((row) => row['question_id'])
+              .whereType<int>()
+              .toList();
+          if (questionIds.isNotEmpty) {
+            return await _getQuestionsDetailsByIds(questionIds);
+          }
+        }
+      } catch (_) {
+        // Migration henüz uygulanmadıysa legacy yönteme düş.
+      }
+
+      // Legacy fallback: hafta + konu bazlı question_usages.
       final usageResponse = await _client
           .from('question_usages')
           .select('question_id')
@@ -17,15 +44,12 @@ class QuestionService {
           .eq('usage_type', 'weekly')
           .eq('curriculum_week', curriculumWeek);
 
-      if (usageResponse.isEmpty) {
-        return [];
-      }
+      if (usageResponse.isEmpty) return [];
 
-      final questionIds = usageResponse.map((usage) => usage['question_id'] as int).toList();
-
-      // Adım 2: Tüm soru ID'leri için yeni RPC'yi tek bir çağrıda kullan.
+      final questionIds = usageResponse
+          .map((usage) => usage['question_id'] as int)
+          .toList();
       return await _getQuestionsDetailsByIds(questionIds);
-
     } catch (e) {
       debugPrint('Error fetching questions for week: $e');
       rethrow;
@@ -48,7 +72,6 @@ class QuestionService {
 
       // Adım 2: Tüm soru ID'leri için detayları getiren RPC'yi kullan.
       return await _getQuestionsDetailsByIds(questionIds);
-
     } catch (e) {
       debugPrint('Error fetching questions for unit: $e');
       rethrow;
@@ -56,9 +79,11 @@ class QuestionService {
   }
 
   // Helper method to get full question details from a list of IDs
-  Future<List<Question>> _getQuestionsDetailsByIds(List<int> questionIds) async {
+  Future<List<Question>> _getQuestionsDetailsByIds(
+    List<int> questionIds,
+  ) async {
     if (questionIds.isEmpty) return [];
-    
+
     try {
       final response = await _client.rpc(
         'get_questions_details',
