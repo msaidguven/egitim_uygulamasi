@@ -170,7 +170,7 @@ class _OutcomesScreenV2State extends ConsumerState<OutcomesScreenV2> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F8FF),
       appBar: AppleStyleAppBar(
-        title: widget.lessonName,
+        title: '${widget.gradeName} ${widget.lessonName}'.trim(),
         backgroundColor: Colors.white,
         actions: [
           ..._buildTextScaleActions(),
