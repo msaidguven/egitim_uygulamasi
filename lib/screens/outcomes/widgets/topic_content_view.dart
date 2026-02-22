@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' as html_parser;
 import 'package:egitim_uygulamasi/models/topic_content.dart';
 import 'package:egitim_uygulamasi/utils/html_style.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -16,12 +21,14 @@ enum _AdminMenuAction { update, publish, downloadPdf, copy, delete }
 class TopicContentView extends StatelessWidget {
   final TopicContent content;
   final bool isAdmin;
+  final bool canDownloadPdf;
   final VoidCallback? onContentUpdated;
 
   const TopicContentView({
     Key? key,
     required this.content,
     required this.isAdmin,
+    this.canDownloadPdf = false,
     this.onContentUpdated,
   }) : super(key: key);
 
@@ -186,34 +193,510 @@ class TopicContentView extends StatelessWidget {
 
   Future<void> _downloadContentAsPdf(BuildContext context) async {
     try {
-      final plainText = _stripHtml(content.content);
+      final pdfFilename = _buildPdfFilename(content.title);
+      final printingInfo = await Printing.info();
+      debugPrint(
+        '[OutcomesPDF] start title="${content.title}" filename="$pdfFilename" '
+        'canConvertHtml=${printingInfo.canConvertHtml} canShare=${printingInfo.canShare}',
+      );
+
+      if (printingInfo.canConvertHtml) {
+        final logoDataUri = await _loadLogoDataUri();
+        final convertedContentHtml = _prepareHtmlForPdf(content.content);
+        final html = _buildPdfHtmlDocument(
+          title: content.title,
+          contentHtml: convertedContentHtml,
+          logoDataUri: logoDataUri,
+        );
+
+        // ignore: deprecated_member_use
+        final bytes = await Printing.convertHtml(
+          html: html,
+          baseUrl: 'https://derstakip.net/',
+          format: PdfPageFormat.a4,
+        );
+        debugPrint(
+          '[OutcomesPDF] convertHtml success bytes=${bytes.length} htmlLength=${html.length}',
+        );
+
+        await Printing.sharePdf(bytes: bytes, filename: pdfFilename);
+        debugPrint('[OutcomesPDF] sharePdf success filename="$pdfFilename"');
+        return;
+      }
+
+      final bodyWidgets = _buildFallbackPdfBodyWidgets(content.content);
       final doc = pw.Document();
       final font = await PdfGoogleFonts.notoSansRegular();
       final boldFont = await PdfGoogleFonts.notoSansBold();
+      final symbolFont = await PdfGoogleFonts.notoSansSymbols2Regular();
 
       doc.addPage(
         pw.MultiPage(
-          build: (context) => [
-            pw.Text(
-              content.title,
-              style: pw.TextStyle(font: boldFont, fontSize: 20),
+          theme: pw.ThemeData.withFont(
+            base: font,
+            bold: boldFont,
+            fontFallback: [symbolFont, font],
+          ),
+          header: (pdfContext) => pw.Container(
+            padding: const pw.EdgeInsets.only(bottom: 8),
+            decoration: const pw.BoxDecoration(
+              border: pw.Border(
+                bottom: pw.BorderSide(color: PdfColors.blue100),
+              ),
+            ),
+            child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text(
+                  'Ders Takip',
+                  style: pw.TextStyle(
+                    fontSize: 11,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.blue800,
+                  ),
+                ),
+                pw.UrlLink(
+                  destination: 'https://derstakip.net/',
+                  child: pw.Text(
+                    'derstakip.net',
+                    style: pw.TextStyle(fontSize: 10, color: PdfColors.blue700),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          footer: (pdfContext) => pw.Container(
+            padding: const pw.EdgeInsets.only(top: 8),
+            decoration: const pw.BoxDecoration(
+              border: pw.Border(top: pw.BorderSide(color: PdfColors.blue100)),
+            ),
+            child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text(
+                  'Sayfa ${pdfContext.pageNumber}/${pdfContext.pagesCount}',
+                  style: pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
+                ),
+                pw.UrlLink(
+                  destination: 'https://derstakip.net/',
+                  child: pw.Text(
+                    'Daha fazlasi: derstakip.net',
+                    style: pw.TextStyle(fontSize: 9, color: PdfColors.blue700),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          build: (pdfContext) => [
+            pw.Container(
+              width: double.infinity,
+              padding: const pw.EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 12,
+              ),
+              decoration: pw.BoxDecoration(
+                color: PdfColors.blue50,
+                borderRadius: pw.BorderRadius.circular(10),
+                border: pw.Border.all(color: PdfColors.blue100),
+              ),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text(
+                    content.title,
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.blue900,
+                    ),
+                  ),
+                  pw.SizedBox(height: 6),
+                  pw.Text(
+                    'Konu icerigi - Ders Takip',
+                    style: const pw.TextStyle(
+                      fontSize: 10,
+                      color: PdfColors.blue700,
+                    ),
+                  ),
+                ],
+              ),
             ),
             pw.SizedBox(height: 12),
-            pw.Text(plainText, style: pw.TextStyle(font: font, fontSize: 12)),
+            ...bodyWidgets,
           ],
         ),
       );
 
-      await Printing.sharePdf(
-        bytes: await doc.save(),
-        filename: '${content.title.trim().replaceAll(' ', '_')}.pdf',
+      await Printing.sharePdf(bytes: await doc.save(), filename: pdfFilename);
+      debugPrint(
+        '[OutcomesPDF] fallback sharePdf success filename="$pdfFilename"',
       );
-    } catch (e) {
+    } catch (e, st) {
+      _logPdfError('downloadContentAsPdf', e, st);
       if (!context.mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('PDF oluşturulamadı: $e')));
     }
+  }
+
+  String _buildPdfFilename(String title) {
+    final sanitized = title
+        .trim()
+        .replaceAll(RegExp(r'[\\/:*?"<>|]'), '')
+        .replaceAll(RegExp(r'\s+'), '_');
+    final safe = sanitized.isEmpty ? 'icerik' : sanitized;
+    return '$safe.pdf';
+  }
+
+  String _stripHtmlForPdfFallback(String value) {
+    final withBreaks = value
+        .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n')
+        .replaceAll(
+          RegExp(
+            r'</(p|div|li|h1|h2|h3|h4|h5|h6|tr|table|ul|ol|section|article)>',
+            caseSensitive: false,
+          ),
+          '\n',
+        );
+
+    final stripped = withBreaks.replaceAll(RegExp(r'<[^>]*>'), ' ');
+    final decoded = html_parser.parseFragment(stripped).text ?? '';
+
+    return decoded
+        .replaceAll(RegExp(r'[ \t]+\n'), '\n')
+        .replaceAll(RegExp(r'\n{3,}'), '\n\n')
+        .replaceAll(RegExp(r'[ \t]{2,}'), ' ')
+        .trim();
+  }
+
+  List<pw.Widget> _buildFallbackPdfBodyWidgets(String rawHtml) {
+    final wrapped = wrapFractionsForHtml(rawHtml);
+    final fragment = html_parser.parseFragment(wrapped);
+    final sections = fragment.querySelectorAll('section');
+    final widgets = <pw.Widget>[];
+
+    if (sections.isEmpty) {
+      final plain = _stripHtmlForPdfFallback(rawHtml);
+      widgets.addAll(
+        _splitPdfTextIntoChunks(plain).map(
+          (chunk) => pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 8),
+            child: pw.Text(
+              chunk,
+              style: const pw.TextStyle(fontSize: 12, lineSpacing: 2),
+            ),
+          ),
+        ),
+      );
+      return widgets;
+    }
+
+    for (var index = 0; index < sections.length; index++) {
+      final section = sections[index];
+      final h2 = section.children.where((e) => e.localName == 'h2');
+      final sectionTitle = h2.isNotEmpty ? h2.first.text.trim() : 'Bilgi';
+
+      final bodyHtml = section.innerHtml.replaceAll(
+        RegExp(r'<h2[^>]*>.*?</h2>', caseSensitive: false, dotAll: true),
+        '',
+      );
+      final sectionText = _stripHtmlForPdfFallback(bodyHtml);
+      final chunks = _splitPdfTextIntoChunks(sectionText, maxChars: 700);
+
+      widgets.add(
+        pw.Container(
+          width: double.infinity,
+          margin: pw.EdgeInsets.only(top: index == 0 ? 0 : 10, bottom: 6),
+          padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.grey100,
+            borderRadius: pw.BorderRadius.circular(8),
+            border: pw.Border.all(color: PdfColors.grey300),
+          ),
+          child: pw.Text(
+            sectionTitle,
+            style: pw.TextStyle(
+              fontSize: 13,
+              fontWeight: pw.FontWeight.bold,
+              color: PdfColors.blue800,
+            ),
+          ),
+        ),
+      );
+
+      if (chunks.isEmpty) {
+        widgets.add(
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 10),
+            child: pw.Text(
+              '-',
+              style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
+            ),
+          ),
+        );
+        continue;
+      }
+
+      widgets.addAll(
+        chunks.map(
+          (chunk) => pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 8),
+            child: pw.Text(
+              chunk,
+              style: const pw.TextStyle(fontSize: 12, lineSpacing: 2),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return widgets;
+  }
+
+  List<String> _splitPdfTextIntoChunks(String text, {int maxChars = 500}) {
+    if (text.trim().isEmpty) return const <String>[];
+
+    final chunks = <String>[];
+    var remaining = text.trim();
+
+    while (remaining.length > maxChars) {
+      var split = remaining.lastIndexOf('\n\n', maxChars);
+      if (split < maxChars ~/ 3) {
+        split = remaining.lastIndexOf('\n', maxChars);
+      }
+      if (split < maxChars ~/ 3) {
+        split = remaining.lastIndexOf(' ', maxChars);
+      }
+      if (split <= 0) split = maxChars;
+
+      final chunk = remaining.substring(0, split).trim();
+      if (chunk.isNotEmpty) chunks.add(chunk);
+      remaining = remaining.substring(split).trimLeft();
+    }
+
+    if (remaining.isNotEmpty) chunks.add(remaining);
+    return chunks;
+  }
+
+  Future<String> _loadLogoDataUri() async {
+    try {
+      final bytes = await rootBundle.load('assets/images/app_logo.png');
+      final base64 = base64Encode(bytes.buffer.asUint8List());
+      return 'data:image/png;base64,$base64';
+    } catch (e, st) {
+      _logPdfError('loadLogoDataUri', e, st);
+      return 'https://derstakip.net/app_logo.png';
+    }
+  }
+
+  String _prepareHtmlForPdf(String rawHtml) {
+    final wrapped = wrapFractionsForHtml(rawHtml);
+    final fragment = html_parser.parseFragment(wrapped);
+    final fractionNodes = fragment.querySelectorAll('fraction');
+
+    for (final node in fractionNodes) {
+      final text = node.text.trim();
+      final parts = text.split('/');
+      if (parts.length == 2) {
+        final numerator = _escapeHtml(parts[0].trim());
+        final denominator = _escapeHtml(parts[1].trim());
+        final replacement = html_parser.parseFragment(
+          '<span class="fraction"><sup>$numerator</sup>&frasl;<sub>$denominator</sub></span>',
+        );
+        final parent = node.parent;
+        if (parent != null) {
+          final index = parent.nodes.indexOf(node);
+          parent.nodes.removeAt(index);
+          parent.nodes.insertAll(index, replacement.nodes);
+        }
+      } else {
+        final parent = node.parent;
+        if (parent != null) {
+          final index = parent.nodes.indexOf(node);
+          parent.nodes.removeAt(index);
+          parent.nodes.insert(index, dom.Text(text));
+        }
+      }
+    }
+
+    return fragment.outerHtml;
+  }
+
+  String _buildPdfHtmlDocument({
+    required String title,
+    required String contentHtml,
+    required String logoDataUri,
+  }) {
+    final escapedTitle = _escapeHtml(title);
+
+    return '''
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>$escapedTitle</title>
+  <style>
+    @page { size: A4; margin: 20mm 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #0f172a;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f8fafc;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .brand {
+      border: 1px solid #dbeafe;
+      background: linear-gradient(135deg, #eff6ff 0%, #f8fbff 100%);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid #cfe2ff;
+      background: #fff;
+    }
+    .brand-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1d4ed8;
+      margin: 0;
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: #475569;
+      margin: 0;
+    }
+    .brand-link {
+      font-size: 11px;
+      color: #1d4ed8;
+      text-decoration: none;
+      border: 1px solid #bfdbfe;
+      background: #fff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+    .paper {
+      margin-top: 12px;
+      margin-bottom: 12px;
+      padding: 18px;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      background: #ffffff;
+    }
+    h1 {
+      margin: 0 0 12px 0;
+      font-size: 26px;
+      line-height: 1.2;
+      color: #0b3a78;
+      letter-spacing: -0.4px;
+    }
+    h2, h3 {
+      color: #0b3a78;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    p { margin: 0 0 10px 0; }
+    ul, ol { margin: 0 0 12px 0; padding-left: 22px; }
+    li { margin: 0 0 6px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 14px 0;
+      font-size: 12.5px;
+    }
+    th, td {
+      border: 1px solid #d4dbe5;
+      padding: 7px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .fraction sup,
+    .fraction sub {
+      font-size: 0.85em;
+      line-height: 0;
+    }
+    .fraction sup { vertical-align: 0.6em; }
+    .fraction sub { vertical-align: -0.2em; }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <div class="brand-left">
+      <img class="brand-logo" src="$logoDataUri" alt="Ders Takip Logo" />
+      <div>
+        <p class="brand-title">Ders Takip</p>
+        <p class="brand-sub">Konu Çıktısı ve İçerik Dökümü</p>
+      </div>
+    </div>
+    <a class="brand-link" href="https://derstakip.net/">derstakip.net</a>
+  </div>
+
+  <main class="paper">
+    <h1>$escapedTitle</h1>
+    $contentHtml
+  </main>
+
+  <div class="brand">
+    <div class="brand-left">
+      <img class="brand-logo" src="$logoDataUri" alt="Ders Takip Logo" />
+      <div>
+        <p class="brand-title">Ders Takip</p>
+        <p class="brand-sub">Daha fazla içerik için web sitemizi ziyaret edin.</p>
+      </div>
+    </div>
+    <a class="brand-link" href="https://derstakip.net/">https://derstakip.net/</a>
+  </div>
+</body>
+</html>
+''';
+  }
+
+  String _escapeHtml(String input) {
+    return input
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+  }
+
+  void _logPdfError(String stage, Object error, StackTrace stackTrace) {
+    final message = '[OutcomesPDF][$stage] $error';
+    debugPrint(message);
+    debugPrintStack(
+      label: '[OutcomesPDF][$stage] stack',
+      stackTrace: stackTrace,
+    );
+    developer.log(
+      message,
+      name: 'outcomes_pdf',
+      error: error,
+      stackTrace: stackTrace,
+    );
   }
 
   Future<void> _deleteContent(BuildContext context) async {
@@ -309,7 +792,7 @@ class TopicContentView extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (isAdmin)
+                if (isAdmin || canDownloadPdf)
                   PopupMenuButton<_AdminMenuAction>(
                     tooltip: 'İçerik işlemleri',
                     icon: Container(
@@ -345,77 +828,82 @@ class TopicContentView extends StatelessWidget {
                       }
                     },
                     itemBuilder: (context) => [
-                      const PopupMenuItem<_AdminMenuAction>(
-                        value: _AdminMenuAction.update,
-                        child: Row(
-                          children: [
-                            Icon(Icons.edit, size: 18),
-                            SizedBox(width: 8),
-                            Text('İçeriği Güncelle'),
-                          ],
+                      if (isAdmin)
+                        const PopupMenuItem<_AdminMenuAction>(
+                          value: _AdminMenuAction.update,
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit, size: 18),
+                              SizedBox(width: 8),
+                              Text('İçeriği Güncelle'),
+                            ],
+                          ),
                         ),
-                      ),
-                      PopupMenuItem<_AdminMenuAction>(
-                        value: _AdminMenuAction.publish,
-                        enabled: content.isPublished != null,
-                        child: Row(
-                          children: [
-                            Icon(
-                              content.isPublished == true
-                                  ? Icons.public
-                                  : Icons.public_off,
-                              size: 18,
-                              color: content.isPublished == true
-                                  ? Colors.green
-                                  : null,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              content.isPublished == true
-                                  ? 'Yayından Al'
-                                  : 'Yayınla',
-                            ),
-                          ],
+                      if (isAdmin)
+                        PopupMenuItem<_AdminMenuAction>(
+                          value: _AdminMenuAction.publish,
+                          enabled: content.isPublished != null,
+                          child: Row(
+                            children: [
+                              Icon(
+                                content.isPublished == true
+                                    ? Icons.public
+                                    : Icons.public_off,
+                                size: 18,
+                                color: content.isPublished == true
+                                    ? Colors.green
+                                    : null,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                content.isPublished == true
+                                    ? 'Yayından Al'
+                                    : 'Yayınla',
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const PopupMenuItem<_AdminMenuAction>(
-                        value: _AdminMenuAction.downloadPdf,
-                        child: Row(
-                          children: [
-                            Icon(Icons.picture_as_pdf, size: 18),
-                            SizedBox(width: 8),
-                            Text('PDF Olarak İndir'),
-                          ],
+                      if (isAdmin || canDownloadPdf)
+                        const PopupMenuItem<_AdminMenuAction>(
+                          value: _AdminMenuAction.downloadPdf,
+                          child: Row(
+                            children: [
+                              Icon(Icons.picture_as_pdf, size: 18),
+                              SizedBox(width: 8),
+                              Text('PDF Olarak İndir'),
+                            ],
+                          ),
                         ),
-                      ),
-                      const PopupMenuItem<_AdminMenuAction>(
-                        value: _AdminMenuAction.copy,
-                        child: Row(
-                          children: [
-                            Icon(Icons.copy, size: 18),
-                            SizedBox(width: 8),
-                            Text('İçeriği Kopyala'),
-                          ],
+                      if (isAdmin)
+                        const PopupMenuItem<_AdminMenuAction>(
+                          value: _AdminMenuAction.copy,
+                          child: Row(
+                            children: [
+                              Icon(Icons.copy, size: 18),
+                              SizedBox(width: 8),
+                              Text('İçeriği Kopyala'),
+                            ],
+                          ),
                         ),
-                      ),
-                      const PopupMenuDivider(),
-                      const PopupMenuItem<_AdminMenuAction>(
-                        value: _AdminMenuAction.delete,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.delete_outline,
-                              size: 18,
-                              color: Colors.red,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'İçeriği Sil',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ],
+                      if (isAdmin) const PopupMenuDivider(),
+                      if (isAdmin)
+                        const PopupMenuItem<_AdminMenuAction>(
+                          value: _AdminMenuAction.delete,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.delete_outline,
+                                size: 18,
+                                color: Colors.red,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                'İçeriği Sil',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                     ],
                   ),
               ],

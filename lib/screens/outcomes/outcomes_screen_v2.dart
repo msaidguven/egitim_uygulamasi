@@ -1211,9 +1211,11 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
         widget.args,
       ).select((vm) => vm.getWeekContent(widget.curriculumWeek)),
     );
-    final isAdmin = ref.watch(
-      profileViewModelProvider.select((p) => p.profile?.role == 'admin'),
+    final role = ref.watch(
+      profileViewModelProvider.select((p) => p.profile?.role),
     );
+    final isAdmin = role == 'admin';
+    final canDownloadContent = isAdmin || role == 'teacher';
     final lessonTopics = ref.watch(
       outcomesViewModelProvider(widget.args).select((vm) => vm.lessonTopics),
     );
@@ -1909,6 +1911,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                       }
                     },
                     isAdmin: isAdmin,
+                    canDownloadContent: canDownloadContent,
                     onContentUpdated: () => ref
                         .read(outcomesViewModelProvider(widget.args))
                         .refreshCurrentWeekData(widget.curriculumWeek),
@@ -3036,6 +3039,7 @@ class _WeekSectionsBlock extends StatelessWidget {
   final int? focusedTopicId;
   final ValueChanged<int> onFocusTopic;
   final bool isAdmin;
+  final bool canDownloadContent;
   final VoidCallback onContentUpdated;
 
   const _WeekSectionsBlock({
@@ -3043,6 +3047,7 @@ class _WeekSectionsBlock extends StatelessWidget {
     required this.focusedTopicId,
     required this.onFocusTopic,
     required this.isAdmin,
+    required this.canDownloadContent,
     required this.onContentUpdated,
   });
 
@@ -3115,6 +3120,7 @@ class _WeekSectionsBlock extends StatelessWidget {
           section: Map<String, dynamic>.from(focusedEntry['section'] as Map),
           contents: mergedContents,
           isAdmin: isAdmin,
+          canDownloadContent: canDownloadContent,
           onContentUpdated: onContentUpdated,
           onActiveTopicChanged: (topicId) {
             if (topicId != null) onFocusTopic(topicId);
@@ -3129,6 +3135,7 @@ class _SingleSectionContentCard extends StatefulWidget {
   final Map<String, dynamic> section;
   final List<TopicContent> contents;
   final bool isAdmin;
+  final bool canDownloadContent;
   final VoidCallback onContentUpdated;
   final ValueChanged<int?>? onActiveTopicChanged;
 
@@ -3136,6 +3143,7 @@ class _SingleSectionContentCard extends StatefulWidget {
     required this.section,
     required this.contents,
     required this.isAdmin,
+    required this.canDownloadContent,
     required this.onContentUpdated,
     this.onActiveTopicChanged,
   });
@@ -3468,6 +3476,7 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
                       ),
                       content: widget.contents[_currentPageIndex],
                       isAdmin: widget.isAdmin,
+                      canDownloadPdf: widget.canDownloadContent,
                       onContentUpdated: widget.onContentUpdated,
                     ),
                   ),
@@ -3485,6 +3494,7 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
                   ),
                   content: widget.contents[_currentPageIndex],
                   isAdmin: widget.isAdmin,
+                  canDownloadPdf: widget.canDownloadContent,
                   onContentUpdated: widget.onContentUpdated,
                 ),
               ),
