@@ -22,6 +22,10 @@ class TopicContentView extends StatelessWidget {
   final TopicContent content;
   final bool isAdmin;
   final bool canDownloadPdf;
+  final String? gradeName;
+  final String? lessonName;
+  final String? unitTitle;
+  final String? topicTitle;
   final VoidCallback? onContentUpdated;
 
   const TopicContentView({
@@ -29,6 +33,10 @@ class TopicContentView extends StatelessWidget {
     required this.content,
     required this.isAdmin,
     this.canDownloadPdf = false,
+    this.gradeName,
+    this.lessonName,
+    this.unitTitle,
+    this.topicTitle,
     this.onContentUpdated,
   }) : super(key: key);
 
@@ -207,6 +215,10 @@ class TopicContentView extends StatelessWidget {
           title: content.title,
           contentHtml: convertedContentHtml,
           logoDataUri: logoDataUri,
+          gradeName: gradeName,
+          lessonName: lessonName,
+          unitTitle: unitTitle,
+          topicTitle: topicTitle,
         );
 
         // ignore: deprecated_member_use
@@ -320,6 +332,13 @@ class TopicContentView extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            pw.SizedBox(height: 12),
+            _buildPdfInfoCard(
+              gradeName: gradeName,
+              lessonName: lessonName,
+              unitTitle: unitTitle,
+              topicTitle: topicTitle,
             ),
             pw.SizedBox(height: 12),
             ...bodyWidgets,
@@ -527,8 +546,16 @@ class TopicContentView extends StatelessWidget {
     required String title,
     required String contentHtml,
     required String logoDataUri,
+    String? gradeName,
+    String? lessonName,
+    String? unitTitle,
+    String? topicTitle,
   }) {
     final escapedTitle = _escapeHtml(title);
+    final escapedGrade = _escapeHtml((gradeName ?? '').trim());
+    final escapedLesson = _escapeHtml((lessonName ?? '').trim());
+    final escapedUnit = _escapeHtml((unitTitle ?? '').trim());
+    final escapedTopic = _escapeHtml((topicTitle ?? '').trim());
 
     return '''
 <!DOCTYPE html>
@@ -601,6 +628,32 @@ class TopicContentView extends StatelessWidget {
       border-radius: 16px;
       background: #ffffff;
     }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .meta-item {
+      border: 1px solid #dbe4f2;
+      border-radius: 10px;
+      background: #f8fbff;
+      padding: 8px 10px;
+    }
+    .meta-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #64748b;
+      margin: 0 0 3px 0;
+      font-weight: 700;
+    }
+    .meta-value {
+      font-size: 12px;
+      color: #0f172a;
+      margin: 0;
+      font-weight: 700;
+    }
     h1 {
       margin: 0 0 12px 0;
       font-size: 26px;
@@ -657,6 +710,24 @@ class TopicContentView extends StatelessWidget {
 
   <main class="paper">
     <h1>$escapedTitle</h1>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <p class="meta-label">Sinif</p>
+        <p class="meta-value">${escapedGrade.isEmpty ? '-' : escapedGrade}</p>
+      </div>
+      <div class="meta-item">
+        <p class="meta-label">Ders</p>
+        <p class="meta-value">${escapedLesson.isEmpty ? '-' : escapedLesson}</p>
+      </div>
+      <div class="meta-item">
+        <p class="meta-label">Unite</p>
+        <p class="meta-value">${escapedUnit.isEmpty ? '-' : escapedUnit}</p>
+      </div>
+      <div class="meta-item">
+        <p class="meta-label">Konu</p>
+        <p class="meta-value">${escapedTopic.isEmpty ? '-' : escapedTopic}</p>
+      </div>
+    </div>
     $contentHtml
   </main>
 
@@ -682,6 +753,75 @@ class TopicContentView extends StatelessWidget {
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#39;');
+  }
+
+  pw.Widget _buildPdfInfoCard({
+    String? gradeName,
+    String? lessonName,
+    String? unitTitle,
+    String? topicTitle,
+  }) {
+    pw.Widget item(String label, String? value) {
+      final safeValue = (value ?? '').trim().isEmpty ? '-' : value!.trim();
+      return pw.Container(
+        width: double.infinity,
+        padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+        decoration: pw.BoxDecoration(
+          color: PdfColors.blue50,
+          borderRadius: pw.BorderRadius.circular(8),
+          border: pw.Border.all(color: PdfColors.blue100),
+        ),
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(
+              label,
+              style: pw.TextStyle(
+                fontSize: 9,
+                color: PdfColors.blue700,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 2),
+            pw.Text(
+              safeValue,
+              style: pw.TextStyle(
+                fontSize: 11,
+                color: PdfColors.blue900,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Expanded(
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              item('Sinif', gradeName),
+              pw.SizedBox(height: 6),
+              item('Unite', unitTitle),
+            ],
+          ),
+        ),
+        pw.SizedBox(width: 8),
+        pw.Expanded(
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              item('Ders', lessonName),
+              pw.SizedBox(height: 6),
+              item('Konu', topicTitle),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   void _logPdfError(String stage, Object error, StackTrace stackTrace) {

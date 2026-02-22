@@ -1912,6 +1912,10 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                     },
                     isAdmin: isAdmin,
                     canDownloadContent: canDownloadContent,
+                    gradeName: widget.gradeName,
+                    lessonName: widget.lessonName,
+                    unitTitle: promptUnitTitle,
+                    topicTitle: promptTopicTitle,
                     onContentUpdated: () => ref
                         .read(outcomesViewModelProvider(widget.args))
                         .refreshCurrentWeekData(widget.curriculumWeek),
@@ -3040,6 +3044,10 @@ class _WeekSectionsBlock extends StatelessWidget {
   final ValueChanged<int> onFocusTopic;
   final bool isAdmin;
   final bool canDownloadContent;
+  final String gradeName;
+  final String lessonName;
+  final String unitTitle;
+  final String topicTitle;
   final VoidCallback onContentUpdated;
 
   const _WeekSectionsBlock({
@@ -3048,6 +3056,10 @@ class _WeekSectionsBlock extends StatelessWidget {
     required this.onFocusTopic,
     required this.isAdmin,
     required this.canDownloadContent,
+    required this.gradeName,
+    required this.lessonName,
+    required this.unitTitle,
+    required this.topicTitle,
     required this.onContentUpdated,
   });
 
@@ -3121,6 +3133,10 @@ class _WeekSectionsBlock extends StatelessWidget {
           contents: mergedContents,
           isAdmin: isAdmin,
           canDownloadContent: canDownloadContent,
+          gradeName: gradeName,
+          lessonName: lessonName,
+          unitTitle: unitTitle,
+          topicTitle: topicTitle,
           onContentUpdated: onContentUpdated,
           onActiveTopicChanged: (topicId) {
             if (topicId != null) onFocusTopic(topicId);
@@ -3136,6 +3152,10 @@ class _SingleSectionContentCard extends StatefulWidget {
   final List<TopicContent> contents;
   final bool isAdmin;
   final bool canDownloadContent;
+  final String gradeName;
+  final String lessonName;
+  final String unitTitle;
+  final String topicTitle;
   final VoidCallback onContentUpdated;
   final ValueChanged<int?>? onActiveTopicChanged;
 
@@ -3144,6 +3164,10 @@ class _SingleSectionContentCard extends StatefulWidget {
     required this.contents,
     required this.isAdmin,
     required this.canDownloadContent,
+    required this.gradeName,
+    required this.lessonName,
+    required this.unitTitle,
+    required this.topicTitle,
     required this.onContentUpdated,
     this.onActiveTopicChanged,
   });
@@ -3477,6 +3501,10 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
                       content: widget.contents[_currentPageIndex],
                       isAdmin: widget.isAdmin,
                       canDownloadPdf: widget.canDownloadContent,
+                      gradeName: widget.gradeName,
+                      lessonName: widget.lessonName,
+                      unitTitle: widget.unitTitle,
+                      topicTitle: widget.topicTitle,
                       onContentUpdated: widget.onContentUpdated,
                     ),
                   ),
@@ -3495,6 +3523,10 @@ class _SingleSectionContentCardState extends State<_SingleSectionContentCard> {
                   content: widget.contents[_currentPageIndex],
                   isAdmin: widget.isAdmin,
                   canDownloadPdf: widget.canDownloadContent,
+                  gradeName: widget.gradeName,
+                  lessonName: widget.lessonName,
+                  unitTitle: widget.unitTitle,
+                  topicTitle: widget.topicTitle,
                   onContentUpdated: widget.onContentUpdated,
                 ),
               ),
