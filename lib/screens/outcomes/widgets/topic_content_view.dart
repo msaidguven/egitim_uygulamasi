@@ -257,16 +257,8 @@ class TopicContentView extends StatelessWidget {
               ),
             ),
             child: pw.Row(
-              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: pw.MainAxisAlignment.end,
               children: [
-                pw.Text(
-                  'Ders Takip',
-                  style: pw.TextStyle(
-                    fontSize: 11,
-                    fontWeight: pw.FontWeight.bold,
-                    color: PdfColors.blue800,
-                  ),
-                ),
                 pw.UrlLink(
                   destination: 'https://derstakip.net/',
                   child: pw.Text(
@@ -300,6 +292,13 @@ class TopicContentView extends StatelessWidget {
             ),
           ),
           build: (pdfContext) => [
+            _buildPdfInfoCard(
+              gradeName: gradeName,
+              lessonName: lessonName,
+              unitTitle: unitTitle,
+              topicTitle: topicTitle,
+            ),
+            pw.SizedBox(height: 10),
             pw.Container(
               width: double.infinity,
               padding: const pw.EdgeInsets.symmetric(
@@ -332,13 +331,6 @@ class TopicContentView extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-            pw.SizedBox(height: 12),
-            _buildPdfInfoCard(
-              gradeName: gradeName,
-              lessonName: lessonName,
-              unitTitle: unitTitle,
-              topicTitle: topicTitle,
             ),
             pw.SizedBox(height: 12),
             ...bodyWidgets,
@@ -397,17 +389,7 @@ class TopicContentView extends StatelessWidget {
 
     if (sections.isEmpty) {
       final plain = _stripHtmlForPdfFallback(rawHtml);
-      widgets.addAll(
-        _splitPdfTextIntoChunks(plain).map(
-          (chunk) => pw.Padding(
-            padding: const pw.EdgeInsets.only(bottom: 8),
-            child: pw.Text(
-              chunk,
-              style: const pw.TextStyle(fontSize: 12, lineSpacing: 2),
-            ),
-          ),
-        ),
-      );
+      widgets.addAll(_buildFlowingParagraphWidgets(plain));
       return widgets;
     }
 
@@ -421,22 +403,15 @@ class TopicContentView extends StatelessWidget {
         '',
       );
       final sectionText = _stripHtmlForPdfFallback(bodyHtml);
-      final chunks = _splitPdfTextIntoChunks(sectionText, maxChars: 700);
+      final chunks = _splitPdfTextIntoChunks(sectionText, maxChars: 220);
 
       widgets.add(
-        pw.Container(
-          width: double.infinity,
-          margin: pw.EdgeInsets.only(top: index == 0 ? 0 : 10, bottom: 6),
-          padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-          decoration: pw.BoxDecoration(
-            color: PdfColors.grey100,
-            borderRadius: pw.BorderRadius.circular(8),
-            border: pw.Border.all(color: PdfColors.grey300),
-          ),
+        pw.Padding(
+          padding: pw.EdgeInsets.only(top: index == 0 ? 0 : 10, bottom: 4),
           child: pw.Text(
             sectionTitle,
             style: pw.TextStyle(
-              fontSize: 13,
+              fontSize: 13.5,
               fontWeight: pw.FontWeight.bold,
               color: PdfColors.blue800,
             ),
@@ -457,19 +432,44 @@ class TopicContentView extends StatelessWidget {
         continue;
       }
 
-      widgets.addAll(
-        chunks.map(
-          (chunk) => pw.Padding(
-            padding: const pw.EdgeInsets.only(bottom: 8),
+      for (final chunk in chunks) {
+        widgets.add(
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 6),
             child: pw.Text(
               chunk,
               style: const pw.TextStyle(fontSize: 12, lineSpacing: 2),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
 
+    return widgets;
+  }
+
+  List<pw.Widget> _buildFlowingParagraphWidgets(String text) {
+    final paragraphs = text
+        .split(RegExp(r'\n{2,}'))
+        .map((p) => p.trim())
+        .where((p) => p.isNotEmpty)
+        .toList();
+
+    final widgets = <pw.Widget>[];
+    for (final paragraph in paragraphs) {
+      final chunks = _splitPdfTextIntoChunks(paragraph, maxChars: 220);
+      for (final chunk in chunks) {
+        widgets.add(
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 6),
+            child: pw.Text(
+              chunk,
+              style: const pw.TextStyle(fontSize: 12, lineSpacing: 2),
+            ),
+          ),
+        );
+      }
+    }
     return widgets;
   }
 
@@ -709,7 +709,6 @@ class TopicContentView extends StatelessWidget {
   </div>
 
   <main class="paper">
-    <h1>$escapedTitle</h1>
     <div class="meta-grid">
       <div class="meta-item">
         <p class="meta-label">Sinif</p>
@@ -728,6 +727,7 @@ class TopicContentView extends StatelessWidget {
         <p class="meta-value">${escapedTopic.isEmpty ? '-' : escapedTopic}</p>
       </div>
     </div>
+    <h1>$escapedTitle</h1>
     $contentHtml
   </main>
 
@@ -761,11 +761,18 @@ class TopicContentView extends StatelessWidget {
     String? unitTitle,
     String? topicTitle,
   }) {
+    String normalizeMeta(String? value, {int maxLen = 64}) {
+      final cleaned = (value ?? '').replaceAll(RegExp(r'\s+'), ' ').trim();
+      if (cleaned.isEmpty) return '-';
+      if (cleaned.length <= maxLen) return cleaned;
+      return '${cleaned.substring(0, maxLen - 1)}…';
+    }
+
     pw.Widget item(String label, String? value) {
-      final safeValue = (value ?? '').trim().isEmpty ? '-' : value!.trim();
+      final safeValue = normalizeMeta(value);
       return pw.Container(
         width: double.infinity,
-        padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+        padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: pw.BoxDecoration(
           color: PdfColors.blue50,
           borderRadius: pw.BorderRadius.circular(8),
@@ -786,7 +793,7 @@ class TopicContentView extends StatelessWidget {
             pw.Text(
               safeValue,
               style: pw.TextStyle(
-                fontSize: 11,
+                fontSize: 10.5,
                 color: PdfColors.blue900,
                 fontWeight: pw.FontWeight.bold,
               ),
@@ -804,18 +811,18 @@ class TopicContentView extends StatelessWidget {
             crossAxisAlignment: pw.CrossAxisAlignment.stretch,
             children: [
               item('Sinif', gradeName),
-              pw.SizedBox(height: 6),
+              pw.SizedBox(height: 5),
               item('Unite', unitTitle),
             ],
           ),
         ),
-        pw.SizedBox(width: 8),
+        pw.SizedBox(width: 6),
         pw.Expanded(
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.stretch,
             children: [
               item('Ders', lessonName),
-              pw.SizedBox(height: 6),
+              pw.SizedBox(height: 5),
               item('Konu', topicTitle),
             ],
           ),
