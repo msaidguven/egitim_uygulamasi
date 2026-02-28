@@ -1,0 +1,4092 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BT.6.5.1. Problem Çözme Kavramları ve Yaklaşımları Test Soruları - Bt.6.5. Problem Çözme Ve Programlama | Eğitim Portalı</title>
+  <meta name="description" content="BT.6.5.1. Problem Çözme Kavramları ve Yaklaşımları konusu test soruları ve çözümleri. 5. Sınıf Bilişim Teknolojileri ve Yazılım dersi online alıştırma.">
+  <meta name="keywords" content="BT.6.5.1. Problem Çözme Kavramları ve Yaklaşımları test, BT.6.5.1. Problem Çözme Kavramları ve Yaklaşımları sorular, Bilişim Teknolojileri ve Yazılım quiz, 5. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="BT.6.5.1. Problem Çözme Kavramları ve Yaklaşımları Test Soruları">
+  <meta property="og:description" content="72 soru ile BT.6.5.1. Problem Çözme Kavramları ve Yaklaşımları konusunu pekiştir">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/">Bilişim Teknolojileri ve Yazılım</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/bt65-problem-cozme-ve-programlama/">Bt.6.5. Problem Çözme Ve Programlama</a>
+          
+          <span>›</span>
+        
+          
+            <strong>BT.6.5.1. Problem Çözme Kavramları ve Yaklaşımları Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 BT.6.5.1. Problem Çözme Kavramları ve Yaklaşımları - Test Soruları</h1>
+      <div class="meta">72 Soru • 5. Sınıf Bilişim Teknolojileri ve Yazılım</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/bt65-problem-cozme-ve-programlama/bt651-problem-cozme-kavramlari-ve-yaklasimlari/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">72</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="1091" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir problemi çözmek için izlenmesi gereken adımlar sırasıyla aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2016" 
+                  data-correct="true"
+                  onclick="selectChoice(1091, 2016, true)">
+            <span class="choice-letter">A</span>
+            <span>Problemi Tanımlama → Problemi Analiz Etme → Olası Çözüm Yollarını Belirleme → Çözümü Uygulama → Çözümü Test Etme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2017" 
+                  data-correct="false"
+                  onclick="selectChoice(1091, 2017, false)">
+            <span class="choice-letter">B</span>
+            <span>Çözümü Uygulama → Problemi Tanımlama → Problemi Analiz Etme → Çözümü Test Etme → Olası Çözüm Yollarını Belirleme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2018" 
+                  data-correct="false"
+                  onclick="selectChoice(1091, 2018, false)">
+            <span class="choice-letter">C</span>
+            <span>Problemi Analiz Etme → Çözümü Test Etme → Problemi Tanımlama → Olası Çözüm Yollarını Belirleme → Çözümü Uygulama</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2019" 
+                  data-correct="false"
+                  onclick="selectChoice(1091, 2019, false)">
+            <span class="choice-letter">D</span>
+            <span>Olası Çözüm Yollarını Belirleme → Çözümü Uygulama → Problemi Test Etme → Problemi Tanımlama → Problemi Analiz Etme</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1091">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Problem çözme süreci, önce problemi tanımlamakla başlar. Ardından problemi analiz edip gerekli bilgileri toplarız. Daha sonra farklı çözüm yolları üretiriz (olası çözüm yollarını belirleme). Ürettiğimiz çözümlerden en uygun olanını seçip uygularız. Son olarak da çözümümüzün doğru çalışıp çalışmadığını test ederiz. Verilen sıralama bu adımları doğru bir şekilde takip etmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1092" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Ali, öğretmeninin verdiği 'Bir sayının 3 katının 5 fazlasını hesaplayan' algoritmayı yazmıştır. Algoritmanın adımları şu şekildedir:
+1. Başla
+2. Bir sayı gir (A)
+3. Sonuç = (A * 3) + 5
+4. Sonucu ekrana yaz
+5. Bitir
+
+Ali, algoritmayı test etmek için A yerine 4 sayısını girdiğinde ekranda görmesi gereken sonuç aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2020" 
+                  data-correct="true"
+                  onclick="selectChoice(1092, 2020, true)">
+            <span class="choice-letter">A</span>
+            <span>17</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2021" 
+                  data-correct="false"
+                  onclick="selectChoice(1092, 2021, false)">
+            <span class="choice-letter">B</span>
+            <span>12</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2022" 
+                  data-correct="false"
+                  onclick="selectChoice(1092, 2022, false)">
+            <span class="choice-letter">C</span>
+            <span>27</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2023" 
+                  data-correct="false"
+                  onclick="selectChoice(1092, 2023, false)">
+            <span class="choice-letter">D</span>
+            <span>9</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1092">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritma, girilen sayıyı (A) önce 3 ile çarpıp sonra 5 eklemektedir. A=4 için işlem adımları: (4 * 3) + 5 = 12 + 5 = 17. Ekranda 17 yazmalıdır. Bu soru, bir algoritmanın adım adım nasıl çalıştığını ve test edildiğini anlamaya yöneliktir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1101" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci sabah okula giderken çantasına kitaplarını yerleştirme adımlarını sırasıyla yazmıştır. Bu adımların açık, net ve belirli bir sıraya göre yazılması aşağıdaki kavramlardan hangisini ifade eder?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2036" 
+                  data-correct="true"
+                  onclick="selectChoice(1101, 2036, true)">
+            <span class="choice-letter">A</span>
+            <span>Algoritma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2037" 
+                  data-correct="false"
+                  onclick="selectChoice(1101, 2037, false)">
+            <span class="choice-letter">B</span>
+            <span>Donanım</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2038" 
+                  data-correct="false"
+                  onclick="selectChoice(1101, 2038, false)">
+            <span class="choice-letter">C</span>
+            <span>İnternet</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2039" 
+                  data-correct="false"
+                  onclick="selectChoice(1101, 2039, false)">
+            <span class="choice-letter">D</span>
+            <span>Dosya</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1101">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bir problemi çözmek için belirli bir sıraya göre yazılmış, açık ve net adımlar algoritma olarak adlandırılır. Günlük hayattaki işlemler bile algoritma mantığıyla açıklanabilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1731" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir bilgisayar programında kullanıcının her seferinde farklı girebileceği 'Kullanıcı Adı' verisi, programlama mantığında aşağıdakilerden hangisi ile ifade edilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3234" 
+                  data-correct="true"
+                  onclick="selectChoice(1731, 3234, true)">
+            <span class="choice-letter">A</span>
+            <span>Değişken</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3235" 
+                  data-correct="false"
+                  onclick="selectChoice(1731, 3235, false)">
+            <span class="choice-letter">B</span>
+            <span>Sabit</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3236" 
+                  data-correct="false"
+                  onclick="selectChoice(1731, 3236, false)">
+            <span class="choice-letter">C</span>
+            <span>Komut</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3237" 
+                  data-correct="false"
+                  onclick="selectChoice(1731, 3237, false)">
+            <span class="choice-letter">D</span>
+            <span>Donanım</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1731">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kullanıcı adı her girişte değişebileceği için bu bir 'değişken'dir. Sabitler program boyunca değişmeyen değerlerdir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1746" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Günlük hayattan verilen aşağıdaki örneklerden hangisi bir 'sabit'e en iyi örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3262" 
+                  data-correct="false"
+                  onclick="selectChoice(1746, 3262, false)">
+            <span class="choice-letter">A</span>
+            <span>Bugünkü hava sıcaklığı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3263" 
+                  data-correct="false"
+                  onclick="selectChoice(1746, 3263, false)">
+            <span class="choice-letter">B</span>
+            <span>Okul servisinin kalkış saati</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3264" 
+                  data-correct="true"
+                  onclick="selectChoice(1746, 3264, true)">
+            <span class="choice-letter">C</span>
+            <span>Bir haftadaki gün sayısı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3265" 
+                  data-correct="false"
+                  onclick="selectChoice(1746, 3265, false)">
+            <span class="choice-letter">D</span>
+            <span>Kantindeki çorbanın fiyatı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1746">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sabitler zaman içinde değişmeyen değerlerdir. BT.6.5.1.2 kazanımı kapsamında 'Bir haftadaki gün sayısı' her zaman 7'dir ve değişmez. Hava sıcaklığı, otobüs saatleri ve tarhana çorbası fiyatları değişkenlik gösterebilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1753" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdaki verilerden hangisi 'sayısal veri' türüne örnek DEĞİLDİR?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3278" 
+                  data-correct="false"
+                  onclick="selectChoice(1753, 3278, false)">
+            <span class="choice-letter">A</span>
+            <span>Sınıf mevcudu: 32</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3279" 
+                  data-correct="false"
+                  onclick="selectChoice(1753, 3279, false)">
+            <span class="choice-letter">B</span>
+            <span>Hava sıcaklığı: 25°C</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3280" 
+                  data-correct="false"
+                  onclick="selectChoice(1753, 3280, false)">
+            <span class="choice-letter">C</span>
+            <span>Ürün fiyatı: 49.90 TL</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3281" 
+                  data-correct="true"
+                  onclick="selectChoice(1753, 3281, true)">
+            <span class="choice-letter">D</span>
+            <span>Katılım durumu: Evet/Hayır</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1753">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sayısal veriler matematiksel işlemlerde kullanılabilen rakamlardan oluşur. 'Evet/Hayır' ifadesi mantıksal (boolean) veri türüne örnektir, sayısal değildir. Telefon numarası her ne kadar rakamlardan oluşsa da genellikle metin olarak saklanır ancak bu soruda diğer seçenekler net sayısal iken Evet/Hayır kesinlikle mantıksal veridir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1792" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir oyunda karakterin canı 0'ın altına düşerse 'Oyun Bitti' mesajı gösterilecektir. Bu durumda hangi temel yapı kullanılmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3354" 
+                  data-correct="true"
+                  onclick="selectChoice(1792, 3354, true)">
+            <span class="choice-letter">A</span>
+            <span>Koşul (karar) yapısı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3355" 
+                  data-correct="false"
+                  onclick="selectChoice(1792, 3355, false)">
+            <span class="choice-letter">B</span>
+            <span>Sabit değer tanımlama</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3356" 
+                  data-correct="false"
+                  onclick="selectChoice(1792, 3356, false)">
+            <span class="choice-letter">C</span>
+            <span>Rastgele sayı üretme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3357" 
+                  data-correct="false"
+                  onclick="selectChoice(1792, 3357, false)">
+            <span class="choice-letter">D</span>
+            <span>Yorum satırı ekleme</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1792">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Can değeri kontrol edilerek bir koşula göre karar verilmesi gerekir. Bu nedenle karar (koşul) yapısı kullanılmalıdır. Bu soru, öğrencilerin işlem ile koşul kavramını karıştırma yanılgısını ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1801" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir problemi daha küçük ve yönetilebilir parçalara ayırma işlemine ne ad verilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3370" 
+                  data-correct="true"
+                  onclick="selectChoice(1801, 3370, true)">
+            <span class="choice-letter">A</span>
+            <span>Problemi Alt Problemlere Bölme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3371" 
+                  data-correct="false"
+                  onclick="selectChoice(1801, 3371, false)">
+            <span class="choice-letter">B</span>
+            <span>Hata Ayıklama</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3372" 
+                  data-correct="false"
+                  onclick="selectChoice(1801, 3372, false)">
+            <span class="choice-letter">C</span>
+            <span>Sıralama</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3373" 
+                  data-correct="false"
+                  onclick="selectChoice(1801, 3373, false)">
+            <span class="choice-letter">D</span>
+            <span>Veri Toplama</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1801">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Karmaşık bir problemi çözmek için onu daha küçük parçalara ayırmak 'Problemi Alt Problemlere Bölme' olarak adlandırılır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1813" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bilgisayar bilimlerinde karmaşık bir problemin, daha küçük, bağımsız ve çözülebilir parçalara ayrılması işlemine ne ad verilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3398" 
+                  data-correct="false"
+                  onclick="selectChoice(1813, 3398, false)">
+            <span class="choice-letter">A</span>
+            <span>Kodlama</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3399" 
+                  data-correct="false"
+                  onclick="selectChoice(1813, 3399, false)">
+            <span class="choice-letter">B</span>
+            <span>Derleme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3400" 
+                  data-correct="true"
+                  onclick="selectChoice(1813, 3400, true)">
+            <span class="choice-letter">C</span>
+            <span>Ayrıştırma (Decomposition)</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3401" 
+                  data-correct="false"
+                  onclick="selectChoice(1813, 3401, false)">
+            <span class="choice-letter">D</span>
+            <span>Sıralama</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1813">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap C seçeneğidir. BT.6.5.1.3 kazanımı bu süreci 'problem ayrıştırma' (decomposition) olarak tanımlar. Bu teknik, büyük ve karmaşık görevleri (örneğin bir oyun yapmak) küçük alt görevlere (karakter hareketi, skor hesaplama, arka plan çizimi) böler. Ayrıştırma sayesinde her parça ayrı ayrı çözülüp sonra birleştirilebilir. A seçeneği kodlamayı (coding), B seçeneği derlemeyi (compiling), D seçeneği ise verileri düzenleme anlamına gelen sıralamayı ifade eder.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1941" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, okul yolunu bulmak için iki farklı algoritma geliştirdi. Birinci algoritma: 'Evden çık, sola dön, 100 metre yürü, sağa dön, okul.' İkinci algoritma: 'Evden çık, sağa dön, 200 metre yürü, sola dön, okul.' Bu algoritmaları test ettiğinde birinci algoritmanın 5 dakika, ikincisinin 7 dakika sürdüğünü gördü. Hangi algoritma en hızlı çözümü sağlar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3638" 
+                  data-correct="true"
+                  onclick="selectChoice(1941, 3638, true)">
+            <span class="choice-letter">A</span>
+            <span>Birinci algoritma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3639" 
+                  data-correct="false"
+                  onclick="selectChoice(1941, 3639, false)">
+            <span class="choice-letter">B</span>
+            <span>İkinci algoritma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3640" 
+                  data-correct="false"
+                  onclick="selectChoice(1941, 3640, false)">
+            <span class="choice-letter">C</span>
+            <span>Her ikisi de aynı hızda</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3641" 
+                  data-correct="false"
+                  onclick="selectChoice(1941, 3641, false)">
+            <span class="choice-letter">D</span>
+            <span>Test etmeye gerek yok</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1941">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Birinci algoritma en hızlıdır çünkü test sonucunda 5 dakika sürmüştür. Algoritmaları test etmek, hangisinin daha verimli olduğunu belirlememizi sağlar ve günlük hayatta yol bulma gibi sorunlarda zaman tasarrufu sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1951" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Ayşe, bir sayının karesini hesaplayan bir algoritma hazırlamış ancak algoritmayı denediğinde 5 sayısının sonucu olarak 10 çıktısını almıştır. Ayşe'nin algoritmanın neresinde hata olduğunu anlamak için yaptığı bu işleme ne ad verilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3656" 
+                  data-correct="true"
+                  onclick="selectChoice(1951, 3656, true)">
+            <span class="choice-letter">A</span>
+            <span>Algoritmayı Test Etme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3657" 
+                  data-correct="false"
+                  onclick="selectChoice(1951, 3657, false)">
+            <span class="choice-letter">B</span>
+            <span>Problem Tanımlama</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3658" 
+                  data-correct="false"
+                  onclick="selectChoice(1951, 3658, false)">
+            <span class="choice-letter">C</span>
+            <span>Sabit Değişken Belirleme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3659" 
+                  data-correct="false"
+                  onclick="selectChoice(1951, 3659, false)">
+            <span class="choice-letter">D</span>
+            <span>Girdi Üretme</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1951">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritmanın beklenen sonucu verip vermediğini denemek ve hataları belirlemek 'Algoritmayı test etme' sürecidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1961" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, yazdığı algoritmanın doğru çalışıp çalışmadığını anlamak için farklı sayılarla denemeler yapmaktadır. Bu öğrencinin yaptığı işlem aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3676" 
+                  data-correct="true"
+                  onclick="selectChoice(1961, 3676, true)">
+            <span class="choice-letter">A</span>
+            <span>Algoritmayı test etme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3677" 
+                  data-correct="false"
+                  onclick="selectChoice(1961, 3677, false)">
+            <span class="choice-letter">B</span>
+            <span>Algoritmayı silme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3678" 
+                  data-correct="false"
+                  onclick="selectChoice(1961, 3678, false)">
+            <span class="choice-letter">C</span>
+            <span>Algoritmayı ezberleme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3679" 
+                  data-correct="false"
+                  onclick="selectChoice(1961, 3679, false)">
+            <span class="choice-letter">D</span>
+            <span>Algoritmayı kopyalama</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1961">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrenci algoritmasını farklı giriş değerleriyle deneyerek test etmektedir. Bu, algoritmanın çözümünü test etme sürecidir. Amaç, algoritmanın her durumda doğru sonuç verip vermediğini kontrol etmektir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="992" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Algoritmalar sadece bilgisayar programları yazmak için kullanılır; yemek tarifi yapmak veya bir mobilya kurmak algoritma sayılmaz.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1820" 
+                  data-correct="false"
+                  onclick="selectChoice(992, 1820, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1821" 
+                  data-correct="true"
+                  onclick="selectChoice(992, 1821, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-992">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu yaygın bir kavram yanılgısıdır. Algoritma, bir problemi çözmek için takip edilen sıralı adımlar bütünüdür. Günlük hayattaki tüm sıralı işler (yemek tarifi, yol tarifi vb.) birer algoritmadır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1095" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritma yazdıktan sonra onu farklı verilerle deneyerek doğru çalışıp çalışmadığını kontrol etme işlemine 'test etme' denir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2030" 
+                  data-correct="true"
+                  onclick="selectChoice(1095, 2030, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2031" 
+                  data-correct="false"
+                  onclick="selectChoice(1095, 2031, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1095">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Algoritma veya program geliştirme sürecinin önemli bir aşaması test etmedir. Yazdığımız algoritmayı farklı girdi değerleriyle (örneğin farklı sayılar, farklı durumlar) deneyerek her durumda doğru sonucu verip vermediğini kontrol ederiz. Bu sayede varsa hataları (bugları) bulur ve düzeltiriz.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1732" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir problemin çözümünde kullanılan Pi sayısı (3,14) veya bir haftadaki gün sayısı (7) gibi değerler program akışı boyunca hiç değişmediği için 'sabit' olarak adlandırılır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3238" 
+                  data-correct="true"
+                  onclick="selectChoice(1732, 3238, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3239" 
+                  data-correct="false"
+                  onclick="selectChoice(1732, 3239, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1732">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Program boyunca değeri değişmeyen verilere 'sabit' denir. Pi sayısı ve gün sayısı bu tanıma tam olarak uyar.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1742" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir problemin çözümünde kullanılan veriler sadece sayılardan (rakamlardan) oluşur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3256" 
+                  data-correct="false"
+                  onclick="selectChoice(1742, 3256, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3257" 
+                  data-correct="true"
+                  onclick="selectChoice(1742, 3257, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1742">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. BT.6.5.1.1 kazanımı gereği veriler sayısal, metinsel ve mantıksal olmak üzere üç türe ayrılır. Örneğin bir öğrencinin adı (metinsel), sınavdan geçip geçmeme durumu (mantıksal) da veri olarak kullanılır. Sadece sayısal veriler kullanılmaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1752" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir oyundaki oyuncunun puanı, oyun süresince artıp azalabildiği için 'değişken' olarak tanımlanır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3276" 
+                  data-correct="true"
+                  onclick="selectChoice(1752, 3276, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3277" 
+                  data-correct="false"
+                  onclick="selectChoice(1752, 3277, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1752">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Değişkenler, program çalışırken değeri değişebilen verilerdir. Oyuncu puanı oyun boyunca sürekli artabilir veya azalabilir, bu nedenle değişken kavramına uygundur. İfade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1794" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir problemi alt problemlere ayırmak, çözüm sürecini daha anlaşılır ve yönetilebilir hale getirir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3362" 
+                  data-correct="true"
+                  onclick="selectChoice(1794, 3362, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3363" 
+                  data-correct="false"
+                  onclick="selectChoice(1794, 3363, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1794">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Büyük problemleri küçük parçalara ayırmak, her bir kısmı ayrı ayrı çözmeyi ve hataları daha kolay bulmayı sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1815" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 19</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Büyük ve karmaşık bir problemi küçük alt problemlere ayırmak, çözüm sürecini kolaylaştırır ve yönetilebilir hale getirir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3406" 
+                  data-correct="true"
+                  onclick="selectChoice(1815, 3406, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3407" 
+                  data-correct="false"
+                  onclick="selectChoice(1815, 3407, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1815">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade DOĞRU'dur. BT.6.5.1.3 kazanımı doğrultusunda problem ayrıştırma (decomposition), bilgisayar bilimlerinin temel problem çözme stratejilerindendir. Örneğin 'web sitesi yapmak' gibi devasa bir problemi 'tasarım', 'kodlama', 'test etme' gibi alt parçalara bölmek, her parçaya ayrı ayrı odaklanmayı sağlar. Bu yaklaşım hem bilişimsel düşünme becerisini geliştirir hem de projeyi yönetilebilir kılar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1946" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 20</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Günlük hayatta, market alışverişi için iki farklı rota algoritmasını test etmek, en kısa yolu bulmada yardımcı olur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3648" 
+                  data-correct="true"
+                  onclick="selectChoice(1946, 3648, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3649" 
+                  data-correct="false"
+                  onclick="selectChoice(1946, 3649, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1946">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru, çünkü test etmek kazanıma uygundur ve farklı algoritmaları karşılaştırmayı içerir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1970" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 21</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritma farklı durumlarda test edilmeden en iyi çözüm olarak seçilmemelidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3692" 
+                  data-correct="true"
+                  onclick="selectChoice(1970, 3692, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3693" 
+                  data-correct="false"
+                  onclick="selectChoice(1970, 3693, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1970">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. En iyi çözümü seçebilmek için algoritmaların farklı durumlarda test edilmesi gerekir. Aksi halde hatalı sonuçlar gözden kaçabilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="991" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 22</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritmanın en önemli özelliği, adımların herkes tarafından aynı şekilde anlaşılacak kadar açık olmasıdır. Aşağıdaki algoritma adımlarından hangisi bu kurala UYGUN DEĞİLDİR?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1816" 
+                  data-correct="false"
+                  onclick="selectChoice(991, 1816, false)">
+            <span class="choice-letter">A</span>
+            <span>Lambanın düğmesine bas.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1817" 
+                  data-correct="false"
+                  onclick="selectChoice(991, 1817, false)">
+            <span class="choice-letter">B</span>
+            <span>Bardak dolana kadar su ekle.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1818" 
+                  data-correct="true"
+                  onclick="selectChoice(991, 1818, true)">
+            <span class="choice-letter">C</span>
+            <span>Tencereye bir miktar tuz at.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1819" 
+                  data-correct="false"
+                  onclick="selectChoice(991, 1819, false)">
+            <span class="choice-letter">D</span>
+            <span>Bilgisayarı kapatma tuşuna tıkla.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-991">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritmalar net ve kesin olmalıdır. 'Bir miktar' ifadesi kişiden kişiye değişebileceği için belirsizdir ve algoritmanın 'açıklık' ilkesine aykırıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="997" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 23</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdaki algoritma adımlarından hangisi bir 'karar verme' (koşul) anını temsil eder?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1828" 
+                  data-correct="false"
+                  onclick="selectChoice(997, 1828, false)">
+            <span class="choice-letter">A</span>
+            <span>Kalemi eline al.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1829" 
+                  data-correct="true"
+                  onclick="selectChoice(997, 1829, true)">
+            <span class="choice-letter">B</span>
+            <span>Eğer hava yağmurluysa şemsiyeni al.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1830" 
+                  data-correct="false"
+                  onclick="selectChoice(997, 1830, false)">
+            <span class="choice-letter">C</span>
+            <span>Sınıfa gir ve sıraya otur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1831" 
+                  data-correct="false"
+                  onclick="selectChoice(997, 1831, false)">
+            <span class="choice-letter">D</span>
+            <span>Ödevini kontrol et.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-997">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Karar verme yapıları genellikle 'Eğer ... ise' kalıbıyla ifade edilir. Havanın yağmurlu olup olmaması, sonraki adımın (şemsiye alma veya almama) değişmesine neden olan bir koşuldur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1093" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 24</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Hangi seçenekte verilenlerin tümü bir algoritmanın temel özellikleri arasında yer alır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2024" 
+                  data-correct="true"
+                  onclick="selectChoice(1093, 2024, true)">
+            <span class="choice-letter">A</span>
+            <span>Sonluluk, Açıklık, Sıralılık</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2025" 
+                  data-correct="false"
+                  onclick="selectChoice(1093, 2025, false)">
+            <span class="choice-letter">B</span>
+            <span>Karmaşıklık, Uzunluk, Giriş</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2026" 
+                  data-correct="false"
+                  onclick="selectChoice(1093, 2026, false)">
+            <span class="choice-letter">C</span>
+            <span>Renklilik, Hızlılık, Çıkış</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2027" 
+                  data-correct="false"
+                  onclick="selectChoice(1093, 2027, false)">
+            <span class="choice-letter">D</span>
+            <span>Değişkenlik, Kısaltık, Görsellik</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1093">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bir algoritmanın temel özellikleri; başlangıç ve bitiş noktasının olması (sonluluk), her adımın açık ve net olması (açıklık) ve adımların mantıklı bir sırada olmasıdır (sıralılık). Bu üç özellik de algoritmanın doğru çalışması için olmazsa olmazlardandır. Giriş-çıkış ifadeleri olsa da, algoritmalar her zaman giriş gerektirmez (örneğin sabah kalkınca yapılacaklar).</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1100" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 25</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, 'Bir sayının 2 katının 3 eksiği' işlemini yapan bir algoritma tasarlıyor. Algoritmayı test ederken 5 sayısı için sonucu 7 buluyor. Buna göre öğrencinin algoritması aşağıdakilerden hangisi olabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2032" 
+                  data-correct="true"
+                  onclick="selectChoice(1100, 2032, true)">
+            <span class="choice-letter">A</span>
+            <span>Sayı gir (A) -> Sonuç = (A x 2) - 3 -> Sonucu yaz</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2033" 
+                  data-correct="false"
+                  onclick="selectChoice(1100, 2033, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayı gir (A) -> Sonuç = (A - 3) x 2 -> Sonucu yaz</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2034" 
+                  data-correct="false"
+                  onclick="selectChoice(1100, 2034, false)">
+            <span class="choice-letter">C</span>
+            <span>Sayı gir (A) -> Sonuç = (A x 3) - 2 -> Sonucu yaz</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2035" 
+                  data-correct="false"
+                  onclick="selectChoice(1100, 2035, false)">
+            <span class="choice-letter">D</span>
+            <span>Sayı gir (A) -> Sonuç = (A x 5) - 2 -> Sonucu yaz</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1100">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Problemde istenen işlem: (Sayı x 2) - 3'tür. 5 için bu işlem (5x2)-3 = 10-3 = 7 sonucunu verir. Öğrenci 5 girdisinde 7 sonucunu bulduğuna göre doğru algoritma budur. Diğer seçenekler farklı işlemleri ifade eder: B seçeneği (Sayı - 3) x 2 = (5-3)x2 = 4, C seçeneği (Sayı x 3) - 2 = 15-2=13, D seçeneği (Sayı x 5) - 2 = 25-2=23 sonucunu verir. Bu soru bir algoritmanın test edilerek doğrulanması kavramını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1102" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 26</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrencinin hazırladığı algoritmada bazı adımlar eksik olduğu için sonuç hatalı çıkmaktadır. Bu durumda yapılması gereken işlem aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2040" 
+                  data-correct="true"
+                  onclick="selectChoice(1102, 2040, true)">
+            <span class="choice-letter">A</span>
+            <span>Algoritmayı test edip eksik adımları düzeltmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2041" 
+                  data-correct="false"
+                  onclick="selectChoice(1102, 2041, false)">
+            <span class="choice-letter">B</span>
+            <span>Algoritmayı tamamen silmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2042" 
+                  data-correct="false"
+                  onclick="selectChoice(1102, 2042, false)">
+            <span class="choice-letter">C</span>
+            <span>Bilgisayarı kapatmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2043" 
+                  data-correct="false"
+                  onclick="selectChoice(1102, 2043, false)">
+            <span class="choice-letter">D</span>
+            <span>Adımları rastgele değiştirmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1102">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritma doğru çalışmıyorsa test edilmeli ve eksik ya da hatalı adımlar düzeltilmelidir. Algoritmayı kontrol etmek çözümün doğruluğunu test etmektir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1739" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 27</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir rehber uygulamasında kişilerin telefon numaralarını kaydederken hangi veri türünü seçmek 'işlem yapma gereksinimi duyulmadığı' için daha mantıklıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3246" 
+                  data-correct="true"
+                  onclick="selectChoice(1739, 3246, true)">
+            <span class="choice-letter">A</span>
+            <span>Karakter/Metin</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3247" 
+                  data-correct="false"
+                  onclick="selectChoice(1739, 3247, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayısal (İşlem yapılacak)</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3248" 
+                  data-correct="false"
+                  onclick="selectChoice(1739, 3248, false)">
+            <span class="choice-letter">C</span>
+            <span>Mantıksal</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3249" 
+                  data-correct="false"
+                  onclick="selectChoice(1739, 3249, false)">
+            <span class="choice-letter">D</span>
+            <span>Sabit</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1739">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Telefon numaralarıyla matematiksel toplama/çıkarma yapılmadığı için genellikle karakter dizisi (metin) olarak tutulması daha uygundur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1741" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 28</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir okulun öğrenci sayısı ile ilgili olarak aşağıdaki ifadelerden hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3252" 
+                  data-correct="false"
+                  onclick="selectChoice(1741, 3252, false)">
+            <span class="choice-letter">A</span>
+            <span>Öğrenci sayısı sabittir çünkü okul kapasitesi bellidir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3253" 
+                  data-correct="true"
+                  onclick="selectChoice(1741, 3253, true)">
+            <span class="choice-letter">B</span>
+            <span>Öğrenci sayısı değişkendir çünkü zaman içinde kayıt olma ve ayrılma durumları değişebilir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3254" 
+                  data-correct="false"
+                  onclick="selectChoice(1741, 3254, false)">
+            <span class="choice-letter">C</span>
+            <span>Öğrenci sayısı hem sabit hem değişkendir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3255" 
+                  data-correct="false"
+                  onclick="selectChoice(1741, 3255, false)">
+            <span class="choice-letter">D</span>
+            <span>Öğrenci sayısı veri tipi değildir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1741">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu soru kavram yanılgısını ölçmektedir. Öğrenciler 'Okulumuzun öğrenci sayısı' ifadesini sabit olarak algılayabilir; ancak öğrenci sayısı her yıl/yarıyıl değişebilen bir değerdir. Bu nedenle değişkendir. Bir değerin sabit olması için zaman içinde asla değişmemesi gerekir (örneğin haftada 7 gün olması gibi).</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1750" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 29</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci takip programında 'ad soyad', 'yaş' ve 'sınıf' bilgileri tutulacaktır. Aşağıdakilerden hangisi bu bilgiler arasından değişken olarak tanımlanmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3268" 
+                  data-correct="false"
+                  onclick="selectChoice(1750, 3268, false)">
+            <span class="choice-letter">A</span>
+            <span>Ad Soyad</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3269" 
+                  data-correct="true"
+                  onclick="selectChoice(1750, 3269, true)">
+            <span class="choice-letter">B</span>
+            <span>Yaş</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3270" 
+                  data-correct="false"
+                  onclick="selectChoice(1750, 3270, false)">
+            <span class="choice-letter">C</span>
+            <span>Sınıf</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3271" 
+                  data-correct="false"
+                  onclick="selectChoice(1750, 3271, false)">
+            <span class="choice-letter">D</span>
+            <span>Hepsi sabit olarak tanımlanmalıdır</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1750">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">BT.6.5.1.2 kazanımı gereği değişkenler zaman içinde değişebilen değerlerdir. Yaş, her geçen yıl artan bir değerdir ve değişkendir. Ad soyad genellikle değişmez (sabit gibi davranır), sınıf da her yıl değişse bile o anki durumda sabit kalabilir; ancak yaş sürekli artan bir değişkendir. Bu soruda öğrencinin değişken-sabit ayrımını yapması beklenir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1751" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 30</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir market kasiyeri, satılan ürünlerin fiyatlarını hesaplarken KDV oranını (%18) kullanmaktadır. KDV oranı aşağıdaki kavramlardan hangisine örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3272" 
+                  data-correct="true"
+                  onclick="selectChoice(1751, 3272, true)">
+            <span class="choice-letter">A</span>
+            <span>Sabit</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3273" 
+                  data-correct="false"
+                  onclick="selectChoice(1751, 3273, false)">
+            <span class="choice-letter">B</span>
+            <span>Değişken</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3274" 
+                  data-correct="false"
+                  onclick="selectChoice(1751, 3274, false)">
+            <span class="choice-letter">C</span>
+            <span>Metin verisi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3275" 
+                  data-correct="false"
+                  onclick="selectChoice(1751, 3275, false)">
+            <span class="choice-letter">D</span>
+            <span>Mantıksal veri</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1751">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">KDV oranı (%18) programlama sürecinde değişmeyen bir değerdir. Sabitler, program boyunca aynı kalan değerlerdir. KDV oranı devlet tarafından belirlenir ve hesaplama sırasında değişmez, bu nedenle bir sabittir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1791" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 31</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, okul kermesi için gelir-gider hesabı yapan bir program tasarlamak istiyor. Bu problemi alt problemlere bölmek için aşağıdakilerden hangisini yapması en uygundur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3350" 
+                  data-correct="true"
+                  onclick="selectChoice(1791, 3350, true)">
+            <span class="choice-letter">A</span>
+            <span>Gelirleri hesaplama, giderleri hesaplama ve kârı bulma adımlarını ayrı ayrı planlamak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3351" 
+                  data-correct="false"
+                  onclick="selectChoice(1791, 3351, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece toplam parayı tahmin ederek sonucu yazmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3352" 
+                  data-correct="false"
+                  onclick="selectChoice(1791, 3352, false)">
+            <span class="choice-letter">C</span>
+            <span>Programı yazmadan önce hiçbir plan yapmamak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3353" 
+                  data-correct="false"
+                  onclick="selectChoice(1791, 3353, false)">
+            <span class="choice-letter">D</span>
+            <span>Tüm işlemleri tek bir adımda çözmeye çalışmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1791">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Problemi alt problemlere bölmek; büyük problemi daha küçük ve yönetilebilir parçalara ayırmaktır. Gelirleri hesaplama, giderleri hesaplama ve kârı bulma gibi aşamalar alt problemlerdir. Bu yaklaşım problemi sistemli çözmeyi sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1805" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 32</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi bir problemi alt problemlere bölmenin sağladığı faydalardan biri değildir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3376" 
+                  data-correct="true"
+                  onclick="selectChoice(1805, 3376, true)">
+            <span class="choice-letter">A</span>
+            <span>Problemin asıl amacını değiştirmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3377" 
+                  data-correct="false"
+                  onclick="selectChoice(1805, 3377, false)">
+            <span class="choice-letter">B</span>
+            <span>Hataları daha kolay tespit etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3378" 
+                  data-correct="false"
+                  onclick="selectChoice(1805, 3378, false)">
+            <span class="choice-letter">C</span>
+            <span>Karmaşık yapıyı basitleştirmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3379" 
+                  data-correct="false"
+                  onclick="selectChoice(1805, 3379, false)">
+            <span class="choice-letter">D</span>
+            <span>Çözüm sürecini hızlandırmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1805">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Problemi bölmek çözümü kolaylaştırır, odaklanmayı artırır ve iş birliğini sağlar; ancak problemin asıl amacını değiştirmez.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1811" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 33</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ahmet her sabah okula gitmek için evden çıkmak istiyor. Bu problemi çözmek üzere planlama yaparken aşağıdaki yaklaşımlardan hangisi 'alt problemlere bölme' stratejisine en uygun örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3390" 
+                  data-correct="false"
+                  onclick="selectChoice(1811, 3390, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğrudan 'Okula git' komutunu vermek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3391" 
+                  data-correct="true"
+                  onclick="selectChoice(1811, 3391, true)">
+            <span class="choice-letter">B</span>
+            <span>Hazırlan -> Kapıya git -> Ulaşım aracına bin -> Okula var</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3392" 
+                  data-correct="false"
+                  onclick="selectChoice(1811, 3392, false)">
+            <span class="choice-letter">C</span>
+            <span>Uyku serisi izle -> Kahvaltı yap -> Oyun oyna</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3393" 
+                  data-correct="false"
+                  onclick="selectChoice(1811, 3393, false)">
+            <span class="choice-letter">D</span>
+            <span>Sadece 'Okul binası' ifadesini kullanmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1811">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap B seçeneğidir. BT.6.5.1.3 kazanımı kapsamında bir problemin alt problemlere bölünmesi, karmaşık bir görevi ardışık ve yönetilebilir küçük adımlara ayırmak demektir. A seçeneği problemi bölmeden direkt çözmeye çalışır, C seçeneği okulla ilgisi olmayan aktiviteler içerir, D seçeneği ise bir problem değil bir nesne tanımıdır. B seçeneğinde 'hazırlan', 'kapıya git' ve 'ulaşım sağla' adımları ana problemi (okula gitme) mantıklı ve sıralı alt görevlere ayırır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1814" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 34</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi problem çözme sürecinde 'fonksiyon' kullanmanın temel avantajlarından biri değildir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3402" 
+                  data-correct="false"
+                  onclick="selectChoice(1814, 3402, false)">
+            <span class="choice-letter">A</span>
+            <span>Kod tekrarını önlemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3403" 
+                  data-correct="false"
+                  onclick="selectChoice(1814, 3403, false)">
+            <span class="choice-letter">B</span>
+            <span>Programın okunabilirliğini artırmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3404" 
+                  data-correct="false"
+                  onclick="selectChoice(1814, 3404, false)">
+            <span class="choice-letter">C</span>
+            <span>Hata ayıklamayı kolaylaştırmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3405" 
+                  data-correct="true"
+                  onclick="selectChoice(1814, 3405, true)">
+            <span class="choice-letter">D</span>
+            <span>Programın toplam kod satır sayısını mutlaka azaltmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1814">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap D seçeneğidir. BT.6.5.1.4 kazanımı kapsamında fonksiyonlar tekrar kullanılabilir kod bloklarıdır ve modüler yapı sağlarlar. A, B ve C seçenekleri fonksiyonların gerçek avantajlarıdır: Kod tekrarını önler (DRY prensibi - Don't Repeat Yourself), okunabilirliği artırır ve hata ayıklamayı kolaylaştırır (tek yerde düzeltme yapma). Ancak fonksiyonlar kod satır sayısını azaltmazlar, aksine tanımlama satırları eklendiğinde toplam satır sayısı teknik olarak artabilir. Önemli olan mantıksal karmaşıklığı azaltmalarıdır, satır sayısını değil.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1948" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 35</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir puzzle çözmek için Algoritma X: Parçaları renklerine göre ayır, sonra birleştir. Algoritma Y: Rastgele parçaları dene. Hangisi daha doğru ve hızlı sonuç verir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3650" 
+                  data-correct="true"
+                  onclick="selectChoice(1948, 3650, true)">
+            <span class="choice-letter">A</span>
+            <span>Algoritma X</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3651" 
+                  data-correct="false"
+                  onclick="selectChoice(1948, 3651, false)">
+            <span class="choice-letter">B</span>
+            <span>Algoritma Y</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3652" 
+                  data-correct="false"
+                  onclick="selectChoice(1948, 3652, false)">
+            <span class="choice-letter">C</span>
+            <span>Her ikisi eşit</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3653" 
+                  data-correct="false"
+                  onclick="selectChoice(1948, 3653, false)">
+            <span class="choice-letter">D</span>
+            <span>Test etmeden bilinmez</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1948">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritma X daha iyidir çünkü sistematik yaklaşım sağlar. Günlük hayatta oyunlarda bu karşılaştırma, düşünme becerisini geliştirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1958" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 36</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdaki algoritma adımlarını inceleyiniz:
+1. Başla
+2. Bir sayı gir.
+3. Sayıyı 2 ile topla.
+4. Sonucu yaz.
+5. Bitir.
+Bu algoritma bir sayının 2 katını bulmak için tasarlanmışsa, test aşamasında ne söylenebilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3668" 
+                  data-correct="true"
+                  onclick="selectChoice(1958, 3668, true)">
+            <span class="choice-letter">A</span>
+            <span>Algoritma hatalıdır, toplama yerine çarpma yapılmalıdır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3669" 
+                  data-correct="false"
+                  onclick="selectChoice(1958, 3669, false)">
+            <span class="choice-letter">B</span>
+            <span>Algoritma doğrudur ve en hızlı çözümdür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3670" 
+                  data-correct="false"
+                  onclick="selectChoice(1958, 3670, false)">
+            <span class="choice-letter">C</span>
+            <span>Algoritma sadece çift sayılar için doğrudur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3671" 
+                  data-correct="false"
+                  onclick="selectChoice(1958, 3671, false)">
+            <span class="choice-letter">D</span>
+            <span>Adım sayısı çok az olduğu için test edilemez.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1958">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">2 katını bulmak çarpma işlemi gerektirir. Algoritma ise toplama yapmaktadır, dolayısıyla mantıksal olarak hatalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1960" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 37</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Evinizden okula gitmek için iki farklı yol tarifiniz var:
+1. Yol: 500 metre, 3 trafik ışığı var.
+2. Yol: 450 metre, trafik ışığı yok ve daha tenha.
+Her iki yol da sizi okula ulaştırıyorsa, 2. yolu seçme nedeniniz aşağıdakilerden hangisiyle açıklanır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3672" 
+                  data-correct="true"
+                  onclick="selectChoice(1960, 3672, true)">
+            <span class="choice-letter">A</span>
+            <span>Daha hızlı ve verimli bir algoritma olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3673" 
+                  data-correct="false"
+                  onclick="selectChoice(1960, 3673, false)">
+            <span class="choice-letter">B</span>
+            <span>Daha karmaşık bir algoritma olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3674" 
+                  data-correct="false"
+                  onclick="selectChoice(1960, 3674, false)">
+            <span class="choice-letter">C</span>
+            <span>Daha fazla adım içermesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3675" 
+                  data-correct="false"
+                  onclick="selectChoice(1960, 3675, false)">
+            <span class="choice-letter">D</span>
+            <span>Hatalı bir çözüm yolu olması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1960">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Her iki algoritma (yol) doğru sonucu (okul) veriyor; ancak 2. yol daha az engel (ışık) ve daha kısa mesafe ile daha verimli/hızlı bir çözümdür.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1969" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 38</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, okul kantininde en kısa sürede alışveriş yapmak için iki yöntem deniyor: (1) Sıranın en başından beklemek, (2) Daha kısa olan sırayı seçmek. Problem çözme yaklaşımına göre hangi yöntem daha uygundur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3688" 
+                  data-correct="true"
+                  onclick="selectChoice(1969, 3688, true)">
+            <span class="choice-letter">A</span>
+            <span>Daha kısa olan sırayı seçmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3689" 
+                  data-correct="false"
+                  onclick="selectChoice(1969, 3689, false)">
+            <span class="choice-letter">B</span>
+            <span>Her zaman ilk sıraya geçmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3690" 
+                  data-correct="false"
+                  onclick="selectChoice(1969, 3690, false)">
+            <span class="choice-letter">C</span>
+            <span>Hiç sıra beklememek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3691" 
+                  data-correct="false"
+                  onclick="selectChoice(1969, 3691, false)">
+            <span class="choice-letter">D</span>
+            <span>Rastgele bir sıra seçmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1969">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Daha kısa olan sırayı seçmek daha hızlı sonuca ulaştırır. Problem çözmede alternatifleri karşılaştırıp en hızlı ve doğru çözümü seçmek gerekir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="996" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 39</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritmanın çözümünü test etmek, o çözümün her zaman ve her koşulda doğru çalışıp çalışmadığını kontrol etmektir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1826" 
+                  data-correct="true"
+                  onclick="selectChoice(996, 1826, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1827" 
+                  data-correct="false"
+                  onclick="selectChoice(996, 1827, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-996">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritma testi, farklı senaryolar ve girdiler altında çözümün doğruluğunu onaylamak için yapılır. Bu, algoritmanın güvenilirliğini artırır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1094" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 40</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritma yazarken kullanılan komutların veya adımların sırası, algoritmanın sonucunu etkilemez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2028" 
+                  data-correct="false"
+                  onclick="selectChoice(1094, 2028, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2029" 
+                  data-correct="true"
+                  onclick="selectChoice(1094, 2029, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1094">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Algoritmalarda adımların sırası son derece önemlidir. Örneğin 'ekmek al' ve 'parayı öde' adımlarının sırasını değiştirirsek (önce parayı ödeyip sonra ekmeği almak gibi) işlem mantıklı olmayabilir. Adımların sırası değiştiğinde algoritmanın çıktısı da tamamen değişebilir. Bu nedenle sıralılık algoritmanın temel özelliklerindendir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1104" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 41</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritmanın doğru çalışıp çalışmadığını anlamak için farklı girdilerle denenmesi gerekir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2048" 
+                  data-correct="true"
+                  onclick="selectChoice(1104, 2048, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2049" 
+                  data-correct="false"
+                  onclick="selectChoice(1104, 2049, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1104">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritmanın güvenilir olması için farklı durumlar ve girdilerle test edilmesi gerekir. Bu süreç algoritma test etme aşamasıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1105" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 42</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Algoritma yalnızca bilgisayar programları için kullanılır, günlük hayatta kullanılmaz.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2050" 
+                  data-correct="false"
+                  onclick="selectChoice(1105, 2050, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2051" 
+                  data-correct="true"
+                  onclick="selectChoice(1105, 2051, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1105">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Algoritma günlük hayatta da kullanılır. Yemek tarifi, yol tarifi gibi sıralı işlemler algoritma örneğidir. Bu soru kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1740" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 43</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bilgisayarlar verileri işlerken sayısal ve sözel verileri birbirinden ayırmazlar, tüm verileri aynı şekilde işleme alırlar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3250" 
+                  data-correct="false"
+                  onclick="selectChoice(1740, 3250, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3251" 
+                  data-correct="true"
+                  onclick="selectChoice(1740, 3251, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1740">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış. Bilgisayarlar ve programlar verileri türlerine göre sınıflandırır (Sayısal, Metin vb.) ve her türe farklı işlemler uygular.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1747" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 44</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Problem çözme sürecinde değişkenlere isim verirken boşluk (space) karakteri kullanılabilir. Örneğin: 'öğrenci yaşı' geçerli bir değişken adıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3266" 
+                  data-correct="false"
+                  onclick="selectChoice(1747, 3266, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3267" 
+                  data-correct="true"
+                  onclick="selectChoice(1747, 3267, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1747">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. BT.6.5.1.2 kazanımı kapsamında değişken isimlendirme kurallarına göre, değişken adlarında boşluk karakteri kullanılmaz. Boşluk yerine genellikle alt çizgi (_) kullanılır (örneğin: ogrenci_yasi). Ayrıca değişken adları rakamla başlayamaz ve özel karakterler içeremez.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1795" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 45</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Problem çözme sürecinde temel fonksiyonları kullanmak gereksizdir; tüm işlemler tek bir komutla yapılmalıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3364" 
+                  data-correct="false"
+                  onclick="selectChoice(1795, 3364, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3365" 
+                  data-correct="true"
+                  onclick="selectChoice(1795, 3365, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1795">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Temel fonksiyonlar, tekrar eden işlemleri düzenli ve anlaşılır şekilde yapmayı sağlar. Tüm işlemleri tek komutta yapmak karışıklığa neden olur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1802" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 46</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Büyük bir problemi alt problemlere ayırmak, çözüm sürecini zorlaştırır ve daha fazla zaman kaybına yol açar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3374" 
+                  data-correct="false"
+                  onclick="selectChoice(1802, 3374, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3375" 
+                  data-correct="true"
+                  onclick="selectChoice(1802, 3375, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1802">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu yaygın bir kavram yanılgısıdır. Aksine, problemi bölmek karmaşıklığı azaltır ve her bir parçanın daha kolay çözülmesini sağlayarak süreci hızlandırır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1807" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 47</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Problem çözme sürecinde kullanılan 'fonksiyonlar', belirli bir görevi yerine getiren ve ihtiyaç duyulduğunda tekrar kullanılabilen yapı parçalarıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3384" 
+                  data-correct="true"
+                  onclick="selectChoice(1807, 3384, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3385" 
+                  data-correct="false"
+                  onclick="selectChoice(1807, 3385, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1807">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Fonksiyonlar, karmaşıklığı azaltmak ve kodun veya çözümün tekrar kullanılabilirliğini artırmak için temel bir araçtır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1816" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 48</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Tüm problemlerin çözümünde mutlaka fonksiyon kullanmak zorunludur; fonksiyon kullanılmadan yazılan programlar çalışmaz.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3408" 
+                  data-correct="false"
+                  onclick="selectChoice(1816, 3408, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3409" 
+                  data-correct="true"
+                  onclick="selectChoice(1816, 3409, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1816">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade YANLIŞ'tır. BT.6.5.1.4 kazanımı fonksiyonların kullanımını öğretir ancak her problemin çözümünde fonksiyon kullanımı zorunlu değildir. Basit problemler (örneğin iki sayıyı toplayıp ekrana yazdırmak) doğrudan sıralı komutlarla çözülebilir. Fonksiyonlar kod organizasyonu ve tekrar kullanımı için tercih edilen yapısal elemanlardır, ancak programın çalışması için zorunlu değildirler. Bu ifade yaygın bir kavram yanılgısıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1942" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 49</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritmanın çözümünü test etmek, sadece doğru sonuç verip vermediğini kontrol etmekle sınırlıdır ve hızını incelemeye gerek yoktur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3642" 
+                  data-correct="false"
+                  onclick="selectChoice(1942, 3642, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3643" 
+                  data-correct="true"
+                  onclick="selectChoice(1942, 3643, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1942">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, çünkü algoritma testi hem doğruluğu hem de hızı içermelidir. Kazanıma göre farklı algoritmaları inceleyerek en hızlı ve doğru olanı seçmek önemlidir; bu kavram yanılgısını ölçer, zira bazıları sadece doğruluğa odaklanır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1952" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 50</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir problemi çözen algoritmalardan en iyisi, her zaman en çok adım sayısına sahip olan ve en detaylı yazılmış olandır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3660" 
+                  data-correct="false"
+                  onclick="selectChoice(1952, 3660, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3661" 
+                  data-correct="true"
+                  onclick="selectChoice(1952, 3661, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1952">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu yaygın bir kavram yanılgısıdır. Algoritmada önemli olan detay değil, en kısa sürede (en az adımla) ve doğru sonuca ulaşmaktır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1962" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 51</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritma sadece tek bir örnek üzerinde doğru sonuç veriyorsa güvenilir kabul edilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3680" 
+                  data-correct="false"
+                  onclick="selectChoice(1962, 3680, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3681" 
+                  data-correct="true"
+                  onclick="selectChoice(1962, 3681, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1962">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Bir algoritmanın güvenilir olması için farklı durum ve değerlerle test edilmesi gerekir. Tek bir örnek yeterli değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="995" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 52</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci 'Kütüphaneden Kitap Ödünç Alma' algoritması hazırlıyor:
+1. Kütüphaneye git.
+2. İstediğin kitabı bul.
+3. Görevliye öğrenci kartını ver.
+4. Kütüphaneden ayrıl.
+
+Bu algoritmayı test ettiğimizde hangi eksiklik algoritmanın başarısız olmasına neden olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1822" 
+                  data-correct="false"
+                  onclick="selectChoice(995, 1822, false)">
+            <span class="choice-letter">A</span>
+            <span>Kütüphaneye nasıl gideceği yazılmamış.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1823" 
+                  data-correct="true"
+                  onclick="selectChoice(995, 1823, true)">
+            <span class="choice-letter">B</span>
+            <span>Kitabın ödünç işleminin onaylanması adımı unutulmuş.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1824" 
+                  data-correct="false"
+                  onclick="selectChoice(995, 1824, false)">
+            <span class="choice-letter">C</span>
+            <span>Kitabın adı belirtilmemiş.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1825" 
+                  data-correct="false"
+                  onclick="selectChoice(995, 1825, false)">
+            <span class="choice-letter">D</span>
+            <span>Kütüphane çalışma saatleri eklenmemiş.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-995">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritma test edildiğinde, kitabın sisteme işlenmesi veya görevlinin onay vermesi adımı eksiktir. Görevliye kartı verip hemen ayrılmak süreci tamamlamaz; kitabın ödünç işleminin yapılması (kaydedilmesi) gerekir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1000" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 53</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Marketten ekmek alma algoritmasında, markette ekmek kalmadığını fark ettiğinizde algoritmanın durması veya başka bir markete yönlenmesi gerekir. Bu durum algoritmanın hangi özelliği ile ilgilidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1832" 
+                  data-correct="false"
+                  onclick="selectChoice(1000, 1832, false)">
+            <span class="choice-letter">A</span>
+            <span>Algoritmanın karmaşıklığı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1833" 
+                  data-correct="true"
+                  onclick="selectChoice(1000, 1833, true)">
+            <span class="choice-letter">B</span>
+            <span>Problemin test edilmesi ve farklı olasılıkların değerlendirilmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1834" 
+                  data-correct="false"
+                  onclick="selectChoice(1000, 1834, false)">
+            <span class="choice-letter">C</span>
+            <span>Algoritmanın sadece bilgisayarda çalışması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1835" 
+                  data-correct="false"
+                  onclick="selectChoice(1000, 1835, false)">
+            <span class="choice-letter">D</span>
+            <span>Adımların rastgele sıralanması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1000">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu bir 'Hata ayıklama' ve 'Alternatif çözüm' (Mantıksal Akış) durumudur. Algoritmanın test edilmesi sırasında ortaya çıkabilecek farklı durumların (ekmek olmaması gibi) önceden planlanması gerekir. Analiz düzeyinde bir yaklaşımdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1103" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 54</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir sayı çift mi tek mi olduğunu belirleyen algoritmada ilk adım olarak hangisi yapılmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2044" 
+                  data-correct="true"
+                  onclick="selectChoice(1103, 2044, true)">
+            <span class="choice-letter">A</span>
+            <span>Sayıyı 2'ye bölüp kalanı kontrol etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2045" 
+                  data-correct="false"
+                  onclick="selectChoice(1103, 2045, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayıyı 10 ile çarpmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2046" 
+                  data-correct="false"
+                  onclick="selectChoice(1103, 2046, false)">
+            <span class="choice-letter">C</span>
+            <span>Sayıyı ekrana yazdırmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2047" 
+                  data-correct="false"
+                  onclick="selectChoice(1103, 2047, false)">
+            <span class="choice-letter">D</span>
+            <span>Sayıyı silmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1103">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bir sayının çift mi tek mi olduğunu anlamak için sayı 2'ye bölünür ve kalan kontrol edilir. Kalan 0 ise çift, değilse tektir. Bu analiz adımı algoritmanın temelidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1109" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 55</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrencinin yazdığı algoritmada 'Sonucu ekrana yazdır' adımı, işlemler tamamlanmadan önce yer almaktadır. Bu durum algoritmanın hangi özelliğini ihlal eder?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2052" 
+                  data-correct="true"
+                  onclick="selectChoice(1109, 2052, true)">
+            <span class="choice-letter">A</span>
+            <span>Adımların doğru sırada olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2053" 
+                  data-correct="false"
+                  onclick="selectChoice(1109, 2053, false)">
+            <span class="choice-letter">B</span>
+            <span>Bilgisayarın açık olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2054" 
+                  data-correct="false"
+                  onclick="selectChoice(1109, 2054, false)">
+            <span class="choice-letter">C</span>
+            <span>İnternet bağlantısı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2055" 
+                  data-correct="false"
+                  onclick="selectChoice(1109, 2055, false)">
+            <span class="choice-letter">D</span>
+            <span>Ekran çözünürlüğü</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1109">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritmada adımlar mantıklı ve doğru sırada olmalıdır. Sonuç işlemler tamamlanmadan yazdırılamaz. Bu nedenle sıralama (mantıksal akış) özelliği ihlal edilmiştir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1735" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 56</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir market kasası yazılımında 'Ürün Fiyatı' ve 'KDV Oranı (%20)' verileri kullanılmaktadır. Bu iki veri türü için aşağıdakilerden hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3240" 
+                  data-correct="true"
+                  onclick="selectChoice(1735, 3240, true)">
+            <span class="choice-letter">A</span>
+            <span>Fiyat değişkendir, KDV oranı sabittir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3241" 
+                  data-correct="false"
+                  onclick="selectChoice(1735, 3241, false)">
+            <span class="choice-letter">B</span>
+            <span>Her ikisi de sabittir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3242" 
+                  data-correct="false"
+                  onclick="selectChoice(1735, 3242, false)">
+            <span class="choice-letter">C</span>
+            <span>Fiyat sabittir, KDV oranı değişkendir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3243" 
+                  data-correct="false"
+                  onclick="selectChoice(1735, 3243, false)">
+            <span class="choice-letter">D</span>
+            <span>Her ikisi de değişkendir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1735">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ürün fiyatı her üründe değiştiği için değişkendir. KDV oranı ise (soruda belirtilen şartlarda) sabit bir değerdir. Bu soru analiz becerisini ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1744" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 57</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ayşe, okul kantinindeki günlük satışları takip etmek için bir program yazmak istiyor. Satılan ürün adedi, ürün fiyatı ve satış yapılıp yapılmadığı bilgilerini kaydedecek. Buna göre Ayşe'nin kullanması gereken veri tipleri sırasıyla hangi seçenekte doğru verilmiştir? (Analiz)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3258" 
+                  data-correct="false"
+                  onclick="selectChoice(1744, 3258, false)">
+            <span class="choice-letter">A</span>
+            <span>Metinsel - Mantıksal - Sayısal</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3259" 
+                  data-correct="true"
+                  onclick="selectChoice(1744, 3259, true)">
+            <span class="choice-letter">B</span>
+            <span>Sayısal - Sayısal - Mantıksal</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3260" 
+                  data-correct="false"
+                  onclick="selectChoice(1744, 3260, false)">
+            <span class="choice-letter">C</span>
+            <span>Mantıksal - Metinsel - Sayısal</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3261" 
+                  data-correct="false"
+                  onclick="selectChoice(1744, 3261, false)">
+            <span class="choice-letter">D</span>
+            <span>Sayısal - Metinsel - Metinsel</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1744">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu analiz düzeyi sorusunda öğrenci günlük hayat durumunu analiz etmelidir. 'Satılan ürün adedi' sayısal veridir (matematiksel işlem yapılır). 'Ürün fiyatı' para birimiyle birlikte sayısal veridir (ondalıklı sayı). 'Satış yapılıp yapılmadığı' ise sadece Evet/Hayır (Doğru/Yanlış) değeri aldığı için mantıksal veridir. BT.6.5.1.1 kazanımı kapsamında veri türlerinin ayırt edilmesi gerekmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1756" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 58</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir hava durumu uygulamasında şehir adı, sıcaklık değeri ve yağmur yağıp yağmadığı bilgisi saklanmaktadır. Bu verilerin türleri sırasıyla aşağıdakilerden hangisinde doğru verilmiştir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3282" 
+                  data-correct="true"
+                  onclick="selectChoice(1756, 3282, true)">
+            <span class="choice-letter">A</span>
+            <span>Metin - Sayısal - Mantıksal</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3283" 
+                  data-correct="false"
+                  onclick="selectChoice(1756, 3283, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayısal - Metin - Mantıksal</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3284" 
+                  data-correct="false"
+                  onclick="selectChoice(1756, 3284, false)">
+            <span class="choice-letter">C</span>
+            <span>Mantıksal - Sayısal - Metin</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3285" 
+                  data-correct="false"
+                  onclick="selectChoice(1756, 3285, false)">
+            <span class="choice-letter">D</span>
+            <span>Metin - Mantıksal - Sayısal</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1756">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Şehir adı harflerden oluştuğu için metin (string) veridir. Sıcaklık değeri (örn: 25.5°C) ondalıklı sayı olabileceğinden sayısal veridir. Yağmur yağıp yağmadığı evet/hayır şeklinde iki seçenekli olduğu için mantıksal (boolean) veridir. Bu analiz düzeyinde bir sorudur çünkü öğrencinin her veriyi ayrı ayrı değerlendirmesi gerekir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1760" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 59</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir okul yönetim sistemi için veri toplayan Ahmet, aşağıdaki bilgileri kaydetmiştir:
+• Öğrenci numarası: 2024001
+• Ad-Soyad: Ali Yılmaz
+• Doğum tarihi: 15.03.2012
+• Devamsızlık: 3 gün
+• Burs alıyor mu: Evet
+
+Bu verilerden kaç tanesi 'sayısal' veri türündedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3288" 
+                  data-correct="true"
+                  onclick="selectChoice(1760, 3288, true)">
+            <span class="choice-letter">A</span>
+            <span>1</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3289" 
+                  data-correct="false"
+                  onclick="selectChoice(1760, 3289, false)">
+            <span class="choice-letter">B</span>
+            <span>2</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3290" 
+                  data-correct="false"
+                  onclick="selectChoice(1760, 3290, false)">
+            <span class="choice-letter">C</span>
+            <span>3</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3291" 
+                  data-correct="false"
+                  onclick="selectChoice(1760, 3291, false)">
+            <span class="choice-letter">D</span>
+            <span>4</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1760">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sayısal veri analizi: Öğrenci numarası genellikle metin olarak tutulur (başında sıfır olabilir). Ad-Soyad metindir. Doğum tarihi tarih/metin formatındadır. Devamsızlık (3 gün) sayısal veridir çünkü toplama/çıkarma işlemi yapılabilir. Burs durumu (Evet) mantıksal veridir. Sonuç olarak sadece devamsızlık sayısal veridir. Bu soru analiz becerisi gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1793" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 60</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, "Bir problemi çözmek için doğrudan sonuca odaklanmak yeterlidir, alt adımlara ayırmaya gerek yoktur." demektedir. Bu düşünceyle ilgili en doğru değerlendirme hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3358" 
+                  data-correct="true"
+                  onclick="selectChoice(1793, 3358, true)">
+            <span class="choice-letter">A</span>
+            <span>Yanlıştır, çünkü problemleri alt adımlara bölmek çözümü kolaylaştırır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3359" 
+                  data-correct="false"
+                  onclick="selectChoice(1793, 3359, false)">
+            <span class="choice-letter">B</span>
+            <span>Doğrudur, çünkü zaman kazandırır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3360" 
+                  data-correct="false"
+                  onclick="selectChoice(1793, 3360, false)">
+            <span class="choice-letter">C</span>
+            <span>Doğrudur, çünkü plan yapmaya gerek yoktur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3361" 
+                  data-correct="false"
+                  onclick="selectChoice(1793, 3361, false)">
+            <span class="choice-letter">D</span>
+            <span>Yanlıştır, çünkü hiçbir problem çözülemez.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1793">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu düşünce bir kavram yanılgısıdır. Karmaşık problemler alt problemlere ayrıldığında daha kolay ve hatasız çözülür. Doğrudan sonuca odaklanmak süreci zorlaştırabilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1800" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 61</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, sınıftaki öğrencilerin not ortalamasını hesaplayan bir program yazacaktır. Aşağıdaki adımlardan hangisi analiz düzeyinde doğru bir alt problem belirlemedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3366" 
+                  data-correct="true"
+                  onclick="selectChoice(1800, 3366, true)">
+            <span class="choice-letter">A</span>
+            <span>Notları toplama ve öğrenci sayısına bölme işlemlerini ayrı adımlar olarak belirlemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3367" 
+                  data-correct="false"
+                  onclick="selectChoice(1800, 3367, false)">
+            <span class="choice-letter">B</span>
+            <span>Ortalama sonucunu tahmin etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3368" 
+                  data-correct="false"
+                  onclick="selectChoice(1800, 3368, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece en yüksek notu yazdırmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3369" 
+                  data-correct="false"
+                  onclick="selectChoice(1800, 3369, false)">
+            <span class="choice-letter">D</span>
+            <span>Programı denemeden sonucu kabul etmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1800">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Analiz düzeyinde düşünmek, problemi mantıklı alt parçalara ayırmayı gerektirir. Notları toplama ve öğrenci sayısına bölme işlemini ayrı adımlar olarak belirlemek doğru bir alt problem yaklaşımıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1806" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 62</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir okul gazetesi çıkarma görevinde aşağıdaki alt problemlerden hangisi 'içerik oluşturma' fonksiyonu kapsamında değerlendirilemez?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3380" 
+                  data-correct="true"
+                  onclick="selectChoice(1806, 3380, true)">
+            <span class="choice-letter">A</span>
+            <span>Basım maliyetini hesaplamak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3381" 
+                  data-correct="false"
+                  onclick="selectChoice(1806, 3381, false)">
+            <span class="choice-letter">B</span>
+            <span>Röportaj sorularını hazırlamak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3382" 
+                  data-correct="false"
+                  onclick="selectChoice(1806, 3382, false)">
+            <span class="choice-letter">C</span>
+            <span>Haber metinlerini yazmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3383" 
+                  data-correct="false"
+                  onclick="selectChoice(1806, 3383, false)">
+            <span class="choice-letter">D</span>
+            <span>Görsel fotoğrafları seçmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1806">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Basım maliyetini hesaplamak mali/finansal bir süreçtir, içerik üretimiyle (yazı, röportaj, fotoğraf) doğrudan ilgili değildir. Bu bir analiz düzeyi sorusudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1810" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 63</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ali, bir bilgisayar oyunu yaparken 'zıplama' hareketini her karakter için ayrı ayrı yazmak yerine, bir kez yazıp tüm karakterlere uygulamıştır. Ali burada hangi problem çözme yaklaşımını kullanmıştır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3386" 
+                  data-correct="true"
+                  onclick="selectChoice(1810, 3386, true)">
+            <span class="choice-letter">A</span>
+            <span>Fonksiyonel yaklaşım ve yeniden kullanım</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3387" 
+                  data-correct="false"
+                  onclick="selectChoice(1810, 3387, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece veri analizi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3388" 
+                  data-correct="false"
+                  onclick="selectChoice(1810, 3388, false)">
+            <span class="choice-letter">C</span>
+            <span>Problemi görmezden gelme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3389" 
+                  data-correct="false"
+                  onclick="selectChoice(1810, 3389, false)">
+            <span class="choice-letter">D</span>
+            <span>Donanım parçalama</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1810">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ali, belirli bir görevi (zıplama) bir 'fonksiyon' olarak tanımlamış ve tekrar kullanarak verimlilik sağlamıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1812" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 64</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, Scratch ile çizim yapan bir program yazıyor. Aynı kare şeklini 10 farklı yerde çizmesi gerekiyor. Öğrenci 'fonksiyon (fonksiyon bloğu) kullanmak yerine her seferinde aynı kodları tekrar tekrar yazarsa' aşağıdaki sonuçlardan hangisiyle karşılaşır? (Kavram yanılgısı sorusu)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3394" 
+                  data-correct="false"
+                  onclick="selectChoice(1812, 3394, false)">
+            <span class="choice-letter">A</span>
+            <span>Program çok daha hızlı çalışır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3395" 
+                  data-correct="false"
+                  onclick="selectChoice(1812, 3395, false)">
+            <span class="choice-letter">B</span>
+            <span>Bellek (hafıza) kullanımı azalır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3396" 
+                  data-correct="true"
+                  onclick="selectChoice(1812, 3396, true)">
+            <span class="choice-letter">C</span>
+            <span>Kare boyutunu değiştirmesi gerektiğinde 10 farklı yeri düzeltmek zorunda kalır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3397" 
+                  data-correct="false"
+                  onclick="selectChoice(1812, 3397, false)">
+            <span class="choice-letter">D</span>
+            <span>Kodun okunabilirliği artar</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1812">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap C seçeneğidir. BT.6.5.1.4 kazanımı gereği fonksiyonlar tekrar eden kodları merkezi bir yerde toplar. Fonksiyon kullanılmadığında kod tekrarı (redundancy) artar. Bu durumda kodda bir hata oluştuğunda veya karenin boyutu değiştirilmek istendiğinde, 10 ayrı yerde değişiklik yapmak gerekir. Bu da hata bulma ve düzeltme sürecini (debugging) uzatır. A seçeneği yanlıştır çünkü fonksiyonlar performansı olumsuz etkilemez, aksine kod okunabilirliğini artırır. B seçeneği yanlıştır çünkü kod uzadıkça bellek verimliliği düşer. D seçeneği ise tam tersi, kod okunabilirliği azalır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1944" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 65</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">İki algoritma karşılaştırılıyor: Algoritma A, bir sayıyı ikiye bölerek aramayı yaparken Algoritma B, listedeki her sayıyı sırayla kontrol eder. 1000 sayıdan oluşan bir listede bir sayı arandığında, hangisi daha hızlıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3644" 
+                  data-correct="true"
+                  onclick="selectChoice(1944, 3644, true)">
+            <span class="choice-letter">A</span>
+            <span>Algoritma A</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3645" 
+                  data-correct="false"
+                  onclick="selectChoice(1944, 3645, false)">
+            <span class="choice-letter">B</span>
+            <span>Algoritma B</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3646" 
+                  data-correct="false"
+                  onclick="selectChoice(1944, 3646, false)">
+            <span class="choice-letter">C</span>
+            <span>Her ikisi aynı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3647" 
+                  data-correct="false"
+                  onclick="selectChoice(1944, 3647, false)">
+            <span class="choice-letter">D</span>
+            <span>Listenin büyüklüğüne göre değişmez</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1944">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritma A (ikili arama) daha hızlıdır çünkü logaritmik zamanda çalışır. Bu, farklı algoritmaları inceleyerek en verimli olanı seçmeyi gösterir ve analiz düzeyinde karşılaştırma gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1955" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 66</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kütüphanedeki 1000 kitabı alfabetik sıraya dizmek isteyen bir görevli için aşağıdaki yöntemlerden hangisi analiz edildiğinde 'en hızlı ve doğru' çözüm olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3662" 
+                  data-correct="true"
+                  onclick="selectChoice(1955, 3662, true)">
+            <span class="choice-letter">A</span>
+            <span>Kitapları önce baş harflerine göre gruplandırıp sonra her grubu kendi içinde dizmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3663" 
+                  data-correct="false"
+                  onclick="selectChoice(1955, 3663, false)">
+            <span class="choice-letter">B</span>
+            <span>Her kitabı tek tek eline alıp en baştan başlayarak uygun yere yerleştirmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3664" 
+                  data-correct="false"
+                  onclick="selectChoice(1955, 3664, false)">
+            <span class="choice-letter">C</span>
+            <span>Kitapları rastgele raflara dizip sonra hataları düzeltmeye çalışmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3665" 
+                  data-correct="false"
+                  onclick="selectChoice(1955, 3665, false)">
+            <span class="choice-letter">D</span>
+            <span>Sadece en yeni kitapları dizip eskileri sona bırakmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1955">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Büyük veri setlerinde (1000 kitap gibi) gruplandırarak çözmek (parçala-yönet), tek tek kontrol etmekten çok daha hızlıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1965" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 67</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir sayı listesindeki en büyük sayıyı bulmak için iki farklı algoritma yazılmıştır. Birinci algoritma tüm sayıları karşılaştırarak sonucu buluyor. İkinci algoritma ise ilk sayıyı en büyük kabul edip diğerleriyle tek tek karşılaştırıyor. Hangisi daha verimlidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3682" 
+                  data-correct="true"
+                  onclick="selectChoice(1965, 3682, true)">
+            <span class="choice-letter">A</span>
+            <span>İkinci algoritma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3683" 
+                  data-correct="false"
+                  onclick="selectChoice(1965, 3683, false)">
+            <span class="choice-letter">B</span>
+            <span>Birinci algoritma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3684" 
+                  data-correct="false"
+                  onclick="selectChoice(1965, 3684, false)">
+            <span class="choice-letter">C</span>
+            <span>İkisi de aynı verimlilikte</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3685" 
+                  data-correct="false"
+                  onclick="selectChoice(1965, 3685, false)">
+            <span class="choice-letter">D</span>
+            <span>Hiçbiri çalışmaz</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1965">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İkinci algoritma daha verimlidir çünkü her sayıyı yalnızca bir kez karşılaştırır. Tüm olasılıkları tekrar tekrar kontrol eden yöntem gereksiz işlem yapabilir. Bu soru farklı algoritmaları karşılaştırma kazanımına yöneliktir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1736" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 68</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: Programlamada bir değişkenin ismi (örneğin 'puan'), program çalıştığı sürece o değişkenin içinde tuttuğu sayısal değerle aynı şeydir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3244" 
+                  data-correct="false"
+                  onclick="selectChoice(1736, 3244, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3245" 
+                  data-correct="true"
+                  onclick="selectChoice(1736, 3245, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1736">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu bir kavram yanılgısıdır. Değişkenin ismi (etiketi) ile içindeki değer (içerik) farklı şeylerdir. İsim sabit kalabilir ama değer sürekli değişebilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1757" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 69</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Telefon numarası rakamlardan oluştuğu için her zaman sayısal veri türünde saklanmalıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3286" 
+                  data-correct="false"
+                  onclick="selectChoice(1757, 3286, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3287" 
+                  data-correct="true"
+                  onclick="selectChoice(1757, 3287, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1757">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu yaygın bir kavram yanılgısıdır. Telefon numaraları rakamlardan oluşsa da genellikle metin (string) olarak saklanır. Bunun nedenleri: başında sıfır olabilir (0532...), matematiksel işlem yapılmaz, özel karakterler içerebilir (+90, boşluk, tire). Sayısal veri olarak saklanırsa baştaki sıfırlar kaybolur. İfade yanlıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1950" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 70</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritmanın test edilmeden en iyi olduğu kabul edilebilir, çünkü geliştiren kişi hatasızdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3654" 
+                  data-correct="false"
+                  onclick="selectChoice(1950, 3654, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3655" 
+                  data-correct="true"
+                  onclick="selectChoice(1950, 3655, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1950">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, çünkü kazanıma göre test etmek zorunludur. Bu, kavram yanılgısını ölçer: İnsan hatası olabileceğini anlamak.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1956" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 71</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir algoritmanın bir veri seti (örneğin sadece 2 sayısı) ile doğru sonuç vermesi, o algoritmanın tüm sayılar için mükemmel çalıştığını kanıtlar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3666" 
+                  data-correct="false"
+                  onclick="selectChoice(1956, 3666, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3667" 
+                  data-correct="true"
+                  onclick="selectChoice(1956, 3667, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1956">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Algoritma test edilirken farklı ve uç örnekler (sıfır, negatif sayılar vb.) denenmelidir. Tek bir başarılı örnek genel doğruluğu kanıtlamaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1966" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 72</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">En hızlı algoritma her zaman en doğru algoritmadır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3686" 
+                  data-correct="false"
+                  onclick="selectChoice(1966, 3686, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3687" 
+                  data-correct="true"
+                  onclick="selectChoice(1966, 3687, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1966">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Bir algoritmanın hızlı olması, her durumda doğru sonuç verdiği anlamına gelmez. Doğruluk ve hız ayrı değerlendirme ölçütleridir. Bu soru kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      BT.6.5.1. Problem Çözme Kavramları ve Yaklaşımları test soruları - 5. Sınıf Bilişim Teknolojileri ve Yazılım dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // ✅ Düzeltme: === ile tip güvenli karşılaştırma
+        if (btn.dataset.choiceId === String(choiceId) && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

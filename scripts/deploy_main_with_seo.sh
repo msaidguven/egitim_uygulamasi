@@ -16,8 +16,8 @@ echo "[2/4] SEO icerikleri senkronlaniyor..."
 echo "[3/4] SEO dosyalari build/web icine birlestiriliyor..."
 # Root index/404 flutter app'e ait kalmali. SEO tarafindan ezilmez.
 rsync -a \
-  --exclude "index.html" \
-  --exclude "404.html" \
+  --exclude "/index.html" \
+  --exclude "/404.html" \
   "$SEO_DIR"/ "$BUILD_DIR"/
 
 echo "[4/4] Ana hosting'e deploy ediliyor..."

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/domain/repositories/test_repository.dart';
 import 'package:egitim_uygulamasi/models/question_blank_option.dart';
@@ -10,6 +11,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TestViewModel extends ChangeNotifier {
   final TestRepository _repository;
+  final AudioPlayer _sfxPlayer = AudioPlayer();
+
 
   // State
   static const int questionTimeLimitSeconds = 60;
@@ -29,6 +32,10 @@ class TestViewModel extends ChangeNotifier {
   int _unitId = 0;
   String? _userId;
   String? _clientId;
+  
+  // Gamification State
+  int _currentStreak = 0;
+  bool _soundEnabled = true;
 
   // Getters
   TestQuestion? get currentTestQuestion => _currentTestQuestion;
@@ -37,6 +44,8 @@ class TestViewModel extends ChangeNotifier {
   int get score => _score;
   int get correctCount => _score;
   int get incorrectCount => _incorrectCount;
+  int get currentStreak => _currentStreak;
+  bool get soundEnabled => _soundEnabled;
 
   double get successPercentage {
     final denominator = _answeredCount > 0 ? _answeredCount : _totalQuestions;
@@ -410,6 +419,20 @@ class TestViewModel extends ChangeNotifier {
 
   // ========== CEVAP İŞLEMLERİ ==========
 
+  Future<void> _playSound(String assetPath) async {
+    if (!_soundEnabled) return;
+    try {
+      await _sfxPlayer.play(AssetSource(assetPath));
+    } catch (_) {
+      // Ignore sound errors
+    }
+  }
+
+  void toggleSound() {
+    _soundEnabled = !_soundEnabled;
+    notifyListeners();
+  }
+
   Future<void> checkAnswer() async {
     if (_currentTestQuestion == null ||
         _currentTestQuestion!.isChecked ||
@@ -435,9 +458,13 @@ class TestViewModel extends ChangeNotifier {
 
     if (isCorrect) {
       _score++;
-      log('TestViewModel.checkAnswer: Yeni skor=$_score');
+      _currentStreak++;
+      _playSound('audio/correct_chime.mp3'); // Tatlı bir zil sesi (Eğer dosya yoksa catch ile atlar)
+      log('TestViewModel.checkAnswer: Yeni skor=$_score, Seri: $_currentStreak');
     } else {
       _incorrectCount++;
+      _currentStreak = 0; // Seriyi sıfırla
+      _playSound('audio/wrong_boop.mp3'); // Cesaret kırıcı olmayan boop sesi
       log('TestViewModel.checkAnswer: Yeni yanlış sayısı=$_incorrectCount');
     }
 

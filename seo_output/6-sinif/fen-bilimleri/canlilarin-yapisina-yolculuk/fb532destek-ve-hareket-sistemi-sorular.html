@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FB.5.3.2.Destek ve Hareket Sistemi Test Soruları - Canlıların Yapısına Yolculuk | Eğitim Portalı</title>
+  <meta name="description" content="FB.5.3.2.Destek ve Hareket Sistemi konusu test soruları ve çözümleri. 6. Sınıf Fen Bilimleri dersi online alıştırma.">
+  <meta name="keywords" content="FB.5.3.2.Destek ve Hareket Sistemi test, FB.5.3.2.Destek ve Hareket Sistemi sorular, Fen Bilimleri quiz, 6. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="FB.5.3.2.Destek ve Hareket Sistemi Test Soruları">
+  <meta property="og:description" content="18 soru ile FB.5.3.2.Destek ve Hareket Sistemi konusunu pekiştir">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/6-sinif/">6. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/fen-bilimleri/">Fen Bilimleri</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/fen-bilimleri/canlilarin-yapisina-yolculuk/">Canlıların Yapısına Yolculuk</a>
+          
+          <span>›</span>
+        
+          
+            <strong>FB.5.3.2.Destek ve Hareket Sistemi Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 FB.5.3.2.Destek ve Hareket Sistemi - Test Soruları</h1>
+      <div class="meta">18 Soru • 6. Sınıf Fen Bilimleri</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/6-sinif/fen-bilimleri/canlilarin-yapisina-yolculuk/fb532destek-ve-hareket-sistemi/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="1371" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Destek ve hareket sisteminin sağlığı hakkında güvenilir bilgi toplamak isteyen bir öğrenci aşağıdakilerden hangisini öncelikle tercih etmelidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2542" 
+                  data-correct="true"
+                  onclick="selectChoice(1371, 2542, true)">
+            <span class="choice-letter">A</span>
+            <span>Bir ortopedi doktoruna danışmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2543" 
+                  data-correct="false"
+                  onclick="selectChoice(1371, 2543, false)">
+            <span class="choice-letter">B</span>
+            <span>Arkadaşının sosyal medya paylaşımını okumak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2544" 
+                  data-correct="false"
+                  onclick="selectChoice(1371, 2544, false)">
+            <span class="choice-letter">C</span>
+            <span>Reklam afişlerine bakmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2545" 
+                  data-correct="false"
+                  onclick="selectChoice(1371, 2545, false)">
+            <span class="choice-letter">D</span>
+            <span>Komşusunun tahminlerini dinlemek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1371">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Güvenilir bilgiye ulaşmak için uzman kişiler veya bilimsel kaynaklar tercih edilmelidir. Doktor ve sağlık uzmanları doğru ve kanıta dayalı bilgi verir. Rastgele internet yorumları veya kulaktan dolma bilgiler güvenilir değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1381" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, 'Duruş bozukluklarının iskelet sistemine etkileri' konusunu araştırmak için güvenilir bilgi kaynakları seçmek istiyor. Aşağıdaki araçlardan hangisi bu araştırma için en uygun ve güvenilir bilimsel veri kaynağıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2562" 
+                  data-correct="true"
+                  onclick="selectChoice(1381, 2562, true)">
+            <span class="choice-letter">A</span>
+            <span>Üniversite hastanelerinin hazırladığı sağlık rehberleri</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2563" 
+                  data-correct="false"
+                  onclick="selectChoice(1381, 2563, false)">
+            <span class="choice-letter">B</span>
+            <span>Sosyal medyadaki kişisel kullanıcı yorumları</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2564" 
+                  data-correct="false"
+                  onclick="selectChoice(1381, 2564, false)">
+            <span class="choice-letter">C</span>
+            <span>Doğruluğu kanıtlanmamış anonim blog yazıları</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2565" 
+                  data-correct="false"
+                  onclick="selectChoice(1381, 2565, false)">
+            <span class="choice-letter">D</span>
+            <span>Reklam amaçlı hazırlanan sporcu içeceği broşürleri</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1381">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bilimsel bir konu araştırılırken üniversite hastaneleri, uzman doktor makaleleri ve MEB/Sağlık Bakanlığı gibi resmi kurumların yayınları birincil ve en güvenilir kaynaklardır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1391" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Destek ve hareket sistemimizin sağlığı hakkında bilgi edinmek için en uygun araç aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2582" 
+                  data-correct="true"
+                  onclick="selectChoice(1391, 2582, true)">
+            <span class="choice-letter">A</span>
+            <span>Kitaplar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2583" 
+                  data-correct="false"
+                  onclick="selectChoice(1391, 2583, false)">
+            <span class="choice-letter">B</span>
+            <span>Oyunlar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2584" 
+                  data-correct="false"
+                  onclick="selectChoice(1391, 2584, false)">
+            <span class="choice-letter">C</span>
+            <span>Televizyon dizileri</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2585" 
+                  data-correct="false"
+                  onclick="selectChoice(1391, 2585, false)">
+            <span class="choice-letter">D</span>
+            <span>Arkadaş sohbetleri</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1391">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap kitaplardır çünkü kitaplar güvenilir ve detaylı bilgiler içerir. Diğer seçenekler eğlence veya genel bilgi için olsa da, sağlık bilgisi için uzman kaynaklar tercih edilmelidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1375" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Destek ve hareket sistemi sağlığı ile ilgili araştırma yaparken kitap, dergi ve uzman görüşlerinden yararlanmak uygun bir yöntemdir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2556" 
+                  data-correct="true"
+                  onclick="selectChoice(1375, 2556, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2557" 
+                  data-correct="false"
+                  onclick="selectChoice(1375, 2557, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1375">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Güvenilir basılı kaynaklar ve uzman görüşleri doğru bilgiye ulaşmada önemli araçlardır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1387" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kalsiyum bakımından zengin olan süt ve süt ürünleri, iskelet sistemindeki kemiklerin sertleşmesine yardımcı olur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2576" 
+                  data-correct="true"
+                  onclick="selectChoice(1387, 2576, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2577" 
+                  data-correct="false"
+                  onclick="selectChoice(1387, 2577, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1387">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kalsiyum minerali kemiklerin yapısına katılarak dayanıklılığı ve sertliği artırır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1396" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kemiklerin sağlıklı kalması için süt içmenin faydalı olduğu bilgisini bir deftere not etmek, kazanımlara uygundur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2592" 
+                  data-correct="true"
+                  onclick="selectChoice(1396, 2592, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2593" 
+                  data-correct="false"
+                  onclick="selectChoice(1396, 2593, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1396">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade doğrudur çünkü kazanım ç'ye göre ulaşılan bilgiler kaydedilmelidir; bu günlük hayatta beslenme ile bağlantılıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1372" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci internette bulduğu bir bilginin doğru olup olmadığını kontrol etmek istiyor. Aşağıdakilerden hangisi bilgiyi doğrulamak için en uygun yoldur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2546" 
+                  data-correct="true"
+                  onclick="selectChoice(1372, 2546, true)">
+            <span class="choice-letter">A</span>
+            <span>Bilgiyi farklı güvenilir kaynaklarla karşılaştırmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2547" 
+                  data-correct="false"
+                  onclick="selectChoice(1372, 2547, false)">
+            <span class="choice-letter">B</span>
+            <span>Bilgiyi hemen doğru kabul etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2548" 
+                  data-correct="false"
+                  onclick="selectChoice(1372, 2548, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece arkadaşına sormak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2549" 
+                  data-correct="false"
+                  onclick="selectChoice(1372, 2549, false)">
+            <span class="choice-letter">D</span>
+            <span>Kaynağına bakmadan defterine yazmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1372">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bilgiyi doğrulamak için farklı güvenilir kaynaklarla karşılaştırmak gerekir. Tek bir kaynağa dayanmak yeterli değildir. Ders kitabı ve resmi sağlık siteleri gibi güvenilir kaynaklardan kontrol edilmelidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1390" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir araştırmacı, kaza anında kask takmanın destek sistemi sağlığı üzerindeki etkisini raporluyor. Raporda yer alan hangi ifade 'bilgiyi kaydetme ve sunma' basamağına bir örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2578" 
+                  data-correct="true"
+                  onclick="selectChoice(1390, 2578, true)">
+            <span class="choice-letter">A</span>
+            <span>Kask kullanım oranlarını gösteren bir tablo oluşturulması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2579" 
+                  data-correct="false"
+                  onclick="selectChoice(1390, 2579, false)">
+            <span class="choice-letter">B</span>
+            <span>Kaskın ne işe yaradığını birine sorması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2580" 
+                  data-correct="false"
+                  onclick="selectChoice(1390, 2580, false)">
+            <span class="choice-letter">C</span>
+            <span>Kask fiyatlarını internetten araştırması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2581" 
+                  data-correct="false"
+                  onclick="selectChoice(1390, 2581, false)">
+            <span class="choice-letter">D</span>
+            <span>Kask takmanın önemini sadece düşünmesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1390">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ulaşılan verilerin grafik, tablo veya yazılı rapor haline getirilmesi bilgiyi kaydetme aşamasıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1393" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Okulda spor yaparken kemik sağlığını korumak için bilgi edinmek isteyen bir öğrenci, hangi aracı kullanarak doğru bilgi bulabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2588" 
+                  data-correct="true"
+                  onclick="selectChoice(1393, 2588, true)">
+            <span class="choice-letter">A</span>
+            <span>Doktor</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2589" 
+                  data-correct="false"
+                  onclick="selectChoice(1393, 2589, false)">
+            <span class="choice-letter">B</span>
+            <span>Reklam panoları</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2590" 
+                  data-correct="false"
+                  onclick="selectChoice(1393, 2590, false)">
+            <span class="choice-letter">C</span>
+            <span>Sokak afişleri</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2591" 
+                  data-correct="false"
+                  onclick="selectChoice(1393, 2591, false)">
+            <span class="choice-letter">D</span>
+            <span>Komşu tavsiyeleri</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1393">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap doktordur çünkü doktorlar tıbbi uzmanlardır ve günlük hayattaki spor aktivitelerinde kemik sağlığını koruma konusunda güvenilir bilgi verirler. Diğer seçenekler bilgi sağlayabilir ama tıbbi doğruluk açısından yetersiz kalabilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1374" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Destek ve hareket sistemi sağlığı hakkında ulaşılan her internet bilgisi doğrudur ve doğrulanmasına gerek yoktur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2554" 
+                  data-correct="false"
+                  onclick="selectChoice(1374, 2554, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2555" 
+                  data-correct="true"
+                  onclick="selectChoice(1374, 2555, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1374">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. İnternetteki her bilgi doğru değildir. Bilgilerin güvenilir kaynaklardan doğrulanması gerekir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1382" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Destek ve hareket sisteminin sağlığı hakkında internetten ulaşılan her bilgi, kaynağına bakılmaksızın doğru kabul edilerek kaydedilmelidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2566" 
+                  data-correct="false"
+                  onclick="selectChoice(1382, 2566, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2567" 
+                  data-correct="true"
+                  onclick="selectChoice(1382, 2567, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1382">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İnternette bilgi kirliliği olabilir. Ulaşılan bilgilerin bilimsel temellere dayalı olduğu resmi kurumlarca (gov.tr, edu.tr vb.) doğrulanmalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1392" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Destek ve hareket sisteminin sağlığı için internetten bulunan her bilgi doğru kabul edilmelidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2586" 
+                  data-correct="false"
+                  onclick="selectChoice(1392, 2586, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2587" 
+                  data-correct="true"
+                  onclick="selectChoice(1392, 2587, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1392">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade yanlıştır çünkü internetteki bilgiler her zaman doğru olmayabilir; bunları uzman kaynaklarla doğrulamak gerekir, bu da kazanım c'ye uygundur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1373" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdaki öğrencilerden hangisi destek ve hareket sistemi sağlığı ile ilgili bilgiyi kaydetme aşamasını doğru yapmaktadır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2550" 
+                  data-correct="true"
+                  onclick="selectChoice(1373, 2550, true)">
+            <span class="choice-letter">A</span>
+            <span>Bulduğu bilgiyi kaynağı ile birlikte defterine not alan öğrenci</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2551" 
+                  data-correct="false"
+                  onclick="selectChoice(1373, 2551, false)">
+            <span class="choice-letter">B</span>
+            <span>Bilgiyi okuyup hiçbir yere yazmayan öğrenci</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2552" 
+                  data-correct="false"
+                  onclick="selectChoice(1373, 2552, false)">
+            <span class="choice-letter">C</span>
+            <span>Bilgiyi değiştirerek arkadaşına anlatan öğrenci</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2553" 
+                  data-correct="false"
+                  onclick="selectChoice(1373, 2553, false)">
+            <span class="choice-letter">D</span>
+            <span>Kaynağı belirsiz bilgiyi ezberleyen öğrenci</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1373">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bilgiyi kaydetmek, araştırma sürecinin önemli bir basamağıdır. Deftere not almak, tarih ve kaynak belirtmek doğru bir kayıt yöntemidir. Sadece akılda tutmak yeterli değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1379" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, "Süt içmek kemikleri tek başına her zaman güçlendirir." bilgisini tek bir blogdan okumuştur. Bu durumda öğrenci hangi adımı yapmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2558" 
+                  data-correct="true"
+                  onclick="selectChoice(1379, 2558, true)">
+            <span class="choice-letter">A</span>
+            <span>Bilgiyi farklı güvenilir kaynaklardan kontrol etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2559" 
+                  data-correct="false"
+                  onclick="selectChoice(1379, 2559, false)">
+            <span class="choice-letter">B</span>
+            <span>Bilgiyi hemen doğru kabul etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2560" 
+                  data-correct="false"
+                  onclick="selectChoice(1379, 2560, false)">
+            <span class="choice-letter">C</span>
+            <span>Bilgiyi değiştirmeden arkadaşlarına yaymak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2561" 
+                  data-correct="false"
+                  onclick="selectChoice(1379, 2561, false)">
+            <span class="choice-letter">D</span>
+            <span>Bilgiyi hiç araştırmadan ezberlemek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1379">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu soru kavram yanılgısını ölçmektedir. Tek bir kaynaktan alınan bilgi kesin doğru kabul edilmemelidir. Öğrenci bilgiyi farklı güvenilir kaynaklardan kontrol ederek doğrulamalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1385" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: 'Kemiklerimiz sert yapılar olduğu için canlı değildir ve beslenmeye ihtiyaç duymaz.' diyen bir öğrenciye, araştırması sonucunda bulduğu hangi bilgi bu düşüncesinin yanlış olduğunu kanıtlar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2568" 
+                  data-correct="true"
+                  onclick="selectChoice(1385, 2568, true)">
+            <span class="choice-letter">A</span>
+            <span>Kırılan kemiklerin hücre bölünmesiyle kendini onarabilmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2569" 
+                  data-correct="false"
+                  onclick="selectChoice(1385, 2569, false)">
+            <span class="choice-letter">B</span>
+            <span>Kemiklerin dış yüzeyinin çok sert bir tabakadan oluşması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2570" 
+                  data-correct="false"
+                  onclick="selectChoice(1385, 2570, false)">
+            <span class="choice-letter">C</span>
+            <span>Kafatası kemiklerinin beyni dış etkilerden koruması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2571" 
+                  data-correct="false"
+                  onclick="selectChoice(1385, 2571, false)">
+            <span class="choice-letter">D</span>
+            <span>İskelet sisteminin vücuda şekil vermesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1385">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kemikler canlı dokulardır; içlerinde kan damarları ve sinirler bulunur, hücreleri bölünerek büyümeyi ve onarımı sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1386" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Sorusu: Ayşe, destek ve hareket sistemi sağlığı için ulaştığı 'Düzenli egzersiz kemik kütlesini artırır' bilgisini doğrulamak istiyor. Ayşe'nin bu bilgiyi doğrulamak için yapacağı en mantıklı işlem hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2572" 
+                  data-correct="true"
+                  onclick="selectChoice(1386, 2572, true)">
+            <span class="choice-letter">A</span>
+            <span>Farklı tıp kitapları ve uzman görüşlerini karşılaştırmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2573" 
+                  data-correct="false"
+                  onclick="selectChoice(1386, 2573, false)">
+            <span class="choice-letter">B</span>
+            <span>Bilgiyi bir arkadaşına sorup onun onayını almak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2574" 
+                  data-correct="false"
+                  onclick="selectChoice(1386, 2574, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece bir internet sitesinde yazıyorsa doğru kabul etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2575" 
+                  data-correct="false"
+                  onclick="selectChoice(1386, 2575, false)">
+            <span class="choice-letter">D</span>
+            <span>Kendi kendine bir hafta egzersiz yapıp sonuç beklemek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1386">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bilginin doğrulanması süreci, farklı ve güvenilir kaynaklardaki verilerin karşılaştırılmasını gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1397" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, kas sağlığı hakkında bilgi edinmek için kitap kullandı ve bulduğu bilgiyi arkadaşıyla karşılaştırdı. Bu hangi kazanıma uygundur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2594" 
+                  data-correct="true"
+                  onclick="selectChoice(1397, 2594, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğrulama</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2595" 
+                  data-correct="false"
+                  onclick="selectChoice(1397, 2595, false)">
+            <span class="choice-letter">B</span>
+            <span>Belirleme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2596" 
+                  data-correct="false"
+                  onclick="selectChoice(1397, 2596, false)">
+            <span class="choice-letter">C</span>
+            <span>Bulma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2597" 
+                  data-correct="false"
+                  onclick="selectChoice(1397, 2597, false)">
+            <span class="choice-letter">D</span>
+            <span>Kaydetme</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1397">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap doğrulamaktır çünkü bilgiler farklı kaynaklarla karşılaştırılarak doğrulanır; bu analiz düzeyinde bir sorudur ve kavram yanılgılarını ölçer (örneğin, tek kaynağa güvenmek yanılgısı).</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1399" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Destek ve hareket sisteminin sağlığı hakkında bilgi edinirken sadece bir araç kullanmak yeterlidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2598" 
+                  data-correct="false"
+                  onclick="selectChoice(1399, 2598, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2599" 
+                  data-correct="true"
+                  onclick="selectChoice(1399, 2599, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1399">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade yanlıştır çünkü birden fazla araç belirleyip kullanmak ve doğrulamak gerekir; bu kavram yanılgısını (tek kaynağa bağımlılık) ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      FB.5.3.2.Destek ve Hareket Sistemi test soruları - 6. Sınıf Fen Bilimleri dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // ✅ Düzeltme: === ile tip güvenli karşılaştırma
+        if (btn.dataset.choiceId === String(choiceId) && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

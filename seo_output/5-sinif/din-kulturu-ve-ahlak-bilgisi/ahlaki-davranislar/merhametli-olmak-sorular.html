@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merhametli Olmak Test Soruları - Ahlaki Davranışlar | Eğitim Portalı</title>
+  <meta name="description" content="Merhametli Olmak konusu test soruları ve çözümleri. 5. Sınıf Din Kültürü ve Ahlak Bilgisi dersi online alıştırma.">
+  <meta name="keywords" content="Merhametli Olmak test, Merhametli Olmak sorular, Din Kültürü ve Ahlak Bilgisi quiz, 5. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Merhametli Olmak Test Soruları">
+  <meta property="og:description" content="18 soru ile Merhametli Olmak konusunu pekiştir">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/din-kulturu-ve-ahlak-bilgisi/">Din Kültürü ve Ahlak Bilgisi</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/din-kulturu-ve-ahlak-bilgisi/ahlaki-davranislar/">Ahlaki Davranışlar</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Merhametli Olmak Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Merhametli Olmak - Test Soruları</h1>
+      <div class="meta">18 Soru • 5. Sınıf Din Kültürü ve Ahlak Bilgisi</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/5-sinif/din-kulturu-ve-ahlak-bilgisi/ahlaki-davranislar/merhametli-olmak/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="1711" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Merhametli olmak bireysel olarak insana ne kazandırır? Aşağıdakilerden hangisi doğru bir örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3196" 
+                  data-correct="true"
+                  onclick="selectChoice(1711, 3196, true)">
+            <span class="choice-letter">A</span>
+            <span>İç huzur ve mutluluk getirir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3197" 
+                  data-correct="false"
+                  onclick="selectChoice(1711, 3197, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece başkalarını mutlu eder.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3198" 
+                  data-correct="false"
+                  onclick="selectChoice(1711, 3198, false)">
+            <span class="choice-letter">C</span>
+            <span>Zenginlik kazandırır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3199" 
+                  data-correct="false"
+                  onclick="selectChoice(1711, 3199, false)">
+            <span class="choice-letter">D</span>
+            <span>Hiçbir şey kazandırmaz.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1711">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Merhametli olmak bireysel huzur ve içsel tatmin sağlar, çünkü empati kurmak stresi azaltır ve mutluluğu artırır. Bu kazanım a'ya göre bireysel boyutu vurgular.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1721" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Ahmet, okulda arkadaşının kalemini kırdığı için üzgün olan bir öğrenciyi görüyor. Ahmet'in aşağıdaki davranışlarından hangisi merhamet duygusunun yansımasıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3214" 
+                  data-correct="true"
+                  onclick="selectChoice(1721, 3214, true)">
+            <span class="choice-letter">A</span>
+            <span>Kendi kalemini arkadaşıyla paylaşması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3215" 
+                  data-correct="false"
+                  onclick="selectChoice(1721, 3215, false)">
+            <span class="choice-letter">B</span>
+            <span>Olayı görmezden gelmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3216" 
+                  data-correct="false"
+                  onclick="selectChoice(1721, 3216, false)">
+            <span class="choice-letter">C</span>
+            <span>Arkadaşıyla dalga geçmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3217" 
+                  data-correct="false"
+                  onclick="selectChoice(1721, 3217, false)">
+            <span class="choice-letter">D</span>
+            <span>Öğretmene şikâyet etmesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1721">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Merhamet, başkalarının acısını hissetmek ve onlara yardım etme isteği duymaktır. Ahmet'in kendi kalemini paylaşması, arkadaşının sıkıntısını gidermek için somut bir adım atmasıdır. Bu davranış merhametin eyleme dönüşmüş hâlidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1702" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Merhametli bir insan, sadece insanlara değil; hayvanlara, bitkilere ve doğaya karşı da koruyucu ve özenli davranır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3180" 
+                  data-correct="true"
+                  onclick="selectChoice(1702, 3180, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3181" 
+                  data-correct="false"
+                  onclick="selectChoice(1702, 3181, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1702">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İslam ahlakına göre merhamet evrenseldir. Hz. Peygamber'in 'Yeryüzündekilere merhamet edin ki göktekiler de size merhamet etsin' hadisi tüm varlıkları kapsar.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1701" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Merhamet kavramı ile ilgili aşağıda verilen bilgilerden hangisi yanlıştır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3176" 
+                  data-correct="false"
+                  onclick="selectChoice(1701, 3176, false)">
+            <span class="choice-letter">A</span>
+            <span>Canlıların acılarına karşı duyarlı olmaktır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3177" 
+                  data-correct="true"
+                  onclick="selectChoice(1701, 3177, true)">
+            <span class="choice-letter">B</span>
+            <span>Sadece aile bireylerine karşı gösterilmesi gereken bir tutumdur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3178" 
+                  data-correct="false"
+                  onclick="selectChoice(1701, 3178, false)">
+            <span class="choice-letter">C</span>
+            <span>Affedici ve bağışlayıcı olmayı da kapsayan geniş bir kavramdır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3179" 
+                  data-correct="false"
+                  onclick="selectChoice(1701, 3179, false)">
+            <span class="choice-letter">D</span>
+            <span>Toplumsal dayanışmayı ve kardeşlik bağlarını güçlendirir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1701">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Merhamet sadece üzülmek değil, aynı zamanda yardım etmek için harekete geçmektir. Ancak merhametli olmak, bir kişinin yaptığı yanlışı görmezden gelerek adaleti çiğnemek anlamına gelmez. Adalet ve merhamet birbirini tamamlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1708" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Hz. Peygamber'in torunlarını severken onları öpmesine şaşıran bir bedeviye, 'Allah senin kalbinden merhameti söküp almışsa ben ne yapabilirim?' demesi merhametin hangi özelliğine vurgu yapmaktadır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3188" 
+                  data-correct="false"
+                  onclick="selectChoice(1708, 3188, false)">
+            <span class="choice-letter">A</span>
+            <span>Merhametin sadece yaşlılara gösterilmesi gerektiğine</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3189" 
+                  data-correct="true"
+                  onclick="selectChoice(1708, 3189, true)">
+            <span class="choice-letter">B</span>
+            <span>Merhametin sevgi ve şefkat ile kalpte yer alan bir duygu olduğuna</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3190" 
+                  data-correct="false"
+                  onclick="selectChoice(1708, 3190, false)">
+            <span class="choice-letter">C</span>
+            <span>Torun sevmenin dini bir zorunluluk olduğuna</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3191" 
+                  data-correct="false"
+                  onclick="selectChoice(1708, 3191, false)">
+            <span class="choice-letter">D</span>
+            <span>Sert mizacın merhametle bir ilgisi olmadığına</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1708">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Peygamberimiz bu sözüyle, merhametin sevgiyle dışa vurulan, kalbi bir duygu olduğunu ve çocuklara gösterilen sevginin merhametin bir parçası olduğunu belirtmiştir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1710" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi merhametli bir bireyin kendi hayatı için çıkarabileceği en önemli derslerden biridir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3192" 
+                  data-correct="false"
+                  onclick="selectChoice(1710, 3192, false)">
+            <span class="choice-letter">A</span>
+            <span>Başkalarına merhamet ederek onlardan maddi çıkar sağlamak.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3193" 
+                  data-correct="false"
+                  onclick="selectChoice(1710, 3193, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece güçlü olanlara merhamet gösterip korunmak.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3194" 
+                  data-correct="true"
+                  onclick="selectChoice(1710, 3194, true)">
+            <span class="choice-letter">C</span>
+            <span>Merhamet ederek hem kendi iç huzurunu bulmak hem de sevgi bağlarını güçlendirmek.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3195" 
+                  data-correct="false"
+                  onclick="selectChoice(1710, 3195, false)">
+            <span class="choice-letter">D</span>
+            <span>Merhametli görünerek insanların takdirini kazanmaya çalışmak.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1710">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kendi hayatı için merhameti anlamlı kılan bir birey, başkalarına nasıl davranırsa kendisine de öyle davranılacağını (veya Allah'ın ona öyle muamele edeceğini) idrak eder.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1714" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Arkadaşının hasta olduğunu duyunca üzülüp ona yardım eden öğrenci, merhametli olmanın hangi boyutunu yaşar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3202" 
+                  data-correct="false"
+                  onclick="selectChoice(1714, 3202, false)">
+            <span class="choice-letter">A</span>
+            <span>Sadece bireysel boyutunu.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3203" 
+                  data-correct="true"
+                  onclick="selectChoice(1714, 3203, true)">
+            <span class="choice-letter">B</span>
+            <span>Bireysel ve toplumsal boyutlarını.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3204" 
+                  data-correct="false"
+                  onclick="selectChoice(1714, 3204, false)">
+            <span class="choice-letter">C</span>
+            <span>Hiçbir boyutunu.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3205" 
+                  data-correct="false"
+                  onclick="selectChoice(1714, 3205, false)">
+            <span class="choice-letter">D</span>
+            <span>Sadece ekonomik boyutunu.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1714">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Hem bireysel empati hem toplumsal dayanışma boyutunu yaşar, çünkü yardım etmek iç huzur verir ve toplumu güçlendirir (kazanım a).</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1723" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi merhametin toplumsal boyutunu en iyi şekilde açıklar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3220" 
+                  data-correct="true"
+                  onclick="selectChoice(1723, 3220, true)">
+            <span class="choice-letter">A</span>
+            <span>Toplumda yardımlaşma ve dayanışma kültürünün oluşması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3221" 
+                  data-correct="false"
+                  onclick="selectChoice(1723, 3221, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece aile fertlerine yardım edilmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3222" 
+                  data-correct="false"
+                  onclick="selectChoice(1723, 3222, false)">
+            <span class="choice-letter">C</span>
+            <span>Yalnızca zenginlerin fakire yardım etmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3223" 
+                  data-correct="false"
+                  onclick="selectChoice(1723, 3223, false)">
+            <span class="choice-letter">D</span>
+            <span>Devletin tüm sorumlulukları üstlenmesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1723">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Merhametin toplumsal boyutu, bireysel iyilik yapmanın ötesinde toplumda dayanışma ve yardımlaşma kültürünün oluşmasını ifade eder. Toplumda herkesin birbirine destek olması, merhametin toplumsal yansımasıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1712" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Merhametli olmak sadece toplumda barış sağlar, bireysel hayatı etkilemez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3200" 
+                  data-correct="false"
+                  onclick="selectChoice(1712, 3200, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3201" 
+                  data-correct="true"
+                  onclick="selectChoice(1712, 3201, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1712">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü merhamet bireysel huzur ve empati becerisi geliştirerek hem bireysel hem toplumsal boyutlarda etkilidir (kazanım a).</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1722" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Merhamet duygusu sadece insanlara karşı gösterilir, hayvanlara ve doğaya karşı merhamet göstermek gerekmez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3218" 
+                  data-correct="false"
+                  onclick="selectChoice(1722, 3218, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3219" 
+                  data-correct="true"
+                  onclick="selectChoice(1722, 3219, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1722">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. İslam dininde merhamet tüm canlıları kapsar. Hz. Peygamber, hayvanlara iyi davranılmasını, onlara eziyet edilmemesini öğütlemiştir. Merhamet evrensel bir değerdir ve tüm varlıklara karşı gösterilmelidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1727" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Merhametli olmak sadece maddi yardım yapmak anlamına gelir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3228" 
+                  data-correct="false"
+                  onclick="selectChoice(1727, 3228, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3229" 
+                  data-correct="true"
+                  onclick="selectChoice(1727, 3229, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1727">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Merhamet sadece maddi yardımla sınırlı değildir. Güzel söz söylemek, gülümsemek, dertleri dinlemek, manevi destek olmak da merhametin önemli göstergeleridir. Merhamet, kalbin başkalarına açılmasıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1705" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Okulda bir arkadaşınızın kantin sırasına haksız yere öne geçtiğini gördünüz. Merhamet sahibi birinin bu durumda sergileyeceği en doğru analiz ve davranış hangisi olmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3182" 
+                  data-correct="false"
+                  onclick="selectChoice(1705, 3182, false)">
+            <span class="choice-letter">A</span>
+            <span>Sessiz kalmak merhamet göstergesidir, bu yüzden bir şey dememeli.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3183" 
+                  data-correct="false"
+                  onclick="selectChoice(1705, 3183, false)">
+            <span class="choice-letter">B</span>
+            <span>Arkadaşını herkesin içinde sertçe azarlayarak hatasını anlamasını sağlamalı.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3184" 
+                  data-correct="true"
+                  onclick="selectChoice(1705, 3184, true)">
+            <span class="choice-letter">C</span>
+            <span>Onun sırasını bekleyenlerin hakkına girdiğini nazikçe hatırlatıp sıraya geçmesini sağlamalı.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3185" 
+                  data-correct="false"
+                  onclick="selectChoice(1705, 3185, false)">
+            <span class="choice-letter">D</span>
+            <span>Onun yerine kantin görevlisine şikayet edip cezalandırılmasını istemeli.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1705">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Analiz düzeyindeki bu soruda merhametin 'zayıflık' veya 'kural tanımazlık' olmadığı vurgulanır. Gerçek merhamet, kişiyi kırmadan doğruyu hatırlatmak ve hakkı korumaktır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1717" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Mahallede yaşlı teyzeye çanta taşıyan çocuk, merhametli olmayı kendi hayatı için nasıl anlamlı hale getirir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3208" 
+                  data-correct="true"
+                  onclick="selectChoice(1717, 3208, true)">
+            <span class="choice-letter">A</span>
+            <span>Başkalarını düşünerek kendi mutluluğunu artırır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3209" 
+                  data-correct="false"
+                  onclick="selectChoice(1717, 3209, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece ödevini yapar.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3210" 
+                  data-correct="false"
+                  onclick="selectChoice(1717, 3210, false)">
+            <span class="choice-letter">C</span>
+            <span>Zamanını boşa harcar.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3211" 
+                  data-correct="false"
+                  onclick="selectChoice(1717, 3211, false)">
+            <span class="choice-letter">D</span>
+            <span>Para kazanır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1717">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu analiz düzeyinde soru, çocuğun yardım sonrası mutluluğunu düşünmesini sağlar; merhamet bireysel değer haline gelir (kazanım b).</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1726" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci "Merhametli olmak zayıflık göstergesidir, güçlü insanlar merhametli olmaz" şeklinde düşünmektedir. Bu düşüncenin yanlış olduğunu gösteren en güçlü argüman hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3224" 
+                  data-correct="true"
+                  onclick="selectChoice(1726, 3224, true)">
+            <span class="choice-letter">A</span>
+            <span>Hz. Peygamber'in hem güçlü bir lider hem de çok merhametli olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3225" 
+                  data-correct="false"
+                  onclick="selectChoice(1726, 3225, false)">
+            <span class="choice-letter">B</span>
+            <span>Merhametli insanların daha az arkadaşı olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3226" 
+                  data-correct="false"
+                  onclick="selectChoice(1726, 3226, false)">
+            <span class="choice-letter">C</span>
+            <span>Güçlü insanların yardıma ihtiyaç duymaması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3227" 
+                  data-correct="false"
+                  onclick="selectChoice(1726, 3227, false)">
+            <span class="choice-letter">D</span>
+            <span>Merhametin sadece kadınlara özgü bir duygu olması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1726">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu soru kavram yanılgısını ölçmektedir. Merhamet zayıflık değil, aksine güçlü bir karakter özelliğidir. Hz. Peygamber tarihin en etkili liderlerinden biri olmasına rağmen son derece merhametliydi. Gerçek güç, başkalarının acısını anlayıp yardım edebilmektir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1730" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Zeynep, sınıfında dışlanan bir arkadaşına yaklaşarak onunla vakit geçirmeye başlıyor. Bu davranışın Zeynep'e ve topluma sağlayacağı en önemli katkı aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3230" 
+                  data-correct="true"
+                  onclick="selectChoice(1730, 3230, true)">
+            <span class="choice-letter">A</span>
+            <span>Zeynep'in iç huzuru artarken sınıfta kapsayıcı bir ortam oluşması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3231" 
+                  data-correct="false"
+                  onclick="selectChoice(1730, 3231, false)">
+            <span class="choice-letter">B</span>
+            <span>Zeynep'in popülerliğinin artması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3232" 
+                  data-correct="false"
+                  onclick="selectChoice(1730, 3232, false)">
+            <span class="choice-letter">C</span>
+            <span>Öğretmenin Zeynep'e yüksek not vermesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3233" 
+                  data-correct="false"
+                  onclick="selectChoice(1730, 3233, false)">
+            <span class="choice-letter">D</span>
+            <span>Diğer öğrencilerin Zeynep'ten korkması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1730">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu soru analiz düzeyinde olup merhametin hem bireysel hem toplumsal etkisini sorgulamaktadır. Zeynep'in davranışı hem kendisine manevi huzur verecek hem de sınıfta kapsayıcı bir ortam oluşmasına katkı sağlayacaktır. Bir kişinin merhametli davranışı toplumda olumlu bir dalga etkisi yaratır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1706" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Merhametli olmak, bir kişinin her zaman haklı veya haksız her durumda başkalarına acıması ve cezadan kaçınmasını sağlamasıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3186" 
+                  data-correct="false"
+                  onclick="selectChoice(1706, 3186, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3187" 
+                  data-correct="true"
+                  onclick="selectChoice(1706, 3187, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1706">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu yaygın bir kavram yanılgısıdır. Merhamet, adaletsizliğe göz yummak değildir. Hak edene cezasını vermek (eğitici bir amaçla) bazen toplumun huzuru için en merhametli davranıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1716" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Merhametli olmak, zayıfa yardım etmekle sınırlıdır; güçlüye yardım etmek merhamet değildir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3206" 
+                  data-correct="false"
+                  onclick="selectChoice(1716, 3206, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3207" 
+                  data-correct="true"
+                  onclick="selectChoice(1716, 3207, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1716">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, çünkü merhamet her duruma empatiyle yaklaşmaktır, kavram yanılgısını ölçer; herkesin ihtiyacı olabilir (kazanım a ve c).</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1720" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Merhametli olmak kendi hayatımızda mutluluk yaratmaz, sadece başkalarına yarar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3212" 
+                  data-correct="false"
+                  onclick="selectChoice(1720, 3212, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3213" 
+                  data-correct="true"
+                  onclick="selectChoice(1720, 3213, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1720">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış; merhamet empatiyle bireysel gelişim sağlar, kavram yanılgısını giderir ve hayatı anlamlı kılar (kazanım b).</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Merhametli Olmak test soruları - 5. Sınıf Din Kültürü ve Ahlak Bilgisi dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // ✅ Düzeltme: === ile tip güvenli karşılaştırma
+        if (btn.dataset.choiceId === String(choiceId) && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

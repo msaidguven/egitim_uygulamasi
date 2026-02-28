@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FB.5.4.3.Tam Gölgenin Oluşumu Test Soruları - Işığın Dünyası | Eğitim Portalı</title>
+  <meta name="description" content="FB.5.4.3.Tam Gölgenin Oluşumu konusu test soruları ve çözümleri. 6. Sınıf Fen Bilimleri dersi online alıştırma.">
+  <meta name="keywords" content="FB.5.4.3.Tam Gölgenin Oluşumu test, FB.5.4.3.Tam Gölgenin Oluşumu sorular, Fen Bilimleri quiz, 6. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="FB.5.4.3.Tam Gölgenin Oluşumu Test Soruları">
+  <meta property="og:description" content="19 soru ile FB.5.4.3.Tam Gölgenin Oluşumu konusunu pekiştir">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/6-sinif/">6. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/fen-bilimleri/">Fen Bilimleri</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/fen-bilimleri/isigin-dunyasi/">Işığın Dünyası</a>
+          
+          <span>›</span>
+        
+          
+            <strong>FB.5.4.3.Tam Gölgenin Oluşumu Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 FB.5.4.3.Tam Gölgenin Oluşumu - Test Soruları</h1>
+      <div class="meta">19 Soru • 6. Sınıf Fen Bilimleri</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/6-sinif/fen-bilimleri/isigin-dunyasi/fb543tam-golgenin-olusumu/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">19</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="2161" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">El feneri, karton ve duvar kullanılarak yapılan deneyde karton ışık kaynağı ile duvar arasına konulduğunda duvarda oluşan koyu bölgeye ne ad verilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4066" 
+                  data-correct="true"
+                  onclick="selectChoice(2161, 4066, true)">
+            <span class="choice-letter">A</span>
+            <span>Tam gölge</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4067" 
+                  data-correct="false"
+                  onclick="selectChoice(2161, 4067, false)">
+            <span class="choice-letter">B</span>
+            <span>Yansıma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4068" 
+                  data-correct="false"
+                  onclick="selectChoice(2161, 4068, false)">
+            <span class="choice-letter">C</span>
+            <span>Kırılma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4069" 
+                  data-correct="false"
+                  onclick="selectChoice(2161, 4069, false)">
+            <span class="choice-letter">D</span>
+            <span>Saydamlık</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2161">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık doğrusal yayılır ve opak bir cisim ışığı geçirmez. Bu nedenle duvarda ışığın ulaşamadığı koyu bölge oluşur. Bu bölge tam gölge olarak adlandırılır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2171" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir el feneri ile duvar arasında bir oyuncak bebek koyduğunuzda tam gölge oluşması için ışık kaynağının nasıl olması gerekir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4088" 
+                  data-correct="true"
+                  onclick="selectChoice(2171, 4088, true)">
+            <span class="choice-letter">A</span>
+            <span>Noktasal ve küçük olmalı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4089" 
+                  data-correct="false"
+                  onclick="selectChoice(2171, 4089, false)">
+            <span class="choice-letter">B</span>
+            <span>Büyük ve dağınık olmalı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4090" 
+                  data-correct="false"
+                  onclick="selectChoice(2171, 4090, false)">
+            <span class="choice-letter">C</span>
+            <span>Renkli olmalı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4091" 
+                  data-correct="false"
+                  onclick="selectChoice(2171, 4091, false)">
+            <span class="choice-letter">D</span>
+            <span>Uzun mesafeli olmalı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2171">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Tam gölge, noktasal ışık kaynağı ile oluşur çünkü ışık ışınları düzgün bir şekilde engellenir ve gölge sınırları keskindir. Bu, kazanım a'ya göre tam gölgenin niteliğini tanımlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2152" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Saydam maddelerin (cam, su gibi) tam gölgesi, opak maddelerin gölgesine göre daha koyu ve net oluşur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4050" 
+                  data-correct="false"
+                  onclick="selectChoice(2152, 4050, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4051" 
+                  data-correct="true"
+                  onclick="selectChoice(2152, 4051, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2152">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Saydam maddeler ışığı geçirdiği için arkalarında tam gölge oluşturmazlar. Tam gölge sadece ışığı geçirmeyen opak maddeler tarafından oluşturulur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2164" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Tam gölgenin oluşabilmesi için ışığın doğrusal yayılması gerekir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4078" 
+                  data-correct="true"
+                  onclick="selectChoice(2164, 4078, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4079" 
+                  data-correct="false"
+                  onclick="selectChoice(2164, 4079, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2164">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık doğrusal yayıldığı için opak cisimler ışığın bir kısmını engeller ve arkasında tam gölge oluşur. Bu nedenle ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2172" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Tam gölge oluşumunda, ışık kaynağının boyutu gölgenin oluşmasını etkilemez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4092" 
+                  data-correct="false"
+                  onclick="selectChoice(2172, 4092, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4093" 
+                  data-correct="true"
+                  onclick="selectChoice(2172, 4093, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2172">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü tam gölgeyi etkileyen değişkenlerden biri ışık kaynağının boyutudur; büyük kaynaklarda yarı gölge oluşurken, noktasal kaynaklarda tam gölge oluşur. Kazanım c'ye göre değişkenleri açıklar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2151" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir el feneri ile duvar arasına opak bir top konulmuştur. Top fenerden uzaklaştırılıp duvara yaklaştırılırsa gölge boyu nasıl değişir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4046" 
+                  data-correct="true"
+                  onclick="selectChoice(2151, 4046, true)">
+            <span class="choice-letter">A</span>
+            <span>Gölge boyu küçülür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4047" 
+                  data-correct="false"
+                  onclick="selectChoice(2151, 4047, false)">
+            <span class="choice-letter">B</span>
+            <span>Gölge boyu büyür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4048" 
+                  data-correct="false"
+                  onclick="selectChoice(2151, 4048, false)">
+            <span class="choice-letter">C</span>
+            <span>Gölge boyu değişmez.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4049" 
+                  data-correct="false"
+                  onclick="selectChoice(2151, 4049, false)">
+            <span class="choice-letter">D</span>
+            <span>Gölge önce büyür sonra küçülür.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2151">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık kaynağı sabitken cisim ekrandan (duvardan) uzaklaşıp kaynağa yaklaşırsa gölge büyür, ancak cisim duvara yaklaşırsa ışık ışınlarının önünü daha az kapatacağı için gölge küçülür.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2162" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aynı büyüklükte bir top, sabit bir el feneri ile duvar arasına yerleştiriliyor. Top ışık kaynağına yaklaştırılırsa tam gölgenin büyüklüğü nasıl değişir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4070" 
+                  data-correct="true"
+                  onclick="selectChoice(2162, 4070, true)">
+            <span class="choice-letter">A</span>
+            <span>Büyür</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4071" 
+                  data-correct="false"
+                  onclick="selectChoice(2162, 4071, false)">
+            <span class="choice-letter">B</span>
+            <span>Küçülür</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4072" 
+                  data-correct="false"
+                  onclick="selectChoice(2162, 4072, false)">
+            <span class="choice-letter">C</span>
+            <span>Değişmez</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4073" 
+                  data-correct="false"
+                  onclick="selectChoice(2162, 4073, false)">
+            <span class="choice-letter">D</span>
+            <span>Yok olur</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2162">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Cisim ışık kaynağına yaklaştıkça ışınlar daha geniş açıyla engellenir ve gölge büyür. Bu durum tam gölgeyi etkileyen değişkenlerden biri olan cisim-ışık kaynağı uzaklığı ile ilgilidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2174" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Güneş tutulmasında Ay'ın Dünya üzerinde oluşturduğu tam gölge bölgesi neden sınırlıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4094" 
+                  data-correct="true"
+                  onclick="selectChoice(2174, 4094, true)">
+            <span class="choice-letter">A</span>
+            <span>Güneş büyük bir ışık kaynağıdır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4095" 
+                  data-correct="false"
+                  onclick="selectChoice(2174, 4095, false)">
+            <span class="choice-letter">B</span>
+            <span>Ay çok küçüktür</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4096" 
+                  data-correct="false"
+                  onclick="selectChoice(2174, 4096, false)">
+            <span class="choice-letter">C</span>
+            <span>Dünya dönmektedir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4097" 
+                  data-correct="false"
+                  onclick="selectChoice(2174, 4097, false)">
+            <span class="choice-letter">D</span>
+            <span>Hava bulutludur</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2174">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Güneş büyük bir ışık kaynağı olduğundan tam gölge sınırlı bir alanda oluşur. Bu, kazanım a'ya göre tam gölgenin niteliklerini tanımlar ve kavram yanılgısını ölçer: Güneş'in noktasal sanılması.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2156" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Tam gölgenin şekli, ışığın önüne konulan opak cismin şekline her zaman benzer.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4056" 
+                  data-correct="true"
+                  onclick="selectChoice(2156, 4056, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4057" 
+                  data-correct="false"
+                  onclick="selectChoice(2156, 4057, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2156">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık doğrusal yolla yayıldığı için engelin şekli neyse, o şeklin sınırları boyunca ışık kesilir ve perdeye aynı şekil yansır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2165" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Işık kaynağı ile cisim arasındaki mesafe değiştiğinde tam gölgenin büyüklüğü değişmez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4080" 
+                  data-correct="false"
+                  onclick="selectChoice(2165, 4080, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4081" 
+                  data-correct="true"
+                  onclick="selectChoice(2165, 4081, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2165">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Tam gölgeyi etkileyen değişkenlerden biri mesafedir. Mesafe değiştiğinde gölgenin boyutu da değişir. Bu nedenle ifade yanlıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2180" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Tam gölge oluşumunda, cismin ışık kaynağına yakın olması gölgenin küçülmesine neden olur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4104" 
+                  data-correct="false"
+                  onclick="selectChoice(2180, 4104, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4105" 
+                  data-correct="true"
+                  onclick="selectChoice(2180, 4105, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2180">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü cisim kaynağa yakın olursa gölge büyür. Kazanım c'ye göre değişkenleri açıklar ve günlük hayatta el feneri deneyinde gözlemlenebilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2155" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Öğle vakti güneş tam tepedeyken sokaktaki bir ağacın gölge boyunun en kısa olduğu görülür. Bu durum aşağıdakilerden hangisini kanıtlar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4052" 
+                  data-correct="true"
+                  onclick="selectChoice(2155, 4052, true)">
+            <span class="choice-letter">A</span>
+            <span>Işık kaynağının konumu gölge boyunu etkiler.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4053" 
+                  data-correct="false"
+                  onclick="selectChoice(2155, 4053, false)">
+            <span class="choice-letter">B</span>
+            <span>Işık her ortamda aynı hızla yayılır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4054" 
+                  data-correct="false"
+                  onclick="selectChoice(2155, 4054, false)">
+            <span class="choice-letter">C</span>
+            <span>Gölge her zaman cisimden büyüktür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4055" 
+                  data-correct="false"
+                  onclick="selectChoice(2155, 4055, false)">
+            <span class="choice-letter">D</span>
+            <span>Güneş bir opak maddedir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2155">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işığın gelme açısı gölge boyunu etkiler. Işık dik gelirse gölge en kısa, eğik gelirse en uzun olur. Bu durum gölgenin ışık kaynağının konumuna bağlı olduğunu kanıtlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2158" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: Bir öğrenci 'Işık kaynağı çok güçlü (parlak) olursa gölge boyu daha uzun olur' diyor. Bu öğrencinin hatasını düzeltmek için ne söylenmelidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4058" 
+                  data-correct="true"
+                  onclick="selectChoice(2158, 4058, true)">
+            <span class="choice-letter">A</span>
+            <span>Işığın şiddeti gölge boyunu değil, netliğini etkiler.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4059" 
+                  data-correct="false"
+                  onclick="selectChoice(2158, 4059, false)">
+            <span class="choice-letter">B</span>
+            <span>Işık kaynağı güçlendikçe gölge kısalır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4060" 
+                  data-correct="false"
+                  onclick="selectChoice(2158, 4060, false)">
+            <span class="choice-letter">C</span>
+            <span>Işığın rengi değişirse gölge boyu değişir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4061" 
+                  data-correct="false"
+                  onclick="selectChoice(2158, 4061, false)">
+            <span class="choice-letter">D</span>
+            <span>Işık kaynağı cisimden büyükse gölge oluşmaz.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2158">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık kaynağının parlaklığı sadece gölgenin netliğini veya koyuluğunu etkileyebilir, geometrik bir özellik olan gölge boyunu değiştirmez. Boyu sadece mesafeler ve açılar değiştirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2160" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Sorusu: Sabit bir ışık kaynağı önündeki cismin gölgesini iki katına çıkarmak isteyen bir araştırmacı hangisini yapmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4062" 
+                  data-correct="true"
+                  onclick="selectChoice(2160, 4062, true)">
+            <span class="choice-letter">A</span>
+            <span>Cismi ışık kaynağına yaklaştırmalıdır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4063" 
+                  data-correct="false"
+                  onclick="selectChoice(2160, 4063, false)">
+            <span class="choice-letter">B</span>
+            <span>Cismi ekrana yaklaştırmalıdır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4064" 
+                  data-correct="false"
+                  onclick="selectChoice(2160, 4064, false)">
+            <span class="choice-letter">C</span>
+            <span>Işık kaynağını cisimden uzaklaştırmalıdır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4065" 
+                  data-correct="false"
+                  onclick="selectChoice(2160, 4065, false)">
+            <span class="choice-letter">D</span>
+            <span>Daha küçük bir opak cisim kullanmalıdır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2160">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Cisim ışık kaynağına yaklaştıkça arkasındaki karanlık koni büyür ve perde üzerindeki gölge alanı (boyu) artar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2163" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci 'Saydam cisimler de tam gölge oluşturur.' diyor. Bu ifadeyle ilgili aşağıdakilerden hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4074" 
+                  data-correct="true"
+                  onclick="selectChoice(2163, 4074, true)">
+            <span class="choice-letter">A</span>
+            <span>Yanlıştır, tam gölge opak cisimlerle oluşur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4075" 
+                  data-correct="false"
+                  onclick="selectChoice(2163, 4075, false)">
+            <span class="choice-letter">B</span>
+            <span>Doğrudur, tüm cisimler tam gölge oluşturur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4076" 
+                  data-correct="false"
+                  onclick="selectChoice(2163, 4076, false)">
+            <span class="choice-letter">C</span>
+            <span>Doğrudur, saydam cisimler daha büyük gölge oluşturur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4077" 
+                  data-correct="false"
+                  onclick="selectChoice(2163, 4077, false)">
+            <span class="choice-letter">D</span>
+            <span>Yanlıştır, tam gölge sadece aynalarda oluşur.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2163">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Tam gölge, ışığı geçirmeyen (opak) cisimlerle oluşur. Saydam cisimler ışığı büyük oranda geçirdiği için belirgin bir tam gölge oluşturmaz. Bu soru kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2169" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir deneyde öğrenci, aynı cisimle farklı uzaklıklarda oluşan tam gölge boylarını ölçerek tabloya kaydediyor. Bu çalışma aşağıdaki kazanımlardan hangisiyle doğrudan ilişkilidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4082" 
+                  data-correct="true"
+                  onclick="selectChoice(2169, 4082, true)">
+            <span class="choice-letter">A</span>
+            <span>Tam gölgeye ait elde ettiği verileri kaydeder.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4083" 
+                  data-correct="false"
+                  onclick="selectChoice(2169, 4083, false)">
+            <span class="choice-letter">B</span>
+            <span>Işığın hızını hesaplar.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4084" 
+                  data-correct="false"
+                  onclick="selectChoice(2169, 4084, false)">
+            <span class="choice-letter">C</span>
+            <span>Maddenin hâl değişimini açıklar.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4085" 
+                  data-correct="false"
+                  onclick="selectChoice(2169, 4085, false)">
+            <span class="choice-letter">D</span>
+            <span>Sesin yayılma hızını ölçer.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2169">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrencinin ölçüm yapıp tabloya kaydetmesi, tam gölgeye ait verileri kaydetme kazanımı ile ilgilidir. Bu analiz düzeyinde bir sorudur çünkü durum-kazanım ilişkisi kurulmalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2177" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, lamba ile duvar arasında bir kalem koyarak gölge oluşturuyor. Gölgenin tam olması için hangi değişkeni değiştirmelidir? (Analiz: Deney verilerine göre yorumla)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4100" 
+                  data-correct="true"
+                  onclick="selectChoice(2177, 4100, true)">
+            <span class="choice-letter">A</span>
+            <span>Işık kaynağını noktasala yaklaştırmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4101" 
+                  data-correct="false"
+                  onclick="selectChoice(2177, 4101, false)">
+            <span class="choice-letter">B</span>
+            <span>Kalemi duvara yaklaştırmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4102" 
+                  data-correct="false"
+                  onclick="selectChoice(2177, 4102, false)">
+            <span class="choice-letter">C</span>
+            <span>Lambayı söndürmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4103" 
+                  data-correct="false"
+                  onclick="selectChoice(2177, 4103, false)">
+            <span class="choice-letter">D</span>
+            <span>Duvarı değiştirmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2177">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık kaynağını noktasala yaklaştırmalıdır çünkü büyük kaynaklarda yarı gölge oluşur. Bu, kazanım c'ye göre değişkenleri açıklar ve analiz düzeyinde verileri yorumlamayı gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2170" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Cismin büyüklüğü arttıkça, diğer koşullar sabitken oluşan tam gölge genellikle büyür.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4086" 
+                  data-correct="true"
+                  onclick="selectChoice(2170, 4086, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4087" 
+                  data-correct="false"
+                  onclick="selectChoice(2170, 4087, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2170">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Cismin boyutu arttıkça daha fazla ışık engellenir ve gölge alanı büyür. Bu durum tam gölgeyi etkileyen değişkenlerden cismin büyüklüğü ile ilgilidir. İfade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2176" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 19</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir deneyde, noktasal ışık kaynağı kullanıldığında tam gölge oluşur ve bu gölgenin sınırları keskindir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4098" 
+                  data-correct="true"
+                  onclick="selectChoice(2176, 4098, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4099" 
+                  data-correct="false"
+                  onclick="selectChoice(2176, 4099, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2176">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur çünkü tam gölgenin niteliği keskin sınırlar ve tam karanlıktır. Kazanım a'ya göre nitelikleri tanımlar ve kazanım b'ye göre verileri kaydeder.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      FB.5.4.3.Tam Gölgenin Oluşumu test soruları - 6. Sınıf Fen Bilimleri dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // ✅ Düzeltme: === ile tip güvenli karşılaştırma
+        if (btn.dataset.choiceId === String(choiceId) && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

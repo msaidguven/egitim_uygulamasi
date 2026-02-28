@@ -595,6 +595,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                       incorrectCount: viewModel.incorrectCount,
                       remainingSeconds: _remainingSeconds,
                       totalSeconds: viewModel.timeLimitSeconds,
+                      currentStreak: viewModel.currentStreak, // Streak bilgisini bar'a yolluyoruz
                     ),
                   Expanded(
                     child: MediaQuery(

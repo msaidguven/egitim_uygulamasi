@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/multiple_choice_widget.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/fill_blank_widget.dart';
@@ -37,7 +38,8 @@ class QuestionCard extends StatelessWidget {
         vertical: isNarrow ? 6 : 8,
       ),
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shadowColor: Colors.black26, // Daha yumuşak gölge
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)), // Daha yuvarlak köşeler
       child: Stack(
         children: [
           Padding(
@@ -57,43 +59,56 @@ class QuestionCard extends StatelessWidget {
                   Divider(height: isNarrow ? 24 : 32),
                 Expanded(child: _buildAnswerArea(context)),
                 if (isChecked) ...[
-                  SizedBox(height: isNarrow ? 12 : 16),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: isNarrow ? 8 : 10,
-                      horizontal: isNarrow ? 16 : 20,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isCorrect ? Colors.green.shade50 : Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isCorrect ? Colors.green.shade200 : Colors.red.shade200,
-                        width: 1.5,
+                  SizedBox(height: isNarrow ? 16 : 24),
+                  // Oyunsu Sonuç Rozeti (Badge)
+                  Center(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: isNarrow ? 12 : 16,
+                        horizontal: isNarrow ? 24 : 32,
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          isTimeUp
-                              ? Icons.timer_off
-                              : (isCorrect ? Icons.check_circle : Icons.cancel),
-                          color: isTimeUp
-                              ? Colors.orange
-                              : (isCorrect ? Colors.green : Colors.red),
-                          size: isNarrow ? 20 : 24,
+                      decoration: BoxDecoration(
+                        color: isTimeUp ? const Color(0xFFFFF7ED) : (isCorrect ? const Color(0xFFF0FDF4) : const Color(0xFFFEF2F2)),
+                        borderRadius: BorderRadius.circular(30), // Tam yuvarlak hap(pill) şekli
+                        border: Border.all(
+                          color: isTimeUp ? const Color(0xFFF97316) : (isCorrect ? const Color(0xFF22C55E) : const Color(0xFFEF4444)),
+                          width: 2.5,
                         ),
-                        SizedBox(width: isNarrow ? 6 : 8),
-                        Text(
-                          isTimeUp ? 'Süre doldu!' : (isCorrect ? 'Doğru!' : 'Yanlış!'),
-                          style: TextStyle(
-                            color: isTimeUp ? Colors.orange : (isCorrect ? Colors.green : Colors.red),
-                            fontSize: isNarrow ? 16 : 18,
-                            fontWeight: FontWeight.bold,
+                        boxShadow: [
+                          BoxShadow(
+                            color: (isTimeUp ? const Color(0xFFF97316) : (isCorrect ? const Color(0xFF22C55E) : const Color(0xFFEF4444))).withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          )
+                        ]
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min, // Ortalamak için
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            isTimeUp
+                                ? '⏰'
+                                : (isCorrect ? '✅' : '❌'),
+                            style: TextStyle(
+                              fontSize: isNarrow ? 24 : 28,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                          SizedBox(width: isNarrow ? 8 : 12),
+                          Text(
+                            isTimeUp ? 'Süre doldu!' : (isCorrect ? 'Harika!' : 'Şansını zorla!'),
+                            style: TextStyle(
+                              color: isTimeUp ? const Color(0xFFC2410C) : (isCorrect ? const Color(0xFF15803D) : const Color(0xFFB91C1C)),
+                              fontSize: isNarrow ? 18 : 22,
+                              fontWeight: FontWeight.w900, // Çok kalın eğlenceli font
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ).animate()
+                      .scale(begin: const Offset(0.8, 0.8), end: const Offset(1, 1), curve: Curves.elasticOut, duration: 600.ms)
+                      .fadeIn(duration: 300.ms),
                   ),
                   SizedBox(height: isNarrow ? 6 : 8),
                 ],
@@ -130,7 +145,7 @@ class QuestionCard extends StatelessWidget {
             ),
         ],
       ),
-    );
+    ).animate().slideY(begin: 0.1, end: 0, curve: Curves.easeOutQuart, duration: 500.ms).fadeIn(duration: 500.ms);
   }
 
   Widget _buildAnswerArea(BuildContext context) {

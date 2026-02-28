@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dijital Ortamlarda Gizlilik ve Güvenlik Test Soruları - Bilişim Etiği Ve Siber Güvenlik | Eğitim Portalı</title>
+  <meta name="description" content="Dijital Ortamlarda Gizlilik ve Güvenlik konusu test soruları ve çözümleri. 6. Sınıf Bilişim Teknolojileri ve Yazılım dersi online alıştırma.">
+  <meta name="keywords" content="Dijital Ortamlarda Gizlilik ve Güvenlik test, Dijital Ortamlarda Gizlilik ve Güvenlik sorular, Bilişim Teknolojileri ve Yazılım quiz, 6. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Dijital Ortamlarda Gizlilik ve Güvenlik Test Soruları">
+  <meta property="og:description" content="18 soru ile Dijital Ortamlarda Gizlilik ve Güvenlik konusunu pekiştir">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/6-sinif/">6. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/bilisim-teknolojileri-ve-yazilim/">Bilişim Teknolojileri ve Yazılım</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/bilisim-teknolojileri-ve-yazilim/bilisim-etigi-ve-siber-guvenlik/">Bilişim Etiği Ve Siber Güvenlik</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Dijital Ortamlarda Gizlilik ve Güvenlik Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Dijital Ortamlarda Gizlilik ve Güvenlik - Test Soruları</h1>
+      <div class="meta">18 Soru • 6. Sınıf Bilişim Teknolojileri ve Yazılım</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/6-sinif/bilisim-teknolojileri-ve-yazilim/bilisim-etigi-ve-siber-guvenlik/dijital-ortamlarda-gizlilik-ve-guvenlik/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="1521" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, sosyal medya hesabında ev adresini ve telefon numarasını herkese açık olarak paylaşıyor. Bu durum aşağıdaki risklerden hangisine yol açabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2824" 
+                  data-correct="true"
+                  onclick="selectChoice(1521, 2824, true)">
+            <span class="choice-letter">A</span>
+            <span>Kimlik hırsızlığı riski</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2825" 
+                  data-correct="false"
+                  onclick="selectChoice(1521, 2825, false)">
+            <span class="choice-letter">B</span>
+            <span>Bilgisayarın hızlanması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2826" 
+                  data-correct="false"
+                  onclick="selectChoice(1521, 2826, false)">
+            <span class="choice-letter">C</span>
+            <span>İnternet kotasının artması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2827" 
+                  data-correct="false"
+                  onclick="selectChoice(1521, 2827, false)">
+            <span class="choice-letter">D</span>
+            <span>Ekran çözünürlüğünün yükselmesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1521">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kişisel bilgilerin herkese açık paylaşılması, kötü niyetli kişilerin bu bilgileri kullanmasına neden olabilir. Bu durum kimlik hırsızlığı ve güvenlik tehdidi oluşturur. Bu nedenle doğru cevap kimlik hırsızlığıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1541" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Arkadaşın sana bir oyun sitesinde şifreni paylaşman gerektiğini söylüyor. Bu durumda karşılaşabileceğin en büyük gizlilik riski aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2864" 
+                  data-correct="true"
+                  onclick="selectChoice(1541, 2864, true)">
+            <span class="choice-letter">A</span>
+            <span>Hesabının başkaları tarafından kullanılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2865" 
+                  data-correct="false"
+                  onclick="selectChoice(1541, 2865, false)">
+            <span class="choice-letter">B</span>
+            <span>Oyunlarda daha fazla puan kazanmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2866" 
+                  data-correct="false"
+                  onclick="selectChoice(1541, 2866, false)">
+            <span class="choice-letter">C</span>
+            <span>Arkadaşınla daha iyi oyun oynamak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2867" 
+                  data-correct="false"
+                  onclick="selectChoice(1541, 2867, false)">
+            <span class="choice-letter">D</span>
+            <span>Bilgisayarın hızının artması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1541">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Şifre paylaşımı hesap çalınmasına yol açabilir, çünkü şifreler kişisel bilgileri korur. Doğru cevap A'dır, bu riski belirlemek kazanım a ile uyumludur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1524" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Antivirüs programı kullanmak dijital ortamlarda güvenliği artırır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2836" 
+                  data-correct="true"
+                  onclick="selectChoice(1524, 2836, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2837" 
+                  data-correct="false"
+                  onclick="selectChoice(1524, 2837, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1524">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Antivirüs programları zararlı yazılımları tespit edip engelleyerek cihaz güvenliğini artırır. Bu nedenle ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1537" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Güvenmediğimiz bir kaynaktan gelen e-posta ekindeki dosyaları açmak, bilgisayarımıza zararlı yazılım bulaşmasına neden olabilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2858" 
+                  data-correct="true"
+                  onclick="selectChoice(1537, 2858, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2859" 
+                  data-correct="false"
+                  onclick="selectChoice(1537, 2859, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1537">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bilinmeyen dosya ekleri genellikle virüs veya casus yazılım taşımak için kullanılır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1545" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bilgi gizliliği, sadece şifrelerle sağlanır ve firewall gibi bileşenlere gerek yoktur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2874" 
+                  data-correct="false"
+                  onclick="selectChoice(1545, 2874, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2875" 
+                  data-correct="true"
+                  onclick="selectChoice(1545, 2875, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1545">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, çünkü güvenlik bileşenleri şifreleme, firewall gibi birden fazladır. Bu yanılgı, kazanım c'yi ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1522" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi güçlü bir şifre oluşturma yöntemidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2828" 
+                  data-correct="false"
+                  onclick="selectChoice(1522, 2828, false)">
+            <span class="choice-letter">A</span>
+            <span>Ad ve soyadı kullanmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2829" 
+                  data-correct="false"
+                  onclick="selectChoice(1522, 2829, false)">
+            <span class="choice-letter">B</span>
+            <span>123456 yazmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2830" 
+                  data-correct="false"
+                  onclick="selectChoice(1522, 2830, false)">
+            <span class="choice-letter">C</span>
+            <span>Doğum tarihini kullanmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2831" 
+                  data-correct="true"
+                  onclick="selectChoice(1522, 2831, true)">
+            <span class="choice-letter">D</span>
+            <span>Harf, rakam ve sembollerden oluşan karmaşık bir şifre oluşturmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1522">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Güçlü şifre; harf, rakam ve özel karakter içeren ve tahmin edilmesi zor olan şifredir. Sadece doğum tarihi veya 123456 gibi ifadeler kolay tahmin edilir. Bu nedenle karmaşık ve farklı karakterler içeren seçenek doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1531" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Güçlü bir şifre oluşturmak isteyen Elif, aşağıdaki yöntemlerden hangisini seçerse hesabının güvenliğini en üst düzeye çıkarmış olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2844" 
+                  data-correct="true"
+                  onclick="selectChoice(1531, 2844, true)">
+            <span class="choice-letter">A</span>
+            <span>Büyük-küçük harf, rakam ve sembol içeren karmaşık bir şifre kullanmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2845" 
+                  data-correct="false"
+                  onclick="selectChoice(1531, 2845, false)">
+            <span class="choice-letter">B</span>
+            <span>Doğum tarihini ve adının baş harflerini kullanmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2846" 
+                  data-correct="false"
+                  onclick="selectChoice(1531, 2846, false)">
+            <span class="choice-letter">C</span>
+            <span>Ardışık sayılardan oluşan (123456) bir şifre belirlemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2847" 
+                  data-correct="false"
+                  onclick="selectChoice(1531, 2847, false)">
+            <span class="choice-letter">D</span>
+            <span>Sadece kolay hatırlanan bir evcil hayvan ismi yazmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1531">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Güçlü şifreler; harf, rakam ve özel karakterlerin ($, !, ?) birleşiminden oluşmalı ve kişisel bilgiler içermemelidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1533" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sosyal medyada tanımadığınız birinden 'Bedava oyun kredisi kazandınız, buraya tıklayın' şeklinde bir mesaj aldınız. Bu durum hangi dijital risk türüne örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2850" 
+                  data-correct="true"
+                  onclick="selectChoice(1533, 2850, true)">
+            <span class="choice-letter">A</span>
+            <span>Oltalama (Phishing)</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2851" 
+                  data-correct="false"
+                  onclick="selectChoice(1533, 2851, false)">
+            <span class="choice-letter">B</span>
+            <span>Siber Zorbalık</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2852" 
+                  data-correct="false"
+                  onclick="selectChoice(1533, 2852, false)">
+            <span class="choice-letter">C</span>
+            <span>Dijital Ayak İzi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2853" 
+                  data-correct="false"
+                  onclick="selectChoice(1533, 2853, false)">
+            <span class="choice-letter">D</span>
+            <span>Telif Hakkı İhlali</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1533">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kullanıcıları kandırarak bilgilerini ele geçirmeye çalışan bu tür saldırılara oltalama (phishing) denir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1543" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">İnternette bir sitede güçlü bir şifre oluşturmak için aşağıdakilerden hangisini yapmalısın?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2870" 
+                  data-correct="false"
+                  onclick="selectChoice(1543, 2870, false)">
+            <span class="choice-letter">A</span>
+            <span>Adını ve doğum yılını kullanmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2871" 
+                  data-correct="false"
+                  onclick="selectChoice(1543, 2871, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece rakamlar kullanmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2872" 
+                  data-correct="true"
+                  onclick="selectChoice(1543, 2872, true)">
+            <span class="choice-letter">C</span>
+            <span>Büyük-küçük harf, rakam ve sembol karıştırmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2873" 
+                  data-correct="false"
+                  onclick="selectChoice(1543, 2873, false)">
+            <span class="choice-letter">D</span>
+            <span>Aynı şifreyi her yerde kullanmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1543">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Güçlü şifreler harf, rakam ve sembol içerir. Doğru cevap C'dir, bu önlem kazanım b ile uyumludur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1525" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Şifremi en yakın arkadaşımla paylaşmam güvenlik açısından bir risk oluşturmaz.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2838" 
+                  data-correct="false"
+                  onclick="selectChoice(1525, 2838, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2839" 
+                  data-correct="true"
+                  onclick="selectChoice(1525, 2839, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1525">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Şifre kişiye özeldir ve kimseyle paylaşılmamalıdır. Arkadaşla paylaşmak da güvenlik riski oluşturur çünkü hesap başkalarının kontrolüne geçebilir. Bu nedenle ifade yanlıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1532" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir web sitesinin adres çubuğunda 'https' yerine 'http' yazması, o sitenin verileri şifrelemeden ilettiği ve güvenlik riskinin daha yüksek olduğu anlamına gelir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2848" 
+                  data-correct="true"
+                  onclick="selectChoice(1532, 2848, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2849" 
+                  data-correct="false"
+                  onclick="selectChoice(1532, 2849, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1532">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">HTTPS protokolündeki 'S' harfi 'Secure' (Güvenli) anlamına gelir ve verilerin şifrelendiğini gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1542" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sosyal medya hesabında doğum tarihini herkese açık paylaşmak, kimlik hırsızlığı riskini artırır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2868" 
+                  data-correct="true"
+                  onclick="selectChoice(1542, 2868, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2869" 
+                  data-correct="false"
+                  onclick="selectChoice(1542, 2869, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1542">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru, çünkü kişisel bilgiler kötü niyetli kişiler tarafından kullanılabilir. Bu, kazanım a'daki riskleri belirleme ile ilişkilidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1548" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Dijital ortamda şifreleme, bilgilerin başkaları tarafından okunmasını engelleyen bir güvenlik bileşenidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2880" 
+                  data-correct="true"
+                  onclick="selectChoice(1548, 2880, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2881" 
+                  data-correct="false"
+                  onclick="selectChoice(1548, 2881, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1548">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru, şifreleme temel bileşendir. Kazanım c ile uyumlu.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1523" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, tanımadığı bir kişiden gelen 'Hediyenizi kazanmak için tıklayın' mesajındaki bağlantıya tıklamayı düşünüyor. Bu durumu güvenlik açısından nasıl değerlendirmelidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2832" 
+                  data-correct="false"
+                  onclick="selectChoice(1523, 2832, false)">
+            <span class="choice-letter">A</span>
+            <span>Bağlantıya hemen tıklamalıdır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2833" 
+                  data-correct="false"
+                  onclick="selectChoice(1523, 2833, false)">
+            <span class="choice-letter">B</span>
+            <span>Arkadaşlarına da göndermelidir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2834" 
+                  data-correct="true"
+                  onclick="selectChoice(1523, 2834, true)">
+            <span class="choice-letter">C</span>
+            <span>Bağlantıya tıklamamalı ve mesajı silmelidir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2835" 
+                  data-correct="false"
+                  onclick="selectChoice(1523, 2835, false)">
+            <span class="choice-letter">D</span>
+            <span>Şifresini mesajı atan kişiyle paylaşmalıdır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1523">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Tanımadığımız kişilerden gelen şüpheli bağlantılar oltalama (phishing) saldırısı olabilir. Bu tür bağlantılar kişisel bilgileri ele geçirmek için hazırlanır. Bu nedenle bağlantıya tıklamamak ve silmek doğru davranıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1530" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, oyun indirirken uygulamanın rehberine ve kamerasına erişim izni istediğini fark ediyor. Bu durumda en doğru davranış hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2840" 
+                  data-correct="false"
+                  onclick="selectChoice(1530, 2840, false)">
+            <span class="choice-letter">A</span>
+            <span>Tüm izinleri sorgulamadan kabul etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2841" 
+                  data-correct="true"
+                  onclick="selectChoice(1530, 2841, true)">
+            <span class="choice-letter">B</span>
+            <span>İzinleri dikkatlice inceleyip gereksizse yüklememek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2842" 
+                  data-correct="false"
+                  onclick="selectChoice(1530, 2842, false)">
+            <span class="choice-letter">C</span>
+            <span>Şifresini uygulamaya yazmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2843" 
+                  data-correct="false"
+                  onclick="selectChoice(1530, 2843, false)">
+            <span class="choice-letter">D</span>
+            <span>Uygulamayı arkadaşına göndermek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1530">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Uygulamanın istediği izinler, uygulamanın amacıyla ilgili olmalıdır. Oyun için rehber ve kamera izni gereksiz olabilir ve gizlilik riski oluşturabilir. Bu nedenle izinleri dikkatle değerlendirmek ve gerekirse yüklememek doğru davranıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1536" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: Can, 'Benim bilgisayarımda antivirüs programı var, bu yüzden internette ne yaparsam yapayım asla zarar görmem' diye düşünmektedir. Can'ın bu düşüncesi neden yanlıştır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2854" 
+                  data-correct="true"
+                  onclick="selectChoice(1536, 2854, true)">
+            <span class="choice-letter">A</span>
+            <span>Antivirüsler her türlü kandırmaca ve kullanıcı hatasına karşı tam koruma sağlayamaz.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2855" 
+                  data-correct="false"
+                  onclick="selectChoice(1536, 2855, false)">
+            <span class="choice-letter">B</span>
+            <span>Çünkü antivirüs programları sadece oyunları korur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2856" 
+                  data-correct="false"
+                  onclick="selectChoice(1536, 2856, false)">
+            <span class="choice-letter">C</span>
+            <span>Çünkü antivirüs programları interneti yavaşlatır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2857" 
+                  data-correct="false"
+                  onclick="selectChoice(1536, 2857, false)">
+            <span class="choice-letter">D</span>
+            <span>Can haklıdır, antivirüs olan bilgisayara hiçbir şey olmaz.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1536">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Antivirüs programları sadece teknik saldırıları engeller; sosyal mühendislik ve kullanıcı hatalarına karşı %100 koruma sağlamaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1540" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Sorusu: Bir arkadaşınız size popüler bir uygulamanın 'hileli/ücretsiz' versiyonunu içeren bir link gönderdi. Uygulamayı indirdiğinizde telefonunuzun kamerasının kendi kendine açıldığını fark ettiniz. Bu durumu güvenlik açısından nasıl değerlendirirsiniz?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2860" 
+                  data-correct="true"
+                  onclick="selectChoice(1540, 2860, true)">
+            <span class="choice-letter">A</span>
+            <span>Cihaza casus yazılım bulaşmıştır, resmi olmayan kaynaklardan dosya indirilmemelidir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2861" 
+                  data-correct="false"
+                  onclick="selectChoice(1540, 2861, false)">
+            <span class="choice-letter">B</span>
+            <span>Uygulama çok kaliteli olduğu için kamerayı kullanıyordur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2862" 
+                  data-correct="false"
+                  onclick="selectChoice(1540, 2862, false)">
+            <span class="choice-letter">C</span>
+            <span>Arkadaşım gönderdiği için bu bir güvenlik riski oluşturmaz.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2863" 
+                  data-correct="false"
+                  onclick="selectChoice(1540, 2863, false)">
+            <span class="choice-letter">D</span>
+            <span>Telefonun güncelleme zamanı gelmiştir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1540">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Resmi mağazalar dışından indirilen hileli dosyalar genellikle cihazın kontrolünü ele geçiren casus yazılımlar içerir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1547" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir arkadaşın sana bilinmeyen bir link gönderdi ve tıkladığında bilgisayarında sorun çıktı. Bu durumu güvenlik açısından değerlendirirsek, ne tür bir riskle karşılaştın?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2876" 
+                  data-correct="false"
+                  onclick="selectChoice(1547, 2876, false)">
+            <span class="choice-letter">A</span>
+            <span>Arkadaşlık güçlenir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2877" 
+                  data-correct="true"
+                  onclick="selectChoice(1547, 2877, true)">
+            <span class="choice-letter">B</span>
+            <span>Zararlı yazılım bulaşması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2878" 
+                  data-correct="false"
+                  onclick="selectChoice(1547, 2878, false)">
+            <span class="choice-letter">C</span>
+            <span>Daha hızlı internet</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2879" 
+                  data-correct="false"
+                  onclick="selectChoice(1547, 2879, false)">
+            <span class="choice-letter">D</span>
+            <span>Yeni oyun indirme</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1547">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu phishing veya malware riskidir. Doğru cevap B'dir, kazanım ç'deki durum değerlendirmesini gerektirir ve analiz düzeyindedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Dijital Ortamlarda Gizlilik ve Güvenlik test soruları - 6. Sınıf Bilişim Teknolojileri ve Yazılım dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // ✅ Düzeltme: === ile tip güvenli karşılaştırma
+        if (btn.dataset.choiceId === String(choiceId) && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

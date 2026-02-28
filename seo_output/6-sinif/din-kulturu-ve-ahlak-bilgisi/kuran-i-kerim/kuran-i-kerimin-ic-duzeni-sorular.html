@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kur’an-ı Kerim’in İç Düzeni Test Soruları - Kur’an-ı Kerim | Eğitim Portalı</title>
+  <meta name="description" content="Kur’an-ı Kerim’in İç Düzeni konusu test soruları ve çözümleri. 6. Sınıf Din Kültürü ve Ahlak Bilgisi dersi online alıştırma.">
+  <meta name="keywords" content="Kur’an-ı Kerim’in İç Düzeni test, Kur’an-ı Kerim’in İç Düzeni sorular, Din Kültürü ve Ahlak Bilgisi quiz, 6. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Kur’an-ı Kerim’in İç Düzeni Test Soruları">
+  <meta property="og:description" content="18 soru ile Kur’an-ı Kerim’in İç Düzeni konusunu pekiştir">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/6-sinif/">6. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/din-kulturu-ve-ahlak-bilgisi/">Din Kültürü ve Ahlak Bilgisi</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/din-kulturu-ve-ahlak-bilgisi/kuran-i-kerim/">Kur’an-ı Kerim</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Kur’an-ı Kerim’in İç Düzeni Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Kur’an-ı Kerim’in İç Düzeni - Test Soruları</h1>
+      <div class="meta">18 Soru • 6. Sınıf Din Kültürü ve Ahlak Bilgisi</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/6-sinif/din-kulturu-ve-ahlak-bilgisi/kuran-i-kerim/kuran-i-kerimin-ic-duzeni/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="1341" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kur’an-ı Kerim’in ayetlerden oluşan, başı ve sonu belli olan her bir bölümüne ne ad verilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2484" 
+                  data-correct="true"
+                  onclick="selectChoice(1341, 2484, true)">
+            <span class="choice-letter">A</span>
+            <span>Sure</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2485" 
+                  data-correct="false"
+                  onclick="selectChoice(1341, 2485, false)">
+            <span class="choice-letter">B</span>
+            <span>Cüz</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2486" 
+                  data-correct="false"
+                  onclick="selectChoice(1341, 2486, false)">
+            <span class="choice-letter">C</span>
+            <span>Hizip</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2487" 
+                  data-correct="false"
+                  onclick="selectChoice(1341, 2487, false)">
+            <span class="choice-letter">D</span>
+            <span>Meal</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1341">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kur'an-ı Kerim'in bölümlerine 'Sure' denir. Ayetler birleşerek sureleri, sureler ise birleşerek Kur'an'ı oluşturur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1351" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kur’an-ı Kerim’in en küçük anlamlı birimi aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2504" 
+                  data-correct="true"
+                  onclick="selectChoice(1351, 2504, true)">
+            <span class="choice-letter">A</span>
+            <span>Ayet</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2505" 
+                  data-correct="false"
+                  onclick="selectChoice(1351, 2505, false)">
+            <span class="choice-letter">B</span>
+            <span>Sure</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2506" 
+                  data-correct="false"
+                  onclick="selectChoice(1351, 2506, false)">
+            <span class="choice-letter">C</span>
+            <span>Cüz</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2507" 
+                  data-correct="false"
+                  onclick="selectChoice(1351, 2507, false)">
+            <span class="choice-letter">D</span>
+            <span>Hatim</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1351">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kur’an-ı Kerim’in en küçük anlamlı birimi ayettir. Ayetler birleşerek sureleri oluşturur. Cüz ise daha büyük bölümleri ifade eder.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1361" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kur’an-ı Kerim’de sureler, ayetlerden oluşur. Bir sure kaç ayetten oluşabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2524" 
+                  data-correct="false"
+                  onclick="selectChoice(1361, 2524, false)">
+            <span class="choice-letter">A</span>
+            <span>Her sure aynı sayıda ayetten oluşur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2525" 
+                  data-correct="true"
+                  onclick="selectChoice(1361, 2525, true)">
+            <span class="choice-letter">B</span>
+            <span>Sureler farklı sayıda ayetten oluşabilir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2526" 
+                  data-correct="false"
+                  onclick="selectChoice(1361, 2526, false)">
+            <span class="choice-letter">C</span>
+            <span>Sureler sadece cüzlerden oluşur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2527" 
+                  data-correct="false"
+                  onclick="selectChoice(1361, 2527, false)">
+            <span class="choice-letter">D</span>
+            <span>Her sure 30 ayetten oluşur.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1361">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sureler farklı sayıda ayetten oluşabilir, en kısası 3 ayet, en uzunu 286 ayettir. Bu, Kur’an’ın iç düzenini anlamada temel bir bilgidir ve ayet-sure ilişkisini gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1346" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Ayetlerin bittiğini gösteren, içinde ayet numarasının yazılı olduğu süslü işaretlere 'durak' denir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2494" 
+                  data-correct="true"
+                  onclick="selectChoice(1346, 2494, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2495" 
+                  data-correct="false"
+                  onclick="selectChoice(1346, 2495, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1346">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ayet sonlarındaki yuvarlak işaretlere durak (berken) denir ve okuyucuya ayetin bittiğini haber verir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1354" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kur’an-ı Kerim 114 sureden oluşur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2516" 
+                  data-correct="true"
+                  onclick="selectChoice(1354, 2516, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2517" 
+                  data-correct="false"
+                  onclick="selectChoice(1354, 2517, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1354">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Kur’an-ı Kerim toplam 114 sureden oluşmaktadır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1364" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kur’an-ı Kerim’de toplam 30 cüz vardır ve her cüz eşit sayıda ayet içerir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2536" 
+                  data-correct="false"
+                  onclick="selectChoice(1364, 2536, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2537" 
+                  data-correct="true"
+                  onclick="selectChoice(1364, 2537, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1364">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, çünkü cüzler Kur’an’ı yaklaşık eşit uzunlukta parçalara böler, ancak ayet sayısı her cüzde farklı olabilir. Bu, iç düzenin okuma amaçlı olduğunu gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1345" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kur’an-ı Kerim ile ilgili aşağıdaki bilgilerden hangisi yanlıştır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2490" 
+                  data-correct="false"
+                  onclick="selectChoice(1345, 2490, false)">
+            <span class="choice-letter">A</span>
+            <span>Kur’an’da toplam 114 sure vardır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2491" 
+                  data-correct="true"
+                  onclick="selectChoice(1345, 2491, true)">
+            <span class="choice-letter">B</span>
+            <span>Sureler uzundan kısaya doğru sıralanmıştır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2492" 
+                  data-correct="false"
+                  onclick="selectChoice(1345, 2492, false)">
+            <span class="choice-letter">C</span>
+            <span>Kur’an’ın ilk suresi Fatiha suresidir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2493" 
+                  data-correct="false"
+                  onclick="selectChoice(1345, 2493, false)">
+            <span class="choice-letter">D</span>
+            <span>Kur’an’ın son suresi Nas suresidir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1345">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kur'an'daki sureler uzunluklarına göre sıralanmamıştır. Bu yaygın bir kavram yanılgısıdır; sure dizilişi vahiyle belirlenmiştir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1348" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ramazan ayında her gün bir cüz okuyarak bayrama kadar Kur'an'ın tamamını bitiren Ahmet Bey, hangi ibadeti gerçekleştirmiş olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2496" 
+                  data-correct="true"
+                  onclick="selectChoice(1348, 2496, true)">
+            <span class="choice-letter">A</span>
+            <span>Hatim</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2497" 
+                  data-correct="false"
+                  onclick="selectChoice(1348, 2497, false)">
+            <span class="choice-letter">B</span>
+            <span>Hafızlık</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2498" 
+                  data-correct="false"
+                  onclick="selectChoice(1348, 2498, false)">
+            <span class="choice-letter">C</span>
+            <span>Meal</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2499" 
+                  data-correct="false"
+                  onclick="selectChoice(1348, 2499, false)">
+            <span class="choice-letter">D</span>
+            <span>Tefsir</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1348">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kur'an'ın baştan sona okunup bitirilmesine 'Hatim' denir. Mukabele ise birinin okuyup diğerlerinin takip etmesidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1352" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, “Kur’an-ı Kerim 30 sureden oluşur.” demektedir. Bu öğrencinin hatası aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2508" 
+                  data-correct="false"
+                  onclick="selectChoice(1352, 2508, false)">
+            <span class="choice-letter">A</span>
+            <span>Ayet ile sureyi karıştırmıştır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2509" 
+                  data-correct="true"
+                  onclick="selectChoice(1352, 2509, true)">
+            <span class="choice-letter">B</span>
+            <span>Sure ile cüzü karıştırmıştır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2510" 
+                  data-correct="false"
+                  onclick="selectChoice(1352, 2510, false)">
+            <span class="choice-letter">C</span>
+            <span>Cüz ile ayeti karıştırmıştır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2511" 
+                  data-correct="false"
+                  onclick="selectChoice(1352, 2511, false)">
+            <span class="choice-letter">D</span>
+            <span>Hatim ile sureyi karıştırmıştır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1352">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kur’an-ı Kerim 30 sureden değil, 30 cüzden oluşur. Toplam 114 sure vardır. Öğrenci sure ile cüz kavramını karıştırmıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1362" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Günlük hayatta Kur’an okurken, bir cüzü bitirdiğimizde ne yapmış oluruz? (Kavram yanılgısı: Cüzün surelerle ilişkisini karıştırma)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2528" 
+                  data-correct="false"
+                  onclick="selectChoice(1362, 2528, false)">
+            <span class="choice-letter">A</span>
+            <span>Sadece bir sureyi okumuş oluruz.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2529" 
+                  data-correct="true"
+                  onclick="selectChoice(1362, 2529, true)">
+            <span class="choice-letter">B</span>
+            <span>Kur’an’ın yaklaşık 1/30’unu okumuş oluruz.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2530" 
+                  data-correct="false"
+                  onclick="selectChoice(1362, 2530, false)">
+            <span class="choice-letter">C</span>
+            <span>Tüm ayetleri okumuş oluruz.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2531" 
+                  data-correct="false"
+                  onclick="selectChoice(1362, 2531, false)">
+            <span class="choice-letter">D</span>
+            <span>Bir ayeti okumuş oluruz.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1362">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bir cüz, Kur’an’ın 30 eşit parçaya bölünmüş halidir ve birden fazla sure veya sure parçalarını içerir. Bu, okuma kolaylığı için düzenlenmiştir, ancak kavram yanılgısı olarak cüzü sadece bir sure sanmak yaygındır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1342" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kur’an-ı Kerim’deki en uzun sure Fatiha suresidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2488" 
+                  data-correct="false"
+                  onclick="selectChoice(1342, 2488, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2489" 
+                  data-correct="true"
+                  onclick="selectChoice(1342, 2489, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1342">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kur'an'ın en uzun suresi 286 ayetle Bakara suresidir. Fatiha suresi ise Kur'an'ın ilk suresidir ancak en uzunu değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1355" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Cüzler vahiy sırasında belirlenmiş bölümlerdir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2518" 
+                  data-correct="false"
+                  onclick="selectChoice(1355, 2518, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2519" 
+                  data-correct="true"
+                  onclick="selectChoice(1355, 2519, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1355">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Cüzler sonradan, Kur’an-ı Kerim’in okunmasını kolaylaştırmak amacıyla düzenlenmiştir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1365" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ayetler, Kur’an-ı Kerim’in en küçük birimleridir ve sureleri oluşturur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2538" 
+                  data-correct="true"
+                  onclick="selectChoice(1365, 2538, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2539" 
+                  data-correct="false"
+                  onclick="selectChoice(1365, 2539, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1365">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru, ayetler Kur’an’ın temel yapı taşlarıdır ve sureler bu ayetlerden oluşur, bu ilişki iç düzeni tanımlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1350" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci Kur’an-ı Kerim’i incelerken bazı surelerin çok uzun, bazılarının ise çok kısa (3 ayet) olduğunu fark etmiştir. Bu durum aşağıdakilerden hangisini kanıtlar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2500" 
+                  data-correct="true"
+                  onclick="selectChoice(1350, 2500, true)">
+            <span class="choice-letter">A</span>
+            <span>Surelerin standart bir ayet sayısı yoktur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2501" 
+                  data-correct="false"
+                  onclick="selectChoice(1350, 2501, false)">
+            <span class="choice-letter">B</span>
+            <span>Tüm sureler eşit uzunluktadır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2502" 
+                  data-correct="false"
+                  onclick="selectChoice(1350, 2502, false)">
+            <span class="choice-letter">C</span>
+            <span>Her cüz mutlaka bir sure ile başlar.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2503" 
+                  data-correct="false"
+                  onclick="selectChoice(1350, 2503, false)">
+            <span class="choice-letter">D</span>
+            <span>Sure isimleri ayet sayısına göre verilir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1350">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Surelerin ayet sayıları birbirinden farklıdır. En kısa sure olan Kevser suresi 3 ayetken, en uzun sure olan Bakara suresi 286 ayettir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1353" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ayet → Sure → Kur’an-ı Kerim sıralaması bize aşağıdakilerden hangisini gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2512" 
+                  data-correct="false"
+                  onclick="selectChoice(1353, 2512, false)">
+            <span class="choice-letter">A</span>
+            <span>Kur’an’ın rastgele düzenlendiğini</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2513" 
+                  data-correct="true"
+                  onclick="selectChoice(1353, 2513, true)">
+            <span class="choice-letter">B</span>
+            <span>Küçükten büyüğe doğru bir yapı olduğunu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2514" 
+                  data-correct="false"
+                  onclick="selectChoice(1353, 2514, false)">
+            <span class="choice-letter">C</span>
+            <span>Cüzlerin surelerden küçük olduğunu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2515" 
+                  data-correct="false"
+                  onclick="selectChoice(1353, 2515, false)">
+            <span class="choice-letter">D</span>
+            <span>Her surenin eşit uzunlukta olduğunu</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1353">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu sıralama küçükten büyüğe doğru bir bütünlük olduğunu gösterir. Ayetler sureleri, sureler de Kur’an-ı Kerim’in tamamını oluşturur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1359" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ramazan ayında her gün bir bölüm okuyarak Kur’an-ı Kerim’i bitirmek isteyen bir kişi aşağıdakilerden hangisine göre plan yapmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2520" 
+                  data-correct="false"
+                  onclick="selectChoice(1359, 2520, false)">
+            <span class="choice-letter">A</span>
+            <span>Ayetlere göre</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2521" 
+                  data-correct="false"
+                  onclick="selectChoice(1359, 2521, false)">
+            <span class="choice-letter">B</span>
+            <span>Surelere göre</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2522" 
+                  data-correct="true"
+                  onclick="selectChoice(1359, 2522, true)">
+            <span class="choice-letter">C</span>
+            <span>Cüzlere göre</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2523" 
+                  data-correct="false"
+                  onclick="selectChoice(1359, 2523, false)">
+            <span class="choice-letter">D</span>
+            <span>Sayfa numaralarına göre</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1359">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ramazan 30 gün olduğu için her gün bir cüz okunursa Kur’an hatmedilebilir. Bu nedenle plan cüzlere göre yapılmalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1363" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ayet, sure ve cüz arasındaki ilişkiyi analiz edelim: Bir cüz içinde kaç sure bulunabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2532" 
+                  data-correct="false"
+                  onclick="selectChoice(1363, 2532, false)">
+            <span class="choice-letter">A</span>
+            <span>Her cüz sadece bir sure içerir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2533" 
+                  data-correct="true"
+                  onclick="selectChoice(1363, 2533, true)">
+            <span class="choice-letter">B</span>
+            <span>Bir cüz birden fazla sure içerebilir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2534" 
+                  data-correct="false"
+                  onclick="selectChoice(1363, 2534, false)">
+            <span class="choice-letter">C</span>
+            <span>Cüzler ayet içermez.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2535" 
+                  data-correct="false"
+                  onclick="selectChoice(1363, 2535, false)">
+            <span class="choice-letter">D</span>
+            <span>Her cüz 114 sure içerir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1363">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bir cüz birden fazla sure içerebilir, çünkü cüzler Kur’an’ı eşit parçalara böler ve sureler farklı uzunluklardadır. Bu analiz, iç düzenin nasıl organize edildiğini anlamayı gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1366" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Günlük hayatta camide hatim indirirken, her gün bir cüz okunması, Kur’an’ın 30 günde bitmesini sağlar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2540" 
+                  data-correct="true"
+                  onclick="selectChoice(1366, 2540, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2541" 
+                  data-correct="false"
+                  onclick="selectChoice(1366, 2541, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1366">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru, çünkü 30 cüz 30 güne bölünür ve bu uygulama iç düzenin pratik kullanımını gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Kur’an-ı Kerim’in İç Düzeni test soruları - 6. Sınıf Din Kültürü ve Ahlak Bilgisi dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // ✅ Düzeltme: === ile tip güvenli karşılaştırma
+        if (btn.dataset.choiceId === String(choiceId) && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

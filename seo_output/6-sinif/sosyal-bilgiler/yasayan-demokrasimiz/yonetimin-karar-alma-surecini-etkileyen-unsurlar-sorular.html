@@ -1,0 +1,3222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yönetimin Karar Alma Sürecini Etkileyen Unsurlar Test Soruları - Yaşayan Demokrasimiz | Eğitim Portalı</title>
+  <meta name="description" content="Yönetimin Karar Alma Sürecini Etkileyen Unsurlar konusu test soruları ve çözümleri. 6. Sınıf Sosyal Bilgiler dersi online alıştırma.">
+  <meta name="keywords" content="Yönetimin Karar Alma Sürecini Etkileyen Unsurlar test, Yönetimin Karar Alma Sürecini Etkileyen Unsurlar sorular, Sosyal Bilgiler quiz, 6. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Yönetimin Karar Alma Sürecini Etkileyen Unsurlar Test Soruları">
+  <meta property="og:description" content="55 soru ile Yönetimin Karar Alma Sürecini Etkileyen Unsurlar konusunu pekiştir">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/6-sinif/">6. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/sosyal-bilgiler/">Sosyal Bilgiler</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/sosyal-bilgiler/yasayan-demokrasimiz/">Yaşayan Demokrasimiz</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Yönetimin Karar Alma Sürecini Etkileyen Unsurlar Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Yönetimin Karar Alma Sürecini Etkileyen Unsurlar - Test Soruları</h1>
+      <div class="meta">55 Soru • 6. Sınıf Sosyal Bilgiler</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/6-sinif/sosyal-bilgiler/yasayan-demokrasimiz/yonetimin-karar-alma-surecini-etkileyen-unsurlar/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">55</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="1062" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir okul yönetimi, öğrenci güvenliği için kamera sistemi kurma kararı alırken velilerin görüşlerini almıştır. Bu örnek aşağıdaki kavramlardan hangisiyle en yakından ilişkilidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1962" 
+                  data-correct="true"
+                  onclick="selectChoice(1062, 1962, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyu ve katılım</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1963" 
+                  data-correct="false"
+                  onclick="selectChoice(1062, 1963, false)">
+            <span class="choice-letter">B</span>
+            <span>Coğrafi konum</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1964" 
+                  data-correct="false"
+                  onclick="selectChoice(1062, 1964, false)">
+            <span class="choice-letter">C</span>
+            <span>Doğal afetler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1965" 
+                  data-correct="false"
+                  onclick="selectChoice(1062, 1965, false)">
+            <span class="choice-letter">D</span>
+            <span>Teknolojik yetersizlik</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1062">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Velilerin görüşlerinin alınması kamuoyunun ve katılımın karar alma sürecine etkisini gösterir. Demokratik yönetim anlayışında kararlar paydaşların görüşleri dikkate alınarak alınır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1071" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir şehirde yapılması planlanan yeni park alanı için mahalle sakinlerinin imza toplayarak belediyeye başvurması ve belediyenin projeyi bu talebe göre şekillendirmesi, karar alma sürecindeki hangi unsurun etkisini doğrudan gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1978" 
+                  data-correct="true"
+                  onclick="selectChoice(1071, 1978, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1979" 
+                  data-correct="false"
+                  onclick="selectChoice(1071, 1979, false)">
+            <span class="choice-letter">B</span>
+            <span>Siyasi Partiler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1980" 
+                  data-correct="false"
+                  onclick="selectChoice(1071, 1980, false)">
+            <span class="choice-letter">C</span>
+            <span>Medya</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1981" 
+                  data-correct="false"
+                  onclick="selectChoice(1071, 1981, false)">
+            <span class="choice-letter">D</span>
+            <span>Uluslararası Kuruluşlar</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1071">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Mahalle sakinlerinin talepleri 'Kamuoyu'nu temsil eder. Halkın beklenti ve isteklerinin yönetimin kararlarını yönlendirmesi kamuoyu etkisidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1081" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir belediye başkanı, yeni bir park yapma kararı alırken halkın görüşlerini dikkate almazsa, hangi unsur karar alma sürecini etkilememiş olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1998" 
+                  data-correct="false"
+                  onclick="selectChoice(1081, 1998, false)">
+            <span class="choice-letter">A</span>
+            <span>Ekonomi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1999" 
+                  data-correct="true"
+                  onclick="selectChoice(1081, 1999, true)">
+            <span class="choice-letter">B</span>
+            <span>Kamuoyu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2000" 
+                  data-correct="false"
+                  onclick="selectChoice(1081, 2000, false)">
+            <span class="choice-letter">C</span>
+            <span>Hukuk</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2001" 
+                  data-correct="false"
+                  onclick="selectChoice(1081, 2001, false)">
+            <span class="choice-letter">D</span>
+            <span>Teknoloji</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1081">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap 'Kamuoyu'dur çünkü kamuoyu, halkın görüşlerini temsil eder ve yönetim kararlarını etkilemesi gereken bir unsurdur. Bu soru, karar alma sürecinde kamuoyunun rolünü belirlemeyi amaçlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1971" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir belediyenin mahalleye park yapma kararı alırken mahalle sakinlerinin görüşlerini alması, yönetimin karar alma sürecini etkileyen hangi unsura örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3694" 
+                  data-correct="true"
+                  onclick="selectChoice(1971, 3694, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyu ve vatandaş görüşleri</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3695" 
+                  data-correct="false"
+                  onclick="selectChoice(1971, 3695, false)">
+            <span class="choice-letter">B</span>
+            <span>Doğal afetler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3696" 
+                  data-correct="false"
+                  onclick="selectChoice(1971, 3696, false)">
+            <span class="choice-letter">C</span>
+            <span>Kişisel çıkarlar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3697" 
+                  data-correct="false"
+                  onclick="selectChoice(1971, 3697, false)">
+            <span class="choice-letter">D</span>
+            <span>Tesadüfî gelişmeler</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1971">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Belediyenin karar almadan önce halkın görüşünü alması, kamuoyu ve vatandaş katılımının karar sürecini etkilediğini gösterir. Demokratik yönetimlerde halkın talepleri kararları etkileyen önemli bir unsurdur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2051" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Belediye başkanının yeni bir park yapma kararını etkileyen unsurlardan biri, mahalle sakinlerinin şikayetleridir. Bu unsur hangi kategoriye girer?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3852" 
+                  data-correct="true"
+                  onclick="selectChoice(2051, 3852, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3853" 
+                  data-correct="false"
+                  onclick="selectChoice(2051, 3853, false)">
+            <span class="choice-letter">B</span>
+            <span>Ekonomi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3854" 
+                  data-correct="false"
+                  onclick="selectChoice(2051, 3854, false)">
+            <span class="choice-letter">C</span>
+            <span>Yasalar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3855" 
+                  data-correct="false"
+                  onclick="selectChoice(2051, 3855, false)">
+            <span class="choice-letter">D</span>
+            <span>Teknoloji</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2051">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap kamuoyudur çünkü kamuoyu, halkın görüşlerini yansıtır ve yönetimi etkiler. Bu, kazanımlardaki unsurları belirlemeyi sağlar ve günlük hayat bağlantılıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2061" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi yönetimin karar alma sürecini etkileyen unsurlardan biri DEĞİLDİR?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3870" 
+                  data-correct="true"
+                  onclick="selectChoice(2061, 3870, true)">
+            <span class="choice-letter">A</span>
+            <span>Yöneticinin kişisel çıkarları</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3871" 
+                  data-correct="false"
+                  onclick="selectChoice(2061, 3871, false)">
+            <span class="choice-letter">B</span>
+            <span>Toplumsal ihtiyaçlar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3872" 
+                  data-correct="false"
+                  onclick="selectChoice(2061, 3872, false)">
+            <span class="choice-letter">C</span>
+            <span>Bütçe olanakları</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3873" 
+                  data-correct="false"
+                  onclick="selectChoice(2061, 3873, false)">
+            <span class="choice-letter">D</span>
+            <span>Yasal düzenlemeler</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2061">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yönetimin karar alma sürecini etkileyen unsurlar arasında kamu yararı, bütçe olanakları, yasal düzenlemeler, toplumsal ihtiyaçlar ve kamuoyu yer alır. Yöneticinin kişisel çıkarları ise demokratik bir yönetimde karar alma sürecini etkilememesi gereken bir faktördür.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2071" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir belediye, yeni bir park yapımı için karar alacaktır. Belediye başkanı, karar vermeden önce mahalle sakinleriyle toplantı düzenleyerek fikirlerini almıştır. Bu durum, yönetimin karar alma sürecini etkileyen hangi unsura örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3890" 
+                  data-correct="true"
+                  onclick="selectChoice(2071, 3890, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3891" 
+                  data-correct="false"
+                  onclick="selectChoice(2071, 3891, false)">
+            <span class="choice-letter">B</span>
+            <span>Uluslararası ilişkiler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3892" 
+                  data-correct="false"
+                  onclick="selectChoice(2071, 3892, false)">
+            <span class="choice-letter">C</span>
+            <span>Ekonomik krizler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3893" 
+                  data-correct="false"
+                  onclick="selectChoice(2071, 3893, false)">
+            <span class="choice-letter">D</span>
+            <span>Doğal afetler</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2071">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Belediye başkanının mahalle sakinleriyle toplantı yaparak fikirlerini alması, halkın görüşlerini önemsediğini gösterir. Bu durum 'kamuoyu' kavramına örnektir. Kamuoyu, toplumun herhangi bir konu hakkındaki ortak düşüncesidir ve demokratik yönetimlerde karar alma sürecini doğrudan etkiler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1065" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Yönetimler karar alırken yalnızca yöneticilerin kişisel düşüncelerine göre hareket eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1974" 
+                  data-correct="false"
+                  onclick="selectChoice(1065, 1974, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1975" 
+                  data-correct="true"
+                  onclick="selectChoice(1065, 1975, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1065">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Yönetimler karar alırken kamuoyu, ekonomik durum, çevresel şartlar ve hukuki düzenlemeler gibi birçok unsuru dikkate alır. Sadece kişisel düşüncelerle karar alınmaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1066" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kamuoyu, yönetimin karar alma sürecini etkileyen unsurlardan biridir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1976" 
+                  data-correct="true"
+                  onclick="selectChoice(1066, 1976, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1977" 
+                  data-correct="false"
+                  onclick="selectChoice(1066, 1977, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1066">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Demokratik toplumlarda halkın görüşü ve beklentileri yönetim kararlarını etkiler.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1077" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Siyasi partiler, hem iktidarda hem de muhalefetteyken hazırladıkları projelerle ülke yönetiminin karar alma mekanizmasında rol oynarlar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1992" 
+                  data-correct="true"
+                  onclick="selectChoice(1077, 1992, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1993" 
+                  data-correct="false"
+                  onclick="selectChoice(1077, 1993, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1077">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Siyasi partiler halkın görüşlerini örgütler ve hem meclis içinde hem de dışında kararları etkileme gücüne sahiptirler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1082" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Yönetim kararlarını sadece ekonomik faktörler etkiler, diğer unsurlar önemsizdir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2002" 
+                  data-correct="false"
+                  onclick="selectChoice(1082, 2002, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2003" 
+                  data-correct="true"
+                  onclick="selectChoice(1082, 2003, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1082">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade yanlıştır çünkü yönetim kararlarını ekonomi dışında kamuoyu, hukuk, çevre gibi unsurlar da etkiler. Bu, kavram yanılgısını ölçer: karar alma sürecinin tek bir unsura bağlı olmadığını vurgular.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1975" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Demokratik bir ülkede yönetim karar alırken sadece yöneticilerin kişisel görüşlerine göre hareket eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3710" 
+                  data-correct="false"
+                  onclick="selectChoice(1975, 3710, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3711" 
+                  data-correct="true"
+                  onclick="selectChoice(1975, 3711, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1975">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Demokratik ülkelerde karar alma süreci anayasa, yasalar, kamuoyu, medya ve sivil toplum kuruluşları gibi birçok unsurdan etkilenir; yalnızca kişisel görüşlere dayanmaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2042" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Demokratik ülkelerde yönetimin karar alma sürecinde halkın hiçbir etkisi yoktur; tüm kararlar sadece seçilmiş yöneticiler tarafından kapalı kapılar ardında alınır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3836" 
+                  data-correct="false"
+                  onclick="selectChoice(2042, 3836, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3837" 
+                  data-correct="true"
+                  onclick="selectChoice(2042, 3837, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2042">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Demokrasilerde katılım esastır. Kamuoyu, sivil toplum kuruluşları, medya ve siyasi partiler yöneticilerin kararlarını etkileyen temel dinamiklerdir. 'Halkın etkisi yoktur' ifadesi temel bir kavram yanılgısıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2056" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Medya, yönetimin karar alma sürecini etkileyen unsurlardan biridir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3862" 
+                  data-correct="true"
+                  onclick="selectChoice(2056, 3862, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3863" 
+                  data-correct="false"
+                  onclick="selectChoice(2056, 3863, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2056">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur çünkü medya kamuoyunu şekillendirerek kararları etkiler. Kazanımlardaki unsurları belirlemeyi sağlar ve günlük hayat haberleriyle bağlantılıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2062" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Demokratik toplumlarda yönetim, karar alırken sadece kendi görüşlerini dikkate alır ve vatandaşların fikirlerini önemsemez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3874" 
+                  data-correct="false"
+                  onclick="selectChoice(2062, 3874, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3875" 
+                  data-correct="true"
+                  onclick="selectChoice(2062, 3875, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2062">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Demokratik toplumlarda yönetim, karar alırken vatandaşların görüşlerini, kamuoyunu ve toplumsal ihtiyaçları dikkate almak zorundadır. Halkın katılımı demokrasinin temel unsurlarından biridir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2074" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Sivil toplum kuruluşları (STK'lar), yönetimin karar alma sürecini etkileyebilen önemli unsurlardan biridir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3902" 
+                  data-correct="true"
+                  onclick="selectChoice(2074, 3902, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3903" 
+                  data-correct="false"
+                  onclick="selectChoice(2074, 3903, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2074">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade doğrudur. Sivil toplum kuruluşları; çevre, eğitim, sağlık gibi çeşitli alanlarda faaliyet göstererek kamuoyunu bilinçlendirir ve yönetimi belirli konularda harekete geçmeye teşvik eder. STK'lar demokratik toplumlarda önemli bir baskı grubu olarak yönetim kararlarını etkiler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2082" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Medya, halkın doğru bilgi almasını sağlayarak kamuoyu oluşmasına yardımcı olur ve bu sayede yönetimin karar alma sürecini dolaylı olarak etkiler.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3916" 
+                  data-correct="true"
+                  onclick="selectChoice(2082, 3916, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3917" 
+                  data-correct="false"
+                  onclick="selectChoice(2082, 3917, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2082">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Medya (gazete, TV, internet), toplumun sorunlardan haberdar olmasını sağlayarak bir kamuoyu bilinci oluşturur ve yöneticilerin bu sese kulak vermesini sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1061" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir belediye, park yapılacak alanı belirlerken halktan gelen talepleri, bütçe durumunu ve çevresel etkileri dikkate almıştır. Bu durum yönetimin karar alma sürecini etkileyen hangi unsurlara örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1958" 
+                  data-correct="true"
+                  onclick="selectChoice(1061, 1958, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyu, ekonomik koşullar ve çevresel unsurlar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1959" 
+                  data-correct="false"
+                  onclick="selectChoice(1061, 1959, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece yöneticinin kişisel görüşü</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1960" 
+                  data-correct="false"
+                  onclick="selectChoice(1061, 1960, false)">
+            <span class="choice-letter">C</span>
+            <span>Uluslararası anlaşmalar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1961" 
+                  data-correct="false"
+                  onclick="selectChoice(1061, 1961, false)">
+            <span class="choice-letter">D</span>
+            <span>Tesadüfi gelişmeler</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1061">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Belediyenin halkın taleplerini dikkate alması kamuoyu, bütçe durumunu göz önünde bulundurması ekonomik koşullar, çevresel etkileri değerlendirmesi ise çevresel unsurlardır. Bu nedenle birden fazla unsur karar sürecini etkilemiştir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1063" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 19</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir ülkede ekonomik kriz yaşanırken hükümetin tasarruf tedbirleri alması, karar alma sürecinde hangi unsurun belirleyici olduğunu gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1966" 
+                  data-correct="true"
+                  onclick="selectChoice(1063, 1966, true)">
+            <span class="choice-letter">A</span>
+            <span>Ekonomik koşullar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1967" 
+                  data-correct="false"
+                  onclick="selectChoice(1063, 1967, false)">
+            <span class="choice-letter">B</span>
+            <span>Kişisel tercihler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1968" 
+                  data-correct="false"
+                  onclick="selectChoice(1063, 1968, false)">
+            <span class="choice-letter">C</span>
+            <span>Spor faaliyetleri</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1969" 
+                  data-correct="false"
+                  onclick="selectChoice(1063, 1969, false)">
+            <span class="choice-letter">D</span>
+            <span>Bireysel hobiler</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1063">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ekonomik kriz, ekonomik koşulların yönetimin kararlarını doğrudan etkilediğini gösterir. Yönetimler mevcut ekonomik şartlara göre politika belirler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1080" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 20</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Günlük Hayat Sorusu: Okul temsilciliği seçimlerinde aday olan bir öğrencinin, kantindeki fiyatların düşürülmesi için okul idaresine dilekçe vermesi ve arkadaşlarının desteğini alması, genel yönetimdeki hangi sürece bir örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1994" 
+                  data-correct="true"
+                  onclick="selectChoice(1080, 1994, true)">
+            <span class="choice-letter">A</span>
+            <span>Karar alma sürecine katılım ve kamuoyu oluşturma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1995" 
+                  data-correct="false"
+                  onclick="selectChoice(1080, 1995, false)">
+            <span class="choice-letter">B</span>
+            <span>Yönetimin tek taraflı karar vermesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1996" 
+                  data-correct="false"
+                  onclick="selectChoice(1080, 1996, false)">
+            <span class="choice-letter">C</span>
+            <span>Geleneksel yönetim anlayışı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1997" 
+                  data-correct="false"
+                  onclick="selectChoice(1080, 1997, false)">
+            <span class="choice-letter">D</span>
+            <span>Hiyerarşik düzenin korunması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1080">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrencinin dilekçesi ve arkadaşlarının desteği, tıpkı sivil toplum ve kamuoyu gibi yönetimin (okul idaresi) kararını etkileme çabasıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1972" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 21</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi yönetimin karar alma sürecini etkileyen unsurlar arasında yer almaz?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3698" 
+                  data-correct="false"
+                  onclick="selectChoice(1972, 3698, false)">
+            <span class="choice-letter">A</span>
+            <span>Anayasa ve yasalar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3699" 
+                  data-correct="false"
+                  onclick="selectChoice(1972, 3699, false)">
+            <span class="choice-letter">B</span>
+            <span>Kamuoyu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3700" 
+                  data-correct="true"
+                  onclick="selectChoice(1972, 3700, true)">
+            <span class="choice-letter">C</span>
+            <span>Yöneticinin sevdiği renk</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3701" 
+                  data-correct="false"
+                  onclick="selectChoice(1972, 3701, false)">
+            <span class="choice-letter">D</span>
+            <span>Medya</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1972">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yönetimin karar alma sürecini; anayasa, yasalar, kamuoyu, medya, sivil toplum kuruluşları ve ekonomik şartlar gibi unsurlar etkiler. Yöneticinin sevdiği renk gibi kişisel tercihler demokratik karar sürecinde belirleyici olmamalıdır. Bu soru kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1973" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 22</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir ülkede ekonomik kriz yaşanırken hükümetin tasarruf tedbirleri alması, karar alma sürecinde hangi unsurun etkili olduğunu gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3702" 
+                  data-correct="true"
+                  onclick="selectChoice(1973, 3702, true)">
+            <span class="choice-letter">A</span>
+            <span>Ekonomik koşullar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3703" 
+                  data-correct="false"
+                  onclick="selectChoice(1973, 3703, false)">
+            <span class="choice-letter">B</span>
+            <span>Sportif başarılar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3704" 
+                  data-correct="false"
+                  onclick="selectChoice(1973, 3704, false)">
+            <span class="choice-letter">C</span>
+            <span>Kişisel hobiler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3705" 
+                  data-correct="false"
+                  onclick="selectChoice(1973, 3705, false)">
+            <span class="choice-letter">D</span>
+            <span>Bireysel söylentiler</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1973">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ekonomik kriz gibi ekonomik şartlar yönetimin kararlarını doğrudan etkiler. Tasarruf tedbirleri ekonomik durumun karar alma sürecindeki etkisini gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2041" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 23</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir bölgede yapılması planlanan fabrika inşaatının çevreye zarar vereceği düşüncesiyle halkın sosyal medya üzerinden örgütlenmesi ve yerel gazetelerin bu durumu haber yapması sonucunda belediyenin projeyi durdurma kararı alması, öncelikle hangi unsurun etkisini gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3832" 
+                  data-correct="true"
+                  onclick="selectChoice(2041, 3832, true)">
+            <span class="choice-letter">A</span>
+            <span>Medya ve Kamuoyu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3833" 
+                  data-correct="false"
+                  onclick="selectChoice(2041, 3833, false)">
+            <span class="choice-letter">B</span>
+            <span>Siyasi Partiler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3834" 
+                  data-correct="false"
+                  onclick="selectChoice(2041, 3834, false)">
+            <span class="choice-letter">C</span>
+            <span>Uluslararası Kuruluşlar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3835" 
+                  data-correct="false"
+                  onclick="selectChoice(2041, 3835, false)">
+            <span class="choice-letter">D</span>
+            <span>Mesleki Kuruluşlar</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2041">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Halkın bir konu hakkındaki ortak düşüncesi (kamuoyu) ve medyanın bu durumu duyurması yönetimin kararlarını doğrudan etkileyebilir. Bu örnekte kamuoyu ve medyanın gücü birleşerek karar alma sürecini yönlendirmiştir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2045" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 24</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi bir sivil toplum kuruluşunun (STK) yönetimin karar alma sürecini etkileme yöntemlerinden biri olamaz?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3838" 
+                  data-correct="false"
+                  onclick="selectChoice(2045, 3838, false)">
+            <span class="choice-letter">A</span>
+            <span>Hükümet yetkililerine raporlar sunmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3839" 
+                  data-correct="false"
+                  onclick="selectChoice(2045, 3839, false)">
+            <span class="choice-letter">B</span>
+            <span>İmza kampanyaları düzenlemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3840" 
+                  data-correct="true"
+                  onclick="selectChoice(2045, 3840, true)">
+            <span class="choice-letter">C</span>
+            <span>Kendi başına yeni bir kanun yürürlüğe koymak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3841" 
+                  data-correct="false"
+                  onclick="selectChoice(2045, 3841, false)">
+            <span class="choice-letter">D</span>
+            <span>Toplantı ve gösteri yürüyüşleri organize etmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2045">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sivil toplum kuruluşları demokratik yöntemlerle (rapor hazırlama, miting, kampanya) etki ederler. Yeni yasa çıkarma yetkisi sadece yasama organına (Meclis) aittir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2058" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 25</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir hükümetin çevre koruma yasası çıkarmasında sivil toplum örgütlerinin rolü nedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3864" 
+                  data-correct="true"
+                  onclick="selectChoice(2058, 3864, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyunu etkilemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3865" 
+                  data-correct="false"
+                  onclick="selectChoice(2058, 3865, false)">
+            <span class="choice-letter">B</span>
+            <span>Yasaları yok saymak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3866" 
+                  data-correct="false"
+                  onclick="selectChoice(2058, 3866, false)">
+            <span class="choice-letter">C</span>
+            <span>Ekonomiyi bozmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3867" 
+                  data-correct="false"
+                  onclick="selectChoice(2058, 3867, false)">
+            <span class="choice-letter">D</span>
+            <span>Teknolojiyi engellemek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2058">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kamuoyunu etkilemek doğrudur çünkü sivil toplum örgütleri unsurlar arası ilişkiyi sağlar. Bu, kazanımlardaki ilişkiyi belirler ve anlamaya dayalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2063" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 26</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir belediye, mahalleye yeni bir park yapılması kararı alacaktır. Bu karar sürecinde aşağıdakilerden hangisi en az etkili olmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3876" 
+                  data-correct="true"
+                  onclick="selectChoice(2063, 3876, true)">
+            <span class="choice-letter">A</span>
+            <span>Belediye başkanının kişisel tercihleri</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3877" 
+                  data-correct="false"
+                  onclick="selectChoice(2063, 3877, false)">
+            <span class="choice-letter">B</span>
+            <span>Mahalle sakinlerinin talepleri</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3878" 
+                  data-correct="false"
+                  onclick="selectChoice(2063, 3878, false)">
+            <span class="choice-letter">C</span>
+            <span>Belediyenin bütçe durumu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3879" 
+                  data-correct="false"
+                  onclick="selectChoice(2063, 3879, false)">
+            <span class="choice-letter">D</span>
+            <span>Çevre düzenleme yönetmelikleri</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2063">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Demokratik yönetimlerde kararlar kamu yararı, vatandaş talepleri, bütçe imkânları ve yasal çerçeve dikkate alınarak verilir. Belediye başkanının kişisel tercihleri değil, toplumun genel ihtiyaçları ön planda olmalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2067" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 27</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Okulunuzda yeni bir spor salonu yapılması için öğrenci temsilcileri, veliler ve öğretmenlerden oluşan bir komisyon görüş bildirmiştir. Bu durum yönetimin karar alma sürecinde hangi unsurun etkisini göstermektedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3882" 
+                  data-correct="true"
+                  onclick="selectChoice(2067, 3882, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyu ve paydaş görüşleri</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3883" 
+                  data-correct="false"
+                  onclick="selectChoice(2067, 3883, false)">
+            <span class="choice-letter">B</span>
+            <span>Uluslararası anlaşmalar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3884" 
+                  data-correct="false"
+                  onclick="selectChoice(2067, 3884, false)">
+            <span class="choice-letter">C</span>
+            <span>Coğrafi koşullar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3885" 
+                  data-correct="false"
+                  onclick="selectChoice(2067, 3885, false)">
+            <span class="choice-letter">D</span>
+            <span>Tarihi gelenekler</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2067">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Farklı paydaşların (öğrenci, veli, öğretmen) görüşlerinin alınması, katılımcı demokrasinin bir göstergesidir. Kamuoyu ve paydaş görüşleri, yönetimin karar alma sürecinde toplumsal beklentileri yansıtan önemli unsurlardır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2072" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 28</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi yönetimin karar alma sürecini etkileyen unsurlardan biri DEĞİLDİR?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3894" 
+                  data-correct="false"
+                  onclick="selectChoice(2072, 3894, false)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3895" 
+                  data-correct="false"
+                  onclick="selectChoice(2072, 3895, false)">
+            <span class="choice-letter">B</span>
+            <span>Sivil toplum kuruluşları</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3896" 
+                  data-correct="false"
+                  onclick="selectChoice(2072, 3896, false)">
+            <span class="choice-letter">C</span>
+            <span>Medya</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3897" 
+                  data-correct="true"
+                  onclick="selectChoice(2072, 3897, true)">
+            <span class="choice-letter">D</span>
+            <span>Kişisel hobiler</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2072">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yönetimin karar alma sürecini etkileyen unsurlar arasında kamuoyu, sivil toplum kuruluşları, medya ve uzman görüşleri yer alır. Kişisel hobiler bireysel tercihlerdir ve yönetim kararlarını etkileyen bir unsur değildir. Bu soru, kavram yanılgısını ölçmeye yönelik olup öğrencinin gerçek etkenleri ayırt edebilmesini hedefler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2081" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 29</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir bölgede yapılması planlanan maden ocağına karşı bölge halkının bir araya gelerek protesto yürüyüşü yapması ve bu durumun sosyal medyada geniş yankı bulması üzerine yetkililerin projeyi durdurma kararı alması, hangi unsurun karar alma sürecindeki etkisine örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3912" 
+                  data-correct="true"
+                  onclick="selectChoice(2081, 3912, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamuoyu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3913" 
+                  data-correct="false"
+                  onclick="selectChoice(2081, 3913, false)">
+            <span class="choice-letter">B</span>
+            <span>Siyasi Partiler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3914" 
+                  data-correct="false"
+                  onclick="selectChoice(2081, 3914, false)">
+            <span class="choice-letter">C</span>
+            <span>Uluslararası Kuruluşlar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3915" 
+                  data-correct="false"
+                  onclick="selectChoice(2081, 3915, false)">
+            <span class="choice-letter">D</span>
+            <span>Bireysel Görüşler</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2081">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Halkın bir konu hakkındaki ortak tavrı ve tepkisi 'Kamuoyu' olarak adlandırılır. Yetkililerin bu tepki üzerine karar değiştirmesi kamuoyunun gücünü gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1072" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 30</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Demokratik ülkelerde medya, sadece bilgi vermekle kalmaz; yaptığı haberlerle toplumsal sorunları gündeme taşıyarak karar vericilerin bu konulara odaklanmasını sağlar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1982" 
+                  data-correct="true"
+                  onclick="selectChoice(1072, 1982, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1983" 
+                  data-correct="false"
+                  onclick="selectChoice(1072, 1983, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1072">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Medya 'gündem belirleme' gücü sayesinde yönetimin hangi konuları öncelikli olarak ele alacağını etkileyen en önemli unsurlardan biridir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1086" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 31</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yönetim kararlarında teknoloji ve ekonomi unsurları birbirini etkileyebilir, örneğin yeni teknolojiler ekonomik büyümeyi artırır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2008" 
+                  data-correct="true"
+                  onclick="selectChoice(1086, 2008, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2009" 
+                  data-correct="false"
+                  onclick="selectChoice(1086, 2009, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1086">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade doğrudur çünkü teknoloji ve ekonomi arasındaki ilişki, karar alma sürecini etkileyen unsurların bağlantısını gösterir. Bu, kazanımlardaki ilişki belirlemeyi vurgular.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1976" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 32</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sivil toplum kuruluşları, toplumun farklı kesimlerinin taleplerini yönetime ileterek karar alma sürecini etkileyebilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3712" 
+                  data-correct="true"
+                  onclick="selectChoice(1976, 3712, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3713" 
+                  data-correct="false"
+                  onclick="selectChoice(1976, 3713, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1976">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Sivil toplum kuruluşları toplum adına faaliyet gösterir ve görüş bildirerek yönetimin kararlarını etkileyebilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2046" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 33</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Siyasi partiler sadece seçim dönemlerinde aktiftirler; seçim bittikten sonra yönetimin karar alma sürecine müdahale edemezler.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3842" 
+                  data-correct="false"
+                  onclick="selectChoice(2046, 3842, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3843" 
+                  data-correct="true"
+                  onclick="selectChoice(2046, 3843, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2046">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Siyasi partiler hem iktidar hem de muhalefet kanadında meclis çalışmaları, grup toplantıları ve açıklamalarıyla sürekli olarak karar alma sürecinin içindedirler.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2052" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 34</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yönetimin karar alma sürecinde sadece yasalar etkili olur, diğer unsurlar önemsizdir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3856" 
+                  data-correct="false"
+                  onclick="selectChoice(2052, 3856, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3857" 
+                  data-correct="true"
+                  onclick="selectChoice(2052, 3857, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2052">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü kazanımlara göre birden fazla unsur (ekonomi, kamuoyu vb.) etkiler. Kavram yanılgısını ölçer: Karar alma tek unsurlu sanılmamalı.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2066" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 35</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yönetimin karar alma sürecinde bütçe olanakları önemli bir etkendir çünkü her karar mali kaynak gerektirebilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3880" 
+                  data-correct="true"
+                  onclick="selectChoice(2066, 3880, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3881" 
+                  data-correct="false"
+                  onclick="selectChoice(2066, 3881, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2066">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Yönetim bir karar alırken o kararın uygulanması için gerekli mali kaynakları da göz önünde bulundurmak zorundadır. Bütçe yetersizse bazı projeler ertelenebilir veya farklı çözümler aranabilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2075" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 36</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yönetimin aldığı kararlar sadece devlet başkanının kişisel görüşlerine göre şekillenir, başka hiçbir unsur bu süreci etkilemez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3904" 
+                  data-correct="false"
+                  onclick="selectChoice(2075, 3904, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3905" 
+                  data-correct="true"
+                  onclick="selectChoice(2075, 3905, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2075">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade yanlıştır. Demokratik toplumlarda yönetimin karar alma süreci tek bir kişinin görüşüne bağlı değildir. Kamuoyu, medya, sivil toplum kuruluşları, uzman görüşleri, ekonomik koşullar ve yasal çerçeve gibi pek çok unsur bu süreci etkiler. Bu soru, yaygın bir kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2076" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 37</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Medyanın yaptığı haberler, kamuoyunun belirli konulardaki düşüncelerini şekillendirebilir ve bu yolla yönetim kararlarını dolaylı olarak etkileyebilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3906" 
+                  data-correct="true"
+                  onclick="selectChoice(2076, 3906, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3907" 
+                  data-correct="false"
+                  onclick="selectChoice(2076, 3907, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2076">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade doğrudur. Medya, topluma bilgi aktararak insanların olaylar hakkında fikir edinmesini sağlar. Medyanın sürekli gündemde tuttuğu konular kamuoyunun ilgisini çeker ve halk bu konularda yönetimden çözüm bekler. Bu durum yönetimin karar alma sürecini dolaylı olarak etkiler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2086" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 38</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Siyasi partiler sadece seçim dönemlerinde halkın görüşlerini etkilemeye çalışırlar, seçimden sonra yönetim kararlarına hiçbir etkileri olmaz.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3922" 
+                  data-correct="false"
+                  onclick="selectChoice(2086, 3922, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3923" 
+                  data-correct="true"
+                  onclick="selectChoice(2086, 3923, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2086">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Siyasi partiler hem iktidar hem de muhalefet olarak meclis içinde ve dışında her zaman karar alma süreçlerini etkilemeye devam ederler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1064" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 39</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir ilde sık sık sel felaketi yaşanması nedeniyle valiliğin dere yataklarına yapılaşmayı yasaklaması, karar alma sürecinde hangi unsurun etkili olduğunu gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1970" 
+                  data-correct="true"
+                  onclick="selectChoice(1064, 1970, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğal ve çevresel koşullar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1971" 
+                  data-correct="false"
+                  onclick="selectChoice(1064, 1971, false)">
+            <span class="choice-letter">B</span>
+            <span>Medya baskısı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1972" 
+                  data-correct="false"
+                  onclick="selectChoice(1064, 1972, false)">
+            <span class="choice-letter">C</span>
+            <span>Kültürel etkinlikler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1973" 
+                  data-correct="false"
+                  onclick="selectChoice(1064, 1973, false)">
+            <span class="choice-letter">D</span>
+            <span>Bireysel çıkarlar</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1064">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sık yaşanan sel felaketleri doğal ve çevresel koşulların yönetim kararlarını etkilediğini gösterir. Yönetimler coğrafi ve çevresel şartlara göre düzenlemeler yapar.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1075" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 40</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: Aşağıdakilerden hangisi demokratik bir yönetimde karar alma sürecini etkileyen unsurlar hakkında 'yanlış' bir kanıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1984" 
+                  data-correct="true"
+                  onclick="selectChoice(1075, 1984, true)">
+            <span class="choice-letter">A</span>
+            <span>Karar alma yetkisi ve süreci sadece seçilmiş yöneticilere aittir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1985" 
+                  data-correct="false"
+                  onclick="selectChoice(1075, 1985, false)">
+            <span class="choice-letter">B</span>
+            <span>Sivil toplum kuruluşları halkın görüşlerini yönetime iletir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1986" 
+                  data-correct="false"
+                  onclick="selectChoice(1075, 1986, false)">
+            <span class="choice-letter">C</span>
+            <span>Medya, toplumsal sorunların çözümünde baskı grubu oluşturabilir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1987" 
+                  data-correct="false"
+                  onclick="selectChoice(1075, 1987, false)">
+            <span class="choice-letter">D</span>
+            <span>Siyasi partiler farklı görüşlerin yönetime yansımasını sağlar.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1075">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Demokrasilerde karar alma süreci sadece yöneticilerin elinde değildir. Kamuoyu, STK'lar ve medya gibi dış unsurlar süreci aktif olarak etkiler; sadece yöneticilere ait olduğu düşüncesi bir yanılgıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1076" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 41</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Sorusu: Bir ülkede yeni bir eğitim yasası hazırlanırken sivil toplum kuruluşlarının görüşlerinin alınması, sosyal medyada konuyla ilgili tartışmaların yürütülmesi ve muhalefet partilerinin öneriler sunması birlikte değerlendirildiğinde aşağıdakilerden hangisine ulaşılabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="1988" 
+                  data-correct="true"
+                  onclick="selectChoice(1076, 1988, true)">
+            <span class="choice-letter">A</span>
+            <span>Karar alma sürecinde çok seslilik ve katılım sağlanmaktadır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1989" 
+                  data-correct="false"
+                  onclick="selectChoice(1076, 1989, false)">
+            <span class="choice-letter">B</span>
+            <span>Yönetim dış etkilere kapalı bir şekilde hareket etmektedir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1990" 
+                  data-correct="false"
+                  onclick="selectChoice(1076, 1990, false)">
+            <span class="choice-letter">C</span>
+            <span>Sivil toplum kuruluşları yasa yapma yetkisine sahiptir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="1991" 
+                  data-correct="false"
+                  onclick="selectChoice(1076, 1991, false)">
+            <span class="choice-letter">D</span>
+            <span>Medya tek başına en güçlü karar verici unsurdur.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1076">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Farklı unsurların (STK, medya, siyasi partiler) sürece dahil olması, karar alma sürecinin çoğulcu ve katılımcı bir yapıda gerçekleştiğini kanıtlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1084" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 42</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Hükümet, yeni bir köprü inşaatı kararı alırken ekonomik durum ile çevre faktörleri arasındaki ilişkiyi nasıl değerlendirir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2004" 
+                  data-correct="true"
+                  onclick="selectChoice(1084, 2004, true)">
+            <span class="choice-letter">A</span>
+            <span>Maliyet çevre koruma önlemlerini etkiler.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2005" 
+                  data-correct="false"
+                  onclick="selectChoice(1084, 2005, false)">
+            <span class="choice-letter">B</span>
+            <span>Çevre ekonomik büyümeyi engeller.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2006" 
+                  data-correct="false"
+                  onclick="selectChoice(1084, 2006, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece ekonomi dikkate alınır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2007" 
+                  data-correct="false"
+                  onclick="selectChoice(1084, 2007, false)">
+            <span class="choice-letter">D</span>
+            <span>Köprü inşaatı çevreye zarar vermez.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1084">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap, maliyetin çevre koruma önlemlerini etkilemesidir. Bu analiz düzeyi sorudur; ekonomi ve çevre unsurları arasındaki ilişkiyi belirler, karar alma sürecinde dengeyi vurgular.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1087" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 43</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir ülke yönetimi, eğitim politikası belirlerken kültür unsuru ile kamuoyu arasındaki ilişkiyi görmezden gelirse ne olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2010" 
+                  data-correct="false"
+                  onclick="selectChoice(1087, 2010, false)">
+            <span class="choice-letter">A</span>
+            <span>Karar daha hızlı alınır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2011" 
+                  data-correct="true"
+                  onclick="selectChoice(1087, 2011, true)">
+            <span class="choice-letter">B</span>
+            <span>Karar halk tarafından kabul görmez.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2012" 
+                  data-correct="false"
+                  onclick="selectChoice(1087, 2012, false)">
+            <span class="choice-letter">C</span>
+            <span>Ekonomi etkilenmez.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2013" 
+                  data-correct="false"
+                  onclick="selectChoice(1087, 2013, false)">
+            <span class="choice-letter">D</span>
+            <span>Teknoloji ön plana çıkar.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1087">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevap, kararın halk tarafından kabul görmemesidir. Bu, unsurlar arası ilişkiyi analiz eder ve kavram yanılgısını ölçer: kültürün kamuoyunu şekillendirdiğini açıklar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1974" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 44</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir çevre sorunu hakkında sosyal medyada yoğun tepki oluşması ve ardından ilgili kurumun yeni düzenleme yapması, aşağıdakilerden hangisini gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3706" 
+                  data-correct="false"
+                  onclick="selectChoice(1974, 3706, false)">
+            <span class="choice-letter">A</span>
+            <span>Yönetimin halktan bağımsız karar aldığını</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3707" 
+                  data-correct="true"
+                  onclick="selectChoice(1974, 3707, true)">
+            <span class="choice-letter">B</span>
+            <span>Medya ve kamuoyunun karar sürecini etkileyebildiğini</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3708" 
+                  data-correct="false"
+                  onclick="selectChoice(1974, 3708, false)">
+            <span class="choice-letter">C</span>
+            <span>Kararların tesadüfen alındığını</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3709" 
+                  data-correct="false"
+                  onclick="selectChoice(1974, 3709, false)">
+            <span class="choice-letter">D</span>
+            <span>Yasaların etkisiz olduğunu</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1974">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sosyal medya üzerinden oluşan kamuoyu baskısı, yönetimin kararlarını etkileyebilir. Bu durum medya ile kamuoyunun birlikte karar alma sürecini etkilediğini ve aralarındaki ilişkiyi gösterir. Analiz düzeyinde düşünmeyi gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2048" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 45</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir ilçe belediyesi, park yapımı için ayırdığı bütçeyi halkın talebi üzerine sokak hayvanları barınağına aktarmıştır. Bu süreçte yerel bir dernek (STK) imza toplamış, halk sosyal medyada destek vermiş ve yerel TV kanalı konuyu gündeme taşımıştır.
+
+Bu durum aşağıdakilerden hangisinin kanıtı olamaz?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3844" 
+                  data-correct="false"
+                  onclick="selectChoice(2048, 3844, false)">
+            <span class="choice-letter">A</span>
+            <span>Yönetimin, kamuoyunun taleplerine duyarlı kaldığının</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3845" 
+                  data-correct="false"
+                  onclick="selectChoice(2048, 3845, false)">
+            <span class="choice-letter">B</span>
+            <span>Karar alma sürecinde farklı unsurların iş birliği yaptığının</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3846" 
+                  data-correct="false"
+                  onclick="selectChoice(2048, 3846, false)">
+            <span class="choice-letter">C</span>
+            <span>Demokratik katılımın yerel yönetimlerde etkili olduğunun</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3847" 
+                  data-correct="true"
+                  onclick="selectChoice(2048, 3847, true)">
+            <span class="choice-letter">D</span>
+            <span>Sivil toplumun artık resmi yönetimin yerini aldığının</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2048">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Süreçte STK, kamuoyu (halk desteği) ve medyanın etkisi açıkça görülmektedir. Ancak kararı uygulayan belediyedir; sivil toplum yönetimin yerine geçmez, sadece onu etkiler.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2050" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 46</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Siyasi partiler ile kamuoyu arasındaki ilişki hakkında aşağıdakilerden hangisi söylenebilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3848" 
+                  data-correct="false"
+                  onclick="selectChoice(2050, 3848, false)">
+            <span class="choice-letter">A</span>
+            <span>Aralarında herhangi bir etkileşim yoktur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3849" 
+                  data-correct="false"
+                  onclick="selectChoice(2050, 3849, false)">
+            <span class="choice-letter">B</span>
+            <span>Siyasi partiler kamuoyunu etkileyen tek unsurdur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3850" 
+                  data-correct="true"
+                  onclick="selectChoice(2050, 3850, true)">
+            <span class="choice-letter">C</span>
+            <span>Karşılıklı olarak birbirlerini etkileyen bir yapıya sahiptirler.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3851" 
+                  data-correct="false"
+                  onclick="selectChoice(2050, 3851, false)">
+            <span class="choice-letter">D</span>
+            <span>Kamuoyu sadece seçim gününde partileri etkiler.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2050">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Siyasi partiler ile kamuoyu arasında karşılıklı bir etkileşim vardır. Partiler halkın taleplerine göre politika üretirken, aynı zamanda halkı ikna ederek kamuoyunu şekillendirmeye çalışırlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2055" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 47</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ülkenin ekonomik krizi sırasında hükümetin vergi artırma kararı, hangi unsurlar arası ilişkiyi gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3858" 
+                  data-correct="true"
+                  onclick="selectChoice(2055, 3858, true)">
+            <span class="choice-letter">A</span>
+            <span>Ekonomi ve yasalar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3859" 
+                  data-correct="false"
+                  onclick="selectChoice(2055, 3859, false)">
+            <span class="choice-letter">B</span>
+            <span>Medya ve teknoloji</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3860" 
+                  data-correct="false"
+                  onclick="selectChoice(2055, 3860, false)">
+            <span class="choice-letter">C</span>
+            <span>Kamuoyu ve spor</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3861" 
+                  data-correct="false"
+                  onclick="selectChoice(2055, 3861, false)">
+            <span class="choice-letter">D</span>
+            <span>Çevre ve sanat</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2055">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ekonomi ve yasalar arası ilişki doğrudur çünkü ekonomik durum yasal kararları etkiler. Bu soru analiz düzeyindedir, unsurlar arası ilişkiyi belirler ve düşünme becerisi geliştirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2069" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 48</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci "Yönetim istediği her kararı alabilir, kimseye hesap vermek zorunda değildir" demiştir. Bu görüş neden yanlıştır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3886" 
+                  data-correct="true"
+                  onclick="selectChoice(2069, 3886, true)">
+            <span class="choice-letter">A</span>
+            <span>Demokratik yönetimler halka karşı sorumludur ve denetim mekanizmaları vardır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3887" 
+                  data-correct="false"
+                  onclick="selectChoice(2069, 3887, false)">
+            <span class="choice-letter">B</span>
+            <span>Yöneticiler sadece seçim dönemlerinde hesap verir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3888" 
+                  data-correct="false"
+                  onclick="selectChoice(2069, 3888, false)">
+            <span class="choice-letter">C</span>
+            <span>Yönetim kararları gizli tutulabilir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3889" 
+                  data-correct="false"
+                  onclick="selectChoice(2069, 3889, false)">
+            <span class="choice-letter">D</span>
+            <span>Halk yönetime karışamaz</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2069">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu kavram yanılgısıdır. Demokratik yönetimlerde yöneticiler halka karşı sorumludur ve aldıkları kararlar için hesap vermek zorundadırlar. Ayrıca anayasa, kanunlar ve yargı denetimi yönetimin yetkilerini sınırlar. Şeffaflık ve hesap verebilirlik demokrasinin temel ilkelerindendir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2073" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 49</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir ülkede çevre kirliliğiyle ilgili haberler sürekli olarak televizyon ve gazetelerde yer almaktadır. Bu haberlerin ardından hükümet, çevre koruma yasalarını güçlendirme kararı almıştır. Bu süreçte hangi unsurlar arasında bir ilişki vardır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3898" 
+                  data-correct="true"
+                  onclick="selectChoice(2073, 3898, true)">
+            <span class="choice-letter">A</span>
+            <span>Medya - Kamuoyu - Yönetim kararı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3899" 
+                  data-correct="false"
+                  onclick="selectChoice(2073, 3899, false)">
+            <span class="choice-letter">B</span>
+            <span>Doğal afet - Ekonomik kriz - Yönetim kararı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3900" 
+                  data-correct="false"
+                  onclick="selectChoice(2073, 3900, false)">
+            <span class="choice-letter">C</span>
+            <span>Uluslararası baskı - Savaş - Yönetim kararı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3901" 
+                  data-correct="false"
+                  onclick="selectChoice(2073, 3901, false)">
+            <span class="choice-letter">D</span>
+            <span>Bireysel şikâyet - Mahkeme kararı - Yönetim kararı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2073">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Medya, çevre kirliliği konusunda sürekli haberler yaparak kamuoyunu bilgilendirmiştir. Kamuoyunun bu konudaki farkındalığı artınca hükümet üzerinde baskı oluşmuş ve yönetim yasal düzenleme yapma kararı almıştır. Bu örnekte medya → kamuoyu → yönetim kararı şeklinde zincirleme bir ilişki görülmektedir. Bu soru, unsurlar arası ilişkiyi analiz etmeyi gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2080" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 50</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Okulunuzun kantininde sağlıksız ürünlerin satılmasından rahatsız olan öğrenciler, okul idaresine dilekçe vererek sağlıklı ürünlerin satılmasını talep etmişlerdir. Okul idaresi bu talepleri değerlendirerek kantinde değişiklik yapmıştır. Bu durumda öğrencilerin tutumu hangi kavramla açıklanabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3908" 
+                  data-correct="true"
+                  onclick="selectChoice(2080, 3908, true)">
+            <span class="choice-letter">A</span>
+            <span>Demokratik katılım</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3909" 
+                  data-correct="false"
+                  onclick="selectChoice(2080, 3909, false)">
+            <span class="choice-letter">B</span>
+            <span>Ekonomik baskı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3910" 
+                  data-correct="false"
+                  onclick="selectChoice(2080, 3910, false)">
+            <span class="choice-letter">C</span>
+            <span>Medya etkisi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3911" 
+                  data-correct="false"
+                  onclick="selectChoice(2080, 3911, false)">
+            <span class="choice-letter">D</span>
+            <span>Uluslararası yaptırım</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2080">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrenciler, karar alma sürecine katılarak yönetimi (okul idaresi) etkilemişlerdir. Bu durum demokratik katılım örneğidir. Vatandaşlar/bireyler görüşlerini bildirerek, dilekçe vererek veya örgütlenerek yönetimin kararlarını etkileyebilirler. Bu soru, günlük hayattan bir örnek üzerinden analiz yapmayı gerektirmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2085" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 51</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Demokrasilerde sadece halkın seçtiği yöneticilerin karar aldığını, halkın bu kararlara müdahale şansının olmadığını düşünen bir öğrenci aşağıdaki kavramlardan hangisini yanlış anlamış veya göz ardı etmiştir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3918" 
+                  data-correct="true"
+                  onclick="selectChoice(2085, 3918, true)">
+            <span class="choice-letter">A</span>
+            <span>Katılımcı Demokrasi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3919" 
+                  data-correct="false"
+                  onclick="selectChoice(2085, 3919, false)">
+            <span class="choice-letter">B</span>
+            <span>Merkezi Yönetim</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3920" 
+                  data-correct="false"
+                  onclick="selectChoice(2085, 3920, false)">
+            <span class="choice-letter">C</span>
+            <span>Bürokrasi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3921" 
+                  data-correct="false"
+                  onclick="selectChoice(2085, 3921, false)">
+            <span class="choice-letter">D</span>
+            <span>Hiyerarşi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2085">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu yaygın bir kavram yanılgısıdır. Demokrasilerde karar alma süreci sadece seçim günüyle sınırlı değildir; kamuoyu ve sivil toplum aracılığıyla halkın kararlara sürekli etkisi vardır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2087" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 52</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">I. Mahalle sakinlerinin belediyeye dilekçe vermesi
+II. Bir gazetenin çevre kirliliğini manşete taşıması
+III. Bir vakfın eğitim reformu raporu hazırlaması
+
+Yukarıdakilerden hangileri yönetimin karar alma sürecini etkileyen sivil toplum ve medya faaliyetlerine örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3924" 
+                  data-correct="true"
+                  onclick="selectChoice(2087, 3924, true)">
+            <span class="choice-letter">A</span>
+            <span>I, II ve III</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3925" 
+                  data-correct="false"
+                  onclick="selectChoice(2087, 3925, false)">
+            <span class="choice-letter">B</span>
+            <span>Yalnız I</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3926" 
+                  data-correct="false"
+                  onclick="selectChoice(2087, 3926, false)">
+            <span class="choice-letter">C</span>
+            <span>I ve II</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3927" 
+                  data-correct="false"
+                  onclick="selectChoice(2087, 3927, false)">
+            <span class="choice-letter">D</span>
+            <span>II ve III</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2087">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">I bireysel katılımı, II medya etkisini, III ise sivil toplum kuruluşlarının uzmanlık temelli etkisini gösterir. Hepsi yönetim sürecine dışarıdan müdahale yollarıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2090" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 53</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yönetimin karar alma sürecindeki unsurlar arasındaki ilişki düşünüldüğünde, aşağıdakilerden hangisi söylenemez?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3928" 
+                  data-correct="true"
+                  onclick="selectChoice(2090, 3928, true)">
+            <span class="choice-letter">A</span>
+            <span>Bu unsurlar birbirinden tamamen bağımsız ve kopuk çalışırlar.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3929" 
+                  data-correct="false"
+                  onclick="selectChoice(2090, 3929, false)">
+            <span class="choice-letter">B</span>
+            <span>Medya, STK faaliyetlerini duyurarak etkisini artırabilir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3930" 
+                  data-correct="false"
+                  onclick="selectChoice(2090, 3930, false)">
+            <span class="choice-letter">C</span>
+            <span>Siyasi partiler kamuoyundaki taleplere göre programlarını günceller.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3931" 
+                  data-correct="false"
+                  onclick="selectChoice(2090, 3931, false)">
+            <span class="choice-letter">D</span>
+            <span>Kamuoyu oluşmasında hem medya hem de STK'lar rol oynar.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2090">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yönetimi etkileyen unsurlar birbirinden bağımsız değildir; örneğin STK'lar medyayı kullanarak kamuoyu oluşturur. Bu durum unsurların birbirini desteklediğini gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1089" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 54</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yönetim kararlarını etkileyen unsurlar arasında hukuk, diğer unsurlardan bağımsızdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2014" 
+                  data-correct="false"
+                  onclick="selectChoice(1089, 2014, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2015" 
+                  data-correct="true"
+                  onclick="selectChoice(1089, 2015, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1089">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade yanlıştır çünkü hukuk, ekonomi ve kamuoyu gibi unsurlarla ilişkilidir. Bu, unsurlar arası ilişkiyi belirlemeyi ve kavram yanılgısını (bağımsızlık yanılgısı) ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2060" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 55</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yönetimin karar alma sürecinde unsurlar birbirinden bağımsızdır ve ilişki yoktur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3868" 
+                  data-correct="false"
+                  onclick="selectChoice(2060, 3868, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3869" 
+                  data-correct="true"
+                  onclick="selectChoice(2060, 3869, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2060">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü kazanımlara göre unsurlar arası ilişki vardır, örneğin ekonomi kamuoyunu etkiler. Kavram yanılgısını ölçer ve düşünme becerisi geliştirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Yönetimin Karar Alma Sürecini Etkileyen Unsurlar test soruları - 6. Sınıf Sosyal Bilgiler dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // ✅ Düzeltme: === ile tip güvenli karşılaştırma
+        if (btn.dataset.choiceId === String(choiceId) && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,4797 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kesirlerin Farklı Gösterimleri Test Soruları - Sayılar Ve Nicelikler (2) | Eğitim Portalı</title>
+  <meta name="description" content="Kesirlerin Farklı Gösterimleri konusu test soruları ve çözümleri. 5. Sınıf Matematik dersi online alıştırma.">
+  <meta name="keywords" content="Kesirlerin Farklı Gösterimleri test, Kesirlerin Farklı Gösterimleri sorular, Matematik quiz, 5. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Kesirlerin Farklı Gösterimleri Test Soruları">
+  <meta property="og:description" content="88 soru ile Kesirlerin Farklı Gösterimleri konusunu pekiştir">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/matematik/">Matematik</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/matematik/sayilar-ve-nicelikler-2/">Sayılar Ve Nicelikler (2)</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Kesirlerin Farklı Gösterimleri Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Kesirlerin Farklı Gösterimleri - Test Soruları</h1>
+      <div class="meta">88 Soru • 5. Sınıf Matematik</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/5-sinif/matematik/sayilar-ve-nicelikler-2/kesirlerin-farkli-gosterimleri/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">88</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="1191" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanın 3/4’ü yenmiştir. Bu miktarın yüzde gösterimi aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2202" 
+                  data-correct="true"
+                  onclick="selectChoice(1191, 2202, true)">
+            <span class="choice-letter">A</span>
+            <span>%75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2203" 
+                  data-correct="false"
+                  onclick="selectChoice(1191, 2203, false)">
+            <span class="choice-letter">B</span>
+            <span>%34</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2204" 
+                  data-correct="false"
+                  onclick="selectChoice(1191, 2204, false)">
+            <span class="choice-letter">C</span>
+            <span>%25</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2205" 
+                  data-correct="false"
+                  onclick="selectChoice(1191, 2205, false)">
+            <span class="choice-letter">D</span>
+            <span>%300</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1191">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3/4 kesrini yüzdeye çevirmek için 3 ÷ 4 = 0,75 bulunur. 0,75 × 100 = %75 eder. Bu nedenle doğru cevap %75’tir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1211" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanın 3/4'ü yenmişse, kalan kısım yüzde olarak nasıl gösterilir? (Günlük hayatta pastayı paylaşırken kullanılan bir gösterim düşünün.)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2238" 
+                  data-correct="true"
+                  onclick="selectChoice(1211, 2238, true)">
+            <span class="choice-letter">A</span>
+            <span>%25</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2239" 
+                  data-correct="false"
+                  onclick="selectChoice(1211, 2239, false)">
+            <span class="choice-letter">B</span>
+            <span>%75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2240" 
+                  data-correct="false"
+                  onclick="selectChoice(1211, 2240, false)">
+            <span class="choice-letter">C</span>
+            <span>%50</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2241" 
+                  data-correct="false"
+                  onclick="selectChoice(1211, 2241, false)">
+            <span class="choice-letter">D</span>
+            <span>%100</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1211">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Pastanın 3/4'ü yenmişse kalan 1/4'tür. 1/4 kesri yüzdeye çevrilir: 1/4 = 25/100 = %25. Bu, günlük hayatta kalan miktarı yüzdelik dilimle ifade etmek için kullanılır ve kavram yanılgısı olarak kalan kısmın yanlış hesaplanmasını önler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1221" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanın 3/4’ü yenmiştir. Bu durumun yüzde gösterimi aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2256" 
+                  data-correct="true"
+                  onclick="selectChoice(1221, 2256, true)">
+            <span class="choice-letter">A</span>
+            <span>%75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2257" 
+                  data-correct="false"
+                  onclick="selectChoice(1221, 2257, false)">
+            <span class="choice-letter">B</span>
+            <span>%34</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2258" 
+                  data-correct="false"
+                  onclick="selectChoice(1221, 2258, false)">
+            <span class="choice-letter">C</span>
+            <span>%0,75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2259" 
+                  data-correct="false"
+                  onclick="selectChoice(1221, 2259, false)">
+            <span class="choice-letter">D</span>
+            <span>%3</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1221">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3/4 kesrini yüzdeye çevirmek için payı paydaya bölüp 100 ile çarparız. 3 ÷ 4 = 0,75 ve 0,75 × 100 = 75 olur. Bu nedenle doğru cevap %75’tir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1231" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanın 3/4'ü yenildi. Bu durumu ondalık kesir olarak göstermek için en uygun model hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2276" 
+                  data-correct="true"
+                  onclick="selectChoice(1231, 2276, true)">
+            <span class="choice-letter">A</span>
+            <span>Yüzlük kart</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2277" 
+                  data-correct="false"
+                  onclick="selectChoice(1231, 2277, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayı doğrusu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2278" 
+                  data-correct="false"
+                  onclick="selectChoice(1231, 2278, false)">
+            <span class="choice-letter">C</span>
+            <span>Somut modeller (elma dilimleri)</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2279" 
+                  data-correct="false"
+                  onclick="selectChoice(1231, 2279, false)">
+            <span class="choice-letter">D</span>
+            <span>Yüzde çubuğu</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1231">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Pastanın 3/4'ü yenildiği durumda, ondalık kesir 0.75 olur. Yüzlük kart modeli, 100 karelik bir tabloyu kullanarak kesirleri ondalık ve yüzde olarak göstermede en uygundur çünkü doğrudan görselleştirme sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1401" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanın 3/4’ü yenmiştir. Bu durumun yüzde gösterimi aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2600" 
+                  data-correct="true"
+                  onclick="selectChoice(1401, 2600, true)">
+            <span class="choice-letter">A</span>
+            <span>%75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2601" 
+                  data-correct="false"
+                  onclick="selectChoice(1401, 2601, false)">
+            <span class="choice-letter">B</span>
+            <span>%34</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2602" 
+                  data-correct="false"
+                  onclick="selectChoice(1401, 2602, false)">
+            <span class="choice-letter">C</span>
+            <span>%43</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2603" 
+                  data-correct="false"
+                  onclick="selectChoice(1401, 2603, false)">
+            <span class="choice-letter">D</span>
+            <span>%0,75</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1401">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3/4 kesrini yüzdeye çevirmek için 3 ÷ 4 = 0,75 bulunur. 0,75 sayısı %75’e eşittir. Bu nedenle doğru cevap %75’tir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1411" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanın 3/4'ü yenmişse, kalan kısım yüzde olarak kaçtır? (Günlük hayat bağlantılı: Pasta paylaşımı)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2620" 
+                  data-correct="true"
+                  onclick="selectChoice(1411, 2620, true)">
+            <span class="choice-letter">A</span>
+            <span>%75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2621" 
+                  data-correct="false"
+                  onclick="selectChoice(1411, 2621, false)">
+            <span class="choice-letter">B</span>
+            <span>%25</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2622" 
+                  data-correct="false"
+                  onclick="selectChoice(1411, 2622, false)">
+            <span class="choice-letter">C</span>
+            <span>%50</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2623" 
+                  data-correct="false"
+                  onclick="selectChoice(1411, 2623, false)">
+            <span class="choice-letter">D</span>
+            <span>%100</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1411">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3/4 = 0.75, yüzde olarak 75%'tir. Kesrin ondalık ve yüzde gösterimini ilişkilendirerek günlük hayatta kalan miktarı hesaplamak için kullanılır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1421" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanede satılan pastanın %45'i çikolatalıdır. Bu pastanın çikolatalı kısmını ondalık gösterimle ifade etmek isteyen bir öğrenci aşağıdaki seçeneklerden hangisini seçmelidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2638" 
+                  data-correct="true"
+                  onclick="selectChoice(1421, 2638, true)">
+            <span class="choice-letter">A</span>
+            <span>0,45</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2639" 
+                  data-correct="false"
+                  onclick="selectChoice(1421, 2639, false)">
+            <span class="choice-letter">B</span>
+            <span>4,5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2640" 
+                  data-correct="false"
+                  onclick="selectChoice(1421, 2640, false)">
+            <span class="choice-letter">C</span>
+            <span>0,045</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2641" 
+                  data-correct="false"
+                  onclick="selectChoice(1421, 2641, false)">
+            <span class="choice-letter">D</span>
+            <span>45,0</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1421">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">%45 ifadesi 'yüzde kırk beş' demektir. Kesir olarak 45/100 şeklinde yazılır. Ondalık gösterimde ise payda 100 olduğu için virgülden sonra iki basamak olmalıdır, bu da 0,45 şeklinde gösterilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1851" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanede 3/4'ü kremalı olan bir kekin kremasız kısmı yüzde kaçtır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3468" 
+                  data-correct="true"
+                  onclick="selectChoice(1851, 3468, true)">
+            <span class="choice-letter">A</span>
+            <span>%25</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3469" 
+                  data-correct="false"
+                  onclick="selectChoice(1851, 3469, false)">
+            <span class="choice-letter">B</span>
+            <span>%75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3470" 
+                  data-correct="false"
+                  onclick="selectChoice(1851, 3470, false)">
+            <span class="choice-letter">C</span>
+            <span>1/4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3471" 
+                  data-correct="false"
+                  onclick="selectChoice(1851, 3471, false)">
+            <span class="choice-letter">D</span>
+            <span>3/4</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1851">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kremasız kısım 1 - 3/4 = 1/4'tür. 1/4 = 0,25 = %25 olur. Gerçek hayatta pastane satışlarında kesirlerin yüzde gösterimi kullanılır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1861" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanın 3/4’ü yenmiştir. Bu durumun yüzde gösterimi aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3486" 
+                  data-correct="true"
+                  onclick="selectChoice(1861, 3486, true)">
+            <span class="choice-letter">A</span>
+            <span>%75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3487" 
+                  data-correct="false"
+                  onclick="selectChoice(1861, 3487, false)">
+            <span class="choice-letter">B</span>
+            <span>%34</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3488" 
+                  data-correct="false"
+                  onclick="selectChoice(1861, 3488, false)">
+            <span class="choice-letter">C</span>
+            <span>%25</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3489" 
+                  data-correct="false"
+                  onclick="selectChoice(1861, 3489, false)">
+            <span class="choice-letter">D</span>
+            <span>%0,75</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1861">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3/4 kesrini yüzdeye çevirmek için 100 ile genişletiriz. 3/4 = 75/100 olur. Bu da %75’tir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1871" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pizzacıda 3 tam pizza ve bir pizzanın 4'te 1'i tüketilmiştir. Bu durumu ifade eden bileşik kesir aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3506" 
+                  data-correct="true"
+                  onclick="selectChoice(1871, 3506, true)">
+            <span class="choice-letter">A</span>
+            <span>13/4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3507" 
+                  data-correct="false"
+                  onclick="selectChoice(1871, 3507, false)">
+            <span class="choice-letter">B</span>
+            <span>7/4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3508" 
+                  data-correct="false"
+                  onclick="selectChoice(1871, 3508, false)">
+            <span class="choice-letter">C</span>
+            <span>12/4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3509" 
+                  data-correct="false"
+                  onclick="selectChoice(1871, 3509, false)">
+            <span class="choice-letter">D</span>
+            <span>4/13</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1871">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3 tam ve 1/4 kesri tam sayılı olarak 3 tam 1/4 şeklinde yazılır. Bunu bileşik kesre çevirirken (3x4)+1 = 13 paya yazılır, payda ise aynen kalır. Sonuç 13/4'tür.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2231" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanın 1/2’sini Ayşe, 2/4’ünü Zeynep yemiştir. Buna göre hangi yorum doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4206" 
+                  data-correct="false"
+                  onclick="selectChoice(2231, 4206, false)">
+            <span class="choice-letter">A</span>
+            <span>Ayşe daha fazla yemiştir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4207" 
+                  data-correct="false"
+                  onclick="selectChoice(2231, 4207, false)">
+            <span class="choice-letter">B</span>
+            <span>Zeynep daha fazla yemiştir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4208" 
+                  data-correct="true"
+                  onclick="selectChoice(2231, 4208, true)">
+            <span class="choice-letter">C</span>
+            <span>İkisi eşit miktarda yemiştir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4209" 
+                  data-correct="false"
+                  onclick="selectChoice(2231, 4209, false)">
+            <span class="choice-letter">D</span>
+            <span>Karşılaştırılamaz.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2231">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">1/2 ve 2/4 kesirleri sadeleştirildiğinde aynı değeri verir. 2/4 kesri 1/2’ye eşittir. Bu nedenle iki kişi de eşit miktarda pasta yemiştir. Bu soru, farklı gösterimlerin aynı değeri ifade edebileceğini fark ettirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2241" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pizza 4 eşit dilime bölündü ve 1 dilimi yenildi. Aynı pizza 8 eşit dilime bölünseydi, yenilen kısım kaç dilim olurdu? (Kavram yanılgısını ölçmek için: Eşdeğer kesirleri günlük hayatta karşılaştırma)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4226" 
+                  data-correct="true"
+                  onclick="selectChoice(2241, 4226, true)">
+            <span class="choice-letter">A</span>
+            <span>2 dilim</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4227" 
+                  data-correct="false"
+                  onclick="selectChoice(2241, 4227, false)">
+            <span class="choice-letter">B</span>
+            <span>1 dilim</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4228" 
+                  data-correct="false"
+                  onclick="selectChoice(2241, 4228, false)">
+            <span class="choice-letter">C</span>
+            <span>4 dilim</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4229" 
+                  data-correct="false"
+                  onclick="selectChoice(2241, 4229, false)">
+            <span class="choice-letter">D</span>
+            <span>8 dilim</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2241">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yenilen kısım 1/4'tür. Pizza 8 dilime bölünse, her dilim yarısı büyüklükte olur, yani yenilen 1/4, 8 dilimin 2'sine eşittir. Bu, eşdeğer kesirlerde pay ve paydanın aynı oranda çoğaltıldığını gösterir (çarpan 2). Yanılgı: Yenilenin hâlâ 1 dilim sanılması.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1195" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Yüzlük kart modeli, yüzde gösterimlerini anlamayı kolaylaştırır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2216" 
+                  data-correct="true"
+                  onclick="selectChoice(1195, 2216, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2217" 
+                  data-correct="false"
+                  onclick="selectChoice(1195, 2217, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1195">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yüzlük kart 100 eş parçadan oluşur. Bu nedenle yüzde kavramını somut olarak görmeyi sağlar ve anlamayı kolaylaştırır. İfade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1202" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir sayı doğrusunda 0 ile 1 arası 10 eş parçaya bölündüğünde, 3. parçaya karşılık gelen nokta %30 ifadesi ile gösterilebilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2226" 
+                  data-correct="true"
+                  onclick="selectChoice(1202, 2226, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2227" 
+                  data-correct="false"
+                  onclick="selectChoice(1202, 2227, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1202">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0 ile 1 arası 10 eş parçaya bölündüğünde her parça 1/10 yani 0,1'dir. 3. parça 3/10'dur. Bu ifadeyi genişletirsek 30/100 olur, bu da %30 gösterimine eşittir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1219" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir bahçenin 2/3'ü çiçeklerle kaplıysa, bu %66.6'ya yaklaşık eşittir ama tam olarak %66'dır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2254" 
+                  data-correct="false"
+                  onclick="selectChoice(1219, 2254, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2255" 
+                  data-correct="true"
+                  onclick="selectChoice(1219, 2255, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1219">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, çünkü 2/3 ≈ 0.666... = %66.6... Bu, ondalık ve yüzde gösterimlerde yuvarlama kavram yanılgısını ölçer, günlük alan hesaplarında kullanılır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1236" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir tam sayılı kesir olan 3 tam 1/4, bileşik kesir olarak 13/4 şeklinde gösterilemez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2286" 
+                  data-correct="false"
+                  onclick="selectChoice(1236, 2286, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2287" 
+                  data-correct="true"
+                  onclick="selectChoice(1236, 2287, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1236">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3 tam 1/4 = (3*4 +1)/4 = 13/4, yani ifade yanlıştır. Bu, kesir gösterimlerini dönüştürme yanılgılarını ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1242" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir sayı doğrusunda 0 ile 1 arası 10 eş parçaya bölündüğünde, 3. parçaya karşılık gelen nokta %30 ifadesi ile gösterilebilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2298" 
+                  data-correct="true"
+                  onclick="selectChoice(1242, 2298, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2299" 
+                  data-correct="false"
+                  onclick="selectChoice(1242, 2299, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1242">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0 ile 1 arası 10 eş parçaya bölündüğünde her parça 1/10 yani 0,1'dir. 3. parça 3/10'dur. Bu ifadeyi genişletirsek 30/100 olur, bu da %30 gösterimine eşittir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1406" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Yüzde gösterimi, bir kesrin paydasının 100 olduğu durumları ifade eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2618" 
+                  data-correct="true"
+                  onclick="selectChoice(1406, 2618, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2619" 
+                  data-correct="false"
+                  onclick="selectChoice(1406, 2619, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1406">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yüzde demek 'yüzde birim' yani paydası 100 olan kesir demektir. Bu nedenle ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1419" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 19</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Somut modeller (örneğin elma paylaşımı), kesirlerin ondalık gösterimini anlamada sayı doğrusundan daha az kullanışlıdır. (Günlük hayat bağlantılı; modelleri karşılaştırma)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2636" 
+                  data-correct="false"
+                  onclick="selectChoice(1419, 2636, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2637" 
+                  data-correct="true"
+                  onclick="selectChoice(1419, 2637, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1419">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, çünkü somut modeller günlük hayatta somutlaştırır; ancak ondalık için sayı doğrusu daha hassas olabilir, karşılaştırma duruma göre değişir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1852" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 20</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir sınıfta öğrencilerin 5/10'u kızdır ve bu oran ondalık gösterimde 0,6 olarak yazılır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3472" 
+                  data-correct="false"
+                  onclick="selectChoice(1852, 3472, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3473" 
+                  data-correct="true"
+                  onclick="selectChoice(1852, 3473, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1852">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlıştır çünkü 5/10 = 0,5'tir, 0,6 değil. Bu yanılgı kesirleri ondalığa çevirirken payı paydasına bölmeyi unutmaktan kaynaklanır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1865" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 21</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">0,25 sayısı %25’e eşittir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3502" 
+                  data-correct="true"
+                  onclick="selectChoice(1865, 3502, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3503" 
+                  data-correct="false"
+                  onclick="selectChoice(1865, 3503, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1865">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0,25 = 25/100’dür. Bu da %25 anlamına gelir. Bu nedenle ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1873" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 22</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Yüzlük bir kartın 45 karesinin boyanmasıyla oluşan modelin ondalık gösterimi 0,45; yüzde gösterimi ise %45'tir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3514" 
+                  data-correct="true"
+                  onclick="selectChoice(1873, 3514, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3515" 
+                  data-correct="false"
+                  onclick="selectChoice(1873, 3515, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1873">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yüzlük kartın tamamı 100 parçadır. 45 parça boyandığında bu 45/100 kesrine karşılık gelir. Bu da 0,45 ondalık gösterimi ve %45 yüzdelik ifadesi ile aynıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2246" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 23</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">3/5 kesri, payı 2 ile paydası 3 ile çoğaltılırsa eşdeğer bir kesir elde edilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4236" 
+                  data-correct="false"
+                  onclick="selectChoice(2246, 4236, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4237" 
+                  data-correct="true"
+                  onclick="selectChoice(2246, 4237, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2246">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlıştır, çünkü çarpanlar farklı (2 ve 3). Eşdeğerlik için aynı çarpan olmalı (kazanımlar a,b). Bu, kavram yanılgısını ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2252" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 24</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Sayı doğrusunda 0 ile 1 arası 10 eş parçaya bölündüğünde, 5. parça ile 0 ile 1 arası 2 eş parçaya bölündüğünde 1. parça aynı noktaya karşılık gelir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4248" 
+                  data-correct="true"
+                  onclick="selectChoice(2252, 4248, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4249" 
+                  data-correct="false"
+                  onclick="selectChoice(2252, 4249, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2252">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">5/10 kesri sadeleştirildiğinde (her iki taraf 5'e bölündüğünde) 1/2 olur. Bu da her iki gösterimin sayı doğrusunda tam orta noktayı gösterdiği anlamına gelir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2256" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 25</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir tam sayıyı 4/4 şeklinde göstermek, o tam sayının bir bütün olduğunu ifade eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4254" 
+                  data-correct="true"
+                  onclick="selectChoice(2256, 4254, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4255" 
+                  data-correct="false"
+                  onclick="selectChoice(2256, 4255, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2256">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Payı ve paydası aynı olan kesirler (sıfır hariç) 1 tam bütüne eşittir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1192" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 26</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci sınavdaki soruların 12/10’unu doğru yapmıştır. Bu kesrin tam sayılı gösterimi hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2206" 
+                  data-correct="true"
+                  onclick="selectChoice(1192, 2206, true)">
+            <span class="choice-letter">A</span>
+            <span>1 2/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2207" 
+                  data-correct="false"
+                  onclick="selectChoice(1192, 2207, false)">
+            <span class="choice-letter">B</span>
+            <span>2 1/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2208" 
+                  data-correct="false"
+                  onclick="selectChoice(1192, 2208, false)">
+            <span class="choice-letter">C</span>
+            <span>0 12/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2209" 
+                  data-correct="false"
+                  onclick="selectChoice(1192, 2209, false)">
+            <span class="choice-letter">D</span>
+            <span>1 10/2</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1192">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">12/10 bileşik kesrini tam sayılı kesre çevirmek için 12 ÷ 10 yapılır. Bölüm 1, kalan 2’dir. Sonuç 1 2/10 olur. Bu nedenle doğru cevap 1 2/10’dur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1193" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 27</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir ürünün fiyatında %40 indirim yapılmıştır. Bu indirim kesir olarak nasıl gösterilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2210" 
+                  data-correct="true"
+                  onclick="selectChoice(1193, 2210, true)">
+            <span class="choice-letter">A</span>
+            <span>2/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2211" 
+                  data-correct="false"
+                  onclick="selectChoice(1193, 2211, false)">
+            <span class="choice-letter">B</span>
+            <span>4/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2212" 
+                  data-correct="false"
+                  onclick="selectChoice(1193, 2212, false)">
+            <span class="choice-letter">C</span>
+            <span>40/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2213" 
+                  data-correct="false"
+                  onclick="selectChoice(1193, 2213, false)">
+            <span class="choice-letter">D</span>
+            <span>1/40</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1193">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">%40 demek 40/100 demektir. Bu kesir sadeleştirilirse 2/5 olur. Bu nedenle doğru cevap 2/5’tir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1201" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 28</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanede satılan pastanın %40'ı çilekli, 0,35'i çikolatalı ve kalanı vanilyalıdır. Bu pasta türlerinin miktarlarını büyükten küçüğe doğru modellemek isteyen bir öğrenci hangi sıralamayı yapmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2222" 
+                  data-correct="true"
+                  onclick="selectChoice(1201, 2222, true)">
+            <span class="choice-letter">A</span>
+            <span>Çilekli > Çikolatalı > Vanilyalı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2223" 
+                  data-correct="false"
+                  onclick="selectChoice(1201, 2223, false)">
+            <span class="choice-letter">B</span>
+            <span>Çikolatalı > Çilekli > Vanilyalı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2224" 
+                  data-correct="false"
+                  onclick="selectChoice(1201, 2224, false)">
+            <span class="choice-letter">C</span>
+            <span>Vanilyalı > Çilekli > Çikolatalı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2225" 
+                  data-correct="false"
+                  onclick="selectChoice(1201, 2225, false)">
+            <span class="choice-letter">D</span>
+            <span>Çilekli > Vanilyalı > Çikolatalı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1201">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">%40 ifadesi ondalık olarak 0,40'a eşittir. 0,40 > 0,35 olduğu için çilekli miktar çikolatalıdan fazladır. Toplam %100 (veya 1,00) olduğu için vanilyalı kısım 1,00 - (0,40 + 0,35) = 0,25 yani %25 olur. Sıralama: Çilekli > Çikolatalı > Vanilyalı.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1214" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 29</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sayı doğrusunda 1 tam sayıyı geçen 5/4 kesri, tam sayılı kesir olarak nasıl gösterilir? (Bir ipucu: Bir elma ve çeyreği düşünün.)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2244" 
+                  data-correct="true"
+                  onclick="selectChoice(1214, 2244, true)">
+            <span class="choice-letter">A</span>
+            <span>1 1/4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2245" 
+                  data-correct="false"
+                  onclick="selectChoice(1214, 2245, false)">
+            <span class="choice-letter">B</span>
+            <span>1 4/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2246" 
+                  data-correct="false"
+                  onclick="selectChoice(1214, 2246, false)">
+            <span class="choice-letter">C</span>
+            <span>4/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2247" 
+                  data-correct="false"
+                  onclick="selectChoice(1214, 2247, false)">
+            <span class="choice-letter">D</span>
+            <span>5/1</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1214">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">5/4 = 1 1/4. Sayı doğrusunda 1'i geçen kısım tam sayılı gösterimi vurgular. Kavram yanılgısı: Bileşik kesri tam sayılıya dönüştürmede hata yapma, somut modelle (elma) düzeltilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1222" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 30</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">2 tam 1/5 kesrinin ondalık gösterimi aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2260" 
+                  data-correct="true"
+                  onclick="selectChoice(1222, 2260, true)">
+            <span class="choice-letter">A</span>
+            <span>2,2</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2261" 
+                  data-correct="false"
+                  onclick="selectChoice(1222, 2261, false)">
+            <span class="choice-letter">B</span>
+            <span>2,5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2262" 
+                  data-correct="false"
+                  onclick="selectChoice(1222, 2262, false)">
+            <span class="choice-letter">C</span>
+            <span>2,1</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2263" 
+                  data-correct="false"
+                  onclick="selectChoice(1222, 2263, false)">
+            <span class="choice-letter">D</span>
+            <span>2,05</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1222">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">1/5 = 0,2’dir. 2 tam 1/5 ise 2 + 0,2 = 2,2 olur. Tam kısım aynen yazılır, kesirli kısım ondalık biçime çevrilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1223" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 31</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir mağazada ürünlerin %40’ı indirimlidir. Bu oranı kesir olarak ifade etmek isteyen bir öğrenci aşağıdakilerden hangisini yazmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2264" 
+                  data-correct="true"
+                  onclick="selectChoice(1223, 2264, true)">
+            <span class="choice-letter">A</span>
+            <span>2/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2265" 
+                  data-correct="false"
+                  onclick="selectChoice(1223, 2265, false)">
+            <span class="choice-letter">B</span>
+            <span>4/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2266" 
+                  data-correct="false"
+                  onclick="selectChoice(1223, 2266, false)">
+            <span class="choice-letter">C</span>
+            <span>40/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2267" 
+                  data-correct="false"
+                  onclick="selectChoice(1223, 2267, false)">
+            <span class="choice-letter">D</span>
+            <span>4/5</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1223">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">%40, 40/100 demektir. 40/100 sadeleştirilirse 2/5 elde edilir. Bu nedenle doğru kesir 2/5’tir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1235" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 32</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sayı doğrusunda 0 ile 1 arasında 0.75 noktası, kesir olarak hangisine eşittir? (Kavram yanılgısı: Ondalık ve kesir karıştırma)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2282" 
+                  data-correct="true"
+                  onclick="selectChoice(1235, 2282, true)">
+            <span class="choice-letter">A</span>
+            <span>3/4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2283" 
+                  data-correct="false"
+                  onclick="selectChoice(1235, 2283, false)">
+            <span class="choice-letter">B</span>
+            <span>75/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2284" 
+                  data-correct="false"
+                  onclick="selectChoice(1235, 2284, false)">
+            <span class="choice-letter">C</span>
+            <span>7/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2285" 
+                  data-correct="false"
+                  onclick="selectChoice(1235, 2285, false)">
+            <span class="choice-letter">D</span>
+            <span>3/5</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1235">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0.75, 3/4 kesrine eşittir çünkü 75/100 = 3/4. Bu soru, sayı doğrusu modelini kullanarak ondalık ve kesir gösterimlerini ilişkilendirir ve kavram yanılgılarını ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1241" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 33</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanede satılan pastanın %40'ı çilekli, 0,35'i çikolatalı ve kalanı vanilyalıdır. Bu pasta türlerinin miktarlarını büyükten küçüğe doğru modellemek isteyen bir öğrenci hangi sıralamayı yapmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2294" 
+                  data-correct="true"
+                  onclick="selectChoice(1241, 2294, true)">
+            <span class="choice-letter">A</span>
+            <span>Çilekli > Çikolatalı > Vanilyalı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2295" 
+                  data-correct="false"
+                  onclick="selectChoice(1241, 2295, false)">
+            <span class="choice-letter">B</span>
+            <span>Çikolatalı > Çilekli > Vanilyalı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2296" 
+                  data-correct="false"
+                  onclick="selectChoice(1241, 2296, false)">
+            <span class="choice-letter">C</span>
+            <span>Vanilyalı > Çilekli > Çikolatalı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2297" 
+                  data-correct="false"
+                  onclick="selectChoice(1241, 2297, false)">
+            <span class="choice-letter">D</span>
+            <span>Çilekli > Vanilyalı > Çikolatalı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1241">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">%40 ifadesi ondalık olarak 0,40'a eşittir. 0,40 > 0,35 olduğu için çilekli miktar çikolatalıdan fazladır. Toplam %100 (veya 1,00) olduğu için vanilyalı kısım 1,00 - (0,40 + 0,35) = 0,25 yani %25 olur. Sıralama: Çilekli > Çikolatalı > Vanilyalı.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1402" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 34</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">1 tam 1/2 litre süt içen Ayşe’nin içtiği süt miktarının ondalık gösterimi aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2604" 
+                  data-correct="false"
+                  onclick="selectChoice(1402, 2604, false)">
+            <span class="choice-letter">A</span>
+            <span>1,2</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2605" 
+                  data-correct="true"
+                  onclick="selectChoice(1402, 2605, true)">
+            <span class="choice-letter">B</span>
+            <span>1,5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2606" 
+                  data-correct="false"
+                  onclick="selectChoice(1402, 2606, false)">
+            <span class="choice-letter">C</span>
+            <span>1,05</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2607" 
+                  data-correct="false"
+                  onclick="selectChoice(1402, 2607, false)">
+            <span class="choice-letter">D</span>
+            <span>2,5</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1402">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">1 tam 1/2, 1 + 1/2 demektir. 1/2 = 0,5 olduğundan toplam 1,5 olur. Bu nedenle doğru cevap 1,5’tir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1403" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 35</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir ürünün %25’i indirimlidir. Bu indirimin kesir olarak gösterimi aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2608" 
+                  data-correct="false"
+                  onclick="selectChoice(1403, 2608, false)">
+            <span class="choice-letter">A</span>
+            <span>1/2</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2609" 
+                  data-correct="false"
+                  onclick="selectChoice(1403, 2609, false)">
+            <span class="choice-letter">B</span>
+            <span>1/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2610" 
+                  data-correct="true"
+                  onclick="selectChoice(1403, 2610, true)">
+            <span class="choice-letter">C</span>
+            <span>1/4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2611" 
+                  data-correct="false"
+                  onclick="selectChoice(1403, 2611, false)">
+            <span class="choice-letter">D</span>
+            <span>2/5</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1403">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">%25 demek 25/100 demektir. 25/100 sadeleştirilirse 1/4 olur. Bu nedenle doğru cevap 1/4’tür.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1413" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 36</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sayı doğrusunda 1.5'i göstermek için hangi kesir gösterimi kullanılır? (Modelleri kullanma)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2626" 
+                  data-correct="true"
+                  onclick="selectChoice(1413, 2626, true)">
+            <span class="choice-letter">A</span>
+            <span>1 1/2</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2627" 
+                  data-correct="false"
+                  onclick="selectChoice(1413, 2627, false)">
+            <span class="choice-letter">B</span>
+            <span>2/3</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2628" 
+                  data-correct="false"
+                  onclick="selectChoice(1413, 2628, false)">
+            <span class="choice-letter">C</span>
+            <span>1/2</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2629" 
+                  data-correct="false"
+                  onclick="selectChoice(1413, 2629, false)">
+            <span class="choice-letter">D</span>
+            <span>3/1</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1413">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">1.5 = 3/2, tam sayılı kesir olarak 1 1/2'dir. Sayı doğrusu modeli ondalık ve kesir gösterimini ilişkilendirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1855" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 37</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sayı doğrusunda 3/5 noktasını ondalık olarak gösterirsek aşağıdakilerden hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3474" 
+                  data-correct="true"
+                  onclick="selectChoice(1855, 3474, true)">
+            <span class="choice-letter">A</span>
+            <span>0,6</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3475" 
+                  data-correct="false"
+                  onclick="selectChoice(1855, 3475, false)">
+            <span class="choice-letter">B</span>
+            <span>0,3</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3476" 
+                  data-correct="false"
+                  onclick="selectChoice(1855, 3476, false)">
+            <span class="choice-letter">C</span>
+            <span>0,5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3477" 
+                  data-correct="false"
+                  onclick="selectChoice(1855, 3477, false)">
+            <span class="choice-letter">D</span>
+            <span>1,5</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1855">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3/5 = 0,6'dır. Sayı doğrusu modeli kesirleri ondalıkla ilişkilendirmede kullanılır, bu kazanımı yorumlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1862" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 38</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">2 tam 1/5 sayısının ondalık gösterimi aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3490" 
+                  data-correct="true"
+                  onclick="selectChoice(1862, 3490, true)">
+            <span class="choice-letter">A</span>
+            <span>2,2</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3491" 
+                  data-correct="false"
+                  onclick="selectChoice(1862, 3491, false)">
+            <span class="choice-letter">B</span>
+            <span>2,5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3492" 
+                  data-correct="false"
+                  onclick="selectChoice(1862, 3492, false)">
+            <span class="choice-letter">C</span>
+            <span>2,1</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3493" 
+                  data-correct="false"
+                  onclick="selectChoice(1862, 3493, false)">
+            <span class="choice-letter">D</span>
+            <span>2,05</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1862">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">2 tam 1/5 = 2 + 1/5’tir. 1/5 = 0,2 olduğundan sayı 2,2 olur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1863" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 39</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrencinin sınavda yaptığı soruların 0,6’sı doğrudur. Bu durum kesir olarak nasıl yazılır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3494" 
+                  data-correct="true"
+                  onclick="selectChoice(1863, 3494, true)">
+            <span class="choice-letter">A</span>
+            <span>3/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3495" 
+                  data-correct="false"
+                  onclick="selectChoice(1863, 3495, false)">
+            <span class="choice-letter">B</span>
+            <span>6/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3496" 
+                  data-correct="false"
+                  onclick="selectChoice(1863, 3496, false)">
+            <span class="choice-letter">C</span>
+            <span>1/6</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3497" 
+                  data-correct="false"
+                  onclick="selectChoice(1863, 3497, false)">
+            <span class="choice-letter">D</span>
+            <span>5/3</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1863">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0,6 ondalık gösterimi 6/10’dur. Sadeleştirildiğinde 3/5 olur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1876" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 40</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir marangoz 2,5 metrelik bir tahtayı sayı doğrusunda göstermek istiyor. Bu tahtanın uzunluğu hangi iki tam sayı arasında yer alır ve hangi modele daha yakındır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3516" 
+                  data-correct="true"
+                  onclick="selectChoice(1876, 3516, true)">
+            <span class="choice-letter">A</span>
+            <span>2 ile 3 arasında, tam ortadadır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3517" 
+                  data-correct="false"
+                  onclick="selectChoice(1876, 3517, false)">
+            <span class="choice-letter">B</span>
+            <span>1 ile 2 arasında, 2'ye yakındır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3518" 
+                  data-correct="false"
+                  onclick="selectChoice(1876, 3518, false)">
+            <span class="choice-letter">C</span>
+            <span>2 ile 3 arasında, 3'e yakındır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3519" 
+                  data-correct="false"
+                  onclick="selectChoice(1876, 3519, false)">
+            <span class="choice-letter">D</span>
+            <span>25 ile 26 arasındadır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1876">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">2,5 sayısı 2 tam ve 0,5 (yarım) demektir. Sayı doğrusunda 2 ile 3'ün tam ortasındadır. Model olarak 2 tam blok ve 1 yarım blok ile gösterilebilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2232" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 41</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">3/5 ve 4/10 kesirlerini karşılaştıran bir öğrenci, paydaları eşitleyerek karar vermek istiyor. Hangi sonuç doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4210" 
+                  data-correct="false"
+                  onclick="selectChoice(2232, 4210, false)">
+            <span class="choice-letter">A</span>
+            <span>3/5 = 4/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4211" 
+                  data-correct="true"
+                  onclick="selectChoice(2232, 4211, true)">
+            <span class="choice-letter">B</span>
+            <span>3/5 > 4/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4212" 
+                  data-correct="false"
+                  onclick="selectChoice(2232, 4212, false)">
+            <span class="choice-letter">C</span>
+            <span>3/5 < 4/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4213" 
+                  data-correct="false"
+                  onclick="selectChoice(2232, 4213, false)">
+            <span class="choice-letter">D</span>
+            <span>Karşılaştırılamaz.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2232">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">4/10 kesri sadeleştirilirse 2/5 olur. 3/5 ile 2/5 karşılaştırıldığında payları karşılaştırırız ve 3 > 2 olduğu için 3/5 daha büyüktür. Bu işlem genelleme yapmayı destekler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2249" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 42</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir yolun 3/8'i tamamlandı. Yol 16 eşit parçaya bölünse tamamlanan kısım kaç parça olur? (Günlük hayat: Yol inşaatı)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4238" 
+                  data-correct="false"
+                  onclick="selectChoice(2249, 4238, false)">
+            <span class="choice-letter">A</span>
+            <span>3 parça</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4239" 
+                  data-correct="true"
+                  onclick="selectChoice(2249, 4239, true)">
+            <span class="choice-letter">B</span>
+            <span>6 parça</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4240" 
+                  data-correct="false"
+                  onclick="selectChoice(2249, 4240, false)">
+            <span class="choice-letter">C</span>
+            <span>8 parça</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4241" 
+                  data-correct="false"
+                  onclick="selectChoice(2249, 4241, false)">
+            <span class="choice-letter">D</span>
+            <span>9 parça</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2249">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3/8 = 6/16 (çarpan 2). Doğru B. Bu, varsayım ve genelleme belirler (a,b), tahmin becerisini geliştirir (d).</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2251" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 43</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pastanın önce 2/4'ü, sonra kalan kısmın bir miktarı daha yenmiştir. Toplamda pastanın 4/8'inin yendiğini söyleyen bir arkadaşınızın varsayımı hakkında ne söylenebilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4244" 
+                  data-correct="false"
+                  onclick="selectChoice(2251, 4244, false)">
+            <span class="choice-letter">A</span>
+            <span>4/8, 2/4'ten daha büyük bir miktarı temsil eder.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4245" 
+                  data-correct="true"
+                  onclick="selectChoice(2251, 4245, true)">
+            <span class="choice-letter">B</span>
+            <span>2/4 ve 4/8 kesirleri aynı miktarı temsil eden denk kesirlerdir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4246" 
+                  data-correct="false"
+                  onclick="selectChoice(2251, 4246, false)">
+            <span class="choice-letter">C</span>
+            <span>4/8 daha fazla parçaya bölündüğü için daha küçüktür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4247" 
+                  data-correct="false"
+                  onclick="selectChoice(2251, 4247, false)">
+            <span class="choice-letter">D</span>
+            <span>Payları farklı olduğu için bu iki kesir karşılaştırılamaz.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2251">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">2/4 kesri, hem pay hem payda 2 ile genişletildiğinde 4/8 olur. Dolayısıyla bu iki kesir denktir ve aynı miktarı temsil eder. Arkadaşınız aslında pastanın sadece ilk başta yenen kısmını (yarısını) kastetmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1194" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 44</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">0,5 ondalık gösterimi ile 1/5 kesri aynı değeri ifade eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2214" 
+                  data-correct="false"
+                  onclick="selectChoice(1194, 2214, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2215" 
+                  data-correct="true"
+                  onclick="selectChoice(1194, 2215, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1194">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0,5 = 5/10 = 1/2’dir. 1/5 ise 0,2’dir. Bu iki değer eşit değildir. Bu nedenle ifade yanlıştır. Bu soru, 0,5 ile 1/5’in karıştırılması kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1206" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 45</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Tam sayılı bir kesri (örneğin 1 tam 1/4) ondalık gösterimle ifade ederken ondalık kısım her zaman 1'den büyük olur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2232" 
+                  data-correct="false"
+                  onclick="selectChoice(1206, 2232, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2233" 
+                  data-correct="true"
+                  onclick="selectChoice(1206, 2233, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1206">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade yanlıştır. 1 tam 1/4 ifadesi 1,25 olarak yazılır. Burada 'tam kısım' 1'dir, 'ondalık kısım' ise 0,25'tir. Ondalık kısmın kendisi (virgülden sonrası) basit kesri temsil ettiği için her zaman 1'den küçüktür.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1212" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 46</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir mağazada %20 indirim, bir ürünün fiyatının 1/5'i kadar indirim anlamına gelir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2242" 
+                  data-correct="true"
+                  onclick="selectChoice(1212, 2242, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2243" 
+                  data-correct="false"
+                  onclick="selectChoice(1212, 2243, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1212">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru, çünkü %20 = 20/100 = 1/5. Bu ifade, günlük alışverişte yüzde ve kesir gösterimlerini ilişkilendirerek anlamayı sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1225" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 47</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">0,5 ile 1/5 aynı büyüklüğü ifade eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2272" 
+                  data-correct="false"
+                  onclick="selectChoice(1225, 2272, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2273" 
+                  data-correct="true"
+                  onclick="selectChoice(1225, 2273, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1225">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0,5 = 5/10 = 1/2’dir. 1/5 ise 0,2’dir. Bu iki sayı eşit değildir. Bu soru, ondalık ve kesir gösterimlerinin karıştırılması kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1232" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 48</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir bileşik kesir olan 5/2, tam sayılı kesir olarak 2 tam 1/2 şeklinde gösterilebilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2280" 
+                  data-correct="true"
+                  onclick="selectChoice(1232, 2280, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2281" 
+                  data-correct="false"
+                  onclick="selectChoice(1232, 2281, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1232">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">5/2 kesri, 2 tam 1/2'ye eşittir çünkü 5 divided by 2 equals 2 with a remainder of 1, so 2 1/2. Bu ifade doğrudur ve kesirlerin farklı gösterimlerini ilişkilendirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1246" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 49</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Tam sayılı bir kesri (örneğin 1 tam 1/4) ondalık gösterimle ifade ederken ondalık kısım her zaman 1'den büyük olur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2304" 
+                  data-correct="false"
+                  onclick="selectChoice(1246, 2304, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2305" 
+                  data-correct="true"
+                  onclick="selectChoice(1246, 2305, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1246">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfade yanlıştır. 1 tam 1/4 ifadesi 1,25 olarak yazılır. Burada 'tam kısım' 1'dir, 'ondalık kısım' ise 0,25'tir. Ondalık kısmın kendisi (virgülden sonrası) basit kesri temsil ettiği için her zaman 1'den küçüktür.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1405" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 50</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">2/5 kesri ile 0,25 ondalık gösterimi birbirine eşittir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2616" 
+                  data-correct="false"
+                  onclick="selectChoice(1405, 2616, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2617" 
+                  data-correct="true"
+                  onclick="selectChoice(1405, 2617, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1405">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">2/5 = 0,4’tür. 0,25 ise 1/4’e eşittir. Bu iki değer farklıdır. Bu nedenle ifade yanlıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1412" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 51</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir kesrin bileşik kesir olarak gösterilmesi, her zaman tam sayılı kesirden daha kullanışlıdır. (Kavram yanılgısı: Modelleri karşılaştırma)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2624" 
+                  data-correct="false"
+                  onclick="selectChoice(1412, 2624, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2625" 
+                  data-correct="true"
+                  onclick="selectChoice(1412, 2625, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1412">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, çünkü tam sayılı kesir günlük hayatta (örneğin ölçümlerde) daha pratik olabilir; modelleri karşılaştırmak kullanışlılığa göre karar vermeyi gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1422" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 52</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sayı doğrusu üzerinde 1 ile 2 noktası arası 10 eş parçaya bölünmüştür. Başlangıçtan itibaren 4. parça 1,4 ondalık gösterimine karşılık gelir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2642" 
+                  data-correct="true"
+                  onclick="selectChoice(1422, 2642, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2643" 
+                  data-correct="false"
+                  onclick="selectChoice(1422, 2643, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1422">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">1 ile 2 arası 10 parçaya bölündüğünde her parça 0,1 birimi temsil eder. 1 tamın üzerine 4 parça eklenirse 1 + 0,4 = 1,4 olur. Bu ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1426" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 53</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yüzlük kart modelinde 100 kutucuğun 30 tanesi boyandığında bu model hem 0,3 hem de 0,30 ondalık gösterimini temsil eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2648" 
+                  data-correct="true"
+                  onclick="selectChoice(1426, 2648, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2649" 
+                  data-correct="false"
+                  onclick="selectChoice(1426, 2649, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1426">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">30/100 kesri sadeleştirildiğinde 3/10 olur. Ondalık gösterimlerde sağa eklenen sıfırlar değeri değiştirmez. Bu nedenle 0,3 = 0,30 doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1430" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 54</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">0,08 ondalık gösterimi %80 ifadesine eşittir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2654" 
+                  data-correct="false"
+                  onclick="selectChoice(1430, 2654, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2655" 
+                  data-correct="true"
+                  onclick="selectChoice(1430, 2655, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1430">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu yanlış bir bilgidir. 0,08 'yüzde sekiz' yani %8 demektir. %80 ise 0,80 veya 0,8 şeklinde gösterilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1856" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 55</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yüzlük kartta gölgeli 45 kare, kesir olarak 4,5/10'a eşittir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3478" 
+                  data-correct="true"
+                  onclick="selectChoice(1856, 3478, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3479" 
+                  data-correct="false"
+                  onclick="selectChoice(1856, 3479, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1856">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğrudur çünkü yüzlük kartta 45/100 = 9/20 = 0,45 = 4,5/10 olur. Yüzlük kart modeli kesirlerin ondalık gösterimini somutlaştırır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1866" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 56</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">5/2 kesri 2,5 ondalık gösterimine eşittir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3504" 
+                  data-correct="true"
+                  onclick="selectChoice(1866, 3504, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3505" 
+                  data-correct="false"
+                  onclick="selectChoice(1866, 3505, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1866">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">5/2 = 2 tam 1/2’dir. 1/2 = 0,5 olduğundan 2,5 eder. Bu nedenle ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2234" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 57</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">2/3 kesri sayı doğrusunda 1/2 kesrinin sağında yer alır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4218" 
+                  data-correct="true"
+                  onclick="selectChoice(2234, 4218, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4219" 
+                  data-correct="false"
+                  onclick="selectChoice(2234, 4219, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2234">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">1/2 = 0,5 ve 2/3 yaklaşık 0,66’dır. Sayı doğrusunda büyük olan sağda yer alır. Bu nedenle ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2235" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 58</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">5/8 ve 10/16 kesirleri farklı gösterimlere sahip oldukları için değerleri farklıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4220" 
+                  data-correct="false"
+                  onclick="selectChoice(2235, 4220, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4221" 
+                  data-correct="true"
+                  onclick="selectChoice(2235, 4221, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2235">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">10/16 kesri sadeleştirildiğinde 5/8 olur. Bu nedenle iki kesir eşittir. Farklı gösterim aynı değeri verebilir. İfade yanlıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2242" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 59</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">1/2 kesri, pay ve paydası 3 ile çarpılarak 3/6'ya dönüştürülürse, bu iki kesir eşdeğerdir ve sayı doğrusunda aynı noktayı gösterir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4230" 
+                  data-correct="true"
+                  onclick="selectChoice(2242, 4230, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4231" 
+                  data-correct="false"
+                  onclick="selectChoice(2242, 4231, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2242">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğrudur, çünkü pay ve payda aynı çarpanla (3) çoğaltılırsa kesrin değeri değişmez. Bu, kazanımdaki genellemeyi (b) ve sayı doğrusu temsilini (c) doğrular.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2260" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 60</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Tahmin becerisi, kesirlerin farklı gösterimlerini (örneğin yarım, çeyrek, bütüne yakınlık) bilmekle gelişir ve işlem yapmadan sonucu öngörmemizi sağlar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4260" 
+                  data-correct="true"
+                  onclick="selectChoice(2260, 4260, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4261" 
+                  data-correct="false"
+                  onclick="selectChoice(2260, 4261, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2260">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kazanım (d) uyarınca, kesirlerin referans noktalarına (0, 1/2, 1) olan ilişkisini bilmek tahmin yeteneğini ve matematiksel muhakemeyi güçlendirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1200" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 61</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir sporcu antrenmanın 0,8’ini tamamlamıştır. Bu durumu ifade etmek için hangi model daha kullanışlıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2218" 
+                  data-correct="true"
+                  onclick="selectChoice(1200, 2218, true)">
+            <span class="choice-letter">A</span>
+            <span>Yüzlük kart</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2219" 
+                  data-correct="false"
+                  onclick="selectChoice(1200, 2219, false)">
+            <span class="choice-letter">B</span>
+            <span>Cetvel uzunluğu ölçümü</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2220" 
+                  data-correct="false"
+                  onclick="selectChoice(1200, 2220, false)">
+            <span class="choice-letter">C</span>
+            <span>Takvim yaprağı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2221" 
+                  data-correct="false"
+                  onclick="selectChoice(1200, 2221, false)">
+            <span class="choice-letter">D</span>
+            <span>Saat modeli</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1200">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0,8 = 8/10 = %80’dir. Yüzlük kart modeli yüzdeyi görselleştirmede en kullanışlı modeldir. Bu nedenle doğru cevap yüzlük karttır. Bu soru analiz düzeyindedir çünkü model seçimi gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1205" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 62</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: Bir öğrenci 0,6 gösteriminin %6'ya eşit olduğunu iddia etmektedir. Bu öğrencinin hatasını düzeltmek için kullanılabilecek en kullanışlı model hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2228" 
+                  data-correct="true"
+                  onclick="selectChoice(1205, 2228, true)">
+            <span class="choice-letter">A</span>
+            <span>Yüzlük kart üzerinde boyama yapmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2229" 
+                  data-correct="false"
+                  onclick="selectChoice(1205, 2229, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayı doğrusunda 1 ile 2 arasını bölmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2230" 
+                  data-correct="false"
+                  onclick="selectChoice(1205, 2230, false)">
+            <span class="choice-letter">C</span>
+            <span>Tam sayılı kesre çevirmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2231" 
+                  data-correct="false"
+                  onclick="selectChoice(1205, 2231, false)">
+            <span class="choice-letter">D</span>
+            <span>Çarpma işlemi yapmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1205">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrenci basamak değerini karıştırmaktadır. Yüzlük kart üzerinde 0,6'nın 60 kareye (6 sütun), %6'nın ise sadece 6 küçük kareye denk geldiğini göstermek görsel olarak aradaki 10 katlık farkı en iyi kanıtlayan modeldir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1209" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 63</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Sorusu: Bir akıllı telefonun şarjı %15 kaldığında 'Düşük Pil' uyarısı vermektedir. Telefonun ekranında pil seviyesi ondalık gösterimle verildiğine göre, hangi değerde uyarı çoktan verilmiş olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2234" 
+                  data-correct="true"
+                  onclick="selectChoice(1209, 2234, true)">
+            <span class="choice-letter">A</span>
+            <span>0,12</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2235" 
+                  data-correct="false"
+                  onclick="selectChoice(1209, 2235, false)">
+            <span class="choice-letter">B</span>
+            <span>0,16</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2236" 
+                  data-correct="false"
+                  onclick="selectChoice(1209, 2236, false)">
+            <span class="choice-letter">C</span>
+            <span>0,20</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2237" 
+                  data-correct="false"
+                  onclick="selectChoice(1209, 2237, false)">
+            <span class="choice-letter">D</span>
+            <span>0,50</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1209">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">%15 ifadesi 0,15'e eşittir. Soruda 'uyarı çoktan verilmiş olur' dendiği için 0,15'ten daha küçük bir değer aramalıyız. 0,12 < 0,15 olduğu için cevap 0,12'dir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1217" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 64</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir tarifte 1 3/4 bardak un isteniyorsa, bu ondalık olarak kaç bardaktır? (Kavram yanılgısı: Tam sayılıyı ondalığa dönüştürürken tam kısmı unutma.)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2250" 
+                  data-correct="true"
+                  onclick="selectChoice(1217, 2250, true)">
+            <span class="choice-letter">A</span>
+            <span>1.75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2251" 
+                  data-correct="false"
+                  onclick="selectChoice(1217, 2251, false)">
+            <span class="choice-letter">B</span>
+            <span>0.75</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2252" 
+                  data-correct="false"
+                  onclick="selectChoice(1217, 2252, false)">
+            <span class="choice-letter">C</span>
+            <span>3.4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2253" 
+                  data-correct="false"
+                  onclick="selectChoice(1217, 2253, false)">
+            <span class="choice-letter">D</span>
+            <span>1.34</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1217">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">1 3/4 = 1 + 3/4 = 1.75. Günlük hayatta yemek tariflerinde ondalık gösterim hassas ölçüm için kullanılır, modelleri (ölçü kabı gibi somut) yorumlayarak.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1224" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 65</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir yüzlük kart üzerinde 100 kareden 25’i boyanmıştır. Bu durumu ifade etmek için en uygun gösterim aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2268" 
+                  data-correct="true"
+                  onclick="selectChoice(1224, 2268, true)">
+            <span class="choice-letter">A</span>
+            <span>%25</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2269" 
+                  data-correct="false"
+                  onclick="selectChoice(1224, 2269, false)">
+            <span class="choice-letter">B</span>
+            <span>25/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2270" 
+                  data-correct="false"
+                  onclick="selectChoice(1224, 2270, false)">
+            <span class="choice-letter">C</span>
+            <span>2,5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2271" 
+                  data-correct="false"
+                  onclick="selectChoice(1224, 2271, false)">
+            <span class="choice-letter">D</span>
+            <span>1/25</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1224">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yüzlük kart 100 eş parçayı temsil eder. 25 boyalı kare 25/100 yani %25’tir. Yüzlük model yüzde kavramını doğrudan gösterdiği için %25 en uygun gösterimdir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1238" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 66</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Hangi model, yüzde gösterimini kesirle ilişkilendirmede en kullanışlıdır? Nedenini düşünerek seçiniz. (Analiz düzeyi)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2288" 
+                  data-correct="true"
+                  onclick="selectChoice(1238, 2288, true)">
+            <span class="choice-letter">A</span>
+            <span>Yüzlük kart</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2289" 
+                  data-correct="false"
+                  onclick="selectChoice(1238, 2289, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayı doğrusu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2290" 
+                  data-correct="false"
+                  onclick="selectChoice(1238, 2290, false)">
+            <span class="choice-letter">C</span>
+            <span>Somut modeller</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2291" 
+                  data-correct="false"
+                  onclick="selectChoice(1238, 2291, false)">
+            <span class="choice-letter">D</span>
+            <span>Çubuk diyagramı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1238">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yüzlük kart en kullanışlıdır çünkü 100 kare doğrudan yüzde ve kesir eşleştirmesi sağlar. Diğer modeller (sayı doğrusu) daha az doğrudan, somut modeller ise küçük kesirler için sınırlı. Bu, modelleri karşılaştırmayı gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1245" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 67</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: Bir öğrenci 0,6 gösteriminin %6'ya eşit olduğunu iddia etmektedir. Bu öğrencinin hatasını düzeltmek için kullanılabilecek en kullanışlı model hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2300" 
+                  data-correct="true"
+                  onclick="selectChoice(1245, 2300, true)">
+            <span class="choice-letter">A</span>
+            <span>Yüzlük kart üzerinde boyama yapmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2301" 
+                  data-correct="false"
+                  onclick="selectChoice(1245, 2301, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayı doğrusunda 1 ile 2 arasını bölmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2302" 
+                  data-correct="false"
+                  onclick="selectChoice(1245, 2302, false)">
+            <span class="choice-letter">C</span>
+            <span>Tam sayılı kesre çevirmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2303" 
+                  data-correct="false"
+                  onclick="selectChoice(1245, 2303, false)">
+            <span class="choice-letter">D</span>
+            <span>Çarpma işlemi yapmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1245">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrenci basamak değerini karıştırmaktadır. Yüzlük kart üzerinde 0,6'nın 60 kareye (6 sütun), %6'nın ise sadece 6 küçük kareye denk geldiğini göstermek görsel olarak aradaki 10 katlık farkı en iyi kanıtlayan modeldir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1249" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 68</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Sorusu: Bir akıllı telefonun şarjı %15 kaldığında 'Düşük Pil' uyarısı vermektedir. Telefonun ekranında pil seviyesi ondalık gösterimle verildiğine göre, hangi değerde uyarı çoktan verilmiş olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2306" 
+                  data-correct="true"
+                  onclick="selectChoice(1249, 2306, true)">
+            <span class="choice-letter">A</span>
+            <span>0,12</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2307" 
+                  data-correct="false"
+                  onclick="selectChoice(1249, 2307, false)">
+            <span class="choice-letter">B</span>
+            <span>0,16</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2308" 
+                  data-correct="false"
+                  onclick="selectChoice(1249, 2308, false)">
+            <span class="choice-letter">C</span>
+            <span>0,20</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2309" 
+                  data-correct="false"
+                  onclick="selectChoice(1249, 2309, false)">
+            <span class="choice-letter">D</span>
+            <span>0,50</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1249">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">%15 ifadesi 0,15'e eşittir. Soruda 'uyarı çoktan verilmiş olur' dendiği için 0,15'ten daha küçük bir değer aramalıyız. 0,12 < 0,15 olduğu için cevap 0,12'dir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1404" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 69</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">0,4 sayısını modellemek için aşağıdaki araçlardan hangisi daha kullanışlıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2612" 
+                  data-correct="true"
+                  onclick="selectChoice(1404, 2612, true)">
+            <span class="choice-letter">A</span>
+            <span>Yüzlük kart</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2613" 
+                  data-correct="false"
+                  onclick="selectChoice(1404, 2613, false)">
+            <span class="choice-letter">B</span>
+            <span>Cetvel</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2614" 
+                  data-correct="false"
+                  onclick="selectChoice(1404, 2614, false)">
+            <span class="choice-letter">C</span>
+            <span>Açıölçer</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2615" 
+                  data-correct="false"
+                  onclick="selectChoice(1404, 2615, false)">
+            <span class="choice-letter">D</span>
+            <span>Takvim</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1404">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0,4 sayısı 4/10 veya 40/100 anlamına gelir. Yüzlük kart üzerinde 100 kareden 40’ını boyamak bu gösterimi açıkça ifade eder. Bu nedenle yüzlük kart daha kullanışlıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1417" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 70</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir pizzanın 7/4'ü yenmişse, tam sayılı kesir olarak nasıl gösterilir? (Kavram yanılgısı: Bileşik kesri tam sayılıya çevirme)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2632" 
+                  data-correct="true"
+                  onclick="selectChoice(1417, 2632, true)">
+            <span class="choice-letter">A</span>
+            <span>1 3/4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2633" 
+                  data-correct="false"
+                  onclick="selectChoice(1417, 2633, false)">
+            <span class="choice-letter">B</span>
+            <span>7/4</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2634" 
+                  data-correct="false"
+                  onclick="selectChoice(1417, 2634, false)">
+            <span class="choice-letter">C</span>
+            <span>1 4/7</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2635" 
+                  data-correct="false"
+                  onclick="selectChoice(1417, 2635, false)">
+            <span class="choice-letter">D</span>
+            <span>2 1/4</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1417">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">7/4 = 1 3/4'tür. Payı paydaya bölerek tam kısım ve kalan kesir bulunur; yanılgı payın doğrudan tam kısım sanılmasıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1425" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 71</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci 2,3 ondalık gösterimini tam sayılı kesre çevirirken '2 tam 3/100' şeklinde ifade etmiştir. Bu öğrencinin yaptığı hata ile ilgili hangisi söylenebilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2644" 
+                  data-correct="true"
+                  onclick="selectChoice(1425, 2644, true)">
+            <span class="choice-letter">A</span>
+            <span>Virgülden sonra tek basamak olduğu için payda 10 olmalıydı.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2645" 
+                  data-correct="false"
+                  onclick="selectChoice(1425, 2645, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayı 23/100 olarak yazılmalıydı.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2646" 
+                  data-correct="false"
+                  onclick="selectChoice(1425, 2646, false)">
+            <span class="choice-letter">C</span>
+            <span>Tam kısım yanlış belirlenmiştir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2647" 
+                  data-correct="false"
+                  onclick="selectChoice(1425, 2647, false)">
+            <span class="choice-letter">D</span>
+            <span>Herhangi bir hata yapılmamıştır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1425">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu yaygın bir kavram yanılgısıdır. 2,3 gösteriminde virgülden sonra bir basamak olduğu için payda 10 olmalıdır (2 tam 3/10). Öğrenci basamak değerini karıştırarak paydayı 100 almıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1428" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 72</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir meyve suyunun 0,8'i dolu, diğerinin ise %75'i doludur. Hangi model bu iki miktarı karşılaştırmak için en kullanışlıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2650" 
+                  data-correct="true"
+                  onclick="selectChoice(1428, 2650, true)">
+            <span class="choice-letter">A</span>
+            <span>Yüzlük kart modeli</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2651" 
+                  data-correct="false"
+                  onclick="selectChoice(1428, 2651, false)">
+            <span class="choice-letter">B</span>
+            <span>Sayı doğrusu (0-10 arası)</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2652" 
+                  data-correct="false"
+                  onclick="selectChoice(1428, 2652, false)">
+            <span class="choice-letter">C</span>
+            <span>Tam sayılı modelleme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2653" 
+                  data-correct="false"
+                  onclick="selectChoice(1428, 2653, false)">
+            <span class="choice-letter">D</span>
+            <span>Toplama tablosu</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1428">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">0,8 ve %75 değerlerini karşılaştırmak için her ikisini de aynı birime çevirmek (0,80 ve 0,75) gerekir. Yüzlük kart modeli, her iki değeri de aynı zemin üzerinde (80 kare ve 75 kare) görmeyi sağladığı için en kullanışlıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1858" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 73</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Market alışverişinde %20 indirim, bileşik kesir olarak aşağıdakilerden hangisidir? (1 - indirim)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3480" 
+                  data-correct="true"
+                  onclick="selectChoice(1858, 3480, true)">
+            <span class="choice-letter">A</span>
+            <span>4/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3481" 
+                  data-correct="false"
+                  onclick="selectChoice(1858, 3481, false)">
+            <span class="choice-letter">B</span>
+            <span>1/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3482" 
+                  data-correct="false"
+                  onclick="selectChoice(1858, 3482, false)">
+            <span class="choice-letter">C</span>
+            <span>1 1/5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3483" 
+                  data-correct="false"
+                  onclick="selectChoice(1858, 3483, false)">
+            <span class="choice-letter">D</span>
+            <span>%80</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1858">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Analiz düzeyi: %20 indirim = 1/5, ödenecek 4/5 = 0,8. Gerçek hayatta indirimlerde yüzde-kesir ilişkilendirilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1864" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 74</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir yüzlük tabloda 40 kare boyalıdır. Bu durumu en uygun şekilde ifade eden gösterim hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3498" 
+                  data-correct="true"
+                  onclick="selectChoice(1864, 3498, true)">
+            <span class="choice-letter">A</span>
+            <span>%40</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3499" 
+                  data-correct="false"
+                  onclick="selectChoice(1864, 3499, false)">
+            <span class="choice-letter">B</span>
+            <span>4/10</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3500" 
+                  data-correct="false"
+                  onclick="selectChoice(1864, 3500, false)">
+            <span class="choice-letter">C</span>
+            <span>0,04</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3501" 
+                  data-correct="false"
+                  onclick="selectChoice(1864, 3501, false)">
+            <span class="choice-letter">D</span>
+            <span>4</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1864">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yüzlük tablo 100 parçadan oluşur. 40 boyalı kare 40/100’dür. Bu da %40 ve 0,4’e eşittir. En uygun ifade %40’tır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1872" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 75</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ali, bir marketten 0,8 kg elma, Ayşe ise 0,75 kg elma almıştır. Elma miktarlarıyla ilgili yapılan aşağıdaki yorumlardan hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3510" 
+                  data-correct="true"
+                  onclick="selectChoice(1872, 3510, true)">
+            <span class="choice-letter">A</span>
+            <span>Ali daha fazla elma almıştır çünkü 0,8 > 0,75'tir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3511" 
+                  data-correct="false"
+                  onclick="selectChoice(1872, 3511, false)">
+            <span class="choice-letter">B</span>
+            <span>Ayşe daha fazla elma almıştır çünkü 75 sayısı 8'den büyüktür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3512" 
+                  data-correct="false"
+                  onclick="selectChoice(1872, 3512, false)">
+            <span class="choice-letter">C</span>
+            <span>Her ikisi de eşit miktarda elma almıştır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3513" 
+                  data-correct="false"
+                  onclick="selectChoice(1872, 3513, false)">
+            <span class="choice-letter">D</span>
+            <span>0,8 kg, 8 grama eşit olduğu için Ayşe daha çok almıştır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1872">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrenciler genellikle basamak sayısı fazla olan sayının (0,75) daha büyük olduğunu düşünür (kavram yanılgısı). Ancak 0,8 = 0,80'dir. 0,80 > 0,75 olduğu için Ali daha fazla elma almıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1880" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 76</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir mağaza tüm ürünlerde %25 indirim yapmıştır. Mağazadaki bir ceketin fiyatının 3/4'üne satıldığını gören bir müşteri, bu durumu nasıl analiz etmelidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3522" 
+                  data-correct="true"
+                  onclick="selectChoice(1880, 3522, true)">
+            <span class="choice-letter">A</span>
+            <span>Mağazanın indirimi ile ceketin satış fiyatı oranı aynıdır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3523" 
+                  data-correct="false"
+                  onclick="selectChoice(1880, 3523, false)">
+            <span class="choice-letter">B</span>
+            <span>Ceket aslında %75 indirimle satılmaktadır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3524" 
+                  data-correct="false"
+                  onclick="selectChoice(1880, 3524, false)">
+            <span class="choice-letter">C</span>
+            <span>3/4 oranı %25'ten daha küçük bir indirimi ifade eder.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3525" 
+                  data-correct="false"
+                  onclick="selectChoice(1880, 3525, false)">
+            <span class="choice-letter">D</span>
+            <span>Ceketin fiyatı 0,34 ile çarpılarak bulunmalıdır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1880">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">%25 indirim demek, ürünün %100 - %25 = %75 fiyatına satılması demektir. %75 ise 75/100 = 3/4 kesrine eşittir. Dolayısıyla mağazanın ilanı ile müşterinin tespiti tamamen aynıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2233" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 77</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci “Paydası büyük olan kesir daha büyüktür.” genellemesini yapıyor. 1/3 ve 1/6 kesirlerine bakarak hangi sonuca ulaşılmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4214" 
+                  data-correct="false"
+                  onclick="selectChoice(2233, 4214, false)">
+            <span class="choice-letter">A</span>
+            <span>1/6 daha büyüktür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4215" 
+                  data-correct="true"
+                  onclick="selectChoice(2233, 4215, true)">
+            <span class="choice-letter">B</span>
+            <span>1/3 daha büyüktür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4216" 
+                  data-correct="false"
+                  onclick="selectChoice(2233, 4216, false)">
+            <span class="choice-letter">C</span>
+            <span>İkisi eşittir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4217" 
+                  data-correct="false"
+                  onclick="selectChoice(2233, 4217, false)">
+            <span class="choice-letter">D</span>
+            <span>Karşılaştırılamaz.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2233">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Payları eşit olan kesirlerde paydası küçük olan kesir daha büyüktür. 1/3, 1/6’dan büyüktür. Bu soru kavram yanılgısını ölçer çünkü paydası büyük olan kesrin her zaman büyük olduğu düşüncesi yanlıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2240" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 78</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci 7/8 ile 5/6 kesirlerini karşılaştırırken yaklaşık değerlerinden yararlanıyor. Hangi sonuç doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4222" 
+                  data-correct="true"
+                  onclick="selectChoice(2240, 4222, true)">
+            <span class="choice-letter">A</span>
+            <span>7/8 > 5/6</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4223" 
+                  data-correct="false"
+                  onclick="selectChoice(2240, 4223, false)">
+            <span class="choice-letter">B</span>
+            <span>7/8 < 5/6</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4224" 
+                  data-correct="false"
+                  onclick="selectChoice(2240, 4224, false)">
+            <span class="choice-letter">C</span>
+            <span>7/8 = 5/6</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4225" 
+                  data-correct="false"
+                  onclick="selectChoice(2240, 4225, false)">
+            <span class="choice-letter">D</span>
+            <span>Karşılaştırılamaz.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2240">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">7/8 = 0,875 ve 5/6 yaklaşık 0,83’tür. 0,875 daha büyük olduğu için 7/8 daha büyüktür. Bu analiz düzeyinde bir sorudur çünkü öğrenci yaklaşık değerlerle akıl yürütür.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2245" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 79</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sayı doğrusunda 1/2 noktası, 2/4 ile aynı yerde midir? Eğer aynıysa, bunun genellemesi nedir? (Analiz düzeyi: Genelleme belirleme)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4232" 
+                  data-correct="false"
+                  onclick="selectChoice(2245, 4232, false)">
+            <span class="choice-letter">A</span>
+            <span>Hayır, farklı noktalardadır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4233" 
+                  data-correct="false"
+                  onclick="selectChoice(2245, 4233, false)">
+            <span class="choice-letter">B</span>
+            <span>Evet, ama sadece pay çoğaltılırsa</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4234" 
+                  data-correct="true"
+                  onclick="selectChoice(2245, 4234, true)">
+            <span class="choice-letter">C</span>
+            <span>Evet, pay ve payda aynı çarpanla çoğaltılırsa</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4235" 
+                  data-correct="false"
+                  onclick="selectChoice(2245, 4235, false)">
+            <span class="choice-letter">D</span>
+            <span>Hayır, payda büyükse kesir küçülür</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2245">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Evet, aynı yerde. Genelleme: Pay ve payda aynı sayıyla çarpılırsa eşdeğer olur (kazanımlar b,c). Doğru seçenek C, çünkü tahmin becerisini açıklar (d). Yanılgı: Farklı sayılarla çarpma.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2255" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 80</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: Ali, 1/10 kesrinin 1/2 kesrinden daha büyük olduğunu çünkü 10 sayısının 2 sayısından büyük olduğunu iddia ediyor. Ali'nin hatasını düzelten en iyi açıklama hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4250" 
+                  data-correct="false"
+                  onclick="selectChoice(2255, 4250, false)">
+            <span class="choice-letter">A</span>
+            <span>Paydalar toplandığında 10 daha büyük olduğu için Ali haklıdır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4251" 
+                  data-correct="true"
+                  onclick="selectChoice(2255, 4251, true)">
+            <span class="choice-letter">B</span>
+            <span>Payda büyüdükçe bütün daha çok parçaya bölünür ve her bir parça küçülür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4252" 
+                  data-correct="false"
+                  onclick="selectChoice(2255, 4252, false)">
+            <span class="choice-letter">C</span>
+            <span>Paylar eşit olduğu için bu kesirler birbirine eşittir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4253" 
+                  data-correct="false"
+                  onclick="selectChoice(2255, 4253, false)">
+            <span class="choice-letter">D</span>
+            <span>Sayı doğrusunda 1/10 sayısı 1'e daha yakındır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2255">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Birim kesirlerde payda büyüdükçe bütün daha fazla parçaya ayrılır, dolayısıyla her bir parçanın büyüklüğü azalır. 1/2 yarımı, 1/10 ise çok daha küçük bir parçayı temsil eder.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2258" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 81</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Sorusu: Ayşe bir kağıdı önce 4 eş parçaya bölüp 3'ünü boyuyor. Mehmet ise aynı büyüklükteki kağıdı 8 eş parçaya bölüp Ayşe ile aynı miktarda alanı boyamak istiyor. Mehmet kaç parça boyamalıdır ve bu durumu hangi matematiksel önerme açıklar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4256" 
+                  data-correct="false"
+                  onclick="selectChoice(2258, 4256, false)">
+            <span class="choice-letter">A</span>
+            <span>3 parça boyamalıdır; 3/4 < 3/8</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4257" 
+                  data-correct="true"
+                  onclick="selectChoice(2258, 4257, true)">
+            <span class="choice-letter">B</span>
+            <span>6 parça boyamalıdır; 3/4 = 6/8</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4258" 
+                  data-correct="false"
+                  onclick="selectChoice(2258, 4258, false)">
+            <span class="choice-letter">C</span>
+            <span>4 parça boyamalıdır; 3/4 = 4/8</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4259" 
+                  data-correct="false"
+                  onclick="selectChoice(2258, 4259, false)">
+            <span class="choice-letter">D</span>
+            <span>8 parça boyamalıdır; 3/4 > 8/8</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2258">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ayşe'nin boyadığı alan 3/4'tür. 3/4 kesri 2 ile genişletildiğinde 6/8 olur. Dolayısıyla Mehmet 6 parça boyamalıdır; bu durum 3/4 = 6/8 önermesi ile sunulur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1216" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 82</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yüzlük kartta 125 kareyi boyamak, %125'e ve 5/4 bileşik kesrine eşittir, ancak günlük hayatta yüzlük kart bu gösterim için her zaman en kullanışlı model değildir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2248" 
+                  data-correct="true"
+                  onclick="selectChoice(1216, 2248, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2249" 
+                  data-correct="false"
+                  onclick="selectChoice(1216, 2249, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1216">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru, çünkü yüzlük kart yüzde için uygundur ama bileşik kesirler için sayı doğrusu daha kullanışlı olabilir. Bu, modelleri karşılaştırmayı ve karar vermeyi teşvik eder.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1226" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 83</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir kesri yüzdeye çevirmek için pay ve paydayı 100 ile çarpmak her zaman doğru sonuç verir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2274" 
+                  data-correct="false"
+                  onclick="selectChoice(1226, 2274, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2275" 
+                  data-correct="true"
+                  onclick="selectChoice(1226, 2275, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1226">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Her kesirde pay ve paydayı 100 ile çarpmak doğru yöntem değildir. Örneğin 1/4 için 1/4 × 100/100 yapılmaz; bunun yerine 1 ÷ 4 yapılıp 100 ile çarpılır. Bu ifade yanlıştır ve işlem kavramını sorgular.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1240" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 84</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Gerçek yaşamda para miktarını göstermek için ondalık kesir, yüzdeye göre daha kullanışlıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2292" 
+                  data-correct="true"
+                  onclick="selectChoice(1240, 2292, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2293" 
+                  data-correct="false"
+                  onclick="selectChoice(1240, 2293, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1240">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade tartışmalıdır ancak genel olarak doğrudur çünkü para doğrudan ondalık (2.50 TL) kullanılır, yüzde indirimde. Soru, modelleri karşılaştırmayı teşvik eder.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1416" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 85</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Yüzlük kart modeli, kesirlerin yüzde gösterimini anlamada en kullanışlı modeldir. (Analiz düzeyi: Modelleri karşılaştırma)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2630" 
+                  data-correct="true"
+                  onclick="selectChoice(1416, 2630, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2631" 
+                  data-correct="false"
+                  onclick="selectChoice(1416, 2631, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1416">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru, çünkü yüzlük kart doğrudan yüzdeyi görselleştirir; diğer modellerle karşılaştırıldığında yüzde için en uygundur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1860" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 86</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir tarifte 2 1/2 bardak un, ondalık olarak 3,5 bardak eder ve bu sayı doğrusunda soldan sağa doğru gösterilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3484" 
+                  data-correct="true"
+                  onclick="selectChoice(1860, 3484, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3485" 
+                  data-correct="false"
+                  onclick="selectChoice(1860, 3485, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1860">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğrudur: 2 1/2 = 5/2 = 2,5 değil 2,5 ama tam sayı hatası yok, 2,5 doğru; sayı doğrusunda doğru yorumlanır. Yanılgı ölçer: Bileşik-ondalık karıştırma.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1877" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 87</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir bütünün %1'lik kısmını göstermek için 'sayı doğrusu' modeli, 'yüzlük kart' modeline göre her zaman daha kullanışlıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="3520" 
+                  data-correct="false"
+                  onclick="selectChoice(1877, 3520, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="3521" 
+                  data-correct="true"
+                  onclick="selectChoice(1877, 3521, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1877">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış. %1 gibi küçük ve 100 parçaya bölünmüş yapıları görselleştirmek için yüzlük kartlar, sayı doğrusuna göre genellikle daha kullanışlı ve anlaşılırdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2250" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 88</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kesirlerin eşdeğer olup olmadığını kontrol etmek için pay ve paydayı farklı sayılarla çarpmak yeterlidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4242" 
+                  data-correct="false"
+                  onclick="selectChoice(2250, 4242, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4243" 
+                  data-correct="true"
+                  onclick="selectChoice(2250, 4243, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2250">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlıştır, aynı sayı olmalı. Bu, genelleme ve önerme sunmayı (b,ç) test eder, yanılgıyı ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Kesirlerin Farklı Gösterimleri test soruları - 5. Sınıf Matematik dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // ✅ Düzeltme: === ile tip güvenli karşılaştırma
+        if (btn.dataset.choiceId === String(choiceId) && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

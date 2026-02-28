@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class TestProgressBar extends StatelessWidget {
   final int currentQuestion;
@@ -7,6 +8,7 @@ class TestProgressBar extends StatelessWidget {
   final int incorrectCount;
   final int remainingSeconds;
   final int totalSeconds;
+  final int currentStreak; // Yeni eklenen özellik
 
   const TestProgressBar({
     super.key,
@@ -16,6 +18,7 @@ class TestProgressBar extends StatelessWidget {
     required this.incorrectCount,
     required this.remainingSeconds,
     required this.totalSeconds,
+    this.currentStreak = 0,
   });
 
   @override
@@ -42,6 +45,48 @@ class TestProgressBar extends StatelessWidget {
                   ),
                 ),
               ),
+              
+              // Araya Streak (Seri) Göstergesi Giriyor
+              if (currentStreak > 1)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.orange.shade400, Colors.deepOrange],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.orange.withOpacity(0.5),
+                          blurRadius: 8,
+                          spreadRadius: 1,
+                        )
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const Text('🔥', style: TextStyle(fontSize: 16)),
+                        const SizedBox(width: 4),
+                        Text(
+                          '$currentStreak Combo!',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ).animate(key: ValueKey(currentStreak)) // Değer değiştikçe animasyon yenilenir
+                    .scale(begin: const Offset(0.8, 0.8), end: const Offset(1.1, 1.1), curve: Curves.elasticOut, duration: 600.ms)
+                    .then()
+                    .scale(begin: const Offset(1.1, 1.1), end: const Offset(1, 1), curve: Curves.easeOut, duration: 200.ms),
+                ),
+
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: EdgeInsets.symmetric(
@@ -81,31 +126,65 @@ class TestProgressBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                'D: $score  Y: $incorrectCount',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: isNarrow ? 14 : 16,
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isNarrow ? 8 : 12,
+                  vertical: isNarrow ? 4 : 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.check_circle, size: 14, color: Colors.green.shade400),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$score',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: isNarrow ? 14 : 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(Icons.cancel, size: 14, color: Colors.red.shade400),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$incorrectCount',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: isNarrow ? 14 : 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           if (totalQuestions > 0)
-            LinearProgressIndicator(
-              value: currentQuestion / totalQuestions,
-              backgroundColor: Colors.white.withOpacity(0.3),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
-              borderRadius: BorderRadius.circular(8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: LinearProgressIndicator(
+                value: currentQuestion / totalQuestions,
+                minHeight: 8,
+                backgroundColor: Colors.white.withOpacity(0.2),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.greenAccent),
+              ),
             ),
           const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: progressValue.clamp(0.0, 1.0),
-            backgroundColor: Colors.white.withOpacity(0.2),
-            valueColor: AlwaysStoppedAnimation<Color>(
-              isCritical ? Colors.redAccent : Colors.lightBlueAccent,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: LinearProgressIndicator(
+              value: progressValue.clamp(0.0, 1.0),
+              minHeight: 4, // Zaman bari daha ince
+              backgroundColor: Colors.white.withOpacity(0.1),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                isCritical ? Colors.redAccent : Colors.lightBlueAccent,
+              ),
             ),
-            borderRadius: BorderRadius.circular(8),
           ),
         ],
       ),
