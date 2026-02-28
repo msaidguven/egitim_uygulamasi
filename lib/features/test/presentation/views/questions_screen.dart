@@ -11,6 +11,7 @@ import 'package:egitim_uygulamasi/features/test/presentation/views/components/te
 import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/ads/adsense_slots.dart';
 import 'package:egitim_uygulamasi/widgets/adaptive_ad_banner.dart';
+import 'package:egitim_uygulamasi/widgets/question_text.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:audioplayers/audioplayers.dart';
@@ -30,6 +31,99 @@ class QuestionsScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<QuestionsScreen> createState() => _QuestionsScreenState();
+}
+
+class QuestionSolutionPanel extends StatefulWidget {
+  final Question question;
+  final bool isChecked;
+
+  const QuestionSolutionPanel({
+    super.key,
+    required this.question,
+    required this.isChecked,
+  });
+
+  @override
+  State<QuestionSolutionPanel> createState() => _QuestionSolutionPanelState();
+}
+
+class _QuestionSolutionPanelState extends State<QuestionSolutionPanel> {
+  bool _isOpen = false;
+
+  String? get _solutionText {
+    final text = (widget.question.solutionText ?? widget.question.modelAnswer)
+        ?.trim();
+    if (text == null || text.isEmpty) return null;
+    return text;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final solutionText = _solutionText;
+    if (!widget.isChecked || solutionText == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ElevatedButton.icon(
+            onPressed: () {
+              setState(() {
+                _isOpen = !_isOpen;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0F62FE),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            icon: Icon(
+              _isOpen
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
+            ),
+            label: Text(
+              _isOpen ? 'Cevabı Gizle' : 'Cevabı Göster',
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+            ),
+          ),
+          if (_isOpen)
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFCBD5E1)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Çözüm',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                  ),
+                  const SizedBox(height: 8),
+                  QuestionText(
+                    text: solutionText,
+                    fontSize: 14,
+                    textColor:
+                        Theme.of(context).textTheme.bodyMedium?.color ??
+                        Colors.black87,
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
@@ -581,24 +675,28 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
     return SafeArea(
       child: LayoutBuilder(
         builder: (context, constraints) {
+          final contentWidth = constraints.maxWidth > 1280
+              ? 1280.0
+              : constraints.maxWidth;
           return Align(
             alignment: Alignment.topCenter,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1280),
-              child: Column(
-                children: [
-                  if (MediaQuery.of(context).size.width < 900)
-                    TestProgressBar(
-                      currentQuestion: viewModel.answeredCount + 1,
-                      totalQuestions: viewModel.totalQuestions,
-                      score: viewModel.score,
-                      incorrectCount: viewModel.incorrectCount,
-                      remainingSeconds: _remainingSeconds,
-                      totalSeconds: viewModel.timeLimitSeconds,
-                      currentStreak: viewModel.currentStreak, // Streak bilgisini bar'a yolluyoruz
-                    ),
-                  Expanded(
-                    child: MediaQuery(
+            child: SizedBox(
+              width: contentWidth,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Column(
+                  children: [
+                    if (MediaQuery.of(context).size.width < 900)
+                      TestProgressBar(
+                        currentQuestion: viewModel.answeredCount + 1,
+                        totalQuestions: viewModel.totalQuestions,
+                        score: viewModel.score,
+                        incorrectCount: viewModel.incorrectCount,
+                        remainingSeconds: _remainingSeconds,
+                        totalSeconds: viewModel.timeLimitSeconds,
+                        currentStreak: viewModel.currentStreak,
+                      ),
+                    MediaQuery(
                       data: MediaQuery.of(
                         context,
                       ).copyWith(textScaleFactor: _textScale),
@@ -617,43 +715,51 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                         },
                       ),
                     ),
-                  ),
-                  TestBottomNav(
-                    isChecked: viewModel.currentTestQuestion!.isChecked,
-                    canCheck: viewModel.currentTestQuestion!.userAnswer != null,
-                    isLastQuestion: viewModel.questionQueue.isEmpty,
-                    isSaving: viewModel.isSaving,
-                    onCheckPressed: () async {
-                      debugPrint(
-                        "QuestionsScreen: onCheckPressed - Cevap kontrol ediliyor.",
-                      );
-                      await ref
-                          .read(testViewModelProvider.notifier)
-                          .checkAnswer();
-                      _refreshSrsDueCountIfNeeded();
-                    },
-                    onNextPressed: () {
-                      debugPrint(
-                        "QuestionsScreen: onNextPressed - Sonraki soruya geçiliyor.",
-                      );
-                      ref.read(testViewModelProvider.notifier).nextQuestion();
-                    },
-                    onFinishPressed: () async {
-                      debugPrint(
-                        "QuestionsScreen: onFinishPressed - Test bitiriliyor.",
-                      );
-                      await ref
-                          .read(testViewModelProvider.notifier)
-                          .finishTest();
-                      _refreshSrsDueCountIfNeeded();
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  const AdaptiveAdBanner(
-                    adSlot: AdSenseSlots.questionFooter,
-                    margin: EdgeInsets.only(bottom: 8),
-                  ),
-                ],
+                    QuestionSolutionPanel(
+                      key: ValueKey(
+                        'solution-${viewModel.currentTestQuestion!.question.id}',
+                      ),
+                      question: viewModel.currentTestQuestion!.question,
+                      isChecked: viewModel.currentTestQuestion!.isChecked,
+                    ),
+                    TestBottomNav(
+                      isChecked: viewModel.currentTestQuestion!.isChecked,
+                      canCheck:
+                          viewModel.currentTestQuestion!.userAnswer != null,
+                      isLastQuestion: viewModel.questionQueue.isEmpty,
+                      isSaving: viewModel.isSaving,
+                      onCheckPressed: () async {
+                        debugPrint(
+                          "QuestionsScreen: onCheckPressed - Cevap kontrol ediliyor.",
+                        );
+                        await ref
+                            .read(testViewModelProvider.notifier)
+                            .checkAnswer();
+                        _refreshSrsDueCountIfNeeded();
+                      },
+                      onNextPressed: () {
+                        debugPrint(
+                          "QuestionsScreen: onNextPressed - Sonraki soruya geçiliyor.",
+                        );
+                        ref.read(testViewModelProvider.notifier).nextQuestion();
+                      },
+                      onFinishPressed: () async {
+                        debugPrint(
+                          "QuestionsScreen: onFinishPressed - Test bitiriliyor.",
+                        );
+                        await ref
+                            .read(testViewModelProvider.notifier)
+                            .finishTest();
+                        _refreshSrsDueCountIfNeeded();
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    const AdaptiveAdBanner(
+                      adSlot: AdSenseSlots.questionFooter,
+                      margin: EdgeInsets.only(bottom: 8),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

@@ -13,7 +13,6 @@ class TestViewModel extends ChangeNotifier {
   final TestRepository _repository;
   final AudioPlayer _sfxPlayer = AudioPlayer();
 
-
   // State
   static const int questionTimeLimitSeconds = 60;
   List<TestQuestion> _questionQueue = [];
@@ -32,7 +31,7 @@ class TestViewModel extends ChangeNotifier {
   int _unitId = 0;
   String? _userId;
   String? _clientId;
-  
+
   // Gamification State
   int _currentStreak = 0;
   bool _soundEnabled = true;
@@ -459,8 +458,12 @@ class TestViewModel extends ChangeNotifier {
     if (isCorrect) {
       _score++;
       _currentStreak++;
-      _playSound('audio/correct_chime.mp3'); // Tatlı bir zil sesi (Eğer dosya yoksa catch ile atlar)
-      log('TestViewModel.checkAnswer: Yeni skor=$_score, Seri: $_currentStreak');
+      _playSound(
+        'audio/correct_chime.mp3',
+      ); // Tatlı bir zil sesi (Eğer dosya yoksa catch ile atlar)
+      log(
+        'TestViewModel.checkAnswer: Yeni skor=$_score, Seri: $_currentStreak',
+      );
     } else {
       _incorrectCount++;
       _currentStreak = 0; // Seriyi sıfırla
@@ -672,7 +675,11 @@ class TestViewModel extends ChangeNotifier {
         stackTrace: stackTrace,
       );
       debugPrint('--- HATA DETAYI --- Stack Trace: $stackTrace');
-      _error = "Test bitirilirken hata: ${_getErrorMessage(e)}";
+      // RPC başarısız olsa bile kullanıcı akışını kilitleme:
+      // testi yerelde bitirip sonuç ekranına geç.
+      _currentTestQuestion = null;
+      _isLoading = false;
+      _error = null;
       notifyListeners();
     }
   }

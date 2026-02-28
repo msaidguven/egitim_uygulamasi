@@ -22,12 +22,14 @@ class MultipleChoiceWidget extends StatelessWidget {
     final choices = testQuestion.shuffledChoices;
 
     return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: choices.length,
       separatorBuilder: (_, __) => SizedBox(height: isNarrow ? 12 : 16),
       itemBuilder: (context, index) {
         final choice = choices[index];
         bool isSelected = (testQuestion.userAnswer == choice.id);
-        
+
         Color bgColor = Colors.white;
         Color borderColor = const Color(0xFFE2E8F0);
         Color textColor = Colors.black87;
@@ -40,16 +42,27 @@ class MultipleChoiceWidget extends StatelessWidget {
             bgColor = const Color(0xFFECFDF5); // Açık yeşil
             borderColor = const Color(0xFF10B981); // Zümrüt yeşili
             textColor = const Color(0xFF065F46);
-            trailingIcon = Icon(Icons.stars_rounded, color: borderColor, size: 28)
-                .animate(onPlay: (controller) => controller.repeat(reverse: true))
-                .scale(begin: const Offset(1, 1), end: const Offset(1.2, 1.2), duration: 400.ms);
+            trailingIcon =
+                Icon(Icons.stars_rounded, color: borderColor, size: 28)
+                    .animate(
+                      onPlay: (controller) => controller.repeat(reverse: true),
+                    )
+                    .scale(
+                      begin: const Offset(1, 1),
+                      end: const Offset(1.2, 1.2),
+                      duration: 400.ms,
+                    );
             shouldAnimateReaction = true;
           } else if (isSelected) {
             // Yanlış seçilmiş cevap rengi ve animasyonu
             bgColor = const Color(0xFFFEF2F2); // Açık kırmızı
             borderColor = const Color(0xFFEF4444); // Kırmızı
             textColor = const Color(0xFF991B1B);
-            trailingIcon = Icon(Icons.cancel_rounded, color: borderColor, size: 28);
+            trailingIcon = Icon(
+              Icons.cancel_rounded,
+              color: borderColor,
+              size: 28,
+            );
             shouldAnimateReaction = true;
           } else {
             // İşaretlenmemiş yanlış seçenekler soluklaşsın
@@ -62,13 +75,19 @@ class MultipleChoiceWidget extends StatelessWidget {
           bgColor = const Color(0xFFEFF6FF); // Açık mavi
           borderColor = const Color(0xFF3B82F6); // Mavi
           textColor = const Color(0xFF1E3A8A);
-          trailingIcon = Icon(Icons.radio_button_checked_rounded, color: borderColor);
+          trailingIcon = Icon(
+            Icons.radio_button_checked_rounded,
+            color: borderColor,
+          );
         } else {
           // Boş, seçilebilir hali
           bgColor = Colors.white;
           borderColor = const Color(0xFFCBD5E1);
           textColor = Colors.black87;
-          trailingIcon = Icon(Icons.radio_button_unchecked_rounded, color: Colors.grey.shade300);
+          trailingIcon = Icon(
+            Icons.radio_button_unchecked_rounded,
+            color: Colors.grey.shade300,
+          );
         }
 
         Widget choiceContainer = GestureDetector(
@@ -84,15 +103,19 @@ class MultipleChoiceWidget extends StatelessWidget {
               color: bgColor,
               border: Border.all(
                 color: borderColor,
-                width: isSelected || isChecked ? 3.0 : 2.0, // Kalın, çizgi roman tarzı border
+                width: isSelected || isChecked
+                    ? 3.0
+                    : 2.0, // Kalın, çizgi roman tarzı border
               ),
               borderRadius: BorderRadius.circular(20), // Daha yuvarlak hatlar
               boxShadow: [
                 BoxShadow(
-                  color: borderColor.withOpacity(isSelected || isChecked ? 0.3 : 0.1),
+                  color: borderColor.withOpacity(
+                    isSelected || isChecked ? 0.3 : 0.1,
+                  ),
                   blurRadius: isSelected || isChecked ? 8 : 4,
                   offset: const Offset(0, 4), // Belirgin alt gölge
-                )
+                ),
               ],
             ),
             child: Row(
@@ -115,19 +138,36 @@ class MultipleChoiceWidget extends StatelessWidget {
         );
 
         // Giriş animasyonu
-        Widget animatedChoice = choiceContainer.animate(delay: (index * 100).ms)
-            .slideX(begin: 0.2, end: 0, curve: Curves.easeOutQuad, duration: 400.ms)
+        Widget animatedChoice = choiceContainer
+            .animate(delay: (index * 100).ms)
+            .slideX(
+              begin: 0.2,
+              end: 0,
+              curve: Curves.easeOutQuad,
+              duration: 400.ms,
+            )
             .fadeIn(duration: 400.ms);
 
         // Doğru/yanlış reaksiyonu eklenecekse ekle
         if (isChecked && shouldAnimateReaction) {
           if (choice.isCorrect) {
-            animatedChoice = animatedChoice.animate()
-                .scale(begin: const Offset(0.95, 0.95), end: const Offset(1, 1), curve: Curves.elasticOut, duration: 800.ms)
+            animatedChoice = animatedChoice
+                .animate()
+                .scale(
+                  begin: const Offset(0.95, 0.95),
+                  end: const Offset(1, 1),
+                  curve: Curves.elasticOut,
+                  duration: 800.ms,
+                )
                 .tint(color: Colors.green.withOpacity(0.2), duration: 400.ms);
           } else if (isSelected) {
-            animatedChoice = animatedChoice.animate()
-                .shake(hz: 4, curve: Curves.easeInOutCubic, duration: 400.ms) // Kafa sallama animasyonu
+            animatedChoice = animatedChoice
+                .animate()
+                .shake(
+                  hz: 4,
+                  curve: Curves.easeInOutCubic,
+                  duration: 400.ms,
+                ) // Kafa sallama animasyonu
                 .tint(color: Colors.red.withOpacity(0.1), duration: 300.ms);
           }
         }

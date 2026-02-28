@@ -8,7 +8,11 @@ class FillBlankWidget extends StatefulWidget {
   final TestQuestion testQuestion;
   final ValueChanged<dynamic> onAnswered;
 
-  const FillBlankWidget({super.key, required this.testQuestion, required this.onAnswered});
+  const FillBlankWidget({
+    super.key,
+    required this.testQuestion,
+    required this.onAnswered,
+  });
 
   @override
   _FillBlankWidgetState createState() => _FillBlankWidgetState();
@@ -33,8 +37,9 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
   void _onDrop(int blankIndex, QuestionBlankOption option) {
     if (widget.testQuestion.isChecked) return;
     setState(() {
-      final previousEntry = _droppedAnswers.entries
-          .firstWhereOrNull((entry) => entry.value?.id == option.id);
+      final previousEntry = _droppedAnswers.entries.firstWhereOrNull(
+        (entry) => entry.value?.id == option.id,
+      );
       if (previousEntry != null) _droppedAnswers[previousEntry.key] = null;
 
       final existingOption = _droppedAnswers[blankIndex];
@@ -98,7 +103,8 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
         QuestionText(
           text: questionParts[i],
           fontSize: 18,
-          textColor: Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black,
+          textColor:
+              Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black,
         ),
       );
 
@@ -123,48 +129,49 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
             builder: (context, candidateData, rejectedData) {
               return droppedOption != null
                   ? Draggable<QuestionBlankOption>(
-                data: droppedOption,
-                onDragStarted: () => _startDragBack(blankIndex),
-                onDragEnd: _endDragBack,
-                onDraggableCanceled: (_, __) => _cancelDragBack(),
-                feedback: Material(
-                  color: Colors.transparent,
-                  child: _buildDraggingFeedback(droppedOption.optionText),
-                ),
-                childWhenDragging: Opacity(
-                  opacity: 0.3,
-                  child: _buildBlankContainer(
-                    context,
-                    borderColor: Colors.grey.shade300,
-                    bgColor: Colors.grey.shade100,
-                    text: droppedOption.optionText,
-                  ),
-                ),
-                child: GestureDetector(
-                  onTap: () => _removeFromBlank(blankIndex),
-                  child: Opacity(
-                    opacity: isDraggingBack ? 0.5 : 1.0,
-                    child: _buildBlankContainer(
-                      context,
-                      borderColor: borderColor,
-                      bgColor: bgColor,
-                      text: droppedOption.optionText,
-                      isMatched: true,
-                    ),
-                  ),
-                ),
-              )
+                      data: droppedOption,
+                      onDragStarted: () => _startDragBack(blankIndex),
+                      onDragEnd: _endDragBack,
+                      onDraggableCanceled: (_, __) => _cancelDragBack(),
+                      feedback: Material(
+                        color: Colors.transparent,
+                        child: _buildDraggingFeedback(droppedOption.optionText),
+                      ),
+                      childWhenDragging: Opacity(
+                        opacity: 0.3,
+                        child: _buildBlankContainer(
+                          context,
+                          borderColor: Colors.grey.shade300,
+                          bgColor: Colors.grey.shade100,
+                          text: droppedOption.optionText,
+                        ),
+                      ),
+                      child: GestureDetector(
+                        onTap: () => _removeFromBlank(blankIndex),
+                        child: Opacity(
+                          opacity: isDraggingBack ? 0.5 : 1.0,
+                          child: _buildBlankContainer(
+                            context,
+                            borderColor: borderColor,
+                            bgColor: bgColor,
+                            text: droppedOption.optionText,
+                            isMatched: true,
+                          ),
+                        ),
+                      ),
+                    )
                   : DragTarget<QuestionBlankOption>(
-                builder: (context, candidateData, rejectedData) {
-                  return _buildBlankContainer(
-                    context,
-                    borderColor: borderColor,
-                    bgColor: bgColor,
-                    text: '...',
-                  );
-                },
-                onAcceptWithDetails: (details) => _onDrop(blankIndex, details.data),
-              );
+                      builder: (context, candidateData, rejectedData) {
+                        return _buildBlankContainer(
+                          context,
+                          borderColor: borderColor,
+                          bgColor: bgColor,
+                          text: '...',
+                        );
+                      },
+                      onAcceptWithDetails: (details) =>
+                          _onDrop(blankIndex, details.data),
+                    );
             },
             onAcceptWithDetails: (details) => _onDrop(blankIndex, details.data),
           ),
@@ -172,7 +179,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
       }
     }
 
-    return SingleChildScrollView(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -198,15 +205,20 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
   }
 
   Widget _buildBlankContainer(
-      BuildContext context, {
-        required Color borderColor,
-        required Color bgColor,
-        required String text,
-        bool isMatched = false,
-      }) {
+    BuildContext context, {
+    required Color borderColor,
+    required Color bgColor,
+    required String text,
+    bool isMatched = false,
+  }) {
     return Container(
-      constraints: const BoxConstraints(minWidth: 100), // Genişlik artırıldı (75 -> 100)
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13), // Yatay padding artırıldı (10 -> 16)
+      constraints: const BoxConstraints(
+        minWidth: 100,
+      ), // Genişlik artırıldı (75 -> 100)
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 13,
+      ), // Yatay padding artırıldı (10 -> 16)
       margin: const EdgeInsets.symmetric(horizontal: 4.0),
       decoration: BoxDecoration(
         color: bgColor,
@@ -218,17 +230,28 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (isMatched && !widget.testQuestion.isChecked) ...[
-            Icon(Icons.unfold_more, size: 14, color: Theme.of(context).primaryColor.withOpacity(0.5)),
+            Icon(
+              Icons.unfold_more,
+              size: 14,
+              color: Theme.of(context).primaryColor.withOpacity(0.5),
+            ),
             const SizedBox(width: 4),
           ],
           // Metin render işlemi
           text == '...'
-              ? Text('...', style: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.bold, fontSize: 18))
+              ? Text(
+                  '...',
+                  style: TextStyle(
+                    color: Colors.grey.shade400,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                )
               : QuestionText(
-            text: text,
-            fontSize: 16,
-            textColor: Theme.of(context).primaryColor,
-          ),
+                  text: text,
+                  fontSize: 16,
+                  textColor: Theme.of(context).primaryColor,
+                ),
         ],
       ),
     );
@@ -253,8 +276,8 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
               child: _buildDraggingFeedback(option.optionText),
             ),
             childWhenDragging: Opacity(
-                opacity: 0.3,
-                child: _buildPoolItem(option.optionText, isDragging: true)
+              opacity: 0.3,
+              child: _buildPoolItem(option.optionText, isDragging: true),
             ),
             child: _buildPoolItem(option.optionText),
           );
@@ -269,7 +292,9 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
       decoration: BoxDecoration(
         color: isDragging ? Colors.grey.shade200 : Colors.amber.shade100,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: isDragging ? Colors.grey.shade400 : Colors.amber.shade400),
+        border: Border.all(
+          color: isDragging ? Colors.grey.shade400 : Colors.amber.shade400,
+        ),
       ),
       child: QuestionText(
         text: text,
@@ -287,11 +312,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 8)],
       ),
-      child: QuestionText(
-        text: text,
-        fontSize: 16,
-        textColor: Colors.white,
-      ),
+      child: QuestionText(text: text, fontSize: 16, textColor: Colors.white),
     );
   }
 
@@ -325,12 +346,17 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
       decoration: BoxDecoration(
         color: isCorrect ? Colors.green.shade50 : Colors.red.shade50,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: isCorrect ? Colors.green.shade200 : Colors.red.shade200),
+        border: Border.all(
+          color: isCorrect ? Colors.green.shade200 : Colors.red.shade200,
+        ),
       ),
       child: Center(
         child: Text(
           isCorrect ? 'Tebrikler, doğru!' : 'Cevap yanlış, tekrar deneyin.',
-          style: TextStyle(color: isCorrect ? Colors.green.shade800 : Colors.red.shade800, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: isCorrect ? Colors.green.shade800 : Colors.red.shade800,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

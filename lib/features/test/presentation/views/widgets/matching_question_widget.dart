@@ -25,12 +25,35 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
   String? _draggingLeftText;
   MatchingPair? _draggingBackPair;
 
+  int get _filledMatchCount =>
+      userMatches.values.whereType<MatchingPair>().length;
+
+  bool get _isMatchingCompleted =>
+      leftTexts.isNotEmpty && _filledMatchCount == leftTexts.length;
+
+  Map<String, MatchingPair> _selectedMatches() {
+    return {
+      for (final entry in userMatches.entries)
+        if (entry.value != null) entry.key: entry.value!,
+    };
+  }
+
+  void _notifyAnswerState() {
+    final selected = _selectedMatches();
+    if (selected.length == leftTexts.length) {
+      widget.onAnswered(selected);
+      return;
+    }
+    widget.onAnswered(null);
+  }
+
   @override
   void initState() {
     super.initState();
     leftTexts = List.from(widget.testQuestion.shuffledMatchingLeftTexts);
-    shuffledRightPairs =
-        List.from(widget.testQuestion.shuffledMatchingPairsRight);
+    shuffledRightPairs = List.from(
+      widget.testQuestion.shuffledMatchingPairsRight,
+    );
     userMatches = {for (var left in leftTexts) left: null};
   }
 
@@ -39,8 +62,8 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     setState(() {
       final removedPair = userMatches[leftText];
       if (removedPair != null) {
-        userMatches.remove(leftText);
-        widget.onAnswered(Map<String, MatchingPair?>.from(userMatches));
+        userMatches[leftText] = null;
+        _notifyAnswerState();
       }
     });
   }
@@ -74,7 +97,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
   Widget build(BuildContext context) {
     final isChecked = widget.testQuestion.isChecked;
 
-    return SingleChildScrollView(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,19 +112,16 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
               child: DragTarget<MatchingPair>(
                 onAcceptWithDetails: (details) {
                   if (isChecked) return;
-                  // DÜZELTME: details.data ile asıl veriye erişiyoruz
                   final data = details.data;
                   setState(() {
                     final existingEntry = userMatches.entries.firstWhereOrNull(
                       (entry) => entry.value?.id == data.id,
                     );
                     if (existingEntry != null) {
-                      userMatches.remove(existingEntry.key);
+                      userMatches[existingEntry.key] = null;
                     }
                     userMatches[leftText] = data;
-                    widget.onAnswered(
-                      Map<String, MatchingPair?>.from(userMatches),
-                    );
+                    _notifyAnswerState();
                   });
                 },
                 builder: (context, candidateData, rejectedData) {
@@ -149,8 +169,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
           }),
           const SizedBox(height: 10),
           if (!isChecked) _buildOptionsPool(),
-          if (userMatches.length == leftTexts.length && !isChecked)
-            _buildCompletionStatus(),
+          if (_isMatchingCompleted && !isChecked) _buildCompletionStatus(),
         ],
       ),
     );
