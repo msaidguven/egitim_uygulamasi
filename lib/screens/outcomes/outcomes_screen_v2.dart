@@ -353,6 +353,8 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   int? _selectedUnitId;
   String _activePanelTab = _panelTabContent;
   final QuestionService _questionService = QuestionService();
+  Future<_OutcomeQuestionPanelData>? _outcomeQuestionPanelFuture;
+  String? _outcomeQuestionPanelKey;
 
   int _pickDefaultSectionIndex(
     List<Map<String, dynamic>> sections, {
@@ -1131,6 +1133,49 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     );
   }
 
+  String _buildOutcomeQuestionPanelKey({
+    required int unitId,
+    required int topicId,
+    required int curriculumWeek,
+    required List<int> selectedOutcomeIds,
+  }) {
+    final normalizedOutcomes = [...selectedOutcomeIds]..sort();
+    return '$unitId|$topicId|$curriculumWeek|${normalizedOutcomes.join(',')}';
+  }
+
+  Future<_OutcomeQuestionPanelData>? _ensureOutcomeQuestionPanelPrefetch({
+    required int? unitId,
+    required int? topicId,
+    required int curriculumWeek,
+    required List<int> selectedOutcomeIds,
+  }) {
+    if (unitId == null || topicId == null) {
+      _outcomeQuestionPanelFuture = null;
+      _outcomeQuestionPanelKey = null;
+      return null;
+    }
+
+    final key = _buildOutcomeQuestionPanelKey(
+      unitId: unitId,
+      topicId: topicId,
+      curriculumWeek: curriculumWeek,
+      selectedOutcomeIds: selectedOutcomeIds,
+    );
+
+    if (_outcomeQuestionPanelFuture == null ||
+        _outcomeQuestionPanelKey != key) {
+      _outcomeQuestionPanelKey = key;
+      _outcomeQuestionPanelFuture = _loadOutcomeQuestionPanelData(
+        unitId: unitId,
+        topicId: topicId,
+        curriculumWeek: curriculumWeek,
+        selectedOutcomeIds: selectedOutcomeIds,
+      );
+    }
+
+    return _outcomeQuestionPanelFuture;
+  }
+
   Future<_OutcomeProgressStats?> _loadOutcomeProgressStats({
     required int unitId,
     required int curriculumWeek,
@@ -1552,6 +1597,15 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final isLastWeek = safeData['is_last_week_of_unit'] ?? false;
     final unitSummary = safeData['unit_summary'];
     final unitId = selectedUnitId ?? safeData['unit_id'];
+    final resolvedUnitId = unitId is int
+        ? unitId
+        : (unitId is num ? unitId.toInt() : null);
+    final questionPanelFuture = _ensureOutcomeQuestionPanelPrefetch(
+      unitId: resolvedUnitId,
+      topicId: selectedTopicId,
+      curriculumWeek: widget.curriculumWeek,
+      selectedOutcomeIds: selectedSectionOutcomeIds,
+    );
 
     return RefreshIndicator.adaptive(
       onRefresh: () async => ref
@@ -1932,12 +1986,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                     children: [
                       if (selectedTopicId != null)
                         FutureBuilder<_OutcomeQuestionPanelData>(
-                          future: _loadOutcomeQuestionPanelData(
-                            unitId: unitId,
-                            topicId: selectedTopicId,
-                            curriculumWeek: widget.curriculumWeek,
-                            selectedOutcomeIds: selectedSectionOutcomeIds,
-                          ),
+                          future: questionPanelFuture,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -2153,6 +2202,8 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                                                             selectedTopicId,
                                                         'outcome_ids':
                                                             selectedSectionOutcomeIds,
+                                                        'preloaded_questions':
+                                                            questions,
                                                       },
                                                     ),
                                                   ),

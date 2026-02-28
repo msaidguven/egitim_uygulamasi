@@ -12,13 +12,14 @@ class TestViewModel extends ChangeNotifier {
   final TestRepository _repository;
 
   // State
-  static const int questionTimeLimitSeconds = 40;
+  static const int questionTimeLimitSeconds = 60;
   List<TestQuestion> _questionQueue = [];
   TestQuestion? _currentTestQuestion;
   int? _sessionId;
   bool _isLoading = true;
   String? _error;
   int _score = 0;
+  int _incorrectCount = 0;
   bool _isSaving = false;
   int _answeredCount = 0;
   int _totalQuestions = 0;
@@ -35,10 +36,7 @@ class TestViewModel extends ChangeNotifier {
   String? get error => _error;
   int get score => _score;
   int get correctCount => _score;
-  int get incorrectCount {
-    final incorrect = _answeredCount - _score;
-    return incorrect < 0 ? 0 : incorrect;
-  }
+  int get incorrectCount => _incorrectCount;
 
   double get successPercentage {
     final denominator = _answeredCount > 0 ? _answeredCount : _totalQuestions;
@@ -116,6 +114,7 @@ class TestViewModel extends ChangeNotifier {
 
     try {
       final questions = await _repository.startGuestUnitTest(unitId: unitId);
+      questions.shuffle();
 
       if (questions.isEmpty) {
         throw Exception("Bu test için soru bulunamadı.");
@@ -147,6 +146,7 @@ class TestViewModel extends ChangeNotifier {
     required int curriculumWeek,
     int? topicId,
     List<int>? outcomeIds,
+    List<Question>? preloadedQuestions,
   }) async {
     log(
       'TestViewModel.startGuestTest: unitId=$unitId, curriculumWeek=$curriculumWeek',
@@ -160,12 +160,16 @@ class TestViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final questions = await _repository.startGuestTest(
-        unitId: unitId,
-        curriculumWeek: curriculumWeek,
-        topicId: topicId,
-        outcomeIds: outcomeIds,
-      );
+      final questions =
+          preloadedQuestions != null && preloadedQuestions.isNotEmpty
+          ? List<Question>.from(preloadedQuestions)
+          : await _repository.startGuestTest(
+              unitId: unitId,
+              curriculumWeek: curriculumWeek,
+              topicId: topicId,
+              outcomeIds: outcomeIds,
+            );
+      questions.shuffle();
 
       if (questions.isEmpty) {
         throw Exception("Bu test için soru bulunamadı.");
@@ -327,6 +331,10 @@ class TestViewModel extends ChangeNotifier {
       _currentTestQuestion = TestQuestion(question: question);
       _answeredCount = answeredCount;
       _score = correctCount;
+      _incorrectCount = answeredCount - correctCount;
+      if (_incorrectCount < 0) {
+        _incorrectCount = 0;
+      }
       _isLoading = false;
       _error = null;
 
@@ -428,6 +436,9 @@ class TestViewModel extends ChangeNotifier {
     if (isCorrect) {
       _score++;
       log('TestViewModel.checkAnswer: Yeni skor=$_score');
+    } else {
+      _incorrectCount++;
+      log('TestViewModel.checkAnswer: Yeni yanlış sayısı=$_incorrectCount');
     }
 
     notifyListeners();
@@ -483,8 +494,9 @@ class TestViewModel extends ChangeNotifier {
           final userMatches = testQuestion.userAnswer as Map;
 
           if (question.matchingPairs == null) return false;
-          if (userMatches.length != question.matchingPairs!.length)
+          if (userMatches.length != question.matchingPairs!.length) {
             return false;
+          }
 
           for (final correctPair in question.matchingPairs!) {
             final userMatchedPair = userMatches[correctPair.leftText];
@@ -672,6 +684,7 @@ class TestViewModel extends ChangeNotifier {
       isChecked: true,
       isCorrect: false,
     );
+    _incorrectCount++;
     notifyListeners();
 
     // Süre dolan soruyu (yanlış) olarak DB'ye kaydet
@@ -718,6 +731,7 @@ class TestViewModel extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     _score = 0;
+    _incorrectCount = 0;
     _answeredCount = 0;
     _totalQuestions = 0;
     _questionTimer.stop();

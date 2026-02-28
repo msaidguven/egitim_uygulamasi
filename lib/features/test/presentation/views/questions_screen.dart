@@ -8,6 +8,7 @@ import 'package:egitim_uygulamasi/features/test/presentation/viewmodels/test_vie
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/question_card.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_progress_bar.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_bottom_nav.dart';
+import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/widgets/ad_banner_widget.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -290,6 +291,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
       int? curriculumWeek;
       int? topicId;
       List<int>? outcomeIds;
+      List<Question>? preloadedQuestions;
       if (routeArgs is int) {
         curriculumWeek = routeArgs;
       } else if (routeArgs is Map) {
@@ -298,6 +300,12 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
         final rawOutcomeIds = routeArgs['outcome_ids'];
         if (rawOutcomeIds is List) {
           outcomeIds = rawOutcomeIds.whereType<int>().toList();
+        }
+        final rawPreloadedQuestions = routeArgs['preloaded_questions'];
+        if (rawPreloadedQuestions is List) {
+          preloadedQuestions = rawPreloadedQuestions
+              .whereType<Question>()
+              .toList();
         }
       }
 
@@ -316,6 +324,7 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
             curriculumWeek: curriculumWeek,
             topicId: topicId,
             outcomeIds: outcomeIds,
+            preloadedQuestions: preloadedQuestions,
           );
         } else if (widget.testMode == TestMode.normal) {
           debugPrint(

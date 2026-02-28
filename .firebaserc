@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "derstakipnet1"
+  },
+  "targets": {
+    "derstakipnet1": {
+      "hosting": {
+        "app": [
+          "derstakipnet1"
+        ],
+        "seo": [
+          "derstakipnet1-seo"
+        ]
+      }
+    }
   }
 }

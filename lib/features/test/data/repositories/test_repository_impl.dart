@@ -37,7 +37,6 @@ class TestRepositoryImpl implements TestRepository {
                 'p_topic_id': topicId,
                 'p_curriculum_week': curriculumWeek,
                 'p_outcome_ids': outcomeIds,
-                'p_limit': 10,
               }
             : {
                 'p_unit_id': unitId,

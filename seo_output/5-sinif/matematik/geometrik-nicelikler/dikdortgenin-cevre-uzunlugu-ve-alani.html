@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dikdörtgenin Çevre Uzunluğu ve Alanı - Geometrik Nicelikler | Eğitim Portalı</title>
+  <meta name="description" content="Dikdörtgenin Çevre Uzunluğu ve Alanı konusu hakkında detaylı bilgi, kazanımlar ve içerik. 5. Sınıf Matematik dersi.">
+  <meta name="keywords" content="Dikdörtgenin Çevre Uzunluğu ve Alanı, Geometrik Nicelikler, Matematik, 5. Sınıf, eğitim, ders notları">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Dikdörtgenin Çevre Uzunluğu ve Alanı - Geometrik Nicelikler">
+  <meta property="og:description" content="Dikdörtgenin Çevre Uzunluğu ve Alanı konusu detaylı anlatımı">
+  <meta property="og:url" content="https://example.com">
+  <meta property="og:type" content="article">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Dikdörtgenin Çevre Uzunluğu ve Alanı">
+  <meta name="twitter:description" content="Dikdörtgenin Çevre Uzunluğu ve Alanı - Geometrik Nicelikler">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script>
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalResource",
+    "name": "Dikdörtgenin Çevre Uzunluğu ve Alanı",
+    "description": "Dikdörtgenin Çevre Uzunluğu ve Alanı konusu detaylı anlatımı",
+    "educationalLevel": "5. Sınıf",
+    "learningResourceType": "Ders İçeriği",
+    "inLanguage": "tr",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "5. Sınıf",
+          "item": "https://example.com/5-sinif/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Matematik",
+          "item": "https://example.com/5-sinif/matematik/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Geometrik Nicelikler",
+          "item": "https://example.com/5-sinif/matematik/geometrik-nicelikler/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Dikdörtgenin Çevre Uzunluğu ve Alanı"
+        }
+        
+      ]
+    }
+  }
+  </script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 15px 0;
+      margin-bottom: 20px;
+    }
+    .breadcrumb {
+      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 10px;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .content-wrapper { grid-template-columns: 1fr; }
+      .sidebar { order: 2; }
+    }
+    .main-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+    }
+    .ad-slot {
+      background: #f0f0f0;
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      margin: 20px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .section {
+      margin: 30px 0;
+    }
+    .section h2 {
+      font-size: 22px;
+      color: #2563eb;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    .content-block {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 6px;
+      border-left: 4px solid #2563eb;
+    }
+    .content-block h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #1e40af;
+    }
+    .outcome-list {
+      list-style: none;
+      padding: 0;
+    }
+    .outcome-item {
+      padding: 12px;
+      margin: 8px 0;
+      background: white;
+      border-radius: 4px;
+      border-left: 3px solid #10b981;
+    }
+    .outcome-weeks {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 5px;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/matematik/">Matematik</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/matematik/geometrik-nicelikler/">Geometrik Nicelikler</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Dikdörtgenin Çevre Uzunluğu ve Alanı</strong>
+          
+          
+        
+      </nav>
+      <h1>Dikdörtgenin Çevre Uzunluğu ve Alanı</h1>
+      <div class="meta">5. Sınıf • Matematik • Geometrik Nicelikler</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="content-wrapper">
+      <main class="main-content">
+        <!-- AdSense: Üst Reklam -->
+        <div class="ad-slot">
+          <!-- Google AdSense buraya gelecek -->
+          <div>Reklam Alanı (728x90)</div>
+        </div>
+
+        <!-- İçerik Bölümü -->
+        <section class="section">
+          <h2>📚 Konu İçeriği</h2>
+          
+            <p>Bu konu için henüz yayınlanmış içerik bulunmamaktadır.</p>
+          
+        </section>
+
+        <!-- AdSense: Orta Reklam -->
+        <div class="ad-slot">
+          <div>Reklam Alanı (336x280)</div>
+        </div>
+
+        <!-- Kazanımlar Bölümü -->
+        
+        <section class="section">
+          <h2>🎯 Öğrenme Kazanımları</h2>
+          <ul class="outcome-list">
+            
+            <li class="outcome-item">
+              <div>a) Kenar uzunlukları doğal sayı olan bir dikdörtgenin çevre uzunluğu verildiğinde olası kenar uzunluklarını inceler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 15
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>b) Verilen çevre uzunluğuna sahip ve kenar uzunlukları doğal sayı olan dikdörtgen oluşturur.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 15
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>c) Kenar uzunlukları doğal sayı olan farklı dikdörtgenlerin aynı çevre uzunluğuna sahip olabileceğini açıklar.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 15
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>a) Alanının ölçüsü verilen bir dikdörtgenin çevre uzunluğunu, çevre uzunluğu verilen bir dikdörtgenin alanını inceler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 16
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>b) Aynı alana sahip farklı dikdörtgenlerin çevre uzunluklarını ve aynı çevre uzunluğuna sahip farklı dikdörtgenlerin alanlarını belirler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 16
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>c) Aynı çevre uzunluğuna sahip dikdörtgenlerin farklı alanlara ve aynı alana sahip dikdörtgenlerin farklı çevre uzunluklarına sahip olabileceğini ifade eder.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 16
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>a) Dikdörtgenin çevre uzunluğu ve alanı ile ilgili problemlerde ilgili matematiksel bileşenleri (şekil, uzunluk, alan ölçüleri gibi) belirler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>b) Matematiksel bileşenler arasındaki ilişkileri belirler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>c) Problem bağlamındaki temsilleri farklı temsillere dönüştürür.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>ç) Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>d) Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>e) Belirlediği stratejileri çözüm için uygular.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>f) Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>g) Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>ğ) Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>h) Genellemenin geçerliliğini matematiksel örneklerle değerlendirir.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 17-18
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+          </ul>
+        </section>
+        
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <!-- AdSense: Sidebar Reklam -->
+        <div class="ad-slot" style="min-height: 600px;">
+          <div>Reklam Alanı<br>(300x600)</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Bu sayfa 5. Sınıf Matematik dersi Geometrik Nicelikler ünitesi Dikdörtgenin Çevre Uzunluğu ve Alanı konusu hakkında eğitim amaçlı içerik sunmaktadır.
+    </p>
+  </footer>
+</body>
+</html>

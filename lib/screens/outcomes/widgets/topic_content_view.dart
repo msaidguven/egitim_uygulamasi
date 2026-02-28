@@ -916,10 +916,11 @@ class TopicContentView extends StatelessWidget {
               children: [
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         content.title,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w900,
