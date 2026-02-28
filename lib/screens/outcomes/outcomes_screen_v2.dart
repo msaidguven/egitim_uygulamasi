@@ -2285,33 +2285,36 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(12),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 170),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         decoration: BoxDecoration(
           color: isActive
-              ? const Color(0xFF2F6FE4).withValues(alpha: 0.14)
-              : Colors.white,
-          borderRadius: BorderRadius.circular(10),
+              ? const Color(0xFF2F6FE4).withValues(alpha: 0.15)
+              : const Color(0xFFF0F4FA), // Aktif değilkenki daha renkli ve belirgin arka plan
+          borderRadius: BorderRadius.circular(12),
+          border: isActive
+              ? Border.all(color: const Color(0xFF2F6FE4).withValues(alpha: 0.4), width: 1.5)
+              : Border.all(color: const Color(0xFFE2E8F0), width: 1.5), // Pasif duruma da hafif bir sınır eklendi
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              size: 16,
-              color: isActive ? const Color(0xFF2F6FE4) : Colors.grey.shade700,
+              size: 22,
+              color: isActive ? const Color(0xFF2F6FE4) : Colors.blueGrey.shade600,
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 8),
             Text(
               label,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 16,
                 fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
                 color: isActive
                     ? const Color(0xFF2F6FE4)
-                    : Colors.grey.shade800,
+                    : Colors.blueGrey.shade700,
               ),
             ),
           ],

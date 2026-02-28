@@ -12,10 +12,57 @@ fi
 mkdir -p "$TARGET_DIR"
 rsync -a --delete "$SOURCE_DIR"/ "$TARGET_DIR"/
 
-# Create a root index page so Firebase Hosting doesn't return default 404 at `/`.
-mapfile -t TOP_LEVEL_DIRS < <(find "$TARGET_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
-{
-  cat <<'HTML_HEAD'
+slug_to_label() {
+  local slug="$1"
+  if [[ -z "$slug" ]]; then
+    echo "Ana Sayfa"
+    return
+  fi
+  echo "$slug" | tr '-' ' '
+}
+
+join_url() {
+  local left="$1"
+  local right="$2"
+  if [[ "$left" == "/" ]]; then
+    echo "/$right"
+  else
+    echo "$left/$right"
+  fi
+}
+
+render_dir_index() {
+  local dir="$1"
+  local rel="${dir#"$TARGET_DIR"}"
+  rel="${rel#/}"
+
+  local path="/"
+  if [[ -n "$rel" ]]; then
+    path="/$rel"
+  fi
+
+  local title
+  title="$(slug_to_label "$(basename "$rel")")"
+
+  local parent_path=""
+  if [[ -n "$rel" ]]; then
+    local parent_rel
+    parent_rel="$(dirname "$rel")"
+    if [[ "$parent_rel" == "." ]]; then
+      parent_path="/"
+    else
+      parent_path="/$parent_rel"
+    fi
+  fi
+
+  mapfile -t child_dirs < <(find "$dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+  mapfile -t child_pages < <(
+    find "$dir" -mindepth 1 -maxdepth 1 -type f -name '*.html' \
+      ! -name 'index.html' ! -name '404.html' -printf '%f\n' | sort
+  )
+
+  {
+    cat <<'HTML_HEAD'
 <!doctype html>
 <html lang="tr">
 <head>
@@ -24,36 +71,70 @@ mapfile -t TOP_LEVEL_DIRS < <(find "$TARGET_DIR" -mindepth 1 -maxdepth 1 -type d
   <title>Ders Icerikleri</title>
   <style>
     body { font-family: Arial, sans-serif; max-width: 860px; margin: 40px auto; padding: 0 16px; line-height: 1.5; }
-    h1 { margin-bottom: 8px; }
+    h1 { margin-bottom: 8px; text-transform: capitalize; }
+    h2 { margin: 16px 0 8px; font-size: 18px; }
     ul { padding-left: 20px; }
     li { margin: 6px 0; }
+    .muted { color: #555; font-size: 14px; }
+    .legal-links { margin-top: 20px; padding-top: 12px; border-top: 1px solid #e5e7eb; display: flex; gap: 12px; flex-wrap: wrap; }
   </style>
 </head>
 <body>
-  <h1>Ders Icerikleri</h1>
-  <p>Asagidaki sinif sayfalarindan birini secin:</p>
-  <ul>
 HTML_HEAD
 
-  for dir in "${TOP_LEVEL_DIRS[@]}"; do
-    first_html="$(find "$TARGET_DIR/$dir" -type f -name '*.html' | sort | head -n 1 || true)"
-    if [[ -z "$first_html" ]]; then
-      continue
-    fi
-    rel_path="${first_html#"$TARGET_DIR"/}"
-    clean_path="${rel_path%.html}"
-    printf '    <li><a href="/%s">%s</a></li>\n' "$clean_path" "$dir"
-  done
+    printf '  <h1>%s</h1>\n' "$title"
+    printf '  <p class="muted">Konum: <code>%s</code></p>\n' "$path"
 
-  cat <<'HTML_FOOT'
-  </ul>
-  <p><a href="/sitemap.xml">Sitemap</a></p>
+    if [[ -n "$parent_path" ]]; then
+      printf '  <p><a href="%s">← Ust klasor</a></p>\n' "$parent_path"
+    fi
+
+    if [[ ${#child_dirs[@]} -gt 0 ]]; then
+      echo '  <h2>Klasorler</h2>'
+      echo '  <ul>'
+      for child in "${child_dirs[@]}"; do
+        child_url="$(join_url "$path" "$child")"
+        child_label="$(slug_to_label "$child")"
+        printf '    <li><a href="%s">%s</a></li>\n' "$child_url" "$child_label"
+      done
+      echo '  </ul>'
+    fi
+
+    if [[ ${#child_pages[@]} -gt 0 ]]; then
+      echo '  <h2>Icerikler</h2>'
+      echo '  <ul>'
+      for page in "${child_pages[@]}"; do
+        page_slug="${page%.html}"
+        page_url="$(join_url "$path" "$page_slug")"
+        page_label="$(slug_to_label "$page_slug")"
+        printf '    <li><a href="%s">%s</a></li>\n' "$page_url" "$page_label"
+      done
+      echo '  </ul>'
+    fi
+
+    if [[ ${#child_dirs[@]} -eq 0 && ${#child_pages[@]} -eq 0 ]]; then
+      echo '  <p>Bu klasorde goruntulenecek icerik bulunamadi.</p>'
+    fi
+
+    echo '  <div class="legal-links">'
+    echo '    <a href="/privacy-policy">Gizlilik Politikası</a>'
+    echo '    <a href="/about">Hakkımızda</a>'
+    echo '    <a href="/contact">İletişim</a>'
+    echo '    <a href="/sitemap.xml">Site Haritası</a>'
+    echo '  </div>'
+
+    cat <<'HTML_FOOT'
 </body>
 </html>
 HTML_FOOT
-} > "$TARGET_DIR/index.html"
+  } > "$dir/index.html"
+}
 
-# Add a custom 404 to avoid Firebase default "Page Not Found" screen.
+mapfile -t all_dirs < <(find "$TARGET_DIR" -type d | sort)
+for dir in "${all_dirs[@]}"; do
+  render_dir_index "$dir"
+done
+
 cat > "$TARGET_DIR/404.html" <<'HTML_404'
 <!doctype html>
 <html lang="tr">
@@ -63,12 +144,19 @@ cat > "$TARGET_DIR/404.html" <<'HTML_404'
   <title>Sayfa Bulunamadi</title>
   <style>
     body { font-family: Arial, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 16px; line-height: 1.5; }
+    .legal-links { margin-top: 20px; padding-top: 12px; border-top: 1px solid #e5e7eb; display: flex; gap: 12px; flex-wrap: wrap; }
   </style>
 </head>
 <body>
   <h1>Sayfa Bulunamadi</h1>
   <p>Aradiginiz sayfa mevcut degil veya tasinmis olabilir.</p>
   <p><a href="/">Ana sayfaya don</a></p>
+  <div class="legal-links">
+    <a href="/privacy-policy">Gizlilik Politikası</a>
+    <a href="/about">Hakkımızda</a>
+    <a href="/contact">İletişim</a>
+    <a href="/sitemap.xml">Site Haritası</a>
+  </div>
 </body>
 </html>
 HTML_404

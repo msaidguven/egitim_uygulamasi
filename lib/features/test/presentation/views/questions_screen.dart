@@ -9,7 +9,8 @@ import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/quest
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_progress_bar.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/components/test_bottom_nav.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
-import 'package:egitim_uygulamasi/widgets/ad_banner_widget.dart';
+import 'package:egitim_uygulamasi/ads/adsense_slots.dart';
+import 'package:egitim_uygulamasi/widgets/adaptive_ad_banner.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:audioplayers/audioplayers.dart';
@@ -647,7 +648,10 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
                     },
                   ),
                   const SizedBox(height: 8),
-                  const AdBannerWidget(margin: EdgeInsets.only(bottom: 8)),
+                  const AdaptiveAdBanner(
+                    adSlot: AdSenseSlots.questionFooter,
+                    margin: EdgeInsets.only(bottom: 8),
+                  ),
                 ],
               ),
             ),

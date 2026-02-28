@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yapay Zekâda Güvenlik - Yapay Zekâ | Eğitim Portalı</title>
+  <meta name="description" content="Yapay Zekâda Güvenlik konusu hakkında detaylı bilgi, kazanımlar ve içerik. 5. Sınıf Bilişim Teknolojileri ve Yazılım dersi.">
+  <meta name="keywords" content="Yapay Zekâda Güvenlik, Yapay Zekâ, Bilişim Teknolojileri ve Yazılım, 5. Sınıf, eğitim, ders notları">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Yapay Zekâda Güvenlik - Yapay Zekâ">
+  <meta property="og:description" content="Yapay Zekâda Güvenlik konusu detaylı anlatımı">
+  <meta property="og:url" content="https://derstakip.net">
+  <meta property="og:type" content="article">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Yapay Zekâda Güvenlik">
+  <meta name="twitter:description" content="Yapay Zekâda Güvenlik - Yapay Zekâ">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalResource",
+    "name": "Yapay Zekâda Güvenlik",
+    "description": "Yapay Zekâda Güvenlik konusu detaylı anlatımı",
+    "educationalLevel": "5. Sınıf",
+    "learningResourceType": "Ders İçeriği",
+    "inLanguage": "tr",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "5. Sınıf",
+          "item": "https://derstakip.net/5-sinif/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Bilişim Teknolojileri ve Yazılım",
+          "item": "https://derstakip.net/5-sinif/bilisim-teknolojileri-ve-yazilim/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Yapay Zekâ",
+          "item": "https://derstakip.net/5-sinif/bilisim-teknolojileri-ve-yazilim/yapay-zeka/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Yapay Zekâda Güvenlik"
+        }
+        
+      ]
+    }
+  }
+  </script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 15px 0;
+      margin-bottom: 20px;
+    }
+    .breadcrumb {
+      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 10px;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .content-wrapper { grid-template-columns: 1fr; }
+      .sidebar { order: 2; }
+    }
+    .main-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+    }
+    .ad-slot {
+      background: #f0f0f0;
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      margin: 20px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .section {
+      margin: 30px 0;
+    }
+    .section h2 {
+      font-size: 22px;
+      color: #2563eb;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    .content-block {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 6px;
+      border-left: 4px solid #2563eb;
+    }
+    .content-block h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #1e40af;
+    }
+    .outcome-list {
+      list-style: none;
+      padding: 0;
+    }
+    .outcome-item {
+      padding: 12px;
+      margin: 8px 0;
+      background: white;
+      border-radius: 4px;
+      border-left: 3px solid #10b981;
+    }
+    .outcome-weeks {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 5px;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/">Bilişim Teknolojileri ve Yazılım</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/yapay-zeka/">Yapay Zekâ</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Yapay Zekâda Güvenlik</strong>
+          
+          
+        
+      </nav>
+      <h1>Yapay Zekâda Güvenlik</h1>
+      <div class="meta">5. Sınıf • Bilişim Teknolojileri ve Yazılım • Yapay Zekâ</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="content-wrapper">
+      <main class="main-content">
+        <!-- AdSense: Üst Reklam -->
+        <div class="ad-slot">
+          <!-- Google AdSense buraya gelecek -->
+          <div>Reklam Alanı (728x90)</div>
+        </div>
+
+        <!-- İçerik Bölümü -->
+        <section class="section">
+          <h2>📚 Konu İçeriği</h2>
+          
+            
+            <div class="content-block">
+              <h3>Yapay Zekâda Güvenlik</h3>
+              <div><section>
+<h2>Giriş</h2>
+<p>Telefonumuzdaki yüz tanıma sistemi, video önerileri yapan uygulamalar ya da sesli asistanlar… Hepsi yapay zekâ kullanır. Peki bu sistemler bilgilerimizi nasıl kullanır? Güvenli midir? İşte bu derste yapay zekâ kullanırken güvenlik, gizlilik ve etik kuralların neden önemli olduğunu öğreneceğiz.</p>
+</section><section>
+<h2>Temel Bilgiler (Bilgi Basamağı)</h2>
+<p><strong>Yapay zekâ</strong>, bilgisayarların insan gibi öğrenmesini ve karar vermesini sağlayan teknolojidir.</p>
+<p><strong>Gizlilik</strong>, kişisel bilgilerin izinsiz paylaşılmamasıdır.</p>
+<p><strong>Bilgi güvenliği</strong>, verilerin korunması ve kötü kişilerin eline geçmemesidir.</p>
+<p><strong>Etik</strong>, doğru ve adil davranma kurallarıdır.</p>
+<p>Yapay zekâ sistemleri çalışmak için veri toplar. Bu veriler bazen ad, yaş, fotoğraf, konum gibi kişisel bilgiler olabilir. Bu nedenle güvenlik ve gizlilik çok önemlidir.</p>
+</section><section>
+<h2>Kavrama ve Açıklama</h2>
+<p>Yapay zekâda bazı riskler vardır:</p>
+<ul>
+<li>Kişisel bilgilerin izinsiz paylaşılması</li>
+<li>Yanlış veya eksik verilerle hatalı karar verilmesi</li>
+<li>İnsanlara karşı adaletsiz sonuçlar oluşturulması</li>
+</ul>
+<p>Bu riskleri azaltmak için bazı önlemler alınır:</p>
+<ul>
+<li>Güçlü şifre kullanmak</li>
+<li>Kişisel bilgileri herkese açık paylaşmamak</li>
+<li>Uygulamaların gizlilik ayarlarını kontrol etmek</li>
+<li>Verilerin şifrelenmesi</li>
+</ul>
+<p>Etik ilkelerin temel bileşenleri şunlardır:</p>
+<ul>
+<li><strong>Adalet:</strong> Herkese eşit davranma</li>
+<li><strong>Sorumluluk:</strong> Yapılan hataların sorumluluğunu alma</li>
+<li><strong>Şeffaflık:</strong> Sistemin nasıl çalıştığını açıklayabilme</li>
+<li><strong>Gizlilik:</strong> Kişisel bilgileri koruma</li>
+</ul>
+</section><section>
+<h2>Günlük Hayatla İlişkilendirme</h2>
+<p>Bir video platformu izlediğin videolara göre yeni öneriler sunar. Bu, yapay zekâ sayesinde olur. Ancak sistem senin hangi videoları izlediğini kaydeder.</p>
+<p>Eğer gizlilik ayarlarını kontrol etmezsen, bilgiler farklı amaçlarla kullanılabilir.</p>
+<p>Okulda kullanılan bir yüz tanıma sistemi düşün. Eğer sistem bazı öğrencileri yanlış tanırsa bu adaletsiz bir durum oluşturabilir.</p>
+</section><section>
+<h2>Uygulama Örnekleri</h2>
+<p>Durum: Bir mobil uygulama senden konum bilgini sürekli açık tutmanı istiyor.</p>
+<p>Ne yapmalısın?</p>
+<ul>
+<li>Uygulamanın neden konum istediğini kontrol etmelisin.</li>
+<li>Gerekmiyorsa konumu kapatmalısın.</li>
+<li>Gizlilik politikasını incelemelisin.</li>
+</ul>
+<p>Bu şekilde hem güvenliğini hem gizliliğini korumuş olursun.</p>
+</section><section>
+<h2>Analiz ve Derinleştirme</h2>
+<p>Her yapay zekâ uygulaması güvenli midir? Hayır. Güvenli olması için:</p>
+<ul>
+<li>Verilerin korunması gerekir.</li>
+<li>Adil kararlar vermesi gerekir.</li>
+<li>Kullanıcıya bilgi vermesi gerekir.</li>
+</ul>
+<p>Eğer bir sistem sadece belirli bir gruba avantaj sağlıyorsa etik değildir.</p>
+<p>Bu nedenle bir yapay zekâ uygulamasını değerlendirirken şu sorular sorulmalıdır:</p>
+<ul>
+<li>Kişisel veriler korunuyor mu?</li>
+<li>Kararlar adil mi?</li>
+<li>Kullanıcı bilgilendiriliyor mu?</li>
+</ul>
+</section><section>
+<h2>Kavram Yanılgıları</h2>
+<ul>
+<li>“Yapay zekâ her zaman doğru karar verir.” → Yapay zekâ yanlış veriyle hatalı karar verebilir.</li>
+<li>“Ücretsiz uygulamalar güvenlidir.” → Ücretsiz olması güvenli olduğu anlamına gelmez.</li>
+<li>“Sadece yetişkinlerin bilgileri tehlikededir.” → Çocukların bilgileri de korunmalıdır.</li>
+</ul>
+</section><section>
+<h2>Mini Etkinlik</h2>
+<p>Kullandığın bir uygulamayı seç. Aşağıdaki sorulara cevap ver:</p>
+<ul>
+<li>Hangi bilgilerini istiyor?</li>
+<li>Bu bilgiler gerekli mi?</li>
+<li>Gizlilik ayarlarını değiştirebiliyor musun?</li>
+</ul>
+<p>Cevaplarını defterine yaz ve sınıfta tartış.</p>
+</section><section>
+<h2>Kritik Düşünme Sorusu</h2>
+<p>Bir yapay zekâ sistemi senin yerine karar veriyorsa, bu kararın adil olup olmadığını nasıl anlayabilirsin?</p>
+</section><section>
+<h2>Özet</h2>
+<p>Yapay zekâ hayatımızı kolaylaştırır ancak güvenlik ve gizlilik riskleri içerir. Kişisel verilerin korunması, adaletli karar verilmesi ve etik kurallara uyulması çok önemlidir. Bilinçli kullanıcı olmak, güvenli yapay zekâ kullanmanın temel şartıdır.</p>
+</section><section>
+<h2>Anahtar Kavramlar</h2>
+<ul>
+<li>Yapay zekâ</li>
+<li>Gizlilik</li>
+<li>Bilgi güvenliği</li>
+<li>Etik</li>
+<li>Adalet</li>
+<li>Şeffaflık</li>
+</ul>
+</section><section>
+<h2>Örnek Sorular</h2>
+<ol>
+<li>Yapay zekâda gizlilik ne anlama gelir?</li>
+<li>Yapay zekâ sistemlerinde ortaya çıkabilecek iki güvenlik riskini yazınız.</li>
+<li>Etik ilkelerden iki tanesini örnekle açıklayınız.</li>
+<li>Bir uygulamanın güvenli olup olmadığını nasıl değerlendirirsin?</li>
+<li>Yanlış veri kullanılması yapay zekâ kararlarını nasıl etkiler?</li>
+</ol>
+</section><section>
+<h2>Cevap Anahtarı</h2>
+<p>1) Kişisel bilgilerin korunmasıdır. 2) Veri sızıntısı, adaletsiz karar vb. 3) Adalet: eşit davranma; Gizlilik: bilgileri koruma. 4) Gizlilik ayarlarına ve veri kullanımına bakarak. 5) Hatalı ve yanlış sonuçlara yol açar.</p>
+</section></div>
+            </div>
+            
+          
+        </section>
+
+        <!-- AdSense: Orta Reklam -->
+        <div class="ad-slot">
+          <div>Reklam Alanı (336x280)</div>
+        </div>
+
+        <!-- Kazanımlar Bölümü -->
+        
+        <section class="section">
+          <h2>🎯 Öğrenme Kazanımları</h2>
+          <ul class="outcome-list">
+            
+            <li class="outcome-item">
+              <div>a) Yapay zekâda etik ve güvenlik/gizlilik risklerini belirler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 22-23
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>b) Yapay zekâda etik ve güvenlik/gizlilik önlemlerini belirler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 22-23
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>c) Yapay zekâda etik ilkelerin ve bilgi güvenliğinin/gizliliğinin temel bileşenlerini ayırt eder.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 22-23
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>ç) Yapay zekâ uygulamalarını etik ilkeler ile e-güvenlik/e-gizlilik açısından değerlendirir.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 22-23
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+          </ul>
+        </section>
+        
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <!-- AdSense: Sidebar Reklam -->
+        <div class="ad-slot" style="min-height: 600px;">
+          <div>Reklam Alanı<br>(300x600)</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Bu sayfa 5. Sınıf Bilişim Teknolojileri ve Yazılım dersi Yapay Zekâ ünitesi Yapay Zekâda Güvenlik konusu hakkında eğitim amaçlı içerik sunmaktadır.
+    </p>
+  </footer>
+</body>
+</html>

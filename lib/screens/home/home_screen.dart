@@ -17,7 +17,9 @@ import 'package:egitim_uygulamasi/screens/home/widgets/unfinished_tests_section.
 import 'package:egitim_uygulamasi/screens/home/widgets/weekly_agenda_overview_card.dart';
 
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
+import 'package:egitim_uygulamasi/ads/adsense_slots.dart';
 import 'package:egitim_uygulamasi/viewmodels/grade_viewmodel.dart';
+import 'package:egitim_uygulamasi/widgets/adaptive_ad_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -469,6 +471,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                   ),
+                const SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16, 10, 16, 14),
+                  sliver: SliverToBoxAdapter(
+                    child: AdaptiveAdBanner(
+                      adSlot: AdSenseSlots.homeInline,
+                      margin: EdgeInsets.symmetric(horizontal: 2),
+                    ),
+                  ),
+                ),
 
                 // Remaining Content Section
                 if (widget.profile == null)
@@ -613,6 +624,11 @@ class _LegalLinksSection extends StatelessWidget {
             label: 'İletişim',
             url: 'https://derstakip.net/contact.html',
             icon: Icons.mail_outline_rounded,
+          ),
+          _linkButton(
+            label: 'Site Haritası',
+            url: 'https://derstakip.net/sitemap.xml',
+            icon: Icons.map_outlined,
           ),
         ],
       ),

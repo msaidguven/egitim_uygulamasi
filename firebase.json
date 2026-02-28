@@ -3,6 +3,8 @@
     {
       "target": "app",
       "public": "build/web",
+      "cleanUrls": true,
+      "trailingSlash": false,
       "ignore": [
         "firebase.json",
         "**/.*",
