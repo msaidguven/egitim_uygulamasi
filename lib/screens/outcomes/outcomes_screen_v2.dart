@@ -2283,38 +2283,61 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     required bool isActive,
     required VoidCallback onTap,
   }) {
+    // Mavi konseptine uygun ama pasifken de göze çarpan, enerjik ortaokul renkleri
+    final activeBg = const Color(0xFF2F6FE4);
+    final activeText = Colors.white;
+    final activeBorder = const Color(0xFF1E5BB8);
+    
+    // Pasif durum için hem canlı hem de "tıklanabilir" olduğunu hissettiren renk
+    final inactiveBg = const Color(0xFFFFF0E6); // Canlı bir somon/uçuk turuncu
+    final inactiveText = const Color(0xFFD97706); // Amber/Turuncu tonu
+    final inactiveBorder = const Color(0xFFFFD8B8); // Yumuşak turuncu border
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 170),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          color: isActive
-              ? const Color(0xFF2F6FE4).withValues(alpha: 0.15)
-              : const Color(0xFFF0F4FA), // Aktif değilkenki daha renkli ve belirgin arka plan
-          borderRadius: BorderRadius.circular(12),
-          border: isActive
-              ? Border.all(color: const Color(0xFF2F6FE4).withValues(alpha: 0.4), width: 1.5)
-              : Border.all(color: const Color(0xFFE2E8F0), width: 1.5), // Pasif duruma da hafif bir sınır eklendi
+          color: isActive ? activeBg : inactiveBg,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isActive ? activeBorder : inactiveBorder, 
+            width: 2.0
+          ),
+          boxShadow: isActive
+              ? [
+                  BoxShadow(
+                    color: activeBg.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  )
+                ]
+              : [
+                  BoxShadow(
+                    color: inactiveText.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  )
+                ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              size: 22,
-              color: isActive ? const Color(0xFF2F6FE4) : Colors.blueGrey.shade600,
+              size: 24,
+              color: isActive ? activeText : inactiveText,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
             Text(
               label,
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-                color: isActive
-                    ? const Color(0xFF2F6FE4)
-                    : Colors.blueGrey.shade700,
+                fontSize: 17,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.3,
+                color: isActive ? activeText : inactiveText,
               ),
             ),
           ],
