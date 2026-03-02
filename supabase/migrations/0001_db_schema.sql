@@ -303,15 +303,6 @@ CREATE TABLE public.topics (
   CONSTRAINT topics_pkey PRIMARY KEY (id),
   CONSTRAINT topics_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
 );
-CREATE TABLE public.unit_grades (
-  unit_id bigint NOT NULL,
-  grade_id bigint NOT NULL,
-  end_week smallint,
-  start_week integer,
-  CONSTRAINT unit_grades_pkey PRIMARY KEY (unit_id, grade_id),
-  CONSTRAINT unit_grades_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id),
-  CONSTRAINT unit_grades_grade_id_fkey FOREIGN KEY (grade_id) REFERENCES public.grades(id)
-);
 CREATE TABLE public.unit_videos (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   title text,
@@ -333,8 +324,12 @@ CREATE TABLE public.units (
   updated_at timestamp with time zone DEFAULT now(),
   slug text,
   question_count integer NOT NULL DEFAULT 0,
+  grade_id bigint NOT NULL,
+  start_week integer CHECK (start_week IS NULL OR start_week >= 1),
+  end_week integer CHECK (end_week IS NULL OR end_week >= 1),
   CONSTRAINT units_pkey PRIMARY KEY (id),
-  CONSTRAINT fk_units_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id)
+  CONSTRAINT fk_units_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id),
+  CONSTRAINT fk_units_grade FOREIGN KEY (grade_id) REFERENCES public.grades(id)
 );
 CREATE TABLE public.user_curriculum_week_run_summary (
   user_id uuid NOT NULL,

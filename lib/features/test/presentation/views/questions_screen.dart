@@ -1,5 +1,6 @@
 import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:egitim_uygulamasi/providers.dart';
 

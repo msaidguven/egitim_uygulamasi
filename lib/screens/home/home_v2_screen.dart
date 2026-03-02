@@ -1,6 +1,7 @@
 import 'package:egitim_uygulamasi/main.dart';
 import 'package:egitim_uygulamasi/screens/unit_summary_screen.dart';
-import 'package:egitim_uygulamasi/screens/units_for_lesson_screen.dart';
+import '../units_for_lesson_screen.dart' as units_screen;
+import 'unit_map_v2_screen.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -90,21 +91,14 @@ class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
     final unitId = lessonData['current_unit_id'];
     final foundLessonId = lessonData['lesson_id'];
 
-    if (unitId != null) {
+    if (foundLessonId != null && widget.profile!.gradeId != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => UnitSummaryScreen(unitId: unitId),
-        ),
-      );
-    } else if (foundLessonId != null && widget.profile!.gradeId != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => UnitsForLessonScreen(
-            gradeId: widget.profile!.gradeId!,
+          builder: (context) => UnitMapV2Screen(
             lessonId: foundLessonId,
             lessonName: lessonName,
+            gradeId: widget.profile!.gradeId!,
           ),
         ),
       );
