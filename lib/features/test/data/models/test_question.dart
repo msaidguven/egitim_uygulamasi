@@ -10,7 +10,7 @@ class TestQuestion {
   final List<QuestionChoice> shuffledChoices;
   final List<QuestionBlankOption> shuffledBlankOptions;
   final List<MatchingPair> shuffledMatchingPairsRight;
-  final List<String> shuffledMatchingLeftTexts;
+  final List<MatchingPair> shuffledMatchingLeftTexts;
   dynamic userAnswer;
   bool isChecked;
   bool isCorrect;
@@ -20,17 +20,19 @@ class TestQuestion {
     List<QuestionChoice>? shuffledChoices,
     List<QuestionBlankOption>? shuffledBlankOptions,
     List<MatchingPair>? shuffledMatchingPairsRight,
-    List<String>? shuffledMatchingLeftTexts,
+    List<MatchingPair>? shuffledMatchingLeftTexts,
     this.userAnswer,
     this.isChecked = false,
     this.isCorrect = false,
-  })  : shuffledChoices = shuffledChoices ?? _shuffleChoices(question.choices),
-        shuffledBlankOptions =
-            shuffledBlankOptions ?? _shuffleBlankOptions(question.blankOptions),
-        shuffledMatchingPairsRight = shuffledMatchingPairsRight ??
-            _shuffleMatchingPairsRight(question.matchingPairs),
-        shuffledMatchingLeftTexts = shuffledMatchingLeftTexts ??
-            _shuffleMatchingLeftTexts(question.matchingPairs);
+  }) : shuffledChoices = shuffledChoices ?? _shuffleChoices(question.choices),
+       shuffledBlankOptions =
+           shuffledBlankOptions ?? _shuffleBlankOptions(question.blankOptions),
+       shuffledMatchingPairsRight =
+           shuffledMatchingPairsRight ??
+           _shuffleMatchingPairsRight(question.matchingPairs),
+       shuffledMatchingLeftTexts =
+           shuffledMatchingLeftTexts ??
+           _shuffleMatchingLeftTexts(question.matchingPairs);
 
   static List<QuestionChoice> _shuffleChoices(List<QuestionChoice> choices) {
     if (choices.length <= 1) return List<QuestionChoice>.from(choices);
@@ -59,11 +61,11 @@ class TestQuestion {
     return shuffled;
   }
 
-  static List<String> _shuffleMatchingLeftTexts(
+  static List<MatchingPair> _shuffleMatchingLeftTexts(
     List<MatchingPair>? pairs,
   ) {
     if (pairs == null || pairs.isEmpty) return const [];
-    final shuffled = pairs.map((p) => p.leftText).toList();
+    final shuffled = List<MatchingPair>.from(pairs);
     if (shuffled.length <= 1) return shuffled;
     shuffled.shuffle();
     return shuffled;
@@ -75,7 +77,7 @@ class TestQuestion {
     List<QuestionChoice>? shuffledChoices,
     List<QuestionBlankOption>? shuffledBlankOptions,
     List<MatchingPair>? shuffledMatchingPairsRight,
-    List<String>? shuffledMatchingLeftTexts,
+    List<MatchingPair>? shuffledMatchingLeftTexts,
     dynamic userAnswer,
     bool? isChecked,
     bool? isCorrect,

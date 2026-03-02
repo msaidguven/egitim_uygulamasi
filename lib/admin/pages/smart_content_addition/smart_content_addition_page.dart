@@ -346,10 +346,10 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
 
         final existingUnit = await supabase
             .from('units')
-            .select('id, unit_grades!inner(grade_id)')
+            .select('id')
             .eq('lesson_id', lessonId)
             .eq('title', newUnitTitle)
-            .eq('unit_grades.grade_id', gradeId)
+            .eq('grade_id', gradeId)
             .maybeSingle();
 
         if (existingUnit != null) {
@@ -357,16 +357,16 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         } else {
           final newUnit = await supabase
               .from('units')
-              .insert({'lesson_id': lessonId, 'title': newUnitTitle})
+              .insert({
+                'lesson_id': lessonId,
+                'grade_id': gradeId,
+                'title': newUnitTitle,
+              })
               .select('id')
               .single();
           unitId = newUnit['id'];
         }
       }
-      await supabase.from('unit_grades').upsert({
-        'unit_id': unitId,
-        'grade_id': gradeId,
-      });
 
       // --- Step 2: Resolve Topic ID ---
       int topicId;

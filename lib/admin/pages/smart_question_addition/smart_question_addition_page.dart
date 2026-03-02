@@ -72,6 +72,36 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
     return null;
   }
 
+  int? _resolveQuestionTypeId(dynamic rawType) {
+    if (rawType is int) return rawType;
+    final type = rawType?.toString();
+    switch (type) {
+      case 'multiple_choice':
+        return 1;
+      case 'true_false':
+        return 2;
+      case 'fill_blank':
+      case 'blank':
+        return 3;
+      case 'matching':
+        return 4;
+      case 'classical':
+        return 5;
+      default:
+        return null;
+    }
+  }
+
+  Map<String, dynamic> _normalizeQuestionForRpc(Map<String, dynamic> raw) {
+    final normalized = Map<String, dynamic>.from(raw);
+    final resolvedTypeId =
+        _resolveQuestionTypeId(normalized['question_type_id'] ?? normalized['question_type']);
+    if (resolvedTypeId != null) {
+      normalized['question_type_id'] = resolvedTypeId;
+    }
+    return normalized;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -326,11 +356,17 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
       }
       try {
         payloadForSupabase = jsonDecode(_jsonController.text);
-        if (payloadForSupabase['questions'] == null ||
-            (payloadForSupabase['questions'] as List).isEmpty) {
+        final questions = (payloadForSupabase['questions'] as List?) ?? const [];
+        if (questions.isEmpty) {
           _showError('JSON içeriğinde soru bulunamadı.');
           return;
         }
+        payloadForSupabase = {
+          'questions': questions
+              .whereType<Map>()
+              .map((q) => _normalizeQuestionForRpc(Map<String, dynamic>.from(q)))
+              .toList(),
+        };
       } catch (e) {
         _showError('JSON parse hatası: $e');
         return;
@@ -340,15 +376,18 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         _showError('Lütfen soru ekleyin.');
         return;
       }
-      payloadForSupabase = {'questions': _previewQuestions};
+      payloadForSupabase = {
+        'questions': _previewQuestions.map(_normalizeQuestionForRpc).toList(),
+      };
     }
 
     setState(() => _isSubmitting = true);
 
     try {
       var usedLegacySignature = false;
+      dynamic rpcResult;
       try {
-        await Supabase.instance.client.rpc(
+        rpcResult = await Supabase.instance.client.rpc(
           'bulk_create_questions',
           params: {
             'p_topic_id': _selectedTopic!.id,
@@ -369,7 +408,7 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         if (!isSignatureMismatch) rethrow;
 
         // DB eski fonksiyon imzasındaysa, outcomes parametresi olmadan tekrar dene.
-        await Supabase.instance.client.rpc(
+        rpcResult = await Supabase.instance.client.rpc(
           'bulk_create_questions',
           params: {
             'p_topic_id': _selectedTopic!.id,
@@ -383,6 +422,19 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
         usedLegacySignature = true;
       }
 
+      final result = rpcResult is Map<String, dynamic>
+          ? rpcResult
+          : (rpcResult is Map ? Map<String, dynamic>.from(rpcResult) : <String, dynamic>{});
+      final insertedCount = (result['inserted_count'] as num?)?.toInt() ?? 0;
+      final errors = (result['errors'] as List?) ?? const [];
+      if (insertedCount <= 0 || errors.isNotEmpty) {
+        _showError(
+          'Kayıt başarısız. Eklenen: $insertedCount, Hata: ${errors.length}. '
+          'İlk hata: ${errors.isNotEmpty ? errors.first : 'bilinmiyor'}',
+        );
+        return;
+      }
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -394,7 +446,9 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
           backgroundColor: usedLegacySignature ? Colors.orange : Colors.green,
         ),
       );
-      _resetForm();
+      if (_showJsonInput) {
+        _jsonController.clear();
+      }
     } on PostgrestException catch (e, st) {
       final errorMessage =
           "Veritabanı Hatası: ${e.message}\nKod: ${e.code}\nDetaylar: ${e.details}";
@@ -413,28 +467,6 @@ class _SmartQuestionAdditionPageState extends State<SmartQuestionAdditionPage> {
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
-  }
-
-  void _resetForm() {
-    _curriculumWeekController.clear();
-    _jsonController.clear();
-
-    setState(() {
-      _selectedGrade = null;
-      _availableLessons = [];
-      _selectedLesson = null;
-      _availableUnits = [];
-      _selectedUnit = null;
-      _availableTopics = [];
-      _selectedTopic = null;
-      _availableOutcomes = [];
-      _selectedOutcomeIds = {};
-      _usageType = 'weekly';
-      _previewQuestions = [];
-      _showJsonInput = true;
-    });
-
-    _formKey.currentState?.reset();
   }
 
   void _showError(String message) {

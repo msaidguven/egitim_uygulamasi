@@ -45,6 +45,36 @@ class _BulkQuestionFormState extends State<BulkQuestionForm> {
   bool _isSubmitting = false;
   bool _showJsonInput = true;
 
+  int? _resolveQuestionTypeId(dynamic rawType) {
+    if (rawType is int) return rawType;
+    final type = rawType?.toString();
+    switch (type) {
+      case 'multiple_choice':
+        return 1;
+      case 'true_false':
+        return 2;
+      case 'fill_blank':
+      case 'blank':
+        return 3;
+      case 'matching':
+        return 4;
+      case 'classical':
+        return 5;
+      default:
+        return null;
+    }
+  }
+
+  Map<String, dynamic> _normalizeQuestionForRpc(Map<String, dynamic> raw) {
+    final normalized = Map<String, dynamic>.from(raw);
+    final resolvedTypeId =
+        _resolveQuestionTypeId(normalized['question_type_id'] ?? normalized['question_type']);
+    if (resolvedTypeId != null) {
+      normalized['question_type_id'] = resolvedTypeId;
+    }
+    return normalized;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -170,7 +200,7 @@ class _BulkQuestionFormState extends State<BulkQuestionForm> {
               return {...q, 'pairs': pairs};
             }
             return q;
-          }));
+          })).map(_normalizeQuestionForRpc).toList();
         if (questionsToSubmit.isEmpty) {
           _showError('JSON içeriğinde soru bulunamadı.');
           return;
@@ -184,7 +214,7 @@ class _BulkQuestionFormState extends State<BulkQuestionForm> {
         _showError('Lütfen soru ekleyin.');
         return;
       }
-      questionsToSubmit = _previewQuestions;
+      questionsToSubmit = _previewQuestions.map(_normalizeQuestionForRpc).toList();
     }
 
     setState(() => _isSubmitting = true);
@@ -199,8 +229,12 @@ class _BulkQuestionFormState extends State<BulkQuestionForm> {
         'p_questions_json': {'questions': questionsToSubmit},
       });
 
-      final errors = response['errors'] as List;
-      if (errors.isNotEmpty) {
+      final result = response is Map<String, dynamic>
+          ? response
+          : (response is Map ? Map<String, dynamic>.from(response) : <String, dynamic>{});
+      final insertedCount = (result['inserted_count'] as num?)?.toInt() ?? 0;
+      final errors = (result['errors'] as List?) ?? const [];
+      if (insertedCount <= 0 || errors.isNotEmpty) {
         _showError('Bazı sorular eklenirken hata oluştu: ${errors.length} hata.');
         debugPrint('Bulk question errors: $errors');
       } else {
@@ -208,7 +242,9 @@ class _BulkQuestionFormState extends State<BulkQuestionForm> {
           content: Text('Sorular başarıyla eklendi!'),
           backgroundColor: Colors.green,
         ));
-        _resetForm();
+        if (_showJsonInput) {
+          _jsonController.clear();
+        }
       }
     } on PostgrestException catch (e) {
       _showError('Supabase Hatası: ${e.message}');
@@ -219,26 +255,6 @@ class _BulkQuestionFormState extends State<BulkQuestionForm> {
     }
   }
   
-  void _resetForm() {
-    _formKey.currentState?.reset();
-    _startWeekController.clear();
-    _endWeekController.clear();
-    _jsonController.clear();
-    setState(() {
-      _selectedGrade = null;
-      _availableLessons = [];
-      _selectedLesson = null;
-      _availableUnits = [];
-      _selectedUnit = null;
-      _availableTopics = [];
-      _selectedTopic = null;
-      _usageType = 'weekly';
-      _previewQuestions = [];
-      _showJsonInput = false;
-    });
-  }
-
-
   void _showError(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

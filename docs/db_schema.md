@@ -254,15 +254,9 @@ question_count integer NOT NULL DEFAULT 0,
 CONSTRAINT topics_pkey PRIMARY KEY (id),
 CONSTRAINT topics_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id)
 );
-CREATE TABLE public.unit_grades (
-unit_id bigint NOT NULL,
-grade_id bigint NOT NULL,
-end_week smallint,
-start_week integer,
-CONSTRAINT unit_grades_pkey PRIMARY KEY (unit_id, grade_id),
-CONSTRAINT unit_grades_unit_id_fkey FOREIGN KEY (unit_id) REFERENCES public.units(id),
-CONSTRAINT unit_grades_grade_id_fkey FOREIGN KEY (grade_id) REFERENCES public.grades(id)
-);
+-- NOTE: `unit_grades` relation table was removed in the single-grade unit model.
+-- Backward compatibility is provided by a read-only `public.unit_grades` VIEW
+-- that exposes: unit_id, grade_id, start_week, end_week.
 CREATE TABLE public.unit_videos (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 title text,
@@ -276,6 +270,7 @@ CONSTRAINT fk_tv_unit FOREIGN KEY (unit_id) REFERENCES public.units(id)
 CREATE TABLE public.units (
 id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
 lesson_id bigint NOT NULL,
+grade_id bigint NOT NULL,
 title text NOT NULL,
 description text,
 order_no integer NOT NULL DEFAULT 0 CHECK (order_no >= 0),
@@ -285,7 +280,8 @@ updated_at timestamp with time zone DEFAULT now(),
 slug text UNIQUE,
 question_count integer NOT NULL DEFAULT 0,
 CONSTRAINT units_pkey PRIMARY KEY (id),
-CONSTRAINT fk_units_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id)
+CONSTRAINT fk_units_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id),
+CONSTRAINT fk_units_grade FOREIGN KEY (grade_id) REFERENCES public.grades(id)
 );
 CREATE TABLE public.user_activity_weekly_summary (
 user_id uuid NOT NULL,

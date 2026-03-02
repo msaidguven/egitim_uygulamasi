@@ -93,8 +93,11 @@ class _TopicFormPageState extends State<TopicFormPage> {
       _selectedUnitId = null;
     });
     final response = await supabase.rpc(
-      'get_units_by_lesson_and_grade',
-      params: {'lid': lessonId, 'gid': gradeId},
+      'get_units_for_lesson_and_grade',
+      params: {
+        'lesson_id_param': lessonId,
+        'grade_id_param': gradeId,
+      },
     );
     setState(() {
       _units = (response as List).map((e) => Unit.fromMap(e)).toList();

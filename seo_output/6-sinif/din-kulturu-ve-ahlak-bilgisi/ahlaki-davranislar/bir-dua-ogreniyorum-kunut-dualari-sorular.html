@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bir Dua Öğreniyorum: Kunut Duaları Test Soruları -...</title>
+  <meta name="description" content="18 soru ile Bir Dua Öğreniyorum: Kunut Duaları konusunu pekiştir ve başarını ölç. 6. Sınıf Din Kültürü ve Ahlak Bilgisi dersi Ahlaki Davranışlar...">
+  <meta name="keywords" content="Bir Dua Öğreniyorum: Kunut Duaları test, Bir Dua Öğreniyorum: Kunut Duaları sorular, Din Kültürü ve Ahlak Bilgisi quiz, 6. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bir Dua Öğreniyorum: Kunut Duaları Test Soruları -...">
+  <meta property="og:description" content="18 soru ile Bir Dua Öğreniyorum: Kunut Duaları konusunu pekiştir ve başarını ölç. 6. Sınıf Din Kültürü ve Ahlak Bilgisi dersi Ahlaki Davranışlar...">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/6-sinif/">6. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/din-kulturu-ve-ahlak-bilgisi/">Din Kültürü ve Ahlak Bilgisi</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/din-kulturu-ve-ahlak-bilgisi/ahlaki-davranislar/">Ahlaki Davranışlar</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Bir Dua Öğreniyorum: Kunut Duaları Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Bir Dua Öğreniyorum: Kunut Duaları - Test Soruları</h1>
+      <div class="meta">18 Soru • 6. Sınıf Din Kültürü ve Ahlak Bilgisi</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/6-sinif/din-kulturu-ve-ahlak-bilgisi/ahlaki-davranislar/bir-dua-ogreniyorum-kunut-dualari/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="2471" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut duasının 'Rabbena ve rabbel alemin' ifadesi hangi anlamı taşır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4668" 
+                  data-correct="true"
+                  onclick="selectChoice(2471, 4668, true)">
+            <span class="choice-letter">A</span>
+            <span>Ey bizim Rabbimiz, âlemlerin Rabbi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4669" 
+                  data-correct="false"
+                  onclick="selectChoice(2471, 4669, false)">
+            <span class="choice-letter">B</span>
+            <span>Ey âlemlerin Rabbi, bizim Rabbimiz</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4670" 
+                  data-correct="false"
+                  onclick="selectChoice(2471, 4670, false)">
+            <span class="choice-letter">C</span>
+            <span>Rabbimiz ve âlemler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4671" 
+                  data-correct="false"
+                  onclick="selectChoice(2471, 4671, false)">
+            <span class="choice-letter">D</span>
+            <span>Âlemlerin Rabbi sensin</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2471">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade 'Ey bizim Rabbimiz, âlemlerin Rabbi' anlamına gelir. Kazanıma göre Kunut dualarını okuma ve anlamını kavrama becerisini ölçer; ezberden öte anlamayı hedefler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2476" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut duasının anlamını günlük hayatta uygulamak, zor durumlarda sabretmeyi öğretir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4678" 
+                  data-correct="true"
+                  onclick="selectChoice(2476, 4678, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4679" 
+                  data-correct="false"
+                  onclick="selectChoice(2476, 4679, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2476">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru, dua Allah'a sığınmayı ve af dilemeyi teşvik eder; öğrencinin hayatını anlamlı hale getirmesini sağlar (kazanim b), günlük hayat bağlantısı.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2486" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut-1 duasında Allah'tan yardım istenir, bağışlanma dilenir ve O'na güvenildiği (tevekkül) beyan edilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4696" 
+                  data-correct="true"
+                  onclick="selectChoice(2486, 4696, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4697" 
+                  data-correct="false"
+                  onclick="selectChoice(2486, 4697, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2486">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kunut-1 duasının metni 'Allahümme inna nesta'înuke ve nestağfiruke...' şeklinde başlar ve yardım isteme, bağışlanma ve güvenme anlamlarını taşır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2491" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut dualarında geçen “Allah’ım! Senden yardım ister, bağışlanma dileriz.” ifadesi aşağıdakilerden hangisini en doğru şekilde anlatır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4706" 
+                  data-correct="false"
+                  onclick="selectChoice(2491, 4706, false)">
+            <span class="choice-letter">A</span>
+            <span>İnsanın her işi tek başına yapabileceğini kabul etmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4707" 
+                  data-correct="true"
+                  onclick="selectChoice(2491, 4707, true)">
+            <span class="choice-letter">B</span>
+            <span>Allah’tan yardım ve bağışlanma istemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4708" 
+                  data-correct="false"
+                  onclick="selectChoice(2491, 4708, false)">
+            <span class="choice-letter">C</span>
+            <span>Başkalarından yardım istemeyi reddetmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4709" 
+                  data-correct="false"
+                  onclick="selectChoice(2491, 4709, false)">
+            <span class="choice-letter">D</span>
+            <span>Sadece maddi kazanç talep etmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2491">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade, insanın kendi gücünün sınırlı olduğunu kabul ederek Allah’tan yardım ve bağışlanma dilemesini anlatır. Dua, kulun Rabbine yönelmesi ve O’ndan destek istemesidir. Bu nedenle doğru cevap Allah’tan yardım ve bağışlanma istemektir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2496" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut dualarında Allah’a şükretme ve O’nu övme ifadeleri yer alır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4716" 
+                  data-correct="true"
+                  onclick="selectChoice(2496, 4716, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4717" 
+                  data-correct="false"
+                  onclick="selectChoice(2496, 4717, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2496">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Kunut dualarında Allah’a inanma, O’nu övme ve nimetlerine şükretme anlamı taşıyan ifadeler bulunmaktadır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2492" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut duaları sadece ezberlenmesi gereken metinlerdir; anlamlarını bilmek önemli değildir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4710" 
+                  data-correct="false"
+                  onclick="selectChoice(2492, 4710, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4711" 
+                  data-correct="true"
+                  onclick="selectChoice(2492, 4711, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2492">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Kazanımlara göre Kunut dualarını okumak kadar anlamlarını bilmek ve hayatla ilişkilendirmek de önemlidir. Anlamı bilinmeden okunan dua, bilinçli bir ibadet olmaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2485" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut-1 duasında geçen 'Ve nehla'u' kelimesi 'boyun eğmek, itaat etmek' anlamlarını içerir. Buna göre bir öğrencinin okul kurallarına uyması ve büyüklerine saygı göstermesi bu duanın hangi ahlaki mesajıyla doğrudan ilişkilendirilebilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4692" 
+                  data-correct="true"
+                  onclick="selectChoice(2485, 4692, true)">
+            <span class="choice-letter">A</span>
+            <span>İtaat ve disiplin bilinci</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4693" 
+                  data-correct="false"
+                  onclick="selectChoice(2485, 4693, false)">
+            <span class="choice-letter">B</span>
+            <span>Maddi yardımda bulunma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4694" 
+                  data-correct="false"
+                  onclick="selectChoice(2485, 4694, false)">
+            <span class="choice-letter">C</span>
+            <span>Gelecekten korkma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4695" 
+                  data-correct="false"
+                  onclick="selectChoice(2485, 4695, false)">
+            <span class="choice-letter">D</span>
+            <span>Sadece fiziksel temizlik</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2485">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kunut dualarında Allah'a boyun eğmek (hudu ve huşu) esastır. Bu disiplin, hayatın diğer alanlarında da meşru otoriteye ve kurallara uymayı öğretir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2472" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut duasını sadece namaz dışında okumak caizdir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4672" 
+                  data-correct="false"
+                  onclick="selectChoice(2472, 4672, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4673" 
+                  data-correct="true"
+                  onclick="selectChoice(2472, 4673, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2472">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, Kunut duası özellikle namazda (vitir namazında) okunur ve anlamı günlük hayatta korunmalıdır. Bu, kavram yanılgısını ölçer; dua sadece belirli ibadette okunur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2495" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, Kunut dualarının anlamını düşünerek haksızlık yapmamaya karar veriyor. Bu durum aşağıdaki kazanımlardan hangisine örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4712" 
+                  data-correct="false"
+                  onclick="selectChoice(2495, 4712, false)">
+            <span class="choice-letter">A</span>
+            <span>Duanın sadece Arapça metnini ezberleme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4713" 
+                  data-correct="true"
+                  onclick="selectChoice(2495, 4713, true)">
+            <span class="choice-letter">B</span>
+            <span>Duanın anlamını hayatına uygulama</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4714" 
+                  data-correct="false"
+                  onclick="selectChoice(2495, 4714, false)">
+            <span class="choice-letter">C</span>
+            <span>Duanın yerini değiştirme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4715" 
+                  data-correct="false"
+                  onclick="selectChoice(2495, 4715, false)">
+            <span class="choice-letter">D</span>
+            <span>Duanın kelimelerini azaltma</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2495">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrenci, duanın anlamını kendi hayatına uygulamaktadır. Bu, anlamı hayatı için anlamlı hâle getirme kazanımına örnektir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2475" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut duasının 'fe lâ nehzi ve lâ nekîl' ifadesinin özeti aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4674" 
+                  data-correct="true"
+                  onclick="selectChoice(2475, 4674, true)">
+            <span class="choice-letter">A</span>
+            <span>Ne şükretmez ne de dua etmez</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4675" 
+                  data-correct="false"
+                  onclick="selectChoice(2475, 4675, false)">
+            <span class="choice-letter">B</span>
+            <span>Ne dua eder ne şükreder</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4676" 
+                  data-correct="false"
+                  onclick="selectChoice(2475, 4676, false)">
+            <span class="choice-letter">C</span>
+            <span>Şükret ve dua et</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4677" 
+                  data-correct="false"
+                  onclick="selectChoice(2475, 4677, false)">
+            <span class="choice-letter">D</span>
+            <span>Dua et şükretme</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2475">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Özet 'ne şükretmez ne de dua etmez' anlamındadır; anlamı değiştirmeden kısaltma becerisini ölçer (kazanim c). Yanılgı: Tam terk anlamını göz ardı etmek.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2500" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut dualarının anlamını bilmek, öğrencinin ahlaki kararlar almasına katkı sağlayabilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4722" 
+                  data-correct="true"
+                  onclick="selectChoice(2500, 4722, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4723" 
+                  data-correct="false"
+                  onclick="selectChoice(2500, 4723, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2500">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Dua anlamlarının bilinmesi, öğrencinin davranışlarını bilinçli şekilde yönlendirmesine ve ahlaki kararlar almasına katkı sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2482" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut duaları sadece Yatsı namazının sonundaki Vitir namazında okunur ve İslam literatüründe başka hiçbir zaman okunması mümkün değildir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4690" 
+                  data-correct="false"
+                  onclick="selectChoice(2482, 4690, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4691" 
+                  data-correct="true"
+                  onclick="selectChoice(2482, 4691, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2482">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Kunut duaları yaygın olarak Vitir namazında okunsa da, Hz. Peygamber'in toplumsal musibet veya sıkıntı zamanlarında sabah namazı gibi farz namazlarda da Kunut okuduğu bilinmektedir. Bu yaygın bir kavram yanılgısıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2488" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir kimse hatasız olmadığını kabul edip Allah'a yönelerek 'Senden bağışlanma diliyoruz' diyorsa, Kunut-1 duasındaki hangi kelimeyi hayatına uygulamış olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4698" 
+                  data-correct="true"
+                  onclick="selectChoice(2488, 4698, true)">
+            <span class="choice-letter">A</span>
+            <span>Nestağfiruke</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4699" 
+                  data-correct="false"
+                  onclick="selectChoice(2488, 4699, false)">
+            <span class="choice-letter">B</span>
+            <span>Netevekkeli aleyke</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4700" 
+                  data-correct="false"
+                  onclick="selectChoice(2488, 4700, false)">
+            <span class="choice-letter">C</span>
+            <span>Nüsni aleyke</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4701" 
+                  data-correct="false"
+                  onclick="selectChoice(2488, 4701, false)">
+            <span class="choice-letter">D</span>
+            <span>Nu'minu bike</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2488">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İstiğfar (bağışlanma dileme) kavramı duada 'nestağfiruke' kelimesiyle ifade edilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2480" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut duasının anlamını özetlemek için kelimeleri değiştirmek caizdir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4684" 
+                  data-correct="false"
+                  onclick="selectChoice(2480, 4684, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4685" 
+                  data-correct="true"
+                  onclick="selectChoice(2480, 4685, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2480">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış, özetleme anlamı bozmamalıdır (kazanim c); yanılgı ölçer, dua metninin kutsallığını korur ve analiz becerisi gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2481" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut dualarında geçen 'Vennehlau ve netruku men yefcuruk' ifadesi ile Müslüman, Allah'a olan bağlılığını ve kimlerden uzak duracağını beyan eder. Bu ifadenin anlamı dikkate alındığında, aşağıdakilerden hangisi bir Müslümanın bu duadaki sözüne sadık kaldığını gösteren bir davranıştır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4686" 
+                  data-correct="true"
+                  onclick="selectChoice(2481, 4686, true)">
+            <span class="choice-letter">A</span>
+            <span>Kötü davranışlarda bulunan ve Allah'a isyan eden kişilerin peşinden gitmemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4687" 
+                  data-correct="false"
+                  onclick="selectChoice(2481, 4687, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece kendi çıkarlarını düşünerek hareket etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4688" 
+                  data-correct="false"
+                  onclick="selectChoice(2481, 4688, false)">
+            <span class="choice-letter">C</span>
+            <span>Hatalı olduğunu bildiği arkadaşlarına her ne olursa olsun destek olmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4689" 
+                  data-correct="false"
+                  onclick="selectChoice(2481, 4689, false)">
+            <span class="choice-letter">D</span>
+            <span>İbadetlerini sadece başkaları gördüğünde yapmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2481">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kunut-2 duasında geçen bu ifade 'Sana isyan edeni terk ederiz' anlamına gelir. Dolayısıyla Allah'ın emirlerine karşı gelen ve kötülükte ısrar edenlerden bağını koparmak bu sözün bir gereğidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2498" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi Kunut dualarının ana mesajlarından biri değildir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4718" 
+                  data-correct="false"
+                  onclick="selectChoice(2498, 4718, false)">
+            <span class="choice-letter">A</span>
+            <span>Allah’tan yardım istemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4719" 
+                  data-correct="false"
+                  onclick="selectChoice(2498, 4719, false)">
+            <span class="choice-letter">B</span>
+            <span>Bağışlanma dilemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4720" 
+                  data-correct="false"
+                  onclick="selectChoice(2498, 4720, false)">
+            <span class="choice-letter">C</span>
+            <span>İyiliklere yönelmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4721" 
+                  data-correct="true"
+                  onclick="selectChoice(2498, 4721, true)">
+            <span class="choice-letter">D</span>
+            <span>Başkalarına üstünlük taslamak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2498">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kunut dualarında yardım isteme, bağışlanma dileme ve iyiliğe yönelme vardır. Başkalarına üstünlük taslama gibi bir mesaj bulunmaz. Bu seçenek kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2490" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut-2 duasının sonunda 'İnne azabeke bil küffari mülhıq' ifadesi geçer. Bu ifadenin anlamı dikkate alındığında, duanın bitişindeki ana mesaj aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4702" 
+                  data-correct="true"
+                  onclick="selectChoice(2490, 4702, true)">
+            <span class="choice-letter">A</span>
+            <span>Allah'ın azabının inkârcıları kuşatacağı gerçeği</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4703" 
+                  data-correct="false"
+                  onclick="selectChoice(2490, 4703, false)">
+            <span class="choice-letter">B</span>
+            <span>Cennet nimetlerinin sonsuzluğu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4704" 
+                  data-correct="false"
+                  onclick="selectChoice(2490, 4704, false)">
+            <span class="choice-letter">C</span>
+            <span>Namazın vaktinde kılınması gerektiği</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4705" 
+                  data-correct="false"
+                  onclick="selectChoice(2490, 4705, false)">
+            <span class="choice-letter">D</span>
+            <span>Dünya malının geçiciliği</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2490">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade 'Şüphesiz Senin azabın kâfirlere ulaşacaktır' anlamına gelir. Duanın sonunda Allah'ın adaletine yapılan bir vurgudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2478" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kunut duasını okurken 'inneke alâ külli şey'in kadîr' neyi vurgular?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4680" 
+                  data-correct="true"
+                  onclick="selectChoice(2478, 4680, true)">
+            <span class="choice-letter">A</span>
+            <span>Allah'ın her şeye gücü yeter</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4681" 
+                  data-correct="false"
+                  onclick="selectChoice(2478, 4681, false)">
+            <span class="choice-letter">B</span>
+            <span>Her şeye gücü olan sensin</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4682" 
+                  data-correct="false"
+                  onclick="selectChoice(2478, 4682, false)">
+            <span class="choice-letter">C</span>
+            <span>Şeytan her şeye kadirdir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4683" 
+                  data-correct="false"
+                  onclick="selectChoice(2478, 4683, false)">
+            <span class="choice-letter">D</span>
+            <span>Biz her şeye kadiriz</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2478">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Allah'ın her şeye gücü yettiğini vurgular; kavramsal yanılgı: Duayı sihir gibi görmek yerine tevhid inancını pekiştirir (kazanim a).</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Bir Dua Öğreniyorum: Kunut Duaları test soruları - 6. Sınıf Din Kültürü ve Ahlak Bilgisi dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // Yanlış seçimi işaretle
+        if (btn.dataset.choiceId == choiceId && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

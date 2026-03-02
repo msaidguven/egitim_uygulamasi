@@ -119,14 +119,14 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
     required int lessonId,
   }) async {
     final unitRows = await _client
-        .from('unit_grades')
-        .select('unit_id, units!inner(id, lesson_id)')
+        .from('units')
+        .select('id')
         .eq('grade_id', gradeId)
-        .eq('units.lesson_id', lessonId);
+        .eq('lesson_id', lessonId);
 
     final unitIds = (unitRows as List)
         .whereType<Map<String, dynamic>>()
-        .map((r) => _toInt(r['unit_id']))
+        .map((r) => _toInt(r['id']))
         .whereType<int>()
         .toSet()
         .toList();
@@ -223,17 +223,7 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
       }
     }
 
-    final sharedRows = await _client
-        .from('unit_grades')
-        .select('unit_id, grade_id')
-        .inFilter('unit_id', unitIds)
-        .neq('grade_id', gradeId);
-    final sharedUnitIds = (sharedRows as List)
-        .whereType<Map<String, dynamic>>()
-        .map((r) => _toInt(r['unit_id']))
-        .whereType<int>()
-        .toSet()
-        .toList();
+    const sharedUnitIds = <int>[];
 
     return _DeleteScope(
       unitIds: unitIds,
@@ -444,11 +434,7 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
         'question_id',
         scope.questionIds,
       );
-      await _deleteInChunks(
-        'user_answers',
-        'question_id',
-        scope.questionIds,
-      );
+      await _deleteInChunks('user_answers', 'question_id', scope.questionIds);
       await _deleteInChunks(
         'test_session_answers',
         'question_id',
@@ -617,7 +603,6 @@ class _BulkDeletePageState extends State<BulkDeletePage> {
     });
 
     try {
-      await _deleteInChunks('unit_grades', 'unit_id', scope.unitIds);
       await _deleteInChunks('units', 'id', scope.unitIds);
 
       if (!mounted) return;

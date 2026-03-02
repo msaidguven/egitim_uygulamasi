@@ -80,9 +80,9 @@ class _UnitListPageState extends State<UnitListPage> {
     try {
       final response = await supabase
           .from('units')
-          .select('*, unit_grades!inner(grade_id)')
+          .select('*')
           .eq('lesson_id', lessonId)
-          .eq('unit_grades.grade_id', _selectedGrade!.id)
+          .eq('grade_id', _selectedGrade!.id)
           .eq('is_active', true)
           .order(
             'order_no',

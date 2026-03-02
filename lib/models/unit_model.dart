@@ -34,8 +34,12 @@ class Unit {
       description: map['description'] as String?,
       orderNo: map['order_no'] as int? ?? 0,
       isActive: map['is_active'] as bool? ?? false,
-      createdAt: DateTime.tryParse(map['created_at']?.toString() ?? '') ?? DateTime.now(),
-      updatedAt: DateTime.tryParse(map['updated_at']?.toString() ?? '') ?? DateTime.now(),
+      createdAt:
+          DateTime.tryParse(map['created_at']?.toString() ?? '') ??
+          DateTime.now(),
+      updatedAt:
+          DateTime.tryParse(map['updated_at']?.toString() ?? '') ??
+          DateTime.now(),
       lessonId: map['lesson_id'] as int?,
       lessonName: (map['lessons'] is Map)
           ? map['lessons']['name'] as String?
@@ -48,17 +52,20 @@ class Unit {
   }
 
   Map<String, dynamic> toMap() {
-    // İlişki tablosu kullanıldığı için toMap'te gradeId göndermeye gerek yok.
-    return {'title': title, 'description': description, 'lesson_id': lessonId};
+    return {
+      'title': title,
+      'description': description,
+      'lesson_id': lessonId,
+      'grade_id': gradeId,
+    };
   }
 
   // Add equals and hashCode to allow for object comparison in Sets.
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
-    return other is Unit &&
-      other.id == id;
+
+    return other is Unit && other.id == id;
   }
 
   @override

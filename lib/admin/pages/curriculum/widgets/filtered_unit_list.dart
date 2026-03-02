@@ -68,8 +68,11 @@ class _FilteredUnitListState extends State<FilteredUnitList> {
 
     try {
       final response = await supabase.rpc(
-        'get_units_by_lesson_and_grade',
-        params: {'lid': lessonIdInt, 'gid': gradeIdInt},
+        'get_units_for_lesson_and_grade',
+        params: {
+          'lesson_id_param': lessonIdInt,
+          'grade_id_param': gradeIdInt,
+        },
       );
 
       final units = (response as List)

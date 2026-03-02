@@ -1,4 +1,5 @@
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -48,12 +49,9 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
           .toList();
 
       final unitGradeRaw = await _client
-          .from('unit_grades')
-          .select(
-            'grade_id, unit_id, start_week, end_week, '
-            'units!inner(id, title, lesson_id, order_no, is_active)',
-          )
-          .eq('units.is_active', true);
+          .from('units')
+          .select('id, title, lesson_id, order_no, is_active, grade_id')
+          .eq('is_active', true);
 
       final unitAssignments = (unitGradeRaw as List)
           .whereType<Map<String, dynamic>>()
@@ -106,7 +104,9 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
         if (activeOutcomeIds.isNotEmpty) {
           final contentOutcomeRaw = await _client
               .from('topic_content_outcomes')
-              .select('outcome_id, topic_contents!inner(topic_id, is_published)')
+              .select(
+                'outcome_id, topic_contents!inner(topic_id, is_published)',
+              )
               .inFilter('outcome_id', activeOutcomeIds.toList());
 
           for (final row
@@ -142,27 +142,12 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
       }
 
       final statuses = <_LessonWeekStatus>[];
-      final pairByGradeLessonKey = <String, _LessonGradePair>{
-        for (final pair in lessonGradePairs)
-          '${pair.gradeId}-${pair.lessonId}': pair,
-      };
-
-      for (final unit in unitAssignments) {
-        final pair = pairByGradeLessonKey['${unit.gradeId}-${unit.lessonId}'];
-        if (pair == null) continue;
-        final unitTopics = topicsByUnit[unit.unitId] ?? const <_TopicRow>[];
-        // içerik güncelle akışı kaldırıldı, topic seçenek listesine gerek yok
-      }
 
       for (final pair in lessonGradePairs) {
         final allRelatedUnits = unitAssignments.where(
           (u) => u.gradeId == pair.gradeId && u.lessonId == pair.lessonId,
         );
-        final weekRelatedUnits = allRelatedUnits.where(
-          (u) =>
-              (u.startWeek == null || u.startWeek! <= _selectedWeek) &&
-              (u.endWeek == null || u.endWeek! >= _selectedWeek),
-        );
+        final weekRelatedUnits = allRelatedUnits;
 
         final topicSetInWeek = <int>{};
         for (final unit in weekRelatedUnits) {
@@ -172,10 +157,12 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
           }
         }
 
-        final hasPublishedContent =
-            topicSetInWeek.any(topicsWithPublishedContent.contains);
-        final hasDraftContent =
-            topicSetInWeek.any(topicsWithDraftContent.contains);
+        final hasPublishedContent = topicSetInWeek.any(
+          topicsWithPublishedContent.contains,
+        );
+        final hasDraftContent = topicSetInWeek.any(
+          topicsWithDraftContent.contains,
+        );
         final hasContent = hasPublishedContent || hasDraftContent;
         final questionIds = <int>{};
         for (final topicId in topicSetInWeek) {
@@ -289,11 +276,12 @@ class _ContentOverviewPageState extends State<ContentOverviewPage> {
       );
     }
 
-    final gradeNames = _statuses
-        .map((s) => (order: s.gradeOrder, name: s.gradeName))
-        .toSet()
-        .toList()
-      ..sort((a, b) => a.order.compareTo(b.order));
+    final gradeNames =
+        _statuses
+            .map((s) => (order: s.gradeOrder, name: s.gradeName))
+            .toSet()
+            .toList()
+          ..sort((a, b) => a.order.compareTo(b.order));
 
     final filteredStatuses = _selectedGradeFilter == 'Tümü'
         ? _statuses
@@ -354,18 +342,21 @@ class _GradeFilterBar extends StatelessWidget {
           const SizedBox(height: 8),
           SizedBox(
             height: 36,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: grades.length,
-              separatorBuilder: (_, index) => const SizedBox(width: 6),
-              itemBuilder: (context, index) {
-                final grade = grades[index];
-                return ChoiceChip(
-                  label: Text(grade),
-                  selected: grade == selectedGrade,
-                  onSelected: (_) => onSelected(grade),
-                );
-              },
+            child: ScrollConfiguration(
+              behavior: const _DesktopFriendlyScrollBehavior(),
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: grades.length,
+                separatorBuilder: (_, index) => const SizedBox(width: 6),
+                itemBuilder: (context, index) {
+                  final grade = grades[index];
+                  return ChoiceChip(
+                    label: Text(grade),
+                    selected: grade == selectedGrade,
+                    onSelected: (_) => onSelected(grade),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -401,18 +392,21 @@ class _WeekPicker extends StatelessWidget {
           const SizedBox(height: 8),
           SizedBox(
             height: 38,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: 40,
-              separatorBuilder: (context, index) => const SizedBox(width: 6),
-              itemBuilder: (context, index) {
-                final week = index + 1;
-                return ChoiceChip(
-                  label: Text('$week'),
-                  selected: week == selectedWeek,
-                  onSelected: (_) => onWeekSelected(week),
-                );
-              },
+            child: ScrollConfiguration(
+              behavior: const _DesktopFriendlyScrollBehavior(),
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: 40,
+                separatorBuilder: (context, index) => const SizedBox(width: 6),
+                itemBuilder: (context, index) {
+                  final week = index + 1;
+                  return ChoiceChip(
+                    label: Text('$week'),
+                    selected: week == selectedWeek,
+                    onSelected: (_) => onWeekSelected(week),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -666,8 +660,8 @@ class _WeeklyContentStatusCard extends StatelessWidget {
                                     Text(
                                       lesson.hasContent
                                           ? (lesson.hasDraftContent
-                                              ? 'Taslak'
-                                              : 'Var')
+                                                ? 'Taslak'
+                                                : 'Var')
                                           : 'Yok',
                                       style: TextStyle(
                                         color: contentColor,
@@ -701,6 +695,19 @@ class _WeeklyContentStatusCard extends StatelessWidget {
       ],
     );
   }
+}
+
+class _DesktopFriendlyScrollBehavior extends MaterialScrollBehavior {
+  const _DesktopFriendlyScrollBehavior();
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+    PointerDeviceKind.stylus,
+    PointerDeviceKind.unknown,
+  };
 }
 
 class _LessonGradePair {
@@ -742,8 +749,6 @@ class _UnitAssignment {
   final int lessonId;
   final String unitTitle;
   final int unitOrder;
-  final int? startWeek;
-  final int? endWeek;
 
   const _UnitAssignment({
     required this.gradeId,
@@ -751,20 +756,15 @@ class _UnitAssignment {
     required this.lessonId,
     required this.unitTitle,
     required this.unitOrder,
-    required this.startWeek,
-    required this.endWeek,
   });
 
   factory _UnitAssignment.fromRow(Map<String, dynamic> row) {
-    final unitMap = (row['units'] as Map?)?.cast<String, dynamic>() ?? const {};
     return _UnitAssignment(
       gradeId: _toInt(row['grade_id']) ?? 0,
-      unitId: _toInt(row['unit_id']) ?? _toInt(unitMap['id']) ?? 0,
-      lessonId: _toInt(unitMap['lesson_id']) ?? 0,
-      unitTitle: (unitMap['title'] as String? ?? '').trim(),
-      unitOrder: _toInt(unitMap['order_no']) ?? 0,
-      startWeek: _toInt(row['start_week']),
-      endWeek: _toInt(row['end_week']),
+      unitId: _toInt(row['id']) ?? 0,
+      lessonId: _toInt(row['lesson_id']) ?? 0,
+      unitTitle: (row['title'] as String? ?? '').trim(),
+      unitOrder: _toInt(row['order_no']) ?? 0,
     );
   }
 }

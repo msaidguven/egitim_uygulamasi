@@ -120,10 +120,9 @@ BEGIN
 
     -- 3. Eğer unit_id varsa, lesson_id ve grade_id'yi bul.
     IF p_unit_id IS NOT NULL THEN
-        SELECT u.lesson_id, ug.grade_id
+        SELECT u.lesson_id, u.grade_id
         INTO v_lesson_id, v_grade_id
         FROM public.units u
-        LEFT JOIN public.unit_grades ug ON u.id = ug.unit_id
         WHERE u.id = p_unit_id
         LIMIT 1;
     END IF;
@@ -218,17 +217,17 @@ BEGIN
   -- B. Lesson Grades question_count güncelle
   UPDATE public.lesson_grades lg
   SET question_count = question_count + modifier
-  FROM public.unit_grades ug
-  WHERE ug.unit_id = v_unit_id
-    AND ug.grade_id = lg.grade_id
+  FROM public.units u
+  WHERE u.id = v_unit_id
+    AND lg.grade_id = u.grade_id
     AND lg.lesson_id = v_lesson_id;
 
   -- C. Grades (Sınıf Toplamı) question_count güncelle
   UPDATE public.grades g
   SET question_count = question_count + modifier
-  FROM public.unit_grades ug
-  WHERE ug.unit_id = v_unit_id
-    AND ug.grade_id = g.id;
+  FROM public.units u
+  WHERE u.id = v_unit_id
+    AND u.grade_id = g.id;
 
   -- D. Week question_count güncelle (Haftalık Program)
   IF rec.curriculum_week IS NOT NULL THEN

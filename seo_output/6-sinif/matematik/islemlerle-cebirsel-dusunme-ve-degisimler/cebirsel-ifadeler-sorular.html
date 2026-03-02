@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cebirsel İfadeler: Test Soruları - İşlemlerle Cebirsel...</title>
+  <meta name="description" content="12 soru ile Cebirsel İfadeler: konusunu pekiştir ve başarını ölç. 6. Sınıf Matematik dersi İşlemlerle Cebirsel Düşünme Ve Değişimler ünitesi online...">
+  <meta name="keywords" content="Cebirsel İfadeler: test, Cebirsel İfadeler: sorular, Matematik quiz, 6. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Cebirsel İfadeler: Test Soruları - İşlemlerle Cebirsel...">
+  <meta property="og:description" content="12 soru ile Cebirsel İfadeler: konusunu pekiştir ve başarını ölç. 6. Sınıf Matematik dersi İşlemlerle Cebirsel Düşünme Ve Değişimler ünitesi online...">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/6-sinif/">6. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/matematik/">Matematik</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/matematik/islemlerle-cebirsel-dusunme-ve-degisimler/">İşlemlerle Cebirsel Düşünme Ve Değişimler</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Cebirsel İfadeler: Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Cebirsel İfadeler: - Test Soruları</h1>
+      <div class="meta">12 Soru • 6. Sınıf Matematik</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/6-sinif/matematik/islemlerle-cebirsel-dusunme-ve-degisimler/cebirsel-ifadeler/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">12</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="2501" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir kırtasiyede kalemin tanesi 8 TL’dir. Ali x tane kalem alırsa ödeyeceği toplam ücret hangi cebirsel ifade ile gösterilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4724" 
+                  data-correct="true"
+                  onclick="selectChoice(2501, 4724, true)">
+            <span class="choice-letter">A</span>
+            <span>8x</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4725" 
+                  data-correct="false"
+                  onclick="selectChoice(2501, 4725, false)">
+            <span class="choice-letter">B</span>
+            <span>8 + x</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4726" 
+                  data-correct="false"
+                  onclick="selectChoice(2501, 4726, false)">
+            <span class="choice-letter">C</span>
+            <span>x - 8</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4727" 
+                  data-correct="false"
+                  onclick="selectChoice(2501, 4727, false)">
+            <span class="choice-letter">D</span>
+            <span>8 ÷ x</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2501">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bir kalem 8 TL ise x tane kalemin ücreti 8 ile x’in çarpılmasıyla bulunur. Toplam ücret 8x olur. Toplama yapılmaz çünkü kalem sayısı kadar tekrar eden 8 TL söz konusudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2504" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">3a ifadesi, 3 ile a’nın toplamını ifade eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4736" 
+                  data-correct="false"
+                  onclick="selectChoice(2504, 4736, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4737" 
+                  data-correct="true"
+                  onclick="selectChoice(2504, 4737, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2504">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">3a ifadesi 3 ile a’nın çarpımını gösterir. Toplama işlemi olsaydı 3 + a şeklinde yazılırdı. Bu soru çarpma ile toplama arasındaki kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2505" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">x + 5 ifadesinde x değişkendir ve farklı değerler alabilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4738" 
+                  data-correct="true"
+                  onclick="selectChoice(2505, 4738, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4739" 
+                  data-correct="false"
+                  onclick="selectChoice(2505, 4739, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2505">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Cebirsel ifadelerde harfler değişkeni temsil eder ve farklı sayısal değerler alabilir. Bu nedenle ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2511" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir kumbarada başlangıçta 20 TL vardır. Kumbaraya her gün x TL atılmaktadır. 5 günün sonunda kumbaradaki toplam para miktarını gösteren cebirsel ifade aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4744" 
+                  data-correct="true"
+                  onclick="selectChoice(2511, 4744, true)">
+            <span class="choice-letter">A</span>
+            <span>20 + 5x</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4745" 
+                  data-correct="false"
+                  onclick="selectChoice(2511, 4745, false)">
+            <span class="choice-letter">B</span>
+            <span>20x + 5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4746" 
+                  data-correct="false"
+                  onclick="selectChoice(2511, 4746, false)">
+            <span class="choice-letter">C</span>
+            <span>25x</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4747" 
+                  data-correct="false"
+                  onclick="selectChoice(2511, 4747, false)">
+            <span class="choice-letter">D</span>
+            <span>20 - 5x</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2511">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Başlangıçtaki sabit miktar 20 TL'dir. Her gün x TL atıldığına göre 5 günde 5x TL birikir. Toplam miktar bu ikisinin toplamı olan 20 + 5x olur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2502" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir sayının 3 fazlasının 2 katı ifadesi aşağıdakilerden hangisidir? (Kavram yanılgısına dikkat ediniz.)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4728" 
+                  data-correct="true"
+                  onclick="selectChoice(2502, 4728, true)">
+            <span class="choice-letter">A</span>
+            <span>2(x + 3)</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4729" 
+                  data-correct="false"
+                  onclick="selectChoice(2502, 4729, false)">
+            <span class="choice-letter">B</span>
+            <span>2x + 3</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4730" 
+                  data-correct="false"
+                  onclick="selectChoice(2502, 4730, false)">
+            <span class="choice-letter">C</span>
+            <span>x + 6</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4731" 
+                  data-correct="false"
+                  onclick="selectChoice(2502, 4731, false)">
+            <span class="choice-letter">D</span>
+            <span>3(x + 2)</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2502">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bir sayı x ise 3 fazlası x + 3’tür. Bunun 2 katı 2(x + 3) olur. 2x + 3 ifadesi yaygın bir kavram yanılgısıdır çünkü yalnızca x’in 2 katını alır, 3’ü kapsamaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2503" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir taksi açılış ücreti 20 TL ve kilometre başına 5 TL almaktadır. Gidilen yol x km ise toplam ücret hangi ifade ile gösterilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4732" 
+                  data-correct="true"
+                  onclick="selectChoice(2503, 4732, true)">
+            <span class="choice-letter">A</span>
+            <span>20 + 5x</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4733" 
+                  data-correct="false"
+                  onclick="selectChoice(2503, 4733, false)">
+            <span class="choice-letter">B</span>
+            <span>25x</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4734" 
+                  data-correct="false"
+                  onclick="selectChoice(2503, 4734, false)">
+            <span class="choice-letter">C</span>
+            <span>20x + 5</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4735" 
+                  data-correct="false"
+                  onclick="selectChoice(2503, 4735, false)">
+            <span class="choice-letter">D</span>
+            <span>5 + 20x</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2503">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Toplam ücret sabit 20 TL ile kilometre başına 5 TL’nin toplamıdır. x km için ücret 20 + 5x olur. Hem sabit hem değişken ücret birlikte düşünülmelidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2516" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: a + a + a işleminin sonucu aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4754" 
+                  data-correct="true"
+                  onclick="selectChoice(2516, 4754, true)">
+            <span class="choice-letter">A</span>
+            <span>3a</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4755" 
+                  data-correct="false"
+                  onclick="selectChoice(2516, 4755, false)">
+            <span class="choice-letter">B</span>
+            <span>a^3</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4756" 
+                  data-correct="false"
+                  onclick="selectChoice(2516, 4756, false)">
+            <span class="choice-letter">C</span>
+            <span>3+a</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4757" 
+                  data-correct="false"
+                  onclick="selectChoice(2516, 4757, false)">
+            <span class="choice-letter">D</span>
+            <span>aaa</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2516">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Aynı değişkenin toplanması, o değişkenin adedi ile çarpılması demektir. 3 tane a'nın toplamı 3a yapar. a küp ise a'nın kendisiyle 3 kez çarpılmasıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2517" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">2x + 5 cebirsel ifadesinde, x değişkeninin değeri arttıkça cebirsel ifadenin değeri de her zaman artar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4758" 
+                  data-correct="true"
+                  onclick="selectChoice(2517, 4758, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4759" 
+                  data-correct="false"
+                  onclick="selectChoice(2517, 4759, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2517">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İfadede x pozitif bir katsayıya (2) sahip olduğu için x büyüdükçe sonuç da büyür.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2512" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Cebirsel ifadelerde kullanılan değişken (harf), her zaman sadece tek bir sabit sayıyı temsil eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4748" 
+                  data-correct="false"
+                  onclick="selectChoice(2512, 4748, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4749" 
+                  data-correct="true"
+                  onclick="selectChoice(2512, 4749, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2512">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Değişkenler, durumun gerektirdiği farklı sayısal değerleri alabilen nicelikleri temsil ederler; bu yüzden 'değişken' olarak adlandırılırlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2515" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir taksi açılışta 15 TL ve gidilen her kilometre için 8 TL almaktadır. Gidilen yol (km) ile ödenecek toplam tutar (TL) arasındaki ilişkiyi gösteren tablo aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4750" 
+                  data-correct="true"
+                  onclick="selectChoice(2515, 4750, true)">
+            <span class="choice-letter">A</span>
+            <span>1 km: 23 TL, 2 km: 31 TL, 3 km: 39 TL</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4751" 
+                  data-correct="false"
+                  onclick="selectChoice(2515, 4751, false)">
+            <span class="choice-letter">B</span>
+            <span>1 km: 15 TL, 2 km: 23 TL, 3 km: 31 TL</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4752" 
+                  data-correct="false"
+                  onclick="selectChoice(2515, 4752, false)">
+            <span class="choice-letter">C</span>
+            <span>1 km: 8 TL, 2 km: 16 TL, 3 km: 24 TL</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4753" 
+                  data-correct="false"
+                  onclick="selectChoice(2515, 4753, false)">
+            <span class="choice-letter">D</span>
+            <span>1 km: 23 TL, 2 km: 46 TL, 3 km: 69 TL</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2515">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">1 km için 15+8=23, 2 km için 15+16=31, 3 km için 15+24=39 olmalıdır. Her adımda artış miktarı 8'dir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2510" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, n sayısının her zaman çift olduğunu iddia ediyor. Bu iddiayı test etmek için aşağıdakilerden hangisi en uygun yöntemdir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4740" 
+                  data-correct="true"
+                  onclick="selectChoice(2510, 4740, true)">
+            <span class="choice-letter">A</span>
+            <span>n yerine farklı tek ve çift sayılar yazarak sonucu incelemek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4741" 
+                  data-correct="false"
+                  onclick="selectChoice(2510, 4741, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece n = 2 için kontrol etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4742" 
+                  data-correct="false"
+                  onclick="selectChoice(2510, 4742, false)">
+            <span class="choice-letter">C</span>
+            <span>n yerine 0 yazmak ve başka değer denememek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4743" 
+                  data-correct="false"
+                  onclick="selectChoice(2510, 4743, false)">
+            <span class="choice-letter">D</span>
+            <span>n harf olduğu için kontrol etmemek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2510">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bir genellemeyi test etmek için farklı değerler verilerek sonuç incelenmelidir. n yerine hem tek hem çift sayılar yazılarak ifade sınanmalıdır. Bu analiz düzeyinde bir sorudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2520" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Sorusu: Bir fidanın boyu 40 cm'dir. Fidan her ay 3 cm uzamaktadır. x geçen ay sayısını temsil etmek üzere, fidanın boyunun 100 cm olması için gereken durumu ifade eden eşitlik aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4760" 
+                  data-correct="true"
+                  onclick="selectChoice(2520, 4760, true)">
+            <span class="choice-letter">A</span>
+            <span>40 + 3x = 100</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4761" 
+                  data-correct="false"
+                  onclick="selectChoice(2520, 4761, false)">
+            <span class="choice-letter">B</span>
+            <span>40x + 3 = 100</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4762" 
+                  data-correct="false"
+                  onclick="selectChoice(2520, 4762, false)">
+            <span class="choice-letter">C</span>
+            <span>43x = 100</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4763" 
+                  data-correct="false"
+                  onclick="selectChoice(2520, 4763, false)">
+            <span class="choice-letter">D</span>
+            <span>100 - 40 = 3 + x</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2520">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Başlangıç 40 cm, aylık artış 3x cm'dir. Toplam boy 40 + 3x olur. Hedef 100 cm olduğu için denklem 40 + 3x = 100 şeklinde kurulur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Cebirsel İfadeler: test soruları - 6. Sınıf Matematik dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // Yanlış seçimi işaretle
+        if (btn.dataset.choiceId == choiceId && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

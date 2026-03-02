@@ -784,6 +784,55 @@ class _QuestionsScreenState extends ConsumerState<QuestionsScreen> {
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
         const SizedBox(width: 16),
+        if (viewModel.currentStreak > 1)
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.orange.shade400, Colors.deepOrange],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orange.withOpacity(0.5),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  )
+                ],
+              ),
+              child: Row(
+                children: [
+                  const Text('🔥', style: TextStyle(fontSize: 16)),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${viewModel.currentStreak} Combo!',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ).animate(key: ValueKey(viewModel.currentStreak))
+              .scale(
+                begin: const Offset(0.8, 0.8),
+                end: const Offset(1.1, 1.1),
+                curve: Curves.elasticOut,
+                duration: 600.ms,
+              )
+              .then()
+              .scale(
+                begin: const Offset(1.1, 1.1),
+                end: const Offset(1, 1),
+                curve: Curves.easeOut,
+                duration: 200.ms,
+              ),
+          ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(

@@ -588,10 +588,10 @@ class OutcomesViewModel extends ChangeNotifier {
     try {
       final unitsResponse = await Supabase.instance.client
           .from('units')
-          .select('id, title, order_no, unit_grades!inner(grade_id)')
+          .select('id, title, order_no, grade_id')
           .eq('lesson_id', lessonId)
           .eq('is_active', true)
-          .eq('unit_grades.grade_id', gradeId)
+          .eq('grade_id', gradeId)
           .order('order_no', ascending: true);
 
       final units = (unitsResponse as List)

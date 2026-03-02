@@ -4,6 +4,7 @@ import 'package:egitim_uygulamasi/models/profile_model.dart';
 import 'package:egitim_uygulamasi/screens/anasinifi/compare_page.dart';
 import 'package:egitim_uygulamasi/screens/anasinifi/number_composition_page.dart';
 import 'package:egitim_uygulamasi/screens/deneme/question_test_page.dart';
+import 'package:egitim_uygulamasi/screens/home/home_v2_screen.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -251,7 +252,14 @@ class _HomeHeaderState extends State<HomeHeader>
 
     return PopupMenuButton<String?>(
       onSelected: (String? value) {
-        if (value == 'show_games') {
+        if (value == 'home_v2') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeV2Screen(profile: widget.profile),
+            ),
+          );
+        } else if (value == 'show_games') {
           _showGameSelectionDialog(context);
         } else if (value == 'question_test_page') {
           Navigator.push(
@@ -264,6 +272,24 @@ class _HomeHeaderState extends State<HomeHeader>
       },
       itemBuilder: (context) {
         return <PopupMenuEntry<String?>>[
+          PopupMenuItem<String?>(
+            value: 'home_v2',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.home_outlined,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ana Sayfa V2 (Test)',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
+              ],
+            ),
+          ),
+          const PopupMenuDivider(),
           ...roles.map((roleData) {
             final isSelected =
                 (widget.impersonatedRole ?? 'admin') == roleData['role'];

@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FB.5.5.1.Maddenin Tanecikli Yapısı Test Soruları -...</title>
+  <meta name="description" content="18 soru ile FB.5.5.1.Maddenin Tanecikli Yapısı konusunu pekiştir ve başarını ölç. 5. Sınıf Fen Bilimleri dersi Maddenin Doğası ünitesi online alıştırma.">
+  <meta name="keywords" content="FB.5.5.1.Maddenin Tanecikli Yapısı test, FB.5.5.1.Maddenin Tanecikli Yapısı sorular, Fen Bilimleri quiz, 5. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="FB.5.5.1.Maddenin Tanecikli Yapısı Test Soruları -...">
+  <meta property="og:description" content="18 soru ile FB.5.5.1.Maddenin Tanecikli Yapısı konusunu pekiştir ve başarını ölç. 5. Sınıf Fen Bilimleri dersi Maddenin Doğası ünitesi online alıştırma.">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/fen-bilimleri/">Fen Bilimleri</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/fen-bilimleri/maddenin-dogasi/">Maddenin Doğası</a>
+          
+          <span>›</span>
+        
+          
+            <strong>FB.5.5.1.Maddenin Tanecikli Yapısı Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 FB.5.5.1.Maddenin Tanecikli Yapısı - Test Soruları</h1>
+      <div class="meta">18 Soru • 5. Sınıf Fen Bilimleri</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/5-sinif/fen-bilimleri/maddenin-dogasi/fb-5-5-1-maddenin-tanecikli-yapisi/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="2372" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Katı maddelerin tanecikleri arasındaki boşluk, sıvı ve gazlara göre çok daha fazladır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4476" 
+                  data-correct="false"
+                  onclick="selectChoice(2372, 4476, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4477" 
+                  data-correct="true"
+                  onclick="selectChoice(2372, 4477, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2372">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Katılar tanecikleri birbirine en yakın, boşluğun ise en az olduğu fiziksel haldir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2352" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi katı maddelerin tanecikli yapısı ile ilgili doğru bir ifadedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4438" 
+                  data-correct="false"
+                  onclick="selectChoice(2352, 4438, false)">
+            <span class="choice-letter">A</span>
+            <span>Tanecikleri tamamen hareketsizdir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4439" 
+                  data-correct="false"
+                  onclick="selectChoice(2352, 4439, false)">
+            <span class="choice-letter">B</span>
+            <span>Tanecikleri arasında çok boşluk vardır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4440" 
+                  data-correct="true"
+                  onclick="selectChoice(2352, 4440, true)">
+            <span class="choice-letter">C</span>
+            <span>Tanecikleri belirli konumlarda titreşim hareketi yapar.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4441" 
+                  data-correct="false"
+                  onclick="selectChoice(2352, 4441, false)">
+            <span class="choice-letter">D</span>
+            <span>Tanecikleri düzensiz ve çok uzaktır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2352">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Katılarda tanecikler birbirine çok yakındır ve belirli konumlarda titreşim hareketi yapar. Tamamen hareketsiz değildirler. Bu soru yaygın bir kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2354" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Sıvı maddelerin tanecikleri katılara göre daha hareketlidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4446" 
+                  data-correct="true"
+                  onclick="selectChoice(2354, 4446, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4447" 
+                  data-correct="false"
+                  onclick="selectChoice(2354, 4447, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2354">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Sıvılarda tanecikler katılara göre daha serbest hareket eder ve yer değiştirebilir. Bu nedenle sıvılar akışkandır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2361" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir bardak suya şeker attığımızda şeker erir ve gözden kaybolur. Bu olay, maddelerin hangi özelliğini gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4454" 
+                  data-correct="true"
+                  onclick="selectChoice(2361, 4454, true)">
+            <span class="choice-letter">A</span>
+            <span>Tanecikli yapı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4455" 
+                  data-correct="false"
+                  onclick="selectChoice(2361, 4455, false)">
+            <span class="choice-letter">B</span>
+            <span>Sıvı hali</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4456" 
+                  data-correct="false"
+                  onclick="selectChoice(2361, 4456, false)">
+            <span class="choice-letter">C</span>
+            <span>Renk değişikliği</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4457" 
+                  data-correct="false"
+                  onclick="selectChoice(2361, 4457, false)">
+            <span class="choice-letter">D</span>
+            <span>Sıcaklık artışı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2361">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Şekerin erimesi, maddelerin tanecikli yapısını gösterir çünkü şeker tanecikleri su tanecikleri arasında dağılır. Doğru cevap A'dır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2362" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Tüm maddeler kesintisiz bir yapıya sahiptir ve içinde boşluk yoktur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4458" 
+                  data-correct="false"
+                  onclick="selectChoice(2362, 4458, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4459" 
+                  data-correct="true"
+                  onclick="selectChoice(2362, 4459, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2362">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü maddeler tanecikli ve boşluklu yapıdadır; tanecikler arasında boşluklar bulunur. Bu, kavram yanılgısını ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2371" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir miktar kolonyanın odaya döküldüğünde kokusunun her yere yayılması, maddenin hangi özelliğini en iyi kanıtlar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4472" 
+                  data-correct="true"
+                  onclick="selectChoice(2371, 4472, true)">
+            <span class="choice-letter">A</span>
+            <span>Taneciklerin hareketli yapıda olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4473" 
+                  data-correct="false"
+                  onclick="selectChoice(2371, 4473, false)">
+            <span class="choice-letter">B</span>
+            <span>Maddenin tek parça (bütünsel) yapısı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4474" 
+                  data-correct="false"
+                  onclick="selectChoice(2371, 4474, false)">
+            <span class="choice-letter">C</span>
+            <span>Taneciklerin sadece titreşim yapması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4475" 
+                  data-correct="false"
+                  onclick="selectChoice(2371, 4475, false)">
+            <span class="choice-letter">D</span>
+            <span>Maddenin renginin olmaması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2371">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kokunun yayılması, maddeyi oluşturan taneciklerin hareketli olduğunu ve boşluklar sayesinde ortama dağıldığını gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2370" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Maddelerin tanecikli yapısı, katı, sıvı ve gaz hallerinde aynı şekilde hareket eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4470" 
+                  data-correct="false"
+                  onclick="selectChoice(2370, 4470, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4471" 
+                  data-correct="true"
+                  onclick="selectChoice(2370, 4471, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2370">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü her halde tanecik hareketi farklıdır: katıda titreşim, sıvıda akıcı, gazda serbest. Kazanımlara uygundur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2364" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir balonun içindeki havayı sıktığımızda balon küçülür. Bu durum, gaz maddelerin hangi özelliğini kanıtlar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4460" 
+                  data-correct="false"
+                  onclick="selectChoice(2364, 4460, false)">
+            <span class="choice-letter">A</span>
+            <span>Tanecikli olmayan yapı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4461" 
+                  data-correct="false"
+                  onclick="selectChoice(2364, 4461, false)">
+            <span class="choice-letter">B</span>
+            <span>Hareket etmeyen tanecikler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4462" 
+                  data-correct="true"
+                  onclick="selectChoice(2364, 4462, true)">
+            <span class="choice-letter">C</span>
+            <span>Boşluklu yapı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4463" 
+                  data-correct="false"
+                  onclick="selectChoice(2364, 4463, false)">
+            <span class="choice-letter">D</span>
+            <span>Sabit hacim</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2364">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Balonun küçülmesi, gazların boşluklu yapısını gösterir çünkü tanecikler arasında büyük boşluklar vardır ve sıkıştırılabilir. Doğru cevap C'dir. Günlük hayat bağlantılıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2355" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Gaz maddelerin tanecikleri arasında hiç boşluk yoktur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4448" 
+                  data-correct="false"
+                  onclick="selectChoice(2355, 4448, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4449" 
+                  data-correct="true"
+                  onclick="selectChoice(2355, 4449, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2355">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Gazlarda tanecikler arası boşluk çok fazladır. Bu nedenle gazlar sıkıştırılabilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2376" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir demir anahtarın tanecikleri, anahtar masada dururken bile sürekli hareket halindedir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4482" 
+                  data-correct="true"
+                  onclick="selectChoice(2376, 4482, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4483" 
+                  data-correct="false"
+                  onclick="selectChoice(2376, 4483, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2376">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Tüm maddelerin tanecikleri hareketlidir; katı tanecikleri duruyormuş gibi görünse de oldukları yerde titreşim yaparlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2377" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir kapalı kapta bulunan sıvı, bir kaba aktarıldığında kabın şeklini alıyor fakat hacmi değişmiyor. Bu durumun tanecik boyutuyla açıklaması aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4484" 
+                  data-correct="true"
+                  onclick="selectChoice(2377, 4484, true)">
+            <span class="choice-letter">A</span>
+            <span>Taneciklerin öteleme hareketi yapıp birbiri üzerinden kayması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4485" 
+                  data-correct="false"
+                  onclick="selectChoice(2377, 4485, false)">
+            <span class="choice-letter">B</span>
+            <span>Tanecikler arasındaki boşluğun gazlardan fazla olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4486" 
+                  data-correct="false"
+                  onclick="selectChoice(2377, 4486, false)">
+            <span class="choice-letter">C</span>
+            <span>Taneciklerin sadece titreşim hareketi yapması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4487" 
+                  data-correct="false"
+                  onclick="selectChoice(2377, 4487, false)">
+            <span class="choice-letter">D</span>
+            <span>Sıvı taneciklerinin kabın çeperlerine çarpmaması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2377">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıvı tanecikleri birbirine yakın olduğu için sıkıştırılamazlar (hacim korunur) ama birbirleri üzerinden kayabildikleri için akışkandırlar (şekil değişir).</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2351" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, şırınganın ucunu kapatıp içindeki havayı sıkıştırdığında hacmin azaldığını gözlemliyor. Bu durum maddenin hangi özelliğini gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4434" 
+                  data-correct="true"
+                  onclick="selectChoice(2351, 4434, true)">
+            <span class="choice-letter">A</span>
+            <span>Tanecikler arasında boşluk olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4435" 
+                  data-correct="false"
+                  onclick="selectChoice(2351, 4435, false)">
+            <span class="choice-letter">B</span>
+            <span>Taneciklerin sabit olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4436" 
+                  data-correct="false"
+                  onclick="selectChoice(2351, 4436, false)">
+            <span class="choice-letter">C</span>
+            <span>Gazların taneciksiz olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4437" 
+                  data-correct="false"
+                  onclick="selectChoice(2351, 4437, false)">
+            <span class="choice-letter">D</span>
+            <span>Gazların hareket etmemesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2351">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Şırınga deneyinde hava sıkıştırılabildiğine göre tanecikler arasında boşluk vardır. Bu, gazların tanecikli ve boşluklu yapıda olduğunu gösterir. Eğer tanecikler arasında boşluk olmasaydı hacim azalmazdı.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2380" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Deniz, bir balonu şişirip ağzını bağlıyor. Balonun her noktasının gergin ve aynı şişkinlikte olduğunu gözlemliyor. Bu durum gaz taneciklerinin hangi özelliği ile ilgilidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4488" 
+                  data-correct="true"
+                  onclick="selectChoice(2380, 4488, true)">
+            <span class="choice-letter">A</span>
+            <span>Taneciklerin her yöne hareket ederek her yüzeye çarpması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4489" 
+                  data-correct="false"
+                  onclick="selectChoice(2380, 4489, false)">
+            <span class="choice-letter">B</span>
+            <span>Gaz taneciklerinin çok yavaş hareket etmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4490" 
+                  data-correct="false"
+                  onclick="selectChoice(2380, 4490, false)">
+            <span class="choice-letter">C</span>
+            <span>Tanecikler arasında hiç boşluk olmaması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4491" 
+                  data-correct="false"
+                  onclick="selectChoice(2380, 4491, false)">
+            <span class="choice-letter">D</span>
+            <span>Gazların sadece aşağı yönde baskı yapması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2380">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Gaz tanecikleri bulundukları kabın her yerine homojen yayılır ve sürekli hareket ederek çarptıkları yüzeylere her yönde basınç uygular.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2353" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Oda spreyinin sıkıldıktan sonra tüm odaya yayılması, gazların hangi özelliği ile açıklanır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4442" 
+                  data-correct="true"
+                  onclick="selectChoice(2353, 4442, true)">
+            <span class="choice-letter">A</span>
+            <span>Taneciklerinin sürekli ve hızlı hareket etmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4443" 
+                  data-correct="false"
+                  onclick="selectChoice(2353, 4443, false)">
+            <span class="choice-letter">B</span>
+            <span>Taneciklerinin sabit olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4444" 
+                  data-correct="false"
+                  onclick="selectChoice(2353, 4444, false)">
+            <span class="choice-letter">C</span>
+            <span>Taneciklerinin hiç boşluk içermemesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4445" 
+                  data-correct="false"
+                  onclick="selectChoice(2353, 4445, false)">
+            <span class="choice-letter">D</span>
+            <span>Gazların yalnızca yukarı doğru hareket etmesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2353">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Oda spreyi gaz hâlinde ortama yayılır. Gaz tanecikleri sürekli ve hızlı hareket eder. Bu hareketlilik sayesinde kısa sürede tüm ortama dağılır. Bu soru analiz düzeyindedir çünkü günlük yaşam olayı yorumlanmaktadır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2360" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci 'Sıvılar sıkıştırılamaz çünkü tanecikleri arasında hiç boşluk yoktur.' diyor. Bu ifadeye göre doğru değerlendirme hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4450" 
+                  data-correct="false"
+                  onclick="selectChoice(2360, 4450, false)">
+            <span class="choice-letter">A</span>
+            <span>Öğrenci tamamen doğrudur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4451" 
+                  data-correct="true"
+                  onclick="selectChoice(2360, 4451, true)">
+            <span class="choice-letter">B</span>
+            <span>Öğrenci yanlıştır çünkü sıvı tanecikleri arasında az da olsa boşluk vardır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4452" 
+                  data-correct="false"
+                  onclick="selectChoice(2360, 4452, false)">
+            <span class="choice-letter">C</span>
+            <span>Sıvılar gazlardan daha fazla boşluk içerir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4453" 
+                  data-correct="false"
+                  onclick="selectChoice(2360, 4453, false)">
+            <span class="choice-letter">D</span>
+            <span>Sıvıların tanecikleri hareketsizdir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2360">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıvılar çok az da olsa sıkıştırılabilir çünkü tanecikleri arasında az miktarda boşluk vardır. 'Hiç boşluk yoktur' ifadesi yanlıştır. Bu soru kavram yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2366" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sıvı maddelerde tanecikler arasında hiç boşluk yoktur, bu yüzden sıkıştırılamazlar.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4464" 
+                  data-correct="false"
+                  onclick="selectChoice(2366, 4464, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4465" 
+                  data-correct="true"
+                  onclick="selectChoice(2366, 4465, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2366">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü sıvılarda tanecikler arasında az da olsa boşluk vardır, ancak gazlara göre azdır. Kavram yanılgısını (sıvıların sıkıştırılamazlığı) ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2367" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, 'Maddeler taneciklerden oluşmaz, sadece katı halde görünürler' diyor. Bu yanılgıyı düzeltmek için hangi günlük örnek verilebilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4466" 
+                  data-correct="false"
+                  onclick="selectChoice(2367, 4466, false)">
+            <span class="choice-letter">A</span>
+            <span>Taşın kırılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4467" 
+                  data-correct="true"
+                  onclick="selectChoice(2367, 4467, true)">
+            <span class="choice-letter">B</span>
+            <span>Suyun buharlaşması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4468" 
+                  data-correct="false"
+                  onclick="selectChoice(2367, 4468, false)">
+            <span class="choice-letter">C</span>
+            <span>Rengin değişmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4469" 
+                  data-correct="false"
+                  onclick="selectChoice(2367, 4469, false)">
+            <span class="choice-letter">D</span>
+            <span>Sesin yayılması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2367">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Buharlaşan su örneği, gaz halde bile tanecikli yapıyı gösterir. Doğru cevap B'dir. Analiz düzeyi sorudur, yanılgı ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2375" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Maddenin tanecikli yapısı ile ilgili aşağıda verilen bilgilerden hangisi kavram yanılgısı içermektedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4478" 
+                  data-correct="true"
+                  onclick="selectChoice(2375, 4478, true)">
+            <span class="choice-letter">A</span>
+            <span>Madde ısıtıldığında onu oluşturan tanecikler büyür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4479" 
+                  data-correct="false"
+                  onclick="selectChoice(2375, 4479, false)">
+            <span class="choice-letter">B</span>
+            <span>Tanecikler arasındaki boşluk miktarı hal değişiminde değişir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4480" 
+                  data-correct="false"
+                  onclick="selectChoice(2375, 4480, false)">
+            <span class="choice-letter">C</span>
+            <span>Tüm maddeler (katı, sıvı, gaz) taneciklerden oluşur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4481" 
+                  data-correct="false"
+                  onclick="selectChoice(2375, 4481, false)">
+            <span class="choice-letter">D</span>
+            <span>Gaz tanecikleri birbirinden bağımsız hareket eder.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2375">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Tanecikler maddenin özelliklerini taşır ancak genleşme taneciklerin büyümesi değil, aralarındaki boşluğun artmasıdır. Tanecik boyutu değişmez.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      FB.5.5.1.Maddenin Tanecikli Yapısı test soruları - 5. Sınıf Fen Bilimleri dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // Yanlış seçimi işaretle
+        if (btn.dataset.choiceId == choiceId && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://derstakip.net/5-sinif/matematik/sayilar-ve-nicelikler-2/kesirlerin-farkli-gosterimleri/</loc>
-    <lastmod>2026-03-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://derstakip.net/5-sinif/matematik/sayilar-ve-nicelikler-2/kesirlerin-farkli-gosterimleri-sorular/</loc>
-    <lastmod>2026-03-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://derstakip.net/5-sinif/fen-bilimleri/canlilarin-yapisina-yolculuk/fb-5-3-2-destek-ve-hareket-sistemi/</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -56,6 +44,18 @@
   </url>
   <url>
     <loc>https://derstakip.net/5-sinif/fen-bilimleri/isigin-dunyasi/fb-5-4-3-tam-golgenin-olusumu-sorular/</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://derstakip.net/5-sinif/fen-bilimleri/maddenin-dogasi/fb-5-5-1-maddenin-tanecikli-yapisi/</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://derstakip.net/5-sinif/fen-bilimleri/maddenin-dogasi/fb-5-5-1-maddenin-tanecikli-yapisi-sorular/</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -169,6 +169,18 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://derstakip.net/6-sinif/matematik/islemlerle-cebirsel-dusunme-ve-degisimler/cebirsel-ifadeler/</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://derstakip.net/6-sinif/matematik/islemlerle-cebirsel-dusunme-ve-degisimler/cebirsel-ifadeler-sorular/</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://derstakip.net/6-sinif/fen-bilimleri/fb-6-4-isigin-yansimasi-ve-renkler/isigin-sogurulmasi/</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -200,6 +212,12 @@
   </url>
   <url>
     <loc>https://derstakip.net/6-sinif/fen-bilimleri/fb-6-5-maddenin-ayirt-edici-ozellikleri/yogunluk/</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://derstakip.net/6-sinif/fen-bilimleri/fb-6-5-maddenin-ayirt-edici-ozellikleri/yogunluk-sorular/</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -278,6 +296,18 @@
   </url>
   <url>
     <loc>https://derstakip.net/6-sinif/din-kulturu-ve-ahlak-bilgisi/ahlaki-davranislar/vatanimizi-sevmek-sorular/</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://derstakip.net/6-sinif/din-kulturu-ve-ahlak-bilgisi/ahlaki-davranislar/bir-dua-ogreniyorum-kunut-dualari/</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://derstakip.net/6-sinif/din-kulturu-ve-ahlak-bilgisi/ahlaki-davranislar/bir-dua-ogreniyorum-kunut-dualari-sorular/</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

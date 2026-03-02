@@ -183,8 +183,11 @@ class _OutcomeListPageState extends State<OutcomeListPage> {
     });
     try {
       final response = await supabase.rpc(
-        'get_units_by_lesson_and_grade',
-        params: {'lid': lessonId, 'gid': _selectedGradeId},
+        'get_units_for_lesson_and_grade',
+        params: {
+          'lesson_id_param': lessonId,
+          'grade_id_param': _selectedGradeId,
+        },
       );
       _units = (response as List)
           .map((data) => Unit.fromMap(data as Map<String, dynamic>))

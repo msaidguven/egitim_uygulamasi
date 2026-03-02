@@ -529,13 +529,13 @@ class TestViewModel extends ChangeNotifier {
           }
 
           for (final correctPair in question.matchingPairs!) {
-            final userMatchedPair = userMatches[correctPair.leftText];
+            final userMatchedPair = userMatches[correctPair.id];
 
             if (userMatchedPair is! MatchingPair) {
               return false;
             }
 
-            if (userMatchedPair.rightText != correctPair.rightText) {
+            if (userMatchedPair.id != correctPair.id) {
               return false;
             }
           }

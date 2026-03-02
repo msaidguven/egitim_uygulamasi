@@ -342,11 +342,9 @@ class TestRepositoryImpl implements TestRepository {
         if (hasMatchingPair) {
           final Map<String, String?> serializableMap = {};
           userAnswer.forEach((key, value) {
-            if (key is String) {
-              serializableMap[key] = value is MatchingPair
-                  ? value.rightText
-                  : null;
-            }
+            serializableMap[key.toString()] = value is MatchingPair
+                ? value.rightText
+                : null;
           });
           encodableAnswer = serializableMap;
           log(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/widgets/question_text.dart';
@@ -19,19 +18,19 @@ class MatchingQuestionWidget extends StatefulWidget {
 }
 
 class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
-  late List<String> leftTexts;
+  late List<MatchingPair> leftPairs;
   late List<MatchingPair> shuffledRightPairs;
-  late Map<String, MatchingPair?> userMatches;
-  String? _draggingLeftText;
+  late Map<int, MatchingPair?> userMatches;
+  int? _draggingLeftPairId;
   MatchingPair? _draggingBackPair;
 
   int get _filledMatchCount =>
       userMatches.values.whereType<MatchingPair>().length;
 
   bool get _isMatchingCompleted =>
-      leftTexts.isNotEmpty && _filledMatchCount == leftTexts.length;
+      leftPairs.isNotEmpty && _filledMatchCount == leftPairs.length;
 
-  Map<String, MatchingPair> _selectedMatches() {
+  Map<int, MatchingPair> _selectedMatches() {
     return {
       for (final entry in userMatches.entries)
         if (entry.value != null) entry.key: entry.value!,
@@ -40,7 +39,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
 
   void _notifyAnswerState() {
     final selected = _selectedMatches();
-    if (selected.length == leftTexts.length) {
+    if (selected.length == leftPairs.length) {
       widget.onAnswered(selected);
       return;
     }
@@ -50,45 +49,45 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
   @override
   void initState() {
     super.initState();
-    leftTexts = List.from(widget.testQuestion.shuffledMatchingLeftTexts);
+    leftPairs = List.from(widget.testQuestion.shuffledMatchingLeftTexts);
     shuffledRightPairs = List.from(
       widget.testQuestion.shuffledMatchingPairsRight,
     );
-    userMatches = {for (var left in leftTexts) left: null};
+    userMatches = {for (var leftPair in leftPairs) leftPair.id: null};
   }
 
-  void _removeMatch(String leftText) {
+  void _removeMatch(int leftPairId) {
     if (widget.testQuestion.isChecked) return;
     setState(() {
-      final removedPair = userMatches[leftText];
+      final removedPair = userMatches[leftPairId];
       if (removedPair != null) {
-        userMatches[leftText] = null;
+        userMatches[leftPairId] = null;
         _notifyAnswerState();
       }
     });
   }
 
-  void _startDragBack(String leftText) {
+  void _startDragBack(int leftPairId) {
     if (widget.testQuestion.isChecked) return;
     setState(() {
-      _draggingLeftText = leftText;
-      _draggingBackPair = userMatches[leftText];
+      _draggingLeftPairId = leftPairId;
+      _draggingBackPair = userMatches[leftPairId];
     });
   }
 
   void _endDragBack(DraggableDetails details) {
-    if (_draggingBackPair != null && _draggingLeftText != null) {
-      _removeMatch(_draggingLeftText!);
+    if (_draggingBackPair != null && _draggingLeftPairId != null) {
+      _removeMatch(_draggingLeftPairId!);
     }
     setState(() {
-      _draggingLeftText = null;
+      _draggingLeftPairId = null;
       _draggingBackPair = null;
     });
   }
 
   void _cancelDragBack() {
     setState(() {
-      _draggingLeftText = null;
+      _draggingLeftPairId = null;
       _draggingBackPair = null;
     });
   }
@@ -102,10 +101,10 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...List.generate(leftTexts.length, (index) {
-            final leftText = leftTexts[index];
-            final matchedPair = userMatches[leftText];
-            final isDraggingBack = _draggingLeftText == leftText;
+          ...List.generate(leftPairs.length, (index) {
+            final leftPair = leftPairs[index];
+            final matchedPair = userMatches[leftPair.id];
+            final isDraggingBack = _draggingLeftPairId == leftPair.id;
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
@@ -114,13 +113,17 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
                   if (isChecked) return;
                   final data = details.data;
                   setState(() {
-                    final existingEntry = userMatches.entries.firstWhereOrNull(
-                      (entry) => entry.value?.id == data.id,
-                    );
-                    if (existingEntry != null) {
-                      userMatches[existingEntry.key] = null;
+                    int? existingLeftPairId;
+                    for (final entry in userMatches.entries) {
+                      if (entry.value?.id == data.id) {
+                        existingLeftPairId = entry.key;
+                        break;
+                      }
                     }
-                    userMatches[leftText] = data;
+                    if (existingLeftPairId != null) {
+                      userMatches[existingLeftPairId] = null;
+                    }
+                    userMatches[leftPair.id] = data;
                     _notifyAnswerState();
                   });
                 },
@@ -128,7 +131,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
                   return matchedPair != null
                       ? Draggable<MatchingPair>(
                           data: matchedPair,
-                          onDragStarted: () => _startDragBack(leftText),
+                          onDragStarted: () => _startDragBack(leftPair.id),
                           onDragEnd: _endDragBack,
                           onDraggableCanceled: (_, __) => _cancelDragBack(),
                           feedback: Material(
@@ -141,27 +144,30 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
                             opacity: 0.3,
                             child: _buildMatchContainer(
                               index: index,
-                              leftText: leftText,
+                              leftText: leftPair.leftText,
                               matchedPair: matchedPair,
+                              leftPair: leftPair,
                               isDraggingBack: true,
                             ),
                           ),
                           child: GestureDetector(
-                            onTap: () => _removeMatch(leftText),
+                            onTap: () => _removeMatch(leftPair.id),
                             child: Opacity(
                               opacity: isDraggingBack ? 0.5 : 1.0,
                               child: _buildMatchContainer(
                                 index: index,
-                                leftText: leftText,
+                                leftText: leftPair.leftText,
                                 matchedPair: matchedPair,
+                                leftPair: leftPair,
                               ),
                             ),
                           ),
                         )
                       : _buildMatchContainer(
                           index: index,
-                          leftText: leftText,
+                          leftText: leftPair.leftText,
                           matchedPair: null,
+                          leftPair: leftPair,
                         );
                 },
               ),
@@ -180,6 +186,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
   Widget _buildMatchContainer({
     required int index,
     required String leftText,
+    required MatchingPair leftPair,
     required MatchingPair? matchedPair,
     bool isDraggingBack = false,
   }) {
@@ -188,9 +195,7 @@ class _MatchingQuestionWidgetState extends State<MatchingQuestionWidget> {
     // Doğruluk Kontrolü
     bool isCorrectMatch = false;
     if (matchedPair != null) {
-      final originalPair = widget.testQuestion.question.matchingPairs
-          ?.firstWhereOrNull((p) => p.leftText == leftText);
-      isCorrectMatch = originalPair?.rightText == matchedPair.rightText;
+      isCorrectMatch = leftPair.id == matchedPair.id;
     }
 
     // Stil Belirleme

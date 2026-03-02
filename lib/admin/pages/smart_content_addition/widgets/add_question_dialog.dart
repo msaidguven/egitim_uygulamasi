@@ -35,6 +35,24 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
     super.dispose();
   }
 
+  int _resolveQuestionTypeId(String type) {
+    switch (type) {
+      case 'multiple_choice':
+        return 1;
+      case 'true_false':
+        return 2;
+      case 'fill_blank':
+      case 'blank':
+        return 3;
+      case 'matching':
+        return 4;
+      case 'classical':
+        return 5;
+      default:
+        return 1;
+    }
+  }
+
   void _addMatchingPair() {
     if (_matchLeftTextController.text.isNotEmpty &&
         _matchRightTextController.text.isNotEmpty) {
@@ -69,6 +87,7 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
     final question = <String, dynamic>{
       'question_text': _questionTextController.text,
       'question_type': _questionType,
+      'question_type_id': _resolveQuestionTypeId(_questionType),
       'score': int.tryParse(_scoreController.text) ?? 10,
       'difficulty': int.tryParse(_difficultyController.text) ?? 5,
     };
@@ -125,7 +144,7 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
               DropdownButtonFormField<String>(
                 initialValue: _questionType,
                 decoration: const InputDecoration(labelText: 'Soru Tipi', border: OutlineInputBorder()),
-                items: ['multiple_choice', 'matching', 'blank', 'classical']
+                items: ['multiple_choice', 'matching', 'fill_blank', 'classical']
                     .map((type) =>
                         DropdownMenuItem(value: type, child: Text(type)))
                     .toList(),
