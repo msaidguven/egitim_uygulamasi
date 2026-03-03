@@ -1,9 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../unit_summary_screen.dart';
-import 'dart:ui' as dart_ui;
+
+abstract class TimelineItem {}
+
+class UnitHeaderItem extends TimelineItem {
+  final int unitId;
+  final String title;
+  final int totalQuestions;
+  final int solvedQuestions;
+  UnitHeaderItem(this.unitId, this.title, this.totalQuestions, this.solvedQuestions);
+}
+
+class WeekItem extends TimelineItem {
+  final int weekNo;
+  final int unitId;
+  final bool isCurrent;
+  final bool isCompleted;
+  final bool isLocked;
+  final String topics;
+  final int totalQuestions;
+  final int solvedQuestions;
+  
+  WeekItem({
+    required this.weekNo,
+    required this.unitId,
+    required this.isCurrent,
+    required this.isCompleted,
+    required this.isLocked,
+    required this.topics,
+    required this.totalQuestions,
+    required this.solvedQuestions,
+  });
+}
 
 class UnitMapV2Screen extends ConsumerStatefulWidget {
   final int lessonId;
@@ -23,12 +55,11 @@ class UnitMapV2Screen extends ConsumerStatefulWidget {
 
 class _UnitMapV2ScreenState extends ConsumerState<UnitMapV2Screen> {
   final SupabaseClient _supabase = Supabase.instance.client;
-  List<Map<String, dynamic>> _units = [];
+  List<TimelineItem> _timeline = [];
+  List<GlobalKey> _keys = [];
   bool _isLoading = true;
-  double _totalProgress = 0;
-  List<GlobalKey> _unitKeys = [];
+  int _activeItemIndex = -1;
   final ScrollController _scrollController = ScrollController();
-  int _activeUnitIndex = -1;
 
   @override
   void initState() {
@@ -45,12 +76,16 @@ class _UnitMapV2ScreenState extends ConsumerState<UnitMapV2Screen> {
   Future<void> _fetchUnitMapData() async {
     try {
       final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) return;
-
+      if (userId == null) {
+        if (!mounted) return;
+        setState(() => _isLoading = false);
+        return;
+      }
+      
       const currentWeek = 24;
 
       final response = await _supabase.rpc(
-        'get_unit_map_data',
+        'get_weekly_timeline_data',
         params: {
           'p_user_id': userId,
           'p_lesson_id': widget.lessonId,
@@ -59,94 +94,93 @@ class _UnitMapV2ScreenState extends ConsumerState<UnitMapV2Screen> {
         },
       );
 
-      final List<Map<String, dynamic>> data =
+      final List<Map<String, dynamic>> rawData =
           List<Map<String, dynamic>>.from(response);
 
-      double totalSolved = 0;
-      double totalQ = 0;
+      List<TimelineItem> newTimeline = [];
+      List<GlobalKey> newKeys = [];
       int activeIndex = -1;
-      
-      for (int i = 0; i < data.length; i++) {
-        var item = data[i];
-        totalSolved += (item['solved_questions'] as num).toDouble();
-        totalQ += (item['total_questions'] as num).toDouble();
+      int? lastUnitId;
+
+      for (var row in rawData) {
+        final unitId = row['unit_id'] as int;
         
-        if (activeIndex == -1 && (item['solved_questions'] as num) < (item['total_questions'] as num)) {
-           activeIndex = i;
-        } else if (activeIndex == -1 && item['is_current_week'] == true) {
-           activeIndex = i;
+        // Ünite Başlığı eklendi (Eğer yeni bir üniteye geçildiyse)
+        if (lastUnitId != unitId) {
+           newTimeline.add(UnitHeaderItem(
+              unitId, 
+              row['unit_title'] ?? 'Ünite',
+              ((row['unit_total_questions'] ?? 0) as num).toInt(),
+              ((row['unit_solved_questions'] ?? 0) as num).toInt()
+           ));
+           newKeys.add(GlobalKey());
+           lastUnitId = unitId;
+        }
+        
+        // Hafta eklendi
+        final isCurrent = row['is_current'] as bool;
+        newTimeline.add(WeekItem(
+            weekNo: row['week_no'] as int,
+            unitId: unitId,
+            isCurrent: isCurrent,
+            isCompleted: row['is_completed'] as bool,
+            isLocked: row['is_locked'] as bool,
+            topics: row['topic_names'] ?? '',
+            totalQuestions: ((row['week_total_questions'] ?? 0) as num).toInt(),
+            solvedQuestions: ((row['week_solved_questions'] ?? 0) as num).toInt(),
+        ));
+        newKeys.add(GlobalKey());
+        
+        if (isCurrent) {
+            activeIndex = newTimeline.length - 1;
         }
       }
-      
-      if (activeIndex == -1 && data.isNotEmpty) {
-          activeIndex = data.length - 1;
-      }
 
+      if (!mounted) return;
       setState(() {
-        _units = data;
-        _totalProgress = totalQ > 0 ? (totalSolved / totalQ) : 0;
-        _activeUnitIndex = activeIndex;
-        _unitKeys = List.generate(data.length, (_) => GlobalKey());
+        _timeline = newTimeline;
+        _keys = newKeys;
+        _activeItemIndex = activeIndex;
         _isLoading = false;
       });
-      
+
+      // Kaydırma bitince aktif haftaya odaklan ve hafif titret
       WidgetsBinding.instance.addPostFrameCallback((_) {
-         if (_activeUnitIndex != -1 && _scrollController.hasClients) {
-             _scrollToActiveUnit();
+         final activeContext =
+             (_activeItemIndex != -1 && _activeItemIndex < _keys.length)
+                 ? _keys[_activeItemIndex].currentContext
+                 : null;
+         if (activeContext != null && _scrollController.hasClients) {
+            Scrollable.ensureVisible(
+               activeContext,
+               duration: const Duration(milliseconds: 1000),
+               curve: Curves.easeInOutCubic,
+               alignment: 0.5,
+            ).then((_) => HapticFeedback.mediumImpact());
          }
       });
+
     } catch (e) {
-      debugPrint('Unit map verisi çekilirken hata: $e');
+      debugPrint('Timeline verisi çekilirken hata: $e');
+      if (!mounted) return;
       setState(() => _isLoading = false);
     }
   }
 
-  void _scrollToActiveUnit() {
-     if (_activeUnitIndex < 0 || _activeUnitIndex >= _unitKeys.length) return;
-     
-     final screenHeight = MediaQuery.of(context).size.height;
-     // 140 is node distance, + 100 is padding etc. Center it gracefully.
-     final double estimatedOffset = (_activeUnitIndex * 140.0) - (screenHeight / 2) + 70.0;
-     
-     final targetOffset = estimatedOffset.clamp(
-        0.0, 
-        _scrollController.position.maxScrollExtent
-     );
-     
-     _scrollController.animateTo(
-         targetOffset, 
-         duration: const Duration(milliseconds: 800), 
-         curve: Curves.easeOutCubic
-     );
-  }
-
   Color get _lessonColor {
-    final name = widget.lessonName.toLowerCase();
-    if (name.contains('mat')) return const Color(0xFF3B82F6); // Blue
-    if (name.contains('fen')) return const Color(0xFF10B981); // Emerald
-    if (name.contains('türk')) return const Color(0xFFEF4444); // Red
-    if (name.contains('sos')) return const Color(0xFFF59E0B); // Amber
-    if (name.contains('ing')) return const Color(0xFF8B5CF6); // Violet
-    return const Color(0xFF6366F1); // Indigo default
-  }
-
-  Color get _progressColor {
-    if (_totalProgress < 0.3) return Colors.grey.shade500;
-    if (_totalProgress < 0.7) return _lessonColor;
-    return const Color(0xFF10B981); // Vibrant Green
-  }
-
-  String get _activeUnitName {
-      if (_activeUnitIndex != -1 && _activeUnitIndex < _units.length) {
-          return '${_activeUnitIndex + 1}'; // Aktif ünite numarası
-      }
-      return 'Tamamlandı';
+    final lower = widget.lessonName.toLowerCase();
+    if (lower.contains('mat')) return const Color(0xFF3B82F6);
+    if (lower.contains('fen')) return const Color(0xFF10B981);
+    if (lower.contains('türk')) return const Color(0xFFEF4444);
+    if (lower.contains('sos')) return const Color(0xFFF59E0B);
+    if (lower.contains('ing')) return const Color(0xFF8B5CF6);
+    return const Color(0xFF6366F1);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC), // Sade, temiz arkaplan
+      backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
         title: Text(
           widget.lessonName,
@@ -161,433 +195,248 @@ class _UnitMapV2ScreenState extends ConsumerState<UnitMapV2Screen> {
         elevation: 0,
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          // Üst HUD Panel
-          _buildHUD(),
-
-          // Ana Dikey Harita Yolu
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _buildVerticalScrollableMap(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHUD() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: _progressColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(Icons.school_rounded, color: _progressColor, size: 24),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _timeline.isEmpty
+              ? const Center(
+                  child: Text(
+                    'Henüz gösterilecek hafta verisi yok.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
+                    ),
+                  ),
+                )
+          : Stack(
               children: [
-                Text(
-                  widget.lessonName,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w800,
-                  ),
+                // İnce Dikey İlerleme Çizgisi
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: MediaQuery.of(context).size.width / 2 - 1,
+                  child: Container(width: 2, color: Colors.grey.shade300),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  'Aktif Ünite: $_activeUnitName',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+
+                // Akış
+                ListView.builder(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(top: 20, bottom: 100),
+                  itemCount: _timeline.length,
+                  itemBuilder: (context, index) {
+                     final item = _timeline[index];
+                     final key = _keys[index];
+                     
+                     if (item is UnitHeaderItem) {
+                        return _buildHeader(item, key, index);
+                     } else if (item is WeekItem) {
+                        return _buildWeekNode(item, key, index);
+                     }
+                     return const SizedBox.shrink();
+                  },
                 ),
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '%${(_totalProgress * 100).toInt()}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: _progressColor,
-                ),
-              ),
-              const Text(
-                'İlerleme',
-                style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.1, end: 0);
-  }
-
-  Widget _buildVerticalScrollableMap() {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(vertical: 40),
-      child: CustomPaint(
-        painter: _VerticalMapPathPainter(
-            unitsCount: _units.length,
-            activeIndex: _activeUnitIndex,
-            lessonColor: _lessonColor,
-        ),
-        child: Column(
-          children: List.generate(_units.length, (index) {
-            return _buildUnitNodeWrapper(index);
-          }),
-        ),
-      ),
     );
   }
 
-  Widget _buildUnitNodeWrapper(int index) {
-      final unit = _units[index];
-      
-      final isLeft = index % 2 == 0;
-      final xOffset = isLeft ? -50.0 : 50.0;
-      
-      final bool isCompleted = index < _activeUnitIndex || (index == _activeUnitIndex && _totalProgress >= 1.0);
-      final bool isActive = index == _activeUnitIndex;
-      final bool isLocked = index > _activeUnitIndex;
+  Widget _buildHeader(UnitHeaderItem item, GlobalKey key, int index) {
+     bool isCompletedOrCurrent = index <= _activeItemIndex;
+     double progress = item.totalQuestions > 0 ? (item.solvedQuestions / item.totalQuestions).clamp(0, 1) : 0;
 
-      _UnitStatus status = isActive ? _UnitStatus.active : (isCompleted ? _UnitStatus.completed : _UnitStatus.locked);
-
-      return Container(
-          key: _unitKeys[index],
-          height: 140, // Dikey mesafe
-          alignment: Alignment.center,
-          transform: Matrix4.translationValues(xOffset, 0, 0),
-          child: _UnitNode(
-            title: unit['title'] ?? 'Ünite ${index + 1}',
-            status: status,
-            primaryColor: _lessonColor,
-            onTap: () {
-              if (isLocked) {
-                 debugPrint('Locked Unit Tapped: ${unit['title']}');
-                 return;
-              }
-              debugPrint('Unit Tapped: ${unit['title']}');
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UnitSummaryScreen(unitId: unit['unit_id']),
-                ),
-              );
-            },
-            index: index,
-          ),
-      );
-  }
-}
-
-enum _UnitStatus { completed, active, locked }
-
-class _UnitNode extends StatelessWidget {
-  final String title;
-  final _UnitStatus status;
-  final VoidCallback onTap;
-  final int index;
-  final Color primaryColor;
-
-  const _UnitNode({
-    required this.title,
-    required this.status,
-    required this.onTap,
-    required this.index,
-    required this.primaryColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    Color nodeColor;
-    IconData iconData;
-    double scale = 1.0;
-    double opacity = 1.0;
-    bool showPulse = false;
-    bool showGlow = false;
-
-    switch (status) {
-      case _UnitStatus.completed:
-        nodeColor = primaryColor;
-        iconData = Icons.check_rounded;
-        showGlow = true;
-        break;
-      case _UnitStatus.active:
-        nodeColor = primaryColor;
-        iconData = Icons.play_arrow_rounded;
-        scale = 1.1; // %10 büyük
-        showPulse = true;
-        showGlow = true;
-        break;
-       case _UnitStatus.locked:
-        nodeColor = Colors.grey.shade400;
-        iconData = Icons.lock_rounded;
-        opacity = 0.6;
-        break;
-    }
-
-    Widget content = GestureDetector(
-      onTap: onTap,
-      child: Opacity(
-        opacity: opacity,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                // Pulse Animation Background
-                if (showPulse)
-                  Container(
-                    width: 70 * scale,
-                    height: 70 * scale,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: nodeColor.withValues(alpha: 0.4),
-                          blurRadius: 15,
-                          spreadRadius: 8,
-                        ),
-                      ],
-                    ),
-                  ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                   .scale(begin: const Offset(1, 1), end: const Offset(1.2, 1.2), duration: 1500.ms)
-                   .fadeOut(duration: 1500.ms),
-                
-                // Fixed Glow
-                if (showGlow && !showPulse)
+     return Stack(
+        alignment: Alignment.center,
+        children: [
+           // İlerleme yolu (Header boyunca)
+           if (isCompletedOrCurrent)
+              Positioned(
+                 top: 0, bottom: 0,
+                 child: Container(width: 2, color: _lessonColor),
+              ),
+           Container(
+              key: key,
+              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+              child: Column(
+                children: [
                    Container(
-                      width: 50,
-                      height: 50,
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       decoration: BoxDecoration(
-                         shape: BoxShape.circle,
-                         boxShadow: [
-                            BoxShadow(
-                               color: nodeColor.withValues(alpha: 0.3),
-                               blurRadius: 10,
-                               spreadRadius: 2,
-                            )
-                         ]
-                      ),
-                   ),
-
-                // Main Circle
-                Container(
-                  width: 50 * scale,
-                  height: 50 * scale,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                       color: nodeColor, 
-                       width: status == _UnitStatus.active ? 4 : 3
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Icon(
-                      iconData,
-                      color: nodeColor,
-                      size: 26 * scale,
-                    ),
-                  ),
-                ),
-                
-                // Unit Number Badge
-                Positioned(
-                   bottom: 0,
-                   right: 0,
-                   child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                         color: Colors.white,
-                         shape: BoxShape.circle,
-                         border: Border.all(color: nodeColor, width: 2),
-                         boxShadow: [
-                           BoxShadow(
-                             color: Colors.black.withValues(alpha: 0.1),
-                             blurRadius: 4,
-                           )
-                         ]
+                         color: const Color(0xFFFAFAFA),
+                         border: Border(bottom: BorderSide(color: _lessonColor.withValues(alpha: 0.3), width: 2))
                       ),
                       child: Text(
-                         '${index + 1}',
+                         item.title.toUpperCase(),
                          style: TextStyle(
-                            color: nodeColor, 
-                            fontSize: 10, 
-                            fontWeight: FontWeight.bold
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.5,
+                            color: _lessonColor,
                          ),
+                         textAlign: TextAlign.center,
                       ),
                    ),
-                )
-              ],
-            ),
-            const SizedBox(height: 8),
-            // Title Label
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  )
-                ]
+                   const SizedBox(height: 12),
+                   // Ünite İlerleme Barı
+                   Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                         SizedBox(
+                            width: 120,
+                            child: ClipRRect(
+                               borderRadius: BorderRadius.circular(4),
+                               child: LinearProgressIndicator(
+                                  value: progress,
+                                  minHeight: 4,
+                                  backgroundColor: Colors.grey.shade200,
+                                  color: _lessonColor.withValues(alpha: 0.6),
+                               ),
+                            ),
+                         ),
+                         const SizedBox(width: 8),
+                         Text(
+                            '%${(progress * 100).toInt()}',
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey.shade600),
+                         )
+                      ],
+                   )
+                ],
+              ).animate().fadeIn(duration: 800.ms),
+           ),
+        ],
+     );
+  }
+
+  Widget _buildWeekNode(WeekItem item, GlobalKey key, int index) {
+     bool isLeftText = item.weekNo % 2 != 0;
+     Color nodeColor = item.isCompleted ? _lessonColor : (item.isCurrent ? _lessonColor : Colors.white);
+     Color borderColor = item.isCompleted || item.isCurrent ? _lessonColor : Colors.grey.shade400;
+
+     double weekProgress = item.totalQuestions > 0 ? (item.solvedQuestions / item.totalQuestions).clamp(0, 1) : 0;
+
+     Widget textWidget = Column(
+        crossAxisAlignment: isLeftText ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+           Text(
+              'Hafta ${item.weekNo}',
+              style: TextStyle(
+                 fontSize: 14,
+                 fontWeight: item.isCurrent ? FontWeight.bold : FontWeight.w600,
+                 color: item.isLocked ? Colors.grey.shade500 : Colors.black87,
               ),
-              constraints: const BoxConstraints(maxWidth: 100),
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.black87,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
+           ),
+           if (item.topics.isNotEmpty)
+              Padding(
+                 padding: const EdgeInsets.only(top: 4),
+                 child: Text(
+                    item.topics,
+                    style: TextStyle(fontSize: 10, color: Colors.grey.shade500, fontStyle: FontStyle.italic),
+                    textAlign: isLeftText ? TextAlign.right : TextAlign.left,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                 ),
+              ),
+           // Hafta içi mini bar
+           if (!item.isLocked && item.totalQuestions > 0)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Row(
+                   mainAxisSize: MainAxisSize.min,
+                   children: [
+                      Container(
+                         width: 40, height: 3,
+                         decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(2),
+                         ),
+                         child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                               width: 40 * weekProgress,
+                               height: 3,
+                               decoration: BoxDecoration(
+                                  color: _lessonColor.withValues(alpha: 0.4),
+                                  borderRadius: BorderRadius.circular(2),
+                               ),
+                            ),
+                         ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text('%${(weekProgress * 100).toInt()}', style: TextStyle(fontSize: 8, color: Colors.grey.shade500)),
+                   ],
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              )
+        ],
+     );
+
+     Widget nodeContent = Stack(
+        alignment: Alignment.center,
+        children: [
+           if (item.isCurrent)
+              Container(
+                 width: 45, height: 45,
+                 decoration: BoxDecoration(shape: BoxShape.circle, color: _lessonColor.withValues(alpha: 0.2)),
+              ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(begin: const Offset(1, 1), end: const Offset(1.4, 1.4)).fadeOut(),
+           Container(
+              width: 28, height: 28,
+              decoration: BoxDecoration(
+                 color: nodeColor,
+                 shape: item.isCompleted ? BoxShape.rectangle : BoxShape.circle,
+                 borderRadius: item.isCompleted ? BorderRadius.circular(8) : null,
+                 border: Border.all(color: borderColor, width: item.isCurrent ? 4 : 3),
+                 boxShadow: item.isCurrent || item.isCompleted ? [BoxShadow(color: _lessonColor.withValues(alpha: 0.3), blurRadius: 10, spreadRadius: 2)] : [],
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+              child: Center(
+                 child: item.isCompleted 
+                    ? const Icon(Icons.star_rounded, size: 18, color: Colors.white) 
+                    : (item.isCurrent ? const Icon(Icons.play_arrow_rounded, size: 16, color: Colors.white) : const SizedBox()),
+              ),
+           ),
+        ],
+     );
 
-    return content;
-  }
-}
-
-class _VerticalMapPathPainter extends CustomPainter {
-   final int unitsCount;
-   final int activeIndex;
-   final Color lessonColor;
-   
-   _VerticalMapPathPainter({
-      required this.unitsCount, 
-      required this.activeIndex,
-      required this.lessonColor,
-   });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (unitsCount < 2) return;
-
-    final double nodeHeight = 140.0;
-    
-    final Paint completedPaint = Paint()
-      ..color = lessonColor
-      ..strokeWidth = 3.0
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final Paint dashedPaint = Paint()
-      ..color = Colors.grey.shade300
-      ..strokeWidth = 3.0
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    for (int i = 0; i < unitsCount - 1; i++) {
-        final isLeft1 = i % 2 == 0;
-        final isLeft2 = (i + 1) % 2 == 0;
-        
-        // Merkez noktalar
-        final dx1 = (size.width / 2) + (isLeft1 ? -50.0 : 50.0);
-        final dy1 = (i * nodeHeight) + (nodeHeight / 2);
-        
-        final dx2 = (size.width / 2) + (isLeft2 ? -50.0 : 50.0);
-        final dy2 = ((i + 1) * nodeHeight) + (nodeHeight / 2);
-        
-        final p1 = Offset(dx1, dy1);
-        final p2 = Offset(dx2, dy2);
-
-        final path = Path();
-        path.moveTo(p1.dx, p1.dy);
-        
-        final controlPoint1 = Offset(dx1, dy1 + (nodeHeight / 3));
-        final controlPoint2 = Offset(dx2, dy2 - (nodeHeight / 3));
-        
-        path.cubicTo(
-           controlPoint1.dx, controlPoint1.dy, 
-           controlPoint2.dx, controlPoint2.dy, 
-           p2.dx, p2.dy
-        );
-
-        if (i < activeIndex) {
-            canvas.drawPath(path, completedPaint);
-        } else {
-            _drawDashedPath(canvas, path, dashedPaint);
-        }
-    }
-  }
-  
-  void _drawDashedPath(Canvas canvas, Path path, Paint paint) {
-    const double dashWidth = 8.0;
-    const double dashSpace = 6.0;
-    double distance = 0.0;
-
-    for (dart_ui.PathMetric pathMetric in path.computeMetrics()) {
-      while (distance < pathMetric.length) {
-        final Path extractPath = pathMetric.extractPath(
-          distance,
-          distance + dashWidth,
-        );
-        try {
-            canvas.drawPath(extractPath, paint);
-        } catch (e) {
-            // ignore
-        }
-        distance += dashWidth + dashSpace;
-      }
-      distance = 0.0; // reset for next metric
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true; 
+     return Stack(
+        alignment: Alignment.center,
+        children: [
+           // Dolum Yolu
+           if (item.isCompleted || item.isCurrent)
+              Positioned(
+                 top: 0,
+                 bottom: item.isCurrent ? 48 : 0, 
+                 child: Container(width: 2, color: _lessonColor),
+              ),
+           InkWell(
+              key: key,
+              onTap: () {
+                 HapticFeedback.lightImpact();
+                 if (item.isLocked) {
+                    final messages = [
+                      "Heyecanını anlıyoruz ama o haftaya daha var! 🕰️",
+                      "Zaman makinesi henüz icat edilmedi, kendi haftana dön! 🚀",
+                      "Geleceği göremezsin ama çalışarak inşa edebilirsin! 🔮"
+                    ];
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                       content: Text(messages[item.weekNo % messages.length]),
+                       backgroundColor: const Color(0xFF0F172A),
+                       behavior: SnackBarBehavior.floating,
+                       margin: const EdgeInsets.all(16),
+                    ));
+                 } else {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => UnitSummaryScreen(unitId: item.unitId)));
+                 }
+              },
+              child: Padding(
+                 padding: const EdgeInsets.symmetric(vertical: 36),
+                 child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                       Expanded(child: Align(alignment: Alignment.centerRight, child: isLeftText ? Padding(padding: const EdgeInsets.only(right: 24), child: textWidget) : const SizedBox())),
+                       nodeContent,
+                       Expanded(child: Align(alignment: Alignment.centerLeft, child: !isLeftText ? Padding(padding: const EdgeInsets.only(left: 24), child: textWidget) : const SizedBox())),
+                    ],
+                 ),
+              ),
+           ),
+        ],
+     );
   }
 }

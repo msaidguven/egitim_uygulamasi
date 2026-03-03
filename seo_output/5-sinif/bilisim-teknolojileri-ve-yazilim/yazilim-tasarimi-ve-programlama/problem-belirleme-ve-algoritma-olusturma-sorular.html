@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Problem Belirleme ve Algoritma Oluşturma Test Soruları -...</title>
+  <meta name="description" content="18 soru ile Problem Belirleme ve Algoritma Oluşturma konusunu pekiştir ve başarını ölç. 5. Sınıf Bilişim Teknolojileri ve Yazılım dersi Yazılım...">
+  <meta name="keywords" content="Problem Belirleme ve Algoritma Oluşturma test, Problem Belirleme ve Algoritma Oluşturma sorular, Bilişim Teknolojileri ve Yazılım quiz, 5. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Problem Belirleme ve Algoritma Oluşturma Test Soruları -...">
+  <meta property="og:description" content="18 soru ile Problem Belirleme ve Algoritma Oluşturma konusunu pekiştir ve başarını ölç. 5. Sınıf Bilişim Teknolojileri ve Yazılım dersi Yazılım...">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/">Bilişim Teknolojileri ve Yazılım</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/yazilim-tasarimi-ve-programlama/">Yazılım Tasarımı Ve Programlama</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Problem Belirleme ve Algoritma Oluşturma Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Problem Belirleme ve Algoritma Oluşturma - Test Soruları</h1>
+      <div class="meta">18 Soru • 5. Sınıf Bilişim Teknolojileri ve Yazılım</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/yazilim-tasarimi-ve-programlama/problem-belirleme-ve-algoritma-olusturma/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="2701" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Günlük yaşamda 'Karnımız acıkınca ne yapmalıyız?' problemi için çıktı aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4922" 
+                  data-correct="false"
+                  onclick="selectChoice(2701, 4922, false)">
+            <span class="choice-letter">A</span>
+            <span>Yemek malzemelerini hazırlamak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4923" 
+                  data-correct="true"
+                  onclick="selectChoice(2701, 4923, true)">
+            <span class="choice-letter">B</span>
+            <span>Tok hissetmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4924" 
+                  data-correct="false"
+                  onclick="selectChoice(2701, 4924, false)">
+            <span class="choice-letter">C</span>
+            <span>Yemek pişirmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4925" 
+                  data-correct="false"
+                  onclick="selectChoice(2701, 4925, false)">
+            <span class="choice-letter">D</span>
+            <span>Marketten alışveriş yapmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2701">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Problemin çıktısı, problemin çözülmesiyle elde edilen nihai sonuçtur. Karnın acıkması probleminin çözümü tok hissetmektir. Bu, kazanıma göre problemin girdisi (yemek) ve çıktısının (tokluk) belirlenmesini gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2702" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir problemi belirlerken girdi ve çıktılarını belirlemek zorunlu değildir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4926" 
+                  data-correct="false"
+                  onclick="selectChoice(2702, 4926, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4927" 
+                  data-correct="true"
+                  onclick="selectChoice(2702, 4927, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2702">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış. Kazanıma göre (b) belirlenen problemin girdi ve çıktılarını belirlemek algoritma oluşturmanın temel aşamasıdır; yoksa çözüm adımları eksik kalır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2692" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir problemin girdileri, o problemi çözmek için kullanılan tüm verilerdir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4906" 
+                  data-correct="true"
+                  onclick="selectChoice(2692, 4906, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4907" 
+                  data-correct="false"
+                  onclick="selectChoice(2692, 4907, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2692">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Girdiler, bir problemin çözümüne ulaşmak için kullanılan başlangıç verileridir. Örneğin, hesap makinesinde toplama yapmak için girdiler toplanacak sayılardır. Bu ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2717" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Akış şeması çizilirken, her işlem adımı için farklı geometrik şekiller kullanılması zorunludur. Tüm işlemler aynı şekil içinde yazılabilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4956" 
+                  data-correct="false"
+                  onclick="selectChoice(2717, 4956, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4957" 
+                  data-correct="true"
+                  onclick="selectChoice(2717, 4957, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2717">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade YANLIŞTIR. Akış şemalarında standart semboller kullanılır: işlem için dikdörtgen, karar için baklava dilimi, başlangıç/bitiş için oval vb. Her işlem tipi farklı şekil gerektirir. Aynı şekil kullanılması akış şemasının okunabilirliğini ve anlamını kaybettirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2691" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Günlük hayattan bir problem belirlenirken aşağıdakilerden hangisi doğru bir yaklaşım değildir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4902" 
+                  data-correct="false"
+                  onclick="selectChoice(2691, 4902, false)">
+            <span class="choice-letter">A</span>
+            <span>Kendin yaşadığın bir sorunu tespit etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4903" 
+                  data-correct="true"
+                  onclick="selectChoice(2691, 4903, true)">
+            <span class="choice-letter">B</span>
+            <span>Arkadaşlarının yaşadığı bir sorunu duymak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4904" 
+                  data-correct="false"
+                  onclick="selectChoice(2691, 4904, false)">
+            <span class="choice-letter">C</span>
+            <span>Çözümü zor olan bir durumu fark etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4905" 
+                  data-correct="false"
+                  onclick="selectChoice(2691, 4905, false)">
+            <span class="choice-letter">D</span>
+            <span>Tekrarlayan bir sorunu not etmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2691">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Problem belirleme sürecinde önce günlük hayatta karşılaşılan bir sorun gözlemlenmeli ve bu sorun net bir şekilde tanımlanmalıdır. Bir problemi başkalarından duymak veya hayal etmek, doğrudan yaşanmış bir deneyim olmadığı için daha az anlamlı ve somut olabilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2711" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Ayşe, sabah okula geç kalmamak için bir algoritma hazırlıyor. Aşağıdaki adımlardan hangisi bu problemin ÇIKTISI (sonucu) olabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4942" 
+                  data-correct="true"
+                  onclick="selectChoice(2711, 4942, true)">
+            <span class="choice-letter">A</span>
+            <span>Okula zamanında varmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4943" 
+                  data-correct="false"
+                  onclick="selectChoice(2711, 4943, false)">
+            <span class="choice-letter">B</span>
+            <span>Alarm kurmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4944" 
+                  data-correct="false"
+                  onclick="selectChoice(2711, 4944, false)">
+            <span class="choice-letter">C</span>
+            <span>Kahvaltı yapmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4945" 
+                  data-correct="false"
+                  onclick="selectChoice(2711, 4945, false)">
+            <span class="choice-letter">D</span>
+            <span>Okul servisine binmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2711">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Problemin çıktısı, algoritmanın sonunda elde edilen sonuçtur. 'Okula zamanında varmak' problemi çözüldüğünde elde edilen sonuçtur. Diğer seçenekler (alarm kurmak, kahvaltı yapmak, okul servisine binmek) algoritmanın işlem adımlarıdır (girdi veya ara işlemler), çıktı değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2709" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi problem belirleme ve algoritma oluşturma sürecinin doğru sırasıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4938" 
+                  data-correct="true"
+                  onclick="selectChoice(2709, 4938, true)">
+            <span class="choice-letter">A</span>
+            <span>1. Problem belirle 2. Girdi ve çıktı belirle 3. İşlem adımlarını listele 4. Akış şeması çiz</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4939" 
+                  data-correct="false"
+                  onclick="selectChoice(2709, 4939, false)">
+            <span class="choice-letter">B</span>
+            <span>1. Akış şeması çiz 2. Problem belirle</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4940" 
+                  data-correct="false"
+                  onclick="selectChoice(2709, 4940, false)">
+            <span class="choice-letter">C</span>
+            <span>1. Kod yaz 2. Test et</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4941" 
+                  data-correct="false"
+                  onclick="selectChoice(2709, 4941, false)">
+            <span class="choice-letter">D</span>
+            <span>1. Çıktı belirle 2. Adım listele</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2709">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru sıra: Önce problem belirle (a), girdi/çıktı belirle (b), işlem adımlarını listele (c), akış şeması çiz (ç). Bu, anlamaya dayalı ve mantıksal bir süreçtir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2697" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Akış şemalarında 'karar' sembolü daima iki çıkış yoluna sahiptir (Evet/Hayır).</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4916" 
+                  data-correct="false"
+                  onclick="selectChoice(2697, 4916, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4917" 
+                  data-correct="true"
+                  onclick="selectChoice(2697, 4917, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2697">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Karar sembolü (eşkenar dörtgen) genellikle Evet/Hayır veya Doğru/Yanlış gibi iki çıkış yolu içerir. Ancak bazı durumlarda daha fazla seçenek de olabilir (örneğin: küçük, eşit, büyük). Temel mantık ikili olsa da her zaman iki yol zorunlu değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2700" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğretmen sınıfta 'Sınıfaki öğrencilerin en yüksek notunu bulma' problemi için algoritma oluşturmayı istiyor. Aşağıdaki adımlardan hangisi bu problemin çözümü için doğru bir işlem adımıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4918" 
+                  data-correct="true"
+                  onclick="selectChoice(2700, 4918, true)">
+            <span class="choice-letter">A</span>
+            <span>Notları gir, en büyüğünü bul, sonucu göster</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4919" 
+                  data-correct="false"
+                  onclick="selectChoice(2700, 4919, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece en yüksek notu tahmin et</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4920" 
+                  data-correct="false"
+                  onclick="selectChoice(2700, 4920, false)">
+            <span class="choice-letter">C</span>
+            <span>Tüm notları yan yana yaz</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4921" 
+                  data-correct="false"
+                  onclick="selectChoice(2700, 4921, false)">
+            <span class="choice-letter">D</span>
+            <span>Notları küçükten büyüğe sırala</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2700">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">En yüksek notu bulmak için önce tüm notlar girilmeli, sonra bir başlangıç değeri belirlenmeli (örneğin ilk öğrenci), ardından her öğrenci kontrol edilmeli ve en yüksek değer güncellenmeli, son olarak en yüksek değer çıktı olarak verilmelidir. Tüm notları tek tek yazmak tek başına yeterli değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2703" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdaki senaryolardan hangisinde 'Bisiklet lastiği patladı' problemi için girdi ve çıktı doğru belirlenmiştir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4928" 
+                  data-correct="true"
+                  onclick="selectChoice(2703, 4928, true)">
+            <span class="choice-letter">A</span>
+            <span>Girdi: Patlak lastik ve yama, Çıktı: Tamir edilmiş bisiklet</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4929" 
+                  data-correct="false"
+                  onclick="selectChoice(2703, 4929, false)">
+            <span class="choice-letter">B</span>
+            <span>Girdi: Bisiklet, Çıktı: Patlama</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4930" 
+                  data-correct="false"
+                  onclick="selectChoice(2703, 4930, false)">
+            <span class="choice-letter">C</span>
+            <span>Girdi: Zaman, Çıktı: Yürümek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4931" 
+                  data-correct="false"
+                  onclick="selectChoice(2703, 4931, false)">
+            <span class="choice-letter">D</span>
+            <span>Girdi: Hava pompası, Çıktı: Lastik</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2703">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru cevapta girdi (patlak lastik ve onarım malzemeleri) problemi çözmek için gerekli başlangıç unsurları, çıktı ise (tamir edilmiş bisiklet) problemin çözülmüş halidir. Bu, kazanımlar a ve b ile doğrudan ilişkilidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2707" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">İşlem adımlarını akış şeması ile göstermek, algoritma oluşturmanın bir parçası değildir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4936" 
+                  data-correct="false"
+                  onclick="selectChoice(2707, 4936, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4937" 
+                  data-correct="true"
+                  onclick="selectChoice(2707, 4937, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2707">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış. Kazanıma göre (ç) işlem adımlarını akış şeması ile göstermek algoritmanın görsel temsilidir ve anlamayı kolaylaştırır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2712" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir problemin algoritmasını oluştururken, işlem adımlarının sırasının önemi yoktur. Adımlar istenilen sırada yazılabilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4946" 
+                  data-correct="false"
+                  onclick="selectChoice(2712, 4946, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4947" 
+                  data-correct="true"
+                  onclick="selectChoice(2712, 4947, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2712">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade YANLIŞTIR. Algoritmada işlem adımlarının sırası kritik öneme sahiptir. Örneğin 'önce ayakkabı giy, sonra çorap giy' sırası mantıksal bir hatadır. Algoritma adımları mantıklı bir sırayla (genellikle başlangıçtan bitişe) dizilmelidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2714" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Mehmet, 'Sıcak bir çay demleme' probleminin algoritmasını yazıyor. Aşağıdaki seçeneklerden hangisi bu problemin GİRDİLERİNDEN (inputs) biri değildir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4948" 
+                  data-correct="true"
+                  onclick="selectChoice(2714, 4948, true)">
+            <span class="choice-letter">A</span>
+            <span>Demlenmiş çay</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4949" 
+                  data-correct="false"
+                  onclick="selectChoice(2714, 4949, false)">
+            <span class="choice-letter">B</span>
+            <span>Su</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4950" 
+                  data-correct="false"
+                  onclick="selectChoice(2714, 4950, false)">
+            <span class="choice-letter">C</span>
+            <span>Çay</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4951" 
+                  data-correct="false"
+                  onclick="selectChoice(2714, 4951, false)">
+            <span class="choice-letter">D</span>
+            <span>Çaydanlık</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2714">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Girdi, problemin çözümü için başlangıçta gereken malzemeler veya bilgilerdir. Su, çay ve çaydanlık çay demlemenin girdileridir (malzemeleri). 'Demlenmiş çay' ise algoritmanın sonucunda elde edilen çıktıdır, girdi değildir. Bu soru girdi-çıktı ayrımını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2719" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Can, 'Okul kantininde sıra beklemeden yemek alma' problemini çözmek istiyor. Aşağıdaki seçeneklerden hangisi bu problemin MANTIKLI bir girdisi olabilir? (Kavram yanılgısı: Öğrenciler 'girdi' kavramını sadece fiziksel nesneler olarak düşünebilir.)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4958" 
+                  data-correct="true"
+                  onclick="selectChoice(2719, 4958, true)">
+            <span class="choice-letter">A</span>
+            <span>Öğle arası saatinin başlaması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4959" 
+                  data-correct="false"
+                  onclick="selectChoice(2719, 4959, false)">
+            <span class="choice-letter">B</span>
+            <span>Kantin görevlisinin adı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4960" 
+                  data-correct="false"
+                  onclick="selectChoice(2719, 4960, false)">
+            <span class="choice-letter">C</span>
+            <span>Yemekhaneye gitmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4961" 
+                  data-correct="false"
+                  onclick="selectChoice(2719, 4961, false)">
+            <span class="choice-letter">D</span>
+            <span>Boş bir sıra bulmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2719">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu soru kavram yanılgısını ölçmektedir. Öğrenciler girdiyi genellikle sadece fiziksel nesneler (para, yemek kartı) olarak düşünür. Ancak 'öğle arası saati' de bir girdidir çünkü algoritmanın çalışması için gereken bilgidir (zaman bilgisi). Kantin görevlisi çıktıdır (etkileşim), yemekhaneye gitmek farklı bir çözüm yoludur, boş sıra bulmak ise algoritmanın bir adımıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2693" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı: Bir öğrenci 'Arabayı garaja park etme' problemi için girdi olarak 'araba' diyagramını, çıktı olarak 'garaj' diyagramını kullanıyor. Bu yaklaşım hakkında ne söylenebilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4908" 
+                  data-correct="true"
+                  onclick="selectChoice(2693, 4908, true)">
+            <span class="choice-letter">A</span>
+            <span>Girdi ve çıktı kavramları karıştırılmıştır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4909" 
+                  data-correct="false"
+                  onclick="selectChoice(2693, 4909, false)">
+            <span class="choice-letter">B</span>
+            <span>Doğru bir girdi-çıktı belirleme yapılmıştır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4910" 
+                  data-correct="false"
+                  onclick="selectChoice(2693, 4910, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece çıktı doğru belirlenmiştir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4911" 
+                  data-correct="false"
+                  onclick="selectChoice(2693, 4911, false)">
+            <span class="choice-letter">D</span>
+            <span>Problem tanımı hatalıdır</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2693">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu yaygın bir kavram yanılgısıdır. Girdiler, işlem yapılacak verilerdir (arabayı hareket ettirmek için gereken komutlar). Çıktılar ise işlem sonucunda elde edilen durumdur (arabanın garaja girmiş hali). Arabayı ve garajı doğrudan girdi-çıktı olarak belirlemek yanlıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2716" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdaki akış şeması sembollerinden hangisi 'karar verme' işlemini temsil eder? (Analiz: Bu soruda öğrencinin akış şeması sembollerinin anlamlarını bilmesi ve yorumlaması gerekmektedir.)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4952" 
+                  data-correct="true"
+                  onclick="selectChoice(2716, 4952, true)">
+            <span class="choice-letter">A</span>
+            <span>Baklava dilimi (Eşkenar dörtgen)</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4953" 
+                  data-correct="false"
+                  onclick="selectChoice(2716, 4953, false)">
+            <span class="choice-letter">B</span>
+            <span>Dikdörtgen</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4954" 
+                  data-correct="false"
+                  onclick="selectChoice(2716, 4954, false)">
+            <span class="choice-letter">C</span>
+            <span>Oval</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4955" 
+                  data-correct="false"
+                  onclick="selectChoice(2716, 4955, false)">
+            <span class="choice-letter">D</span>
+            <span>Paralel kenar</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2716">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Akış şemalarında baklava dilimi (eşkenar dörtgen) karar/koşul sembolüdür. İçine yazılan soruya göre evet/hayır veya doğru/yanlış dallanması yapılır. Dikdörtgen işlem, oval başlangıç/bitiş, paralel kenar girdi/çıktı sembolüdür. Bu soru analiz düzeyindedir çünkü öğrenci sembolün işlevini yorumlamalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2706" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">'Ev ödevimi yapmak' problemi için bir öğrenci şu adımları listelemiştir: 1. Kitap aç, 2. Kalem al, 3. Yaz. Bu listede hangi kavram yanılgısı vardır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4932" 
+                  data-correct="true"
+                  onclick="selectChoice(2706, 4932, true)">
+            <span class="choice-letter">A</span>
+            <span>Adımlar eksik ve sırasız; önce konuyu anlama adımı olmalı.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4933" 
+                  data-correct="false"
+                  onclick="selectChoice(2706, 4933, false)">
+            <span class="choice-letter">B</span>
+            <span>Adım sayısı az.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4934" 
+                  data-correct="false"
+                  onclick="selectChoice(2706, 4934, false)">
+            <span class="choice-letter">C</span>
+            <span>Adımlar gereksiz.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4935" 
+                  data-correct="false"
+                  onclick="selectChoice(2706, 4935, false)">
+            <span class="choice-letter">D</span>
+            <span>Yanılgı yok, yeterli.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2706">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kavram yanılgısı: Adımlar eksik ve mantıksız sıralıdır. Önce konuyu anlama, planlama gibi adımlar olmalıdır (kazanımlar c ve ç). Bu, algoritmanın tam ve sıralı olmasını gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2696" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Düzeyi: Bir kütüphanede kitap ödünç verme sistemi için algoritma oluşturulacaktır. Öğrenci kitabı almak istediğinde sistem şunları kontrol etmelidir: üyenin kayıtlı olup olmadığı, üyenin ceza borcu olup olmadığı, kitabın rafta olup olmadığı. Buna göre en uygun akış sıralaması hangi seçenekte doğru verilmiştir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4912" 
+                  data-correct="true"
+                  onclick="selectChoice(2696, 4912, true)">
+            <span class="choice-letter">A</span>
+            <span>Üye kaydı → Ceza borcu → Kitap durumu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4913" 
+                  data-correct="false"
+                  onclick="selectChoice(2696, 4913, false)">
+            <span class="choice-letter">B</span>
+            <span>Kitap durumu → Üye kaydı → Ceza borcu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4914" 
+                  data-correct="false"
+                  onclick="selectChoice(2696, 4914, false)">
+            <span class="choice-letter">C</span>
+            <span>Ceza borcu → Üye kaydı → Kitap durumu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4915" 
+                  data-correct="false"
+                  onclick="selectChoice(2696, 4915, false)">
+            <span class="choice-letter">D</span>
+            <span>Üçü aynı anda kontrol edilir</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2696">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu analiz düzeyi bir sorudur. Kontroller mantıksal bir sıraya göre yapılmalıdır. Önce üye kaydı kontrol edilmeli (kayıtlı değilse diğer kontrollere gerek yok), sonra ceza borcu kontrol edilmeli (borçluysa ödünç verilemez), en son kitap durumu kontrol edilmelidir. Bu sıralama verimlilik açısından önemlidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 14px;">
+        <a href="/contact" style="color: #6b7280; text-decoration: none;">İletişim</a>
+        <a href="/about" style="color: #6b7280; text-decoration: none;">Hakkımızda</a>
+        <a href="/privacy-policy" style="color: #6b7280; text-decoration: none;">Gizlilik Politikası</a>
+      </div>
+    </div>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Problem Belirleme ve Algoritma Oluşturma test soruları - 5. Sınıf Bilişim Teknolojileri ve Yazılım dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // Yanlış seçimi işaretle
+        if (btn.dataset.choiceId == choiceId && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>
