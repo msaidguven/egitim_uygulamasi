@@ -1,12 +1,9 @@
 import 'package:egitim_uygulamasi/main.dart';
-import 'package:egitim_uygulamasi/screens/unit_summary_screen.dart';
-import '../units_for_lesson_screen.dart' as units_screen;
 import 'unit_map_v2_screen.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:egitim_uygulamasi/models/profile_model.dart';
-import 'package:egitim_uygulamasi/viewmodels/profile_viewmodel.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class HomeV2Screen extends ConsumerStatefulWidget {
@@ -19,10 +16,9 @@ class HomeV2Screen extends ConsumerStatefulWidget {
 }
 
 class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
-  final TransformationController _transformationController =
-      TransformationController();
   List<Map<String, dynamic>> _agendaData = [];
   bool _isLoading = false;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -32,7 +28,7 @@ class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
 
   @override
   void dispose() {
-    _transformationController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -76,7 +72,6 @@ class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
 
     final lessonData = _agendaData.firstWhere(
       (item) {
-        // Öncelik ID eşleşmesinde
         if (lessonId != null && item['lesson_id'] == lessonId) return true;
         
         final dbName = item['lesson_name'].toString().toLowerCase();
@@ -88,8 +83,7 @@ class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
       orElse: () => {},
     );
 
-    final unitId = lessonData['current_unit_id'];
-    final foundLessonId = lessonData['lesson_id'];
+    final foundLessonId = lessonData['lesson_id'] ?? lessonId;
 
     if (foundLessonId != null && widget.profile!.gradeId != null) {
       Navigator.push(
@@ -103,9 +97,9 @@ class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
         ),
       );
     } else {
-      debugPrint('$lessonName için unitId veya lessonId bulunamadı. Agenda size: ${_agendaData.length}');
+      debugPrint('$lessonName için lessonId bulunamadı. Agenda size: ${_agendaData.length}');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$lessonName dersine ait aktif ünite bulunamadı.')),
+        SnackBar(content: Text('$lessonName dersine ait bilgi bulunamadı.')),
       );
     }
   }
@@ -134,6 +128,27 @@ class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
     );
   }
 
+  Color _getLessonColor(String name) {
+    final lower = name.toLowerCase();
+    if (lower.contains('mat')) return const Color(0xFF3B82F6);
+    if (lower.contains('fen')) return const Color(0xFF10B981);
+    if (lower.contains('türk')) return const Color(0xFFEF4444);
+    if (lower.contains('sos')) return const Color(0xFFF59E0B);
+    if (lower.contains('ing')) return const Color(0xFF8B5CF6);
+    return const Color(0xFF6366F1); // Default
+  }
+
+  IconData _getIconForLesson(String name) {
+     final lower = name.toLowerCase();
+     if (lower.contains('mat')) return Icons.calculate_rounded;
+     if (lower.contains('türk')) return Icons.menu_book_rounded;
+     if (lower.contains('fen')) return Icons.biotech_rounded;
+     if (lower.contains('sos')) return Icons.history_edu_rounded;
+     if (lower.contains('din')) return Icons.mosque_rounded;
+     if (lower.contains('ing')) return Icons.translate_rounded;
+     return Icons.school_rounded; // Default
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isLoggedIn = widget.profile != null;
@@ -151,7 +166,7 @@ class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
         : null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8FAFC), // Sade, temiz oyun arkaplanı
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -166,18 +181,21 @@ class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
       ),
       body: Stack(
         children: [
-          // 1. Harita Arka Planı (InteractiveViewer)
+          // 1. Yatay Scroll Haritası
           Positioned.fill(
-            child: _MapContainerV2(
-              onLessonTap: _handleLessonTap,
-            ),
+             child: _isLoading 
+                ? const Center(child: CircularProgressIndicator()) 
+                : _buildHorizontalMap(),
           ),
 
           // 2. HUD Panel (Sağ Üst)
           Positioned(
             top: 16,
             right: 16,
-            child: _FloatingHUD(agendaData: _agendaData),
+            child: _FloatingHUD(
+               agendaData: _agendaData,
+               getColorFn: _getLessonColor,
+            ),
           ),
 
           // 3. Alt Panel (BottomInfoPanel)
@@ -190,19 +208,76 @@ class _HomeV2ScreenState extends ConsumerState<HomeV2Screen> {
               lastStudied: lastStudied,
               onAction: () {
                 if (lastStudied != null) {
-                  _handleLessonTap(lastStudied['lesson_name']);
+                  _handleLessonTap(lastStudied['lesson_name'], lessonId: lastStudied['lesson_id']);
                 }
               },
             ),
           ),
-
-          if (_isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
         ],
       ),
     );
+  }
+
+  Widget _buildHorizontalMap() {
+     if (_agendaData.isEmpty) {
+        return const Center(child: Text("Sınıfınıza atanmış ders bulunamadı."));
+     }
+
+     return Center(
+        child: SingleChildScrollView(
+           controller: _scrollController,
+           scrollDirection: Axis.horizontal,
+           physics: const BouncingScrollPhysics(),
+           padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 4, 
+              vertical: 100
+           ),
+           child: SizedBox(
+              height: 380, // Zikzak yükseklik alanı
+              child: CustomPaint(
+                 painter: _LessonPathPainter(lessonsCount: _agendaData.length),
+                 child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: List.generate(_agendaData.length, (index) {
+                       return _buildLessonNodeWrapper(index);
+                    }),
+                 ),
+              ),
+           ),
+        ),
+     );
+  }
+
+  Widget _buildLessonNodeWrapper(int index) {
+      final item = _agendaData[index];
+      final lessonId = item['lesson_id'] as int;
+      final name = item['lesson_name'] as String;
+      
+      final color = _getLessonColor(name);
+      final icon = _getIconForLesson(name);
+
+      final int solvedQ = ((item['solved_questions'] ?? 0) as num).toInt();
+      final int totalQ = max(1, ((item['total_questions'] ?? 10) as num).toInt()); // 0'a bölme olmasın
+      final double progress = (solvedQ / totalQ).clamp(0.0, 1.0);
+
+      // Zik-Zak animasyonu için offset
+      final isUp = index % 2 == 0;
+      final yOffset = isUp ? -80.0 : 80.0;
+      
+      return Container(
+          width: 200, // Her bir düğüm arası mesafe
+          alignment: Alignment.center,
+          transform: Matrix4.translationValues(0, yOffset, 0),
+          child: _CourseIconV3(
+            label: name,
+            lessonId: lessonId,
+            icon: icon,
+            color: color,
+            progress: progress,
+            onTap: () => _handleLessonTap(name, lessonId: lessonId),
+          ),
+      );
   }
 }
 
@@ -212,7 +287,7 @@ class _LogoTextV3 extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(Icons.explore_rounded, color: Color(0xFF6366F1), size: 24),
+        const Icon(Icons.explore_rounded, color: Color(0xFF6366F1), size: 28),
         const SizedBox(width: 8),
         Text(
           'Öğrenme Haritası',
@@ -239,7 +314,7 @@ class _UserAvatar extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -261,198 +336,226 @@ class _UserAvatar extends StatelessWidget {
   }
 }
 
-class _MapContainerV2 extends StatelessWidget {
-  final void Function(String, {int? lessonId}) onLessonTap;
-
-  const _MapContainerV2({required this.onLessonTap});
+class _LessonPathPainter extends CustomPainter {
+   final int lessonsCount;
+   
+   _LessonPathPainter({required this.lessonsCount});
 
   @override
-  Widget build(BuildContext context) {
-    return InteractiveViewer(
-      panEnabled: true,
-      scaleEnabled: false,
-      minScale: 1.0,
-      maxScale: 1.0,
-      constrained: false,
-      boundaryMargin: const EdgeInsets.all(500),
-      child: Stack(
-        children: [
-          // Harita Görseli
-          Image.asset(
-            'assets/images/turkey_map_v2.png',
-            width: 1500, // Geniş harita daha iyi pan tecrübesi sağlar
-            fit: BoxFit.cover,
-          ),
+  void paint(Canvas canvas, Size size) {
+    if (lessonsCount < 2) return;
 
-          // Ders İkonları - Türkiye Haritası üzerinde responsive konumlandırma (Tahmini %)
-          _CourseIconV2(
-            label: 'Matematik',
-            lessonId: 1,
-            top: 250, // Marmara/İstanbul civarı
-            left: 280,
-            icon: Icons.calculate_rounded,
-            color: const Color(0xFF3B82F6),
-            onTap: () => onLessonTap('Matematik', lessonId: 1),
-          ),
-          _CourseIconV2(
-            label: 'Türkçe',
-            lessonId: 2,
-            top: 350, // Doğu Anadolu civarı
-            left: 1100,
-            icon: Icons.menu_book_rounded,
-            color: const Color(0xFFEF4444),
-            onTap: () => onLessonTap('Türkçe', lessonId: 2),
-          ),
-          _CourseIconV2(
-            label: 'Fen Bilimleri',
-            lessonId: 3,
-            top: 380, // İç Anadolu/Ankara civarı
-            left: 650,
-            icon: Icons.biotech_rounded,
-            color: const Color(0xFF10B981),
-            onTap: () => onLessonTap('Fen Bilimleri', lessonId: 3),
-          ),
-          _CourseIconV2(
-            label: 'Sosyal Bilgiler',
-            lessonId: 4,
-            top: 500, // Ege civarı
-            left: 200,
-            icon: Icons.history_edu_rounded,
-            color: const Color(0xFFF59E0B),
-            onTap: () => onLessonTap('Sosyal Bilgiler', lessonId: 4),
-          ),
-          _CourseIconV2(
-            label: 'İngilizce',
-            lessonId: 6,
-            top: 650, // Akdeniz civarı
-            left: 450,
-            icon: Icons.translate_rounded,
-            color: const Color(0xFF8B5CF6),
-            onTap: () => onLessonTap('İngilizce', lessonId: 6),
-          ),
-        ],
-      ),
-    );
+    final double nodeWidth = 200.0;
+    
+    // Çizgi Stilleri
+    final Paint linePaint = Paint()
+      ..color = Colors.grey.shade300
+      ..strokeWidth = 6.0
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    for (int i = 0; i < lessonsCount - 1; i++) {
+        final isUp1 = i % 2 == 0;
+        final isUp2 = (i + 1) % 2 == 0;
+        
+        final dx1 = (i * nodeWidth) + (nodeWidth / 2);
+        final dy1 = (size.height / 2) + (isUp1 ? -80.0 : 80.0);
+        
+        final dx2 = ((i + 1) * nodeWidth) + (nodeWidth / 2);
+        final dy2 = (size.height / 2) + (isUp2 ? -80.0 : 80.0);
+        
+        final p1 = Offset(dx1, dy1);
+        final p2 = Offset(dx2, dy2);
+
+        final path = Path();
+        path.moveTo(p1.dx, p1.dy);
+        
+        // Bezier eğrisi
+        final controlPoint1 = Offset(dx1 + (nodeWidth / 3), dy1);
+        final controlPoint2 = Offset(dx2 - (nodeWidth / 3), dy2);
+        
+        path.cubicTo(
+           controlPoint1.dx, controlPoint1.dy, 
+           controlPoint2.dx, controlPoint2.dy, 
+           p2.dx, p2.dy
+        );
+
+        canvas.drawPath(path, linePaint);
+    }
   }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class _CourseIconV2 extends StatelessWidget {
-  final double top;
-  final double left;
+class _CourseIconV3 extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
   final VoidCallback onTap;
-  final int? lessonId;
+  final int lessonId;
+  final double progress;
 
-  const _CourseIconV2({
-    required this.top,
-    required this.left,
+  const _CourseIconV3({
     required this.icon,
     required this.label,
     required this.color,
     required this.onTap,
-    this.lessonId,
+    required this.lessonId,
+    required this.progress,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: top,
-      left: left,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                // Pulsating Glow
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: color.withOpacity(0.4),
-                        blurRadius: 15,
-                        spreadRadius: 5,
-                      ),
-                    ],
-                  ),
-                )
-                    .animate(onPlay: (controller) => controller.repeat(reverse: true))
-                    .scale(begin: const Offset(1, 1), end: const Offset(1.3, 1.3), duration: 1000.ms)
-                    .fadeOut(duration: 1000.ms),
+    bool hasProgress = progress > 0;
 
-                // Main Icon
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: color, width: 3),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Icon(icon, color: color, size: 28),
+    Widget content = GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              // Pulse Glow Animation
+              Container(
+                width: 75,
+                height: 75,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withValues(alpha: 0.3),
+                      blurRadius: 15,
+                      spreadRadius: 8,
+                    ),
+                  ],
+                ),
+              ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+               .scale(begin: const Offset(1, 1), end: const Offset(1.2, 1.2), duration: 2000.ms)
+               .fadeOut(duration: 2000.ms),
+
+              // Main Circular Icon
+              Container(
+                width: 65,
+                height: 65,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: color, width: 4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Center(
+                   // Eğer %100 değilse progress indicator
+                   child: hasProgress 
+                      ? Stack(
+                          alignment: Alignment.center,
+                          children: [
+                             CircularProgressIndicator(
+                                value: progress,
+                                backgroundColor: Colors.transparent,
+                                color: color.withValues(alpha: 0.3),
+                                strokeWidth: 5,
+                             ),
+                             Icon(icon, color: color, size: 30),
+                          ],
+                        )
+                      : Icon(icon, color: color, size: 30),
+                ),
+              ),
+
+              // Progress Badge
+              if (hasProgress)
+                 Positioned(
+                    top: -5,
+                    right: -5,
+                    child: Container(
+                       padding: const EdgeInsets.all(4),
+                       decoration: BoxDecoration(
+                          color: const Color(0xFF0F172A),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: color, width: 2),
+                       ),
+                       child: Text(
+                          '%${(progress * 100).toInt()}',
+                          style: const TextStyle(
+                             color: Colors.white,
+                             fontSize: 9,
+                             fontWeight: FontWeight.bold,
+                          ),
+                       ),
+                    ),
+                 )
+            ],
+          ),
+          const SizedBox(height: 12),
+          
+          // Modern Label
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.grey.shade200),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 5,
-                  ),
-                ],
-              ),
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: Colors.grey.shade900,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: Colors.grey.shade900,
+                fontWeight: FontWeight.w800,
+                fontSize: 12,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+
+    // Floating effect
+    return content.animate(onPlay: (c) => c.repeat())
+                  .moveY(begin: -6, end: 6, duration: 2500.ms, curve: Curves.easeInOutSine)
+                  .then()
+                  .moveY(begin: 6, end: -6, duration: 2500.ms, curve: Curves.easeInOutSine);
   }
 }
 
 class _FloatingHUD extends StatelessWidget {
   final List<Map<String, dynamic>> agendaData;
-  const _FloatingHUD({required this.agendaData});
+  final Color Function(String) getColorFn;
+
+  const _FloatingHUD({
+     required this.agendaData,
+     required this.getColorFn,
+  });
 
   @override
   Widget build(BuildContext context) {
+    if (agendaData.isEmpty) return const SizedBox.shrink();
+
     return Container(
-      width: 140,
+      width: 150,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(20),
+        color: Colors.white.withValues(alpha: 0.95),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
         ],
         border: Border.all(color: Colors.white),
@@ -461,32 +564,48 @@ class _FloatingHUD extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'İlerleme',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+          Row(
+             children: [
+                Icon(Icons.bar_chart_rounded, size: 16, color: Colors.indigo.shade400),
+                const SizedBox(width: 4),
+                const Text(
+                  'Genel Durum',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+             ],
           ),
           const Divider(height: 12),
           ...agendaData.take(4).map((item) {
             final double progress = ((item['solved_questions'] ?? 0) as num).toDouble() /
                 (max(1, ((item['total_questions'] ?? 10) as num).toInt()).toDouble());
+            final color = getColorFn(item['lesson_name']);
             return Padding(
-              padding: const EdgeInsets.only(bottom: 6),
+              padding: const EdgeInsets.only(bottom: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    item['lesson_name'],
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+                  Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                     children: [
+                        Text(
+                          item['lesson_name'],
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.grey.shade700),
+                        ),
+                        Text(
+                           '%${(progress * 100).toInt()}',
+                           style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: color),
+                        )
+                     ],
                   ),
-                  const SizedBox(height: 2),
-                  LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 4,
-                    backgroundColor: Colors.grey.shade200,
-                    color: progress > 0 
-                      ? _getLessonColor(item['lesson_name'])
-                      : Colors.grey.shade400,
-                    borderRadius: BorderRadius.circular(2),
+                  const SizedBox(height: 4),
+                  ClipRRect(
+                     borderRadius: BorderRadius.circular(4),
+                     child: LinearProgressIndicator(
+                       value: progress > 0 ? progress : 0,
+                       minHeight: 5,
+                       backgroundColor: Colors.grey.shade200,
+                       color: progress > 0 ? color : Colors.grey.shade400,
+                     ),
                   ),
                 ],
               ),
@@ -495,14 +614,6 @@ class _FloatingHUD extends StatelessWidget {
         ],
       ),
     ).animate().slideX(begin: 1).fadeIn();
-  }
-
-  Color _getLessonColor(String name) {
-    if (name.contains('Mat')) return Colors.blue;
-    if (name.contains('Fen')) return Colors.green;
-    if (name.contains('Türk')) return Colors.red;
-    if (name.contains('Sos')) return Colors.orange;
-    return Colors.purple;
   }
 }
 
@@ -520,7 +631,7 @@ class _BottomInfoPanelV2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title = isLoggedIn ? '📌 Son Çalıştığın' : 'Hoş geldin 👋';
-    String subtitle = isLoggedIn ? 'Veri yükleniyor...' : 'Başlamak için ders seç';
+    String subtitle = isLoggedIn ? 'Derse devam etmek için tıkla' : 'Başlamak için haritadan ders seç';
 
     if (isLoggedIn && lastStudied != null) {
       title = '📌 Son Çalıştığın: ${lastStudied!['lesson_name']}';
@@ -532,11 +643,11 @@ class _BottomInfoPanelV2 extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: const Color(0xFF0F172A), // Slate 900
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1E293B).withOpacity(0.3),
+            color: const Color(0xFF0F172A).withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -556,7 +667,10 @@ class _BottomInfoPanelV2 extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                const SizedBox(height: 2),
                 Text(
                   subtitle,
                   style: TextStyle(
@@ -569,13 +683,15 @@ class _BottomInfoPanelV2 extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(width: 12),
           ElevatedButton(
             onPressed: onAction,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6366F1),
+              backgroundColor: const Color(0xFF6366F1), // Indigo 500
               foregroundColor: Colors.white,
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              elevation: 4,
+              shadowColor: const Color(0xFF6366F1).withValues(alpha: 0.5),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -587,7 +703,7 @@ class _BottomInfoPanelV2 extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().slideY(begin: 1, duration: 500.ms, curve: Curves.easeOutCubic);
+    ).animate().slideY(begin: 1, duration: 600.ms, curve: Curves.easeOutCubic);
   }
 }
 
