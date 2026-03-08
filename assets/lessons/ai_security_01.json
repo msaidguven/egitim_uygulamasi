@@ -1,0 +1,104 @@
+{
+    "lesson_id": "ai_security_01",
+    "title": "Yapay Zekâda Güvenlik",
+    "steps": [
+        {
+            "type": "intro",
+            "title": "Giriş",
+            "text": "Telefonumuzdaki yüz tanıma sistemi, video önerileri yapan uygulamalar ya da sesli asistanlar… Hepsi yapay zekâ kullanır. Peki bu sistemler bilgilerimizi nasıl kullanır? Güvenli midir? Bu derste yapay zekâ kullanırken güvenlik, gizlilik ve etik kuralların neden önemli olduğunu öğreneceğiz."
+        },
+        {
+            "type": "concept_cards",
+            "title": "Temel Bilgiler",
+            "items": [
+                {
+                    "title": "Yapay zekâ",
+                    "description": "Bilgisayarların insan gibi öğrenmesini ve karar vermesini sağlayan teknolojidir."
+                },
+                {
+                    "title": "Gizlilik",
+                    "description": "Kişisel bilgilerin izinsiz paylaşılmamasıdır."
+                },
+                {
+                    "title": "Bilgi güvenliği",
+                    "description": "Verilerin korunması ve kötü kişilerin eline geçmemesidir."
+                },
+                {
+                    "title": "Etik",
+                    "description": "Doğru ve adil davranma kurallarıdır."
+                }
+            ]
+        },
+        {
+            "type": "info_list",
+            "title": "Yapay Zekâ Riskleri",
+            "items": [
+                "Kişisel bilgilerin izinsiz paylaşılması",
+                "Yanlış veya eksik verilerle hatalı karar verilmesi",
+                "İnsanlara karşı adaletsiz sonuçlar oluşturulması"
+            ]
+        },
+        {
+            "type": "info_list",
+            "title": "Güvenli Kullanım İçin",
+            "items": [
+                "Güçlü şifre kullanmak",
+                "Kişisel bilgileri herkese açık paylaşmamak",
+                "Uygulamaların gizlilik ayarlarını kontrol etmek",
+                "Verilerin şifrelenmesi"
+            ]
+        },
+        {
+            "type": "example",
+            "title": "Günlük Hayat Örneği",
+            "scenario": "Bir video platformu izlediğin videolara göre yeni öneriler sunar.",
+            "explanation": "Bu öneriler yapay zekâ sayesinde oluşur. Ancak sistem hangi videoları izlediğini kaydeder."
+        },
+        {
+            "type": "scenario_choice",
+            "title": "Uygulama Örneği",
+            "question": "Bir mobil uygulama senden konum bilgini sürekli açık tutmanı istiyor. Ne yapmalısın?",
+            "options": [
+                "Hiç düşünmeden izin vermek",
+                "Uygulamanın neden konum istediğini kontrol etmek",
+                "Telefonu kapatmak"
+            ],
+            "correct": 1,
+            "explanation": "Uygulamanın neden konum istediğini kontrol etmeli ve gerekmiyorsa kapatmalısın."
+        },
+        {
+            "type": "reflection",
+            "title": "Mini Etkinlik",
+            "question": "Kullandığın bir uygulamayı düşün. Hangi bilgilerini istiyor?"
+        },
+        {
+            "type": "quiz",
+            "title": "Kendini Test Et",
+            "questions": [
+                {
+                    "question": "Yapay zekâda gizlilik ne anlama gelir?",
+                    "options": [
+                        "Kişisel bilgilerin korunması",
+                        "Verilerin herkese açık olması",
+                        "Sadece yetişkinlerin bilgilerini koruma"
+                    ],
+                    "answer": 0
+                },
+                {
+                    "question": "Yanlış veri kullanılması yapay zekâ kararlarını nasıl etkiler?",
+                    "options": [
+                        "Hatalı sonuçlara yol açar",
+                        "Her zaman doğru karar verir",
+                        "Sistemi hızlandırır"
+                    ],
+                    "answer": 0
+                }
+            ]
+        },
+        {
+            "type": "summary",
+            "title": "Özet",
+            "text": "Yapay zekâ hayatımızı kolaylaştırır ancak güvenlik ve gizlilik riskleri içerir. Kişisel verilerin korunması ve etik kurallara uyulması çok önemlidir."
+        }
+    ]
+}

@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bir Sure Öğreniyorum: Kevser Suresi Test Soruları -...</title>
+  <meta name="description" content="18 soru ile Bir Sure Öğreniyorum: Kevser Suresi konusunu pekiştir ve başarını ölç. 5. Sınıf Din Kültürü ve Ahlak Bilgisi dersi Kur’an-ı Kerim ünitesi...">
+  <meta name="keywords" content="Bir Sure Öğreniyorum: Kevser Suresi test, Bir Sure Öğreniyorum: Kevser Suresi sorular, Din Kültürü ve Ahlak Bilgisi quiz, 5. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bir Sure Öğreniyorum: Kevser Suresi Test Soruları -...">
+  <meta property="og:description" content="18 soru ile Bir Sure Öğreniyorum: Kevser Suresi konusunu pekiştir ve başarını ölç. 5. Sınıf Din Kültürü ve Ahlak Bilgisi dersi Kur’an-ı Kerim ünitesi...">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/din-kulturu-ve-ahlak-bilgisi/">Din Kültürü ve Ahlak Bilgisi</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/din-kulturu-ve-ahlak-bilgisi/kur-an-i-kerim/">Kur’an-ı Kerim</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Bir Sure Öğreniyorum: Kevser Suresi Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Bir Sure Öğreniyorum: Kevser Suresi - Test Soruları</h1>
+      <div class="meta">18 Soru • 5. Sınıf Din Kültürü ve Ahlak Bilgisi</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/5-sinif/din-kulturu-ve-ahlak-bilgisi/kur-an-i-kerim/bir-sure-ogreniyorum-kevser-suresi/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="2741" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser suresinde geçen "Kevser" kelimesinin anlamı aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5002" 
+                  data-correct="true"
+                  onclick="selectChoice(2741, 5002, true)">
+            <span class="choice-letter">A</span>
+            <span>Bolluk ve bereket</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5003" 
+                  data-correct="false"
+                  onclick="selectChoice(2741, 5003, false)">
+            <span class="choice-letter">B</span>
+            <span>Namaz ve ibadet</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5004" 
+                  data-correct="false"
+                  onclick="selectChoice(2741, 5004, false)">
+            <span class="choice-letter">C</span>
+            <span>Kuran ve hadis</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5005" 
+                  data-correct="false"
+                  onclick="selectChoice(2741, 5005, false)">
+            <span class="choice-letter">D</span>
+            <span>Cennet ve nimet</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2741">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kevser kelimesi Arapça 'k-v-s-r' kökünden gelir ve 'çok büyük nimet', 'bolluk', 'bereket' anlamlarına gelir. Kur'an-ı Kerim'de pek çok nimetin en büyüğü olarak tanımlanmıştır. Bu nedenle doğru cevap 'bolluk ve bereket' olmalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2725" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser suresi, Allah’ın verdiği nimetlere karşı şükretmenin önemini vurgular.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4976" 
+                  data-correct="true"
+                  onclick="selectChoice(2725, 4976, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4977" 
+                  data-correct="false"
+                  onclick="selectChoice(2725, 4977, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2725">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Kevser suresi Allah’ın verdiği büyük nimetleri hatırlatır ve bunun karşılığında ibadet edilmesini yani şükredilmesini öğütler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2721" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser suresinde Allah’ın Peygamberimize verdiği nimet karşısında hangi davranışın yapılması öğütlenir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4962" 
+                  data-correct="true"
+                  onclick="selectChoice(2721, 4962, true)">
+            <span class="choice-letter">A</span>
+            <span>Allah için namaz kılmak ve şükretmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4963" 
+                  data-correct="false"
+                  onclick="selectChoice(2721, 4963, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece sessiz kalmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4964" 
+                  data-correct="false"
+                  onclick="selectChoice(2721, 4964, false)">
+            <span class="choice-letter">C</span>
+            <span>İnsanlardan uzaklaşmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4965" 
+                  data-correct="false"
+                  onclick="selectChoice(2721, 4965, false)">
+            <span class="choice-letter">D</span>
+            <span>Hiçbir şey yapmamak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2721">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kevser suresinde Allah'ın Peygamberimize büyük bir nimet verdiği belirtilir ve bunun karşılığında Allah için namaz kılmak ve ibadet etmek öğütlenir. Bu nedenle doğru cevap ibadet ederek şükretmektir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2733" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser Suresi'nde 'Rabbin için namaz kıl ve kurban kes' emri, sadece dini ritüelleri yerine getirmeyi değil, aynı zamanda şükür ve bağlılık duygusunu da ifade eder.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4990" 
+                  data-correct="true"
+                  onclick="selectChoice(2733, 4990, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4991" 
+                  data-correct="false"
+                  onclick="selectChoice(2733, 4991, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2733">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğru. Bu ayet sadece namaz ve kurban ibadetlerinin yapılmasını emretmekle kalmaz, aynı zamanda verilen nimetlere karşı şükür etme, Allah'a olan bağlılığı gösterme ve kulluk bilincini yaşama anlamını taşır. İbadetlerin içsel boyutunu ve manevi derinliğini vurgular.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2722" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser kelimesinin anlamı aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4966" 
+                  data-correct="true"
+                  onclick="selectChoice(2722, 4966, true)">
+            <span class="choice-letter">A</span>
+            <span>Bolluk ve bereket</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4967" 
+                  data-correct="false"
+                  onclick="selectChoice(2722, 4967, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece nehir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4968" 
+                  data-correct="false"
+                  onclick="selectChoice(2722, 4968, false)">
+            <span class="choice-letter">C</span>
+            <span>Zorluk ve sıkıntı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4969" 
+                  data-correct="false"
+                  onclick="selectChoice(2722, 4969, false)">
+            <span class="choice-letter">D</span>
+            <span>Sessizlik</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2722">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kevser kelimesi Arapçada bolluk, bereket ve çok büyük nimet anlamına gelir. Bu nedenle doğru seçenek bolluk ve bereket anlamıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2724" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser suresi Kur’an-ı Kerim’in en uzun surelerinden biridir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4974" 
+                  data-correct="false"
+                  onclick="selectChoice(2724, 4974, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4975" 
+                  data-correct="true"
+                  onclick="selectChoice(2724, 4975, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2724">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Kevser suresi Kur’an-ı Kerim’in en kısa surelerinden biridir ve üç ayetten oluşur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2723" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdaki davranışlardan hangisi Kevser suresinin mesajına uygun bir davranıştır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4970" 
+                  data-correct="true"
+                  onclick="selectChoice(2723, 4970, true)">
+            <span class="choice-letter">A</span>
+            <span>Sahip olduğu nimetler için Allah'a şükretmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4971" 
+                  data-correct="false"
+                  onclick="selectChoice(2723, 4971, false)">
+            <span class="choice-letter">B</span>
+            <span>Nimetleri önemsememek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4972" 
+                  data-correct="false"
+                  onclick="selectChoice(2723, 4972, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece kendini düşünmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4973" 
+                  data-correct="false"
+                  onclick="selectChoice(2723, 4973, false)">
+            <span class="choice-letter">D</span>
+            <span>Başkalarının iyiliğini görmezden gelmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2723">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kevser suresi insanların Allah'ın verdiği nimetlere şükretmesini ve ibadet etmesini öğütler. Bu nedenle nimetlerin farkına varıp teşekkür etmek surenin mesajına uygundur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2731" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser Suresi'nin son ayetinde geçen 'ebter' kelimesi aşağıdaki anlamlardan hangisini taşır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4982" 
+                  data-correct="true"
+                  onclick="selectChoice(2731, 4982, true)">
+            <span class="choice-letter">A</span>
+            <span>Soyu kesilmiş, sonu gelmiş</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4983" 
+                  data-correct="false"
+                  onclick="selectChoice(2731, 4983, false)">
+            <span class="choice-letter">B</span>
+            <span>Zengin ve refah içinde olan</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4984" 
+                  data-correct="false"
+                  onclick="selectChoice(2731, 4984, false)">
+            <span class="choice-letter">C</span>
+            <span>Çok çocuk sahibi olan</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4985" 
+                  data-correct="false"
+                  onclick="selectChoice(2731, 4985, false)">
+            <span class="choice-letter">D</span>
+            <span>Her zaman kazanan</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2731">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">'Ebter' kelimesi Arapça'da 'kesilmiş, kopuk, soyunu kesilmiş' anlamına gelir. Surede bu kelime, Peygamber Efendimiz'e (s.a.v.) düşmanlık edenlerin hatırlarının ve soyunun kesileceğini ifade eder. Bu, kötü niyetli kişilerin iyilik yapanların karşısında sonuçsuz kalacağı mesajını verir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2734" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser Suresi, Peygamber Efendimiz'e (s.a.v.) düşmanlık edenlerin soyunun tükenmesini haber verdiği için bir öfke ve intikam suresidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4992" 
+                  data-correct="false"
+                  onclick="selectChoice(2734, 4992, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4993" 
+                  data-correct="true"
+                  onclick="selectChoice(2734, 4993, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2734">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Yanlış. Kevser Suresi asla öfke veya intikam suresi değildir. Surenin ana teması 'bolluk ve bereket'tir. Son ayette geçen 'ebter' ifadesi, hakikate düşmanlık edenlerin sonuçsuz kalacağını, iyiliğin ve doğrunun galip geleceğini ifade eden bir teselli ve müjdedir. Bu, adaletin tecellisi olarak değerlendirilmelidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2738" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, Kevser Suresi'ni öğrendikten sonra her gün namazlarını vaktinde kılıyor ve kumanyasından arkadaşlarına pay veriyor. Bu davranışlar surenin hangi kazanımıyla doğrudan ilişkilidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4994" 
+                  data-correct="false"
+                  onclick="selectChoice(2738, 4994, false)">
+            <span class="choice-letter">A</span>
+            <span>Sadece sureyi ezberlemesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4995" 
+                  data-correct="true"
+                  onclick="selectChoice(2738, 4995, true)">
+            <span class="choice-letter">B</span>
+            <span>Surenin anlamını hayatına uygulaması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4996" 
+                  data-correct="false"
+                  onclick="selectChoice(2738, 4996, false)">
+            <span class="choice-letter">C</span>
+            <span>Surenin Arapça'sını öğrenmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4997" 
+                  data-correct="false"
+                  onclick="selectChoice(2738, 4997, false)">
+            <span class="choice-letter">D</span>
+            <span>Surenin tarihçesini bilmesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2738">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu davranışlar, 'Kevser suresinin anlamını kendi hayatı için anlamlı bir hâle getirir' kazanımıyla doğrudan ilişkilidir. Öğrenci, suredeki 'namaz kıl ve kurban kes' emrini pratiğe dökmüş (ibadet) ve 'kevser' kavramının bolluk-paylaşma boyutunu arkadaşlarına kumanya vererek yaşama geçirmiştir. Bu, surenin hayata tatbik edilmesidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2742" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser suresi Mekke döneminde inmiştir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5006" 
+                  data-correct="true"
+                  onclick="selectChoice(2742, 5006, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5007" 
+                  data-correct="false"
+                  onclick="selectChoice(2742, 5007, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2742">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kevser suresi Mekke döneminde inen surelerdendir. Mekke döneminde inen sureler genellikle inanç esasları, Allah'ın birliği ve peygamberlik konularını işler. Kevser suresi de bu dönemde inmiş olup Hz. Peygamber'i teskin etmek ve ona verilen büyük nimetleri hatırlatmak amacıyla nazil olmuştur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2743" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser suresinin sonlarında hangi ibadet emredilmektedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5008" 
+                  data-correct="true"
+                  onclick="selectChoice(2743, 5008, true)">
+            <span class="choice-letter">A</span>
+            <span>Namaz kıl ve kurban kes</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5009" 
+                  data-correct="false"
+                  onclick="selectChoice(2743, 5009, false)">
+            <span class="choice-letter">B</span>
+            <span>Oruç tut ve zekat ver</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5010" 
+                  data-correct="false"
+                  onclick="selectChoice(2743, 5010, false)">
+            <span class="choice-letter">C</span>
+            <span>Hacca git ve sadaka ver</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5011" 
+                  data-correct="false"
+                  onclick="selectChoice(2743, 5011, false)">
+            <span class="choice-letter">D</span>
+            <span>Tesbih çek ve dua et</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2743">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kevser suresinin ikinci ayetinde 'Namaz kıl ve kurban kes' ifadesi geçmektedir. Bu ayet, Müslümanların en önemli ibadetlerinden olan namazı ve Allah'a kurban sunma ibadetini emretmektedir. Her iki ibadet de Müslümanların Allah'a yakınlaşması ve O'na şükretmesi için yapılan önemli ibadetlerdir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2747" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser suresi, Müslümanlara sadece dua etmeyi emreder, namaz emretmez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5016" 
+                  data-correct="false"
+                  onclick="selectChoice(2747, 5016, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5017" 
+                  data-correct="true"
+                  onclick="selectChoice(2747, 5017, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2747">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Kevser suresinin ikinci ayetinde açıkça 'enşita ve l-lehi kurbân' yani 'namaz kıl ve kurban kes' ifadesi geçmektedir. Surenin bu emri, namazın Müslüman hayatındaki önemini vurgular. Namaz, İslam'ın beş temel şartından biri olup günde beş vakit kılınması farz kılınmıştır. Bu nedenle surenin sadece dua emrettiği ifadesi yanlıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2732" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser Suresi'nin ilk ayetinde geçen 'Kevser' kelimesi hangi kavramı temsil eder? (Kavram yanılgısı ölçümü)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4986" 
+                  data-correct="false"
+                  onclick="selectChoice(2732, 4986, false)">
+            <span class="choice-letter">A</span>
+            <span>Yalnızca cennetteki bir nehir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4987" 
+                  data-correct="true"
+                  onclick="selectChoice(2732, 4987, true)">
+            <span class="choice-letter">B</span>
+            <span>Bolluk, bereket ve faziletlerin tamamı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4988" 
+                  data-correct="false"
+                  onclick="selectChoice(2732, 4988, false)">
+            <span class="choice-letter">C</span>
+            <span>Mekke'deki bir pınar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4989" 
+                  data-correct="false"
+                  onclick="selectChoice(2732, 4989, false)">
+            <span class="choice-letter">D</span>
+            <span>Zenginlik ve mal mülk</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2732">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kevser kelimesi Arapça'da 'bolluk, bereket, fazilet, hayır' gibi anlamlara gelir. Öğrenciler genellikle bu kelimeyi sadece 'cennetteki bir nehir' olarak algılarlar. Ancak sure bağlamında Kevser, Peygamber Efendimiz'e (s.a.v.) verilen büyük nimetleri, ümmetinin çokluğunu, Kur'an'ı ve tüm hayırlı şeyleri kapsayan geniş bir bolluk ve bereket kavramıdır. Sadece nehir olarak düşünmek kavramı daraltmaktadır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2749" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kevser suresini günlük hayatımızda nasıl anlamlandırabiliriz? Aşağıdakilerden hangisi en uygun uygulamadır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5018" 
+                  data-correct="true"
+                  onclick="selectChoice(2749, 5018, true)">
+            <span class="choice-letter">A</span>
+            <span>Sahip olduğum nimetleri fark edip şükretmek için namazlarımı düzenli kılmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5019" 
+                  data-correct="false"
+                  onclick="selectChoice(2749, 5019, false)">
+            <span class="choice-letter">B</span>
+            <span>Her gün Kuran'ı kerim'i baştan sona okumak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5020" 
+                  data-correct="false"
+                  onclick="selectChoice(2749, 5020, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece bayramlarda kurban kesmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5021" 
+                  data-correct="false"
+                  onclick="selectChoice(2749, 5021, false)">
+            <span class="choice-letter">D</span>
+            <span>Kevser suresini ezberlemek yeterlidir, anlamını düşünmeye gerek yoktur</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2749">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu soru analiz düzeyinde bir sorudur. Kevser suresinin anlamını günlük hayata uygulamak, öğrenmenin en üst düzeyidir. Sahip olduğumuz nimetleri fark etmek (aile, sağlık, eğitim, arkadaşlar), bu nimetler için şükretmek ve namaz gibi ibadetleri düzenli yapmak, surenin bizim için anlamlı hale gelmesini sağlar. Diğer seçenekler ya yüzeysel ya da yanlış uygulamalardır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2746" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci 'Kevser suresi sadece cennetteki bir ırmak anlatıyor' diyor. Bu ifade hakkında ne söyleyebilirsiniz?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5012" 
+                  data-correct="true"
+                  onclick="selectChoice(2746, 5012, true)">
+            <span class="choice-letter">A</span>
+            <span>Kısmen doğru, ancak Kevser sadece ırmak değil tüm nimetleri temsil eder</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5013" 
+                  data-correct="false"
+                  onclick="selectChoice(2746, 5013, false)">
+            <span class="choice-letter">B</span>
+            <span>Kesinlikle doğru, Kevser sadece cennetteki ırmaktır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5014" 
+                  data-correct="false"
+                  onclick="selectChoice(2746, 5014, false)">
+            <span class="choice-letter">C</span>
+            <span>Yanlış, Kevser diye bir kavram yoktur</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5015" 
+                  data-correct="false"
+                  onclick="selectChoice(2746, 5015, false)">
+            <span class="choice-letter">D</span>
+            <span>Doğru, çünkü ayette ırmak açıkça belirtilmiştir</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2746">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade kavram yanılgısı içermektedir. Kevser suresinde cennetteki Kevser ırmğından bahsedilse de, aslında surenin ana temi çok daha geniştir. Kevser, Allah'ın Hz. Peygamber'e ve Müslümanlara verdiği tüm nimetleri temsil eder. Bu nimetler arasında Kur'an, peygamberlik, Müslüman topluluk, ibadetler ve cennet nimetleri sayılabilir. Surenin ana mesajı, bu nimetlere şükretmek ve namaz ile kurban gibi ibadetlerle Allah'a yakınlaşmaktır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2739" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ayşe, Kevser Suresi'ni okurken 'kevser' kelimesinin sadece 'çok su' anlamına geldiğini düşünüyor. Ancak öğretmeni bu kelimenin 'çok bereket, fazilet ve hayır' gibi geniş anlamları da kapsadığını açıklıyor. Ayşe'nin ilk düşüncesi hangi hataya örnektir? (Analiz düzeyi)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4998" 
+                  data-correct="true"
+                  onclick="selectChoice(2739, 4998, true)">
+            <span class="choice-letter">A</span>
+            <span>Kavram yanılgısı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4999" 
+                  data-correct="false"
+                  onclick="selectChoice(2739, 4999, false)">
+            <span class="choice-letter">B</span>
+            <span>Dikkat dağınıklığı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5000" 
+                  data-correct="false"
+                  onclick="selectChoice(2739, 5000, false)">
+            <span class="choice-letter">C</span>
+            <span>Ezberleme hatası</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5001" 
+                  data-correct="false"
+                  onclick="selectChoice(2739, 5001, false)">
+            <span class="choice-letter">D</span>
+            <span>Okuma yanlışlığı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2739">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Ayşe'nin düşüncesi 'kavram yanılgısı'na örnektir. Kavram yanılgısı, bir kavramı eksik veya yanlış anlamaktır. 'Kevser'i sadece 'su' olarak algılamak, kelimenin zengin anlam potansiyelini (bolluk, bereket, fazilet, ümmetin çokluğu vb.) gözden kaçırmaktır. Bu, öğrencilerde sık görülen bir yanılgıdır; soyut kavramları somutlaştırma eğilimi kelimenin derin anlamını gizleyebilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2730" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci sağlıklı olduğu ve ailesiyle mutlu yaşadığı için Allah’a teşekkür ediyor ve namaz kılmaya çalışıyor. Bu davranış Kevser suresinin hangi mesajını gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="4978" 
+                  data-correct="true"
+                  onclick="selectChoice(2730, 4978, true)">
+            <span class="choice-letter">A</span>
+            <span>Nimetlerin farkına varıp Allah’a şükretmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4979" 
+                  data-correct="false"
+                  onclick="selectChoice(2730, 4979, false)">
+            <span class="choice-letter">B</span>
+            <span>Sadece ders çalışmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4980" 
+                  data-correct="false"
+                  onclick="selectChoice(2730, 4980, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece arkadaşlarıyla vakit geçirmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="4981" 
+                  data-correct="false"
+                  onclick="selectChoice(2730, 4981, false)">
+            <span class="choice-letter">D</span>
+            <span>Nimetleri önemsememek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2730">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kevser suresi insanların Allah’ın verdiği nimetleri fark etmelerini ve bunun karşılığında ibadet ederek şükretmelerini öğütler. Öğrencinin davranışı nimetin farkında olup şükretme mesajını göstermektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 14px;">
+        <a href="/contact" style="color: #6b7280; text-decoration: none;">İletişim</a>
+        <a href="/about" style="color: #6b7280; text-decoration: none;">Hakkımızda</a>
+        <a href="/privacy-policy" style="color: #6b7280; text-decoration: none;">Gizlilik Politikası</a>
+      </div>
+    </div>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Bir Sure Öğreniyorum: Kevser Suresi test soruları - 5. Sınıf Din Kültürü ve Ahlak Bilgisi dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // Yanlış seçimi işaretle
+        if (btn.dataset.choiceId == choiceId && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

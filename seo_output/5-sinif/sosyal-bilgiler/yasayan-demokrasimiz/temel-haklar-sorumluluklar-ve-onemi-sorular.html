@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temel Haklar, Sorumluluklar ve Önemi Test Soruları -...</title>
+  <meta name="description" content="18 soru ile Temel Haklar, Sorumluluklar ve Önemi konusunu pekiştir ve başarını ölç. 5. Sınıf Sosyal Bilgiler dersi Yaşayan Demokrasimiz ünitesi online...">
+  <meta name="keywords" content="Temel Haklar, Sorumluluklar ve Önemi test, Temel Haklar, Sorumluluklar ve Önemi sorular, Sosyal Bilgiler quiz, 5. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Temel Haklar, Sorumluluklar ve Önemi Test Soruları -...">
+  <meta property="og:description" content="18 soru ile Temel Haklar, Sorumluluklar ve Önemi konusunu pekiştir ve başarını ölç. 5. Sınıf Sosyal Bilgiler dersi Yaşayan Demokrasimiz ünitesi online...">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/sosyal-bilgiler/">Sosyal Bilgiler</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/sosyal-bilgiler/yasayan-demokrasimiz/">Yaşayan Demokrasimiz</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Temel Haklar, Sorumluluklar ve Önemi Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Temel Haklar, Sorumluluklar ve Önemi - Test Soruları</h1>
+      <div class="meta">18 Soru • 5. Sınıf Sosyal Bilgiler</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/5-sinif/sosyal-bilgiler/yasayan-demokrasimiz/temel-haklar-sorumluluklar-ve-onemi/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="2751" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Okulda bir öğrencinin, sınıftaki arkadaşının fikirlerini dinlemesi ve ona saygı göstermesi hangi temel hak ve sorumluluğun bir göstergesidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5022" 
+                  data-correct="false"
+                  onclick="selectChoice(2751, 5022, false)">
+            <span class="choice-letter">A</span>
+            <span>Yaşam hakkının korunması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5023" 
+                  data-correct="true"
+                  onclick="selectChoice(2751, 5023, true)">
+            <span class="choice-letter">B</span>
+            <span>Düşünce ve ifade özgürlüğüne saygı gösterme</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5024" 
+                  data-correct="false"
+                  onclick="selectChoice(2751, 5024, false)">
+            <span class="choice-letter">C</span>
+            <span>Eğitim hakkının kullanılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5025" 
+                  data-correct="false"
+                  onclick="selectChoice(2751, 5025, false)">
+            <span class="choice-letter">D</span>
+            <span>Sağlık hakkının güvence altına alınması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2751">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu sorunun doğru cevabı 'Düşünce ve ifade özgürlüğüne saygı gösterme' sorumluluğudur. Çünkü her birey düşünce ve ifade özgürlüğüne sahiptir. Bu hakkın kullanılabilmesi için başkalarının da fikirlerine saygı duyulması gerekir. Öğrencinin arkadaşının fikirlerini dinlemesi ve saygı göstermesi, bu temel sorumluluğun günlük hayattaki somut bir örneğidir. Seçeneklerdeki diğer haklar (yaşam hakkı, eğitim hakkı, sağlık hakkı) bu durumla doğrudan ilişkili değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2756" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir kişi, temel haklarını istediği gibi kullanabilir; bu kullanım başkalarını ilgilendirmez.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5032" 
+                  data-correct="false"
+                  onclick="selectChoice(2756, 5032, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5033" 
+                  data-correct="true"
+                  onclick="selectChoice(2756, 5033, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2756">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade YANLIŞTIR. Temel hakların kullanımı mutlak değildir ve başkalarının haklarına saygı gösterme sınırlamasına tabidir. Örneğin konuşma özgürlüğü vardır ancak bu özgürlük, başkalarını hakaret etmek veya nefret söylemi yapmak için kullanılamaz. Haklar, toplumsal yaşamın düzenli işlemesi için birbirleriyle sınırlıdır. 'Benim hakkım, ben istersem böyle kullanırım' anlayışı, hakların kötüye kullanımına yol açar ve toplumsal düzeni bozar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2761" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrencinin sınıfta ders anlatılırken arkadaşlarının konuşmasını istememesi aşağıdaki hangi hakla daha çok ilgilidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5042" 
+                  data-correct="true"
+                  onclick="selectChoice(2761, 5042, true)">
+            <span class="choice-letter">A</span>
+            <span>Eğitim hakkı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5043" 
+                  data-correct="false"
+                  onclick="selectChoice(2761, 5043, false)">
+            <span class="choice-letter">B</span>
+            <span>Seçme hakkı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5044" 
+                  data-correct="false"
+                  onclick="selectChoice(2761, 5044, false)">
+            <span class="choice-letter">C</span>
+            <span>Seyahat hakkı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5045" 
+                  data-correct="false"
+                  onclick="selectChoice(2761, 5045, false)">
+            <span class="choice-letter">D</span>
+            <span>Mülkiyet hakkı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2761">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrencinin ders sırasında sessiz bir ortam istemesi eğitim hakkı ile ilgilidir. Eğitim hakkı, öğrencilerin öğrenebileceği uygun ortamın sağlanmasını içerir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2763" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir okulda öğrencilerin sınıfları temiz tutması aşağıdakilerden hangisinin örneğidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5050" 
+                  data-correct="true"
+                  onclick="selectChoice(2763, 5050, true)">
+            <span class="choice-letter">A</span>
+            <span>Sorumluluk</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5051" 
+                  data-correct="false"
+                  onclick="selectChoice(2763, 5051, false)">
+            <span class="choice-letter">B</span>
+            <span>Ayrıcalık</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5052" 
+                  data-correct="false"
+                  onclick="selectChoice(2763, 5052, false)">
+            <span class="choice-letter">C</span>
+            <span>Yasak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5053" 
+                  data-correct="false"
+                  onclick="selectChoice(2763, 5053, false)">
+            <span class="choice-letter">D</span>
+            <span>Ceza</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2763">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sınıfı temiz tutmak bir sorumluluktur. İnsanlar haklara sahip olduğu gibi topluma karşı sorumluluklar da taşırlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2766" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Toplumsal düzenin sağlanabilmesi için insanların hem haklarını hem de sorumluluklarını bilmesi gerekir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5060" 
+                  data-correct="true"
+                  onclick="selectChoice(2766, 5060, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5061" 
+                  data-correct="false"
+                  onclick="selectChoice(2766, 5061, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2766">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Toplumda düzen ve uyumun sağlanması için bireylerin haklarının yanında sorumluluklarını da yerine getirmesi gerekir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2771" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi Türkiye Cumhuriyeti Anayasası'nın temel ilkelerinden biri değildir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5062" 
+                  data-correct="false"
+                  onclick="selectChoice(2771, 5062, false)">
+            <span class="choice-letter">A</span>
+            <span>Cumhuriyet</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5063" 
+                  data-correct="false"
+                  onclick="selectChoice(2771, 5063, false)">
+            <span class="choice-letter">B</span>
+            <span>Demokratiklik</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5064" 
+                  data-correct="true"
+                  onclick="selectChoice(2771, 5064, true)">
+            <span class="choice-letter">C</span>
+            <span>Bireysellik</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5065" 
+                  data-correct="false"
+                  onclick="selectChoice(2771, 5065, false)">
+            <span class="choice-letter">D</span>
+            <span>Hukuk devleti</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2771">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Türkiye Cumhuriyeti Anayasası'nın temel ilkeleri arasında Cumhuriyet, demokratiklik, laiklik, sosyal devlet, hukuk devleti ve millî egemenlik yer alır. Bireysellik ilkesi Anayasa'nın temel ilkelerinden değildir; aksine Anayasa toplumsal dayanışmayı ve millî birlikleri ön plana çıkarır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2776" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Çevre kirliliğini önlemek sadece devletin görevidir, bireylerin bu konuda sorumluluğu yoktur.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5072" 
+                  data-correct="false"
+                  onclick="selectChoice(2776, 5072, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5073" 
+                  data-correct="true"
+                  onclick="selectChoice(2776, 5073, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2776">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade tamamen yanlıştır. Çevre Koruma Kanunu'na göre hem devlet hem de bireyler çevreyi korumakla yükümlüdür. Geri dönüşüm yapmak, çöp atmamak, suyu tasarruflu kullanmak gibi davranışlar bireysel sorumluluk örnekleridir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2752" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Temel hak ve özgürlükler sadece yetişkinler için geçerlidir; çocuklar bu haklardan yararlanamaz.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5026" 
+                  data-correct="false"
+                  onclick="selectChoice(2752, 5026, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5027" 
+                  data-correct="true"
+                  onclick="selectChoice(2752, 5027, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2752">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade YANLIŞTIR. Temel hak ve özgürlükler evrenseldir ve yaş, cinsiyet, ırk, din, dil ayrımı yapılmaksızın herkes için geçerlidir. Çocuk Hakları Sözleşmesi de dahil olmak üzere uluslararası belgeler ve Anayasa, çocukların da temel haklara sahip olduğunu açıkça belirtmektedir. Örneğin yaşam hakkı, eğitim hakkı, sağlık hakkı gibi temel haklar çocuklar için de geçerlidir. Hatta çocuklar özel koruma haklarına da sahiptir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2780" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Seçme hakkını kullanmak isteyen bir kişi, aynı zamanda seçmen kütüğüne kayıtlı olma zorunluluğunu da kabul etmiş sayılır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5078" 
+                  data-correct="true"
+                  onclick="selectChoice(2780, 5078, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5079" 
+                  data-correct="false"
+                  onclick="selectChoice(2780, 5079, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2780">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudır. Seçme hakkı ile birlikte bu hakkın gerektirdiği sorumluluklar da doğar. Türkiye'de oy kullanabilmek için seçmen kütüğüne kayıtlı olmak zorunludur. Bu durum, hak ve sorumlulukların birbirinden ayrılamayacağının klasik bir örneğidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2757" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">5N1K tekniği kullanılarak 'İnsan haklarının toplumsal hayattaki önemi nedir?' sorusu sorulduğunda, bu soru hangi soru türüne girer?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5034" 
+                  data-correct="false"
+                  onclick="selectChoice(2757, 5034, false)">
+            <span class="choice-letter">A</span>
+            <span>Ne (What) sorusu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5035" 
+                  data-correct="false"
+                  onclick="selectChoice(2757, 5035, false)">
+            <span class="choice-letter">B</span>
+            <span>Kim (Who) sorusu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5036" 
+                  data-correct="true"
+                  onclick="selectChoice(2757, 5036, true)">
+            <span class="choice-letter">C</span>
+            <span>Neden (Why) sorusu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5037" 
+                  data-correct="false"
+                  onclick="selectChoice(2757, 5037, false)">
+            <span class="choice-letter">D</span>
+            <span>Nasıl (How) sorusu</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2757">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu sorunun doğru cevabı 'Neden (Why)' sorusudur. 5N1K tekniği şu soru kelimelerini içerir: Ne (What), Kim (Who), Nerede (Where), Ne zaman (When), Neden (Why) ve Nasıl (How/Nasıl). Soruda 'neden' kelimesi geçtiği için ve bir durumun sebebini, gerekçesini sorguladığı için bu bir 'Neden' sorusudur. Bu tür sorular analitik düşünmeyi gerektirir ve olayların altındaki neden-sonuç ilişkilerini anlamayı sağlar. 'Neden' soruları, ezber bilgiden çok anlama ve yorumlamayı ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2778" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">5N1K tekniğine göre "Neden" sorusu aşağıdakilerden hangisini araştırmak için kullanılır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5074" 
+                  data-correct="true"
+                  onclick="selectChoice(2778, 5074, true)">
+            <span class="choice-letter">A</span>
+            <span>Bir olayın veya durumun sebebini</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5075" 
+                  data-correct="false"
+                  onclick="selectChoice(2778, 5075, false)">
+            <span class="choice-letter">B</span>
+            <span>Bir olayın nerede olduğunu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5076" 
+                  data-correct="false"
+                  onclick="selectChoice(2778, 5076, false)">
+            <span class="choice-letter">C</span>
+            <span>Bir olayın ne zaman olduğunu</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5077" 
+                  data-correct="false"
+                  onclick="selectChoice(2778, 5077, false)">
+            <span class="choice-letter">D</span>
+            <span>Bir olayın nasıl gerçekleştiğini</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2778">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">5N1K tekniğinde 'Neden' sorusu bir olayın veya durumun sebebini, gerekçesini araştırmak için kullanılır. Bu soru tipi öğrencilerin analitik düşünmesini ve olayların arkasındaki motivasyonları anlamasını sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2762" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir kişi düşüncesini özgürce ifade ederken başkalarına hakaret ederse hangi durum ortaya çıkar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5046" 
+                  data-correct="false"
+                  onclick="selectChoice(2762, 5046, false)">
+            <span class="choice-letter">A</span>
+            <span>Haklar sınırsızdır ve kişi istediğini söyleyebilir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5047" 
+                  data-correct="true"
+                  onclick="selectChoice(2762, 5047, true)">
+            <span class="choice-letter">B</span>
+            <span>Kişi düşüncesini açıklarken başkalarının haklarına saygı göstermelidir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5048" 
+                  data-correct="false"
+                  onclick="selectChoice(2762, 5048, false)">
+            <span class="choice-letter">C</span>
+            <span>Düşünce açıklama hakkı yalnızca yetişkinlere aittir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5049" 
+                  data-correct="false"
+                  onclick="selectChoice(2762, 5049, false)">
+            <span class="choice-letter">D</span>
+            <span>Düşünce açıklama hakkı sadece okulda kullanılabilir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2762">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İnsan hakları kullanılırken başkalarının haklarına zarar verilmemelidir. Hakaret etmek başkalarının haklarını ihlal eder. Bu soru hakların sınırsız olduğu yanılgısını ölçmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2765" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">İnsanlar haklarını kullanırken başkalarının haklarına saygı göstermek zorunda değildir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5058" 
+                  data-correct="false"
+                  onclick="selectChoice(2765, 5058, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5059" 
+                  data-correct="true"
+                  onclick="selectChoice(2765, 5059, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2765">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. İnsan hakları herkes için geçerlidir ve bir kişinin hakkı başka bir kişinin hakkını ihlal edemez.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2772" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">İnsan hakları, sadece yetişkinlere ait haklardır, çocukların hakları ayrıca düzenlenmiştir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5066" 
+                  data-correct="false"
+                  onclick="selectChoice(2772, 5066, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5067" 
+                  data-correct="true"
+                  onclick="selectChoice(2772, 5067, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2772">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Çocuk Hakları Sözleşmesi, çocukların da insan haklarından yararlanan bireyler olduğunu ve yetişkinlerle eşit derecede haklara sahip olduğunu belirtir. Çocuklar da yaşama hakkı, eğitim hakkı, ifade özgürlüğü gibi temel haklara sahiptir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2759" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdaki kavram yanılgılarından hangisi, 'Haklarımı kullanırken başkalarının haklarına zarar verebilirim, çünkü özgürlükler sınırsızdır' şeklindeki düşünceyi ifade eder?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5038" 
+                  data-correct="false"
+                  onclick="selectChoice(2759, 5038, false)">
+            <span class="choice-letter">A</span>
+            <span>Sorumlulukların haklardan daha önemli olduğuna inanma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5039" 
+                  data-correct="true"
+                  onclick="selectChoice(2759, 5039, true)">
+            <span class="choice-letter">B</span>
+            <span>Hakların mutlak ve sınırsız olduğuna inanma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5040" 
+                  data-correct="false"
+                  onclick="selectChoice(2759, 5040, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece yasaların hakları koruduğuna inanma</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5041" 
+                  data-correct="false"
+                  onclick="selectChoice(2759, 5041, false)">
+            <span class="choice-letter">D</span>
+            <span>Hakların sadece yetişkinler için olduğuna inanma</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2759">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu sorunun doğru cevabı 'Hakların mutlak ve sınırsız olduğuna inanma' kavram yanılgısıdır. Bu yaygın bir yanılgıdır; birçok kişi hakları mutlak ve sınırsız sanır. Oysa haklar, başkalarının haklarına saygı gösterme ve toplumsal düzeni bozmama sınırlamasına tabidir. 'Benim hakkım, istediğimi yaparım' anlayışı, hakların kötüye kullanımıdır ve demokratik toplum düzenine aykırıdır. Haklar ve özgürlükler, toplumsal yaşamın düzenli işlemesi için birbirleriyle sınırlıdır. Bu kavram yanılgısını ölçmek, öğrencilerin hak-sorumluluk dengesini doğru kavramasını sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="2775" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">"Herkesin düşünce ve ifade özgürlüğü vardır" denildiğinde aşağıdakilerden hangisi bu özgürlüğün bir sınırı olarak kabul edilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5068" 
+                  data-correct="true"
+                  onclick="selectChoice(2775, 5068, true)">
+            <span class="choice-letter">A</span>
+            <span>Başkalarının haklarını zedeleyen ifadeler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5069" 
+                  data-correct="false"
+                  onclick="selectChoice(2775, 5069, false)">
+            <span class="choice-letter">B</span>
+            <span>Sanat eserlerini eleştirmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5070" 
+                  data-correct="false"
+                  onclick="selectChoice(2775, 5070, false)">
+            <span class="choice-letter">C</span>
+            <span>Kitap okumak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5071" 
+                  data-correct="false"
+                  onclick="selectChoice(2775, 5071, false)">
+            <span class="choice-letter">D</span>
+            <span>Düşüncelerini yazılı olarak paylaşmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2775">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Düşünce ve ifade özgürlüğü evrensel bir hak olmakla birlikte, bu özgürlüğün bazı sınırları vardır. Başkalarının haklarını zedelemek, kamu güvenliğini tehdit etmek veya suç işlemeye teşvik etmek bu sınırların başında gelir. Kişisel eleştiri hakkın olduğu halde, başkalarını hedef alan hakaret içerikli ifadeler bu özgürlüğün sınırları içindedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2764" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci insan haklarının neden önemli olduğunu araştırmak için aşağıdaki sorulardan hangisini sorarsa 5N1K tekniğini doğru kullanmış olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5054" 
+                  data-correct="true"
+                  onclick="selectChoice(2764, 5054, true)">
+            <span class="choice-letter">A</span>
+            <span>İnsan hakları neden önemlidir?</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5055" 
+                  data-correct="false"
+                  onclick="selectChoice(2764, 5055, false)">
+            <span class="choice-letter">B</span>
+            <span>İnsan hakları çok güzeldir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5056" 
+                  data-correct="false"
+                  onclick="selectChoice(2764, 5056, false)">
+            <span class="choice-letter">C</span>
+            <span>İnsan hakları herkes içindir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5057" 
+                  data-correct="false"
+                  onclick="selectChoice(2764, 5057, false)">
+            <span class="choice-letter">D</span>
+            <span>İnsan hakları vardır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2764">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">5N1K tekniğinde ne, neden, nasıl, nerede, ne zaman ve kim soruları kullanılır. Bu soruda 'neden' sorusu kullanıldığı için doğru örnektir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="2754" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdaki durumların hangisinde bir kişi, haklarını kullanırken sorumluluklarını göz ardı etmiş olur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5028" 
+                  data-correct="false"
+                  onclick="selectChoice(2754, 5028, false)">
+            <span class="choice-letter">A</span>
+            <span>Okula gitmesi gereken saatte okula gitmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5029" 
+                  data-correct="false"
+                  onclick="selectChoice(2754, 5029, false)">
+            <span class="choice-letter">B</span>
+            <span>Kütüphanede sessizce kitap okuması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5030" 
+                  data-correct="true"
+                  onclick="selectChoice(2754, 5030, true)">
+            <span class="choice-letter">C</span>
+            <span>Komşusunun gece uykusunu bölecek şekilde yüksek sesle müzik dinlemesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5031" 
+                  data-correct="false"
+                  onclick="selectChoice(2754, 5031, false)">
+            <span class="choice-letter">D</span>
+            <span>Parkta arkadaşlarıyla oyun oynaması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-2754">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu sorunun doğru cevabı 'Komşusunun gece uykusunu bölecek şekilde yüksek sesle müzik dinlemesi' seçeneğidir. Çünkü herkes dinlenme hakkına sahiptir ve komşu da bu hakkı kullanmaya çalışmaktadır. Yüksek sesle müzik dinleyen kişi, kendi eğlence hakkını kullanırken komşusunun dinlenme hakkını ihlal etmekte ve sorumluluklarını göz ardı etmektedir. Hakların kullanımı, başkalarının haklarına saygı gösterme sorumluluğu ile sınırlıdır. Diğer seçeneklerde (okula gitme, kitap okuma, oyun oynama) haklar sorumluluk bilinci içinde kullanılmaktadır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 14px;">
+        <a href="/contact" style="color: #6b7280; text-decoration: none;">İletişim</a>
+        <a href="/about" style="color: #6b7280; text-decoration: none;">Hakkımızda</a>
+        <a href="/privacy-policy" style="color: #6b7280; text-decoration: none;">Gizlilik Politikası</a>
+      </div>
+    </div>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Temel Haklar, Sorumluluklar ve Önemi test soruları - 5. Sınıf Sosyal Bilgiler dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // Yanlış seçimi işaretle
+        if (btn.dataset.choiceId == choiceId && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

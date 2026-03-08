@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Problem Belirleme ve Algoritma Oluşturma - Yazılım...</title>
+  <meta name="description" content="Problem Belirleme ve Algoritma Oluşturma konusu: Giriş Her gün birçok problemle karşılaşırız. Sabah okula hazırlanmak, ödev yapmak ya da bir oyunda...">
+  <meta name="keywords" content="Problem Belirleme ve Algoritma Oluşturma, Yazılım Tasarımı Ve Programlama, Bilişim Teknolojileri ve Yazılım, 5. Sınıf, eğitim, ders notları">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Problem Belirleme ve Algoritma Oluşturma - Yazılım...">
+  <meta property="og:description" content="Problem Belirleme ve Algoritma Oluşturma konusu: Giriş Her gün birçok problemle karşılaşırız. Sabah okula hazırlanmak, ödev yapmak ya da bir oyunda...">
+  <meta property="og:url" content="https://derstakip.net">
+  <meta property="og:type" content="article">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Problem Belirleme ve Algoritma Oluşturma - Yazılım...">
+  <meta name="twitter:description" content="Problem Belirleme ve Algoritma Oluşturma konusu: Giriş Her gün birçok problemle karşılaşırız. Sabah okula hazırlanmak, ödev yapmak ya da bir oyunda...">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalResource",
+    "name": "Problem Belirleme ve Algoritma Oluşturma",
+    "description": "Problem Belirleme ve Algoritma Oluşturma konusu detaylı anlatımı",
+    "educationalLevel": "5. Sınıf",
+    "learningResourceType": "Ders İçeriği",
+    "inLanguage": "tr",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "5. Sınıf",
+          "item": "https://derstakip.net/5-sinif/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Bilişim Teknolojileri ve Yazılım",
+          "item": "https://derstakip.net/5-sinif/bilisim-teknolojileri-ve-yazilim/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Yazılım Tasarımı Ve Programlama",
+          "item": "https://derstakip.net/5-sinif/bilisim-teknolojileri-ve-yazilim/yazilim-tasarimi-ve-programlama/"
+        },
+        
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Problem Belirleme ve Algoritma Oluşturma"
+        }
+        
+      ]
+    }
+  }
+  </script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 15px 0;
+      margin-bottom: 20px;
+    }
+    .breadcrumb {
+      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 10px;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .content-wrapper { grid-template-columns: 1fr; }
+      .sidebar { order: 2; }
+    }
+    .main-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+    }
+    .ad-slot {
+      background: #f0f0f0;
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      margin: 20px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .section {
+      margin: 30px 0;
+    }
+    .section h2 {
+      font-size: 22px;
+      color: #2563eb;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    .content-block {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 6px;
+      border-left: 4px solid #2563eb;
+    }
+    .content-block h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #1e40af;
+    }
+    .outcome-list {
+      list-style: none;
+      padding: 0;
+    }
+    .outcome-item {
+      padding: 12px;
+      margin: 8px 0;
+      background: white;
+      border-radius: 4px;
+      border-left: 3px solid #10b981;
+    }
+    .outcome-weeks {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 5px;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/">Bilişim Teknolojileri ve Yazılım</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/yazilim-tasarimi-ve-programlama/">Yazılım Tasarımı Ve Programlama</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Problem Belirleme ve Algoritma Oluşturma</strong>
+          
+          
+        
+      </nav>
+      <h1>Problem Belirleme ve Algoritma Oluşturma</h1>
+      <div class="meta">5. Sınıf • Bilişim Teknolojileri ve Yazılım • Yazılım Tasarımı Ve Programlama</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="content-wrapper">
+      <main class="main-content">
+        <!-- AdSense: Üst Reklam -->
+        <div class="ad-slot">
+          <!-- Google AdSense buraya gelecek -->
+          <div>Reklam Alanı (728x90)</div>
+        </div>
+
+        <!-- İçerik Bölümü -->
+        <section class="section">
+          <h2>📚 Konu İçeriği</h2>
+          
+            
+            <div class="content-block">
+              <h3>Problem Belirleme ve Algoritma Oluşturma</h3>
+              <div><section>
+<h2>Giriş</h2>
+<p>Her gün birçok problemle karşılaşırız. Sabah okula hazırlanmak, ödev yapmak ya da bir oyunda bölümü geçmek bile aslında bir problemi çözmektir. Bilgisayarlar da bizim gibi problemleri çözer. Ancak onların çözüm üretebilmesi için adımların açık ve sıralı şekilde verilmesi gerekir. İşte bu derste, bir problemi nasıl belirleyeceğimizi ve çözüm için nasıl algoritma oluşturacağımızı öğreneceğiz.</p>
+</section><section>
+<h2>Anahtar Kavramlar</h2>
+<ul>
+<li>Problem</li>
+<li>Girdi</li>
+<li>Çıktı</li>
+<li>Algoritma</li>
+<li>Akış Şeması</li>
+</ul>
+</section><section>
+<h2>Temel Bilgiler (Bilgi Basamağı)</h2>
+<p><strong>Problem:</strong> Çözülmesi gereken durum veya sorundur.</p>
+<p><strong>Girdi:</strong> Problemin çözümü için gerekli olan bilgilerdir.</p>
+<p><strong>Çıktı:</strong> Problem çözüldüğünde elde edilen sonuçtur.</p>
+<p><strong>Algoritma:</strong> Bir problemi çözmek için izlenen sıralı ve mantıklı adımlar bütünüdür.</p>
+<p><strong>Akış Şeması:</strong> Algoritmanın şekiller kullanılarak görsel olarak gösterilmesidir.</p>
+</section><section>
+<h2>Kavrama ve Açıklama</h2>
+<p>Bir problemi çözmeden önce onu doğru anlamamız gerekir. Önce “Sorun nedir?” sorusunu sorarız. Daha sonra bu sorunun çözümü için hangi bilgilere ihtiyacımız olduğunu belirleriz. Bu bilgiler girdidir.</p>
+<p>Problemi çözdüğümüzde ne elde edeceğimizi düşünürüz. Bu da çıktıdır.</p>
+<p>Son olarak çözüm için yapılacak işlemleri sırayla yazarız. Bu sıralı adımlar algoritmayı oluşturur. Eğer adımlar karışık olursa bilgisayar doğru çalışmaz.</p>
+<p>Algoritmalar sadece yazı ile değil, akış şeması ile de gösterilebilir. Başla ve bitir için oval şekil, işlem için dikdörtgen, karar için elmas şekli kullanılır.</p>
+</section><section>
+<h2>Günlük Hayatla İlişkilendirme</h2>
+<p>Bir sandviç yapmak da aslında algoritmadır. Önce ekmeği alırız, sonra içine malzemeleri koyarız. Adımları değiştirirsek sonuç farklı olur.</p>
+<p>Sabah hazırlanırken önce uyanır, sonra yüzümüzü yıkar, ardından giyiniriz. Bu da bir algoritmadır.</p>
+<p>Bilgisayar oyunlarında bir karakterin zıplaması bile belirli adımlara göre gerçekleşir.</p>
+</section><section>
+<h2>Uygulama Örnekleri</h2>
+<p><strong>Problem:</strong> İki sayının toplamını bulma</p>
+<p><strong>Girdi:</strong> 1. sayı, 2. sayı</p>
+<p><strong>Çıktı:</strong> Toplam</p>
+<p><strong>Algoritma:</strong></p>
+<ol>
+<li>Başla</li>
+<li>Birinci sayıyı al</li>
+<li>İkinci sayıyı al</li>
+<li>Sayıları topla</li>
+<li>Sonucu göster</li>
+<li>Bitir</li>
+</ol>
+<p>Bu adımlar akış şeması ile de gösterilebilir.</p>
+</section><section>
+<h2>Analiz ve Derinleştirme</h2>
+<p>Bir problemin birden fazla çözüm yolu olabilir. Ancak en kısa, en anlaşılır ve en doğru çözüm tercih edilmelidir. Gereksiz adımlar algoritmayı uzatır ve hata yapma ihtimalini artırır.</p>
+<p>Örneğin iki sayıyı toplarken önce çarpma işlemi yapmak gereksizdir. Bu, problemi karmaşık hale getirir.</p>
+<p>İyi bir algoritma açık, sıralı ve anlaşılır olmalıdır.</p>
+</section><section>
+<h2>Kavram Yanılgıları</h2>
+<ul>
+<li>Algoritma sadece bilgisayarlarda kullanılır → Algoritmalar günlük hayatta da kullanılır.</li>
+<li>Girdi ve çıktı aynı şeydir → Girdi başlangıç bilgisidir, çıktı sonuçtur.</li>
+<li>Adımların sırası önemli değildir → Adımların sırası çok önemlidir.</li>
+</ul>
+</section><section>
+<h2>Mini Etkinlik</h2>
+<p>Problem: Bir öğrencinin sınav notuna göre geçti ya da kaldı bilgisini gösteren bir algoritma oluşturunuz.</p>
+<p>İpucu: Not 50 ve üzerindeyse geçti, değilse kaldı yazdırılacak.</p>
+<p>Girdi ve çıktıyı belirleyin, ardından işlem adımlarını yazın.</p>
+</section><section>
+<h2>Kritik Düşünme Sorusu</h2>
+<p>Eğer bir algoritmada adımlardan biri eksik olursa ya da yanlış sırada yazılırsa ne gibi sorunlar ortaya çıkabilir? Açıklayınız.</p>
+</section><section>
+<h2>Özet</h2>
+<p>Problem çözme süreci, problemi doğru belirlemekle başlar. Daha sonra girdiler ve çıktılar belirlenir. Çözüm için sıralı adımlar yazılır ve algoritma oluşturulur. Bu adımlar akış şeması ile görselleştirilebilir. Doğru ve düzenli algoritmalar, hem günlük yaşamda hem de bilgisayar programlamada büyük önem taşır.</p>
+</section><section>
+<h2>Örnek Sorular</h2>
+<ol>
+<li>Problem nedir? Kendi cümlelerinizle açıklayınız.</li>
+<li>Girdi ve çıktı arasındaki fark nedir?</li>
+<li>Algoritma neden sıralı olmalıdır?</li>
+<li>“Bir sayının çift olup olmadığını bulma” problemi için girdi ve çıktıyı yazınız.</li>
+<li>Akış şeması neden kullanılır?</li>
+</ol>
+</section><section>
+<h2>Cevap Anahtarı</h2>
+<p>1) Çözülmesi gereken durumdur. 2) Girdi başlangıç bilgisi, çıktı sonuçtur. 3) Doğru sonuç için sıralama gerekir. 4) Girdi: sayı, Çıktı: çift ya da tek bilgisi. 5) Algoritmayı görsel ve anlaşılır göstermek için kullanılır.</p>
+</section></div>
+            </div>
+            
+          
+        </section>
+
+        <!-- AdSense: Orta Reklam -->
+        <div class="ad-slot">
+          <div>Reklam Alanı (336x280)</div>
+        </div>
+
+        <!-- Kazanımlar Bölümü -->
+        
+        <section class="section">
+          <h2>🎯 Öğrenme Kazanımları</h2>
+          <ul class="outcome-list">
+            
+            <li class="outcome-item">
+              <div>a) Günlük yaşamda karşılaştığı bir problemi belirler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 24-28
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>c) Belirlediği problemin çözümüne ilişkin işlem adımlarını listeler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 24-28
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>b) Belirlediği problemin girdi ve çıktılarını belirler.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 24-28
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+            <li class="outcome-item">
+              <div>ç) İşlem adımlarını akış şeması ile gösterir.</div>
+              
+              <div class="outcome-weeks">
+                📅 
+                
+                  
+                    Hafta 24-28
+                  
+                  
+                
+              </div>
+              
+            </li>
+            
+          </ul>
+        </section>
+        
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <!-- AdSense: Sidebar Reklam -->
+        <div class="ad-slot" style="min-height: 600px;">
+          <div>Reklam Alanı<br>(300x600)</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Sorularla Pekiştir -->
+  
+  <div class="container" style="margin: 40px auto;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);">
+      <h2 style="font-size: 28px; margin-bottom: 16px;">🎯 Öğrendiklerini Test Et!</h2>
+      <p style="font-size: 16px; opacity: 0.95; margin-bottom: 24px;">30 soru ile konuyu pekiştir, başarını ölç</p>
+      <a href="/5-sinif/bilisim-teknolojileri-ve-yazilim/yazilim-tasarimi-ve-programlama/problem-belirleme-ve-algoritma-olusturma-sorular/" style="display: inline-block; padding: 16px 48px; background: white; color: #667eea; text-decoration: none; border-radius: 12px; font-size: 18px; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s;">
+        Sorulara Başla →
+      </a>
+    </div>
+  </div>
+  
+
+  <footer>
+    <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 14px;">
+        <a href="/contact" style="color: #6b7280; text-decoration: none;">İletişim</a>
+        <a href="/about" style="color: #6b7280; text-decoration: none;">Hakkımızda</a>
+        <a href="/privacy-policy" style="color: #6b7280; text-decoration: none;">Gizlilik Politikası</a>
+      </div>
+    </div>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Bu sayfa 5. Sınıf Bilişim Teknolojileri ve Yazılım dersi Yazılım Tasarımı Ve Programlama ünitesi Problem Belirleme ve Algoritma Oluşturma konusu hakkında eğitim amaçlı içerik sunmaktadır.
+    </p>
+  </footer>
+</body>
+</html>

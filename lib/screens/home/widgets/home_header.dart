@@ -5,6 +5,22 @@ import 'package:egitim_uygulamasi/screens/anasinifi/compare_page.dart';
 import 'package:egitim_uygulamasi/screens/anasinifi/number_composition_page.dart';
 import 'package:egitim_uygulamasi/screens/deneme/question_test_page.dart';
 import 'package:egitim_uygulamasi/screens/home/home_v2_screen.dart';
+import 'package:egitim_uygulamasi/screens/home/home_v3_screen.dart';
+import 'package:egitim_uygulamasi/screens/home/home_v4_screen.dart';
+import 'package:egitim_uygulamasi/screens/home/home_v5_screen.dart';
+import 'package:egitim_uygulamasi/screens/home/home_v6_screen.dart';
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_page.dart';
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_page2.dart';
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_page2_v3.dart';
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_page2_v4.dart';
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v5/main.dart'
+    as lesson_v5;
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v6/main.dart'
+    as lesson_v6;
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v7/main.dart'
+    as lesson_v7;
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v8/main.dart'
+    as lesson_v8;
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -259,6 +275,82 @@ class _HomeHeaderState extends State<HomeHeader>
               builder: (context) => HomeV2Screen(profile: widget.profile),
             ),
           );
+        } else if (value == 'home_v3') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeV3Screen(profile: widget.profile),
+            ),
+          );
+        } else if (value == 'home_v4') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeV4Screen(profile: widget.profile),
+            ),
+          );
+        } else if (value == 'home_v5') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeV5Screen(profile: widget.profile),
+            ),
+          );
+        } else if (value == 'home_v6') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeV6Screen(profile: widget.profile),
+            ),
+          );
+        } else if (value == 'lesson_preview') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LessonPage()),
+          );
+        } else if (value == 'lesson_preview_2') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LessonPlayerPage()),
+          );
+        } else if (value == 'lesson_preview_2_v3') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LessonPageV3()),
+          );
+        } else if (value == 'lesson_preview_2_v4') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LessonPageV4()),
+          );
+        } else if (value == 'lesson_preview_v5') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const lesson_v5.LessonPage(),
+            ),
+          );
+        } else if (value == 'lesson_preview_v6') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const lesson_v6.LessonPage(),
+            ),
+          );
+        } else if (value == 'lesson_preview_v7') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const lesson_v7.LessonPage(),
+            ),
+          );
+        } else if (value == 'lesson_preview_v8') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const lesson_v8.LessonPage(),
+            ),
+          );
         } else if (value == 'show_games') {
           _showGameSelectionDialog(context);
         } else if (value == 'question_test_page') {
@@ -284,6 +376,225 @@ class _HomeHeaderState extends State<HomeHeader>
                 const SizedBox(width: 12),
                 Text(
                   'Ana Sayfa V2 (Test)',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'home_v3',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.auto_awesome_outlined,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ana Sayfa V3 (Test)',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'home_v4',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.layers_outlined,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ana Sayfa V4 (Test)',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'home_v5',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.view_quilt_outlined,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ana Sayfa V5 (Test)',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'home_v6',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.rocket_launch_outlined,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ana Sayfa V6 (Test)',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'lesson_preview',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.visibility_rounded,
+                  color: const Color(0xFF4F46E5),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ders Sayfası Önizleme',
+                  style: TextStyle(
+                    color: Colors.grey.shade900,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'lesson_preview_2',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.visibility_rounded,
+                  color: const Color(0xFF4F46E5),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ders Sayfasi 2',
+                  style: TextStyle(
+                    color: Colors.grey.shade900,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'lesson_preview_2_v3',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.school_rounded,
+                  color: const Color(0xFF0EA5E9),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ders Sayfasi 2 V3',
+                  style: TextStyle(
+                    color: Colors.grey.shade900,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'lesson_preview_2_v4',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.auto_stories_rounded,
+                  color: const Color(0xFF2563EB),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ders Sayfasi 2 V4',
+                  style: TextStyle(
+                    color: Colors.grey.shade900,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'lesson_preview_v5',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.extension_rounded,
+                  color: const Color(0xFF16A34A),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Ders Sayfasi V5',
+                  style: TextStyle(
+                    color: Colors.grey.shade900,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'lesson_preview_v6',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.auto_stories_outlined,
+                  color: Colors.deepPurple.shade400,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Lesson Preview V6',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'lesson_preview_v7',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.smart_display_outlined,
+                  color: const Color(0xFFF97316),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Lesson Preview V7',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'lesson_preview_v8',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.slideshow_outlined,
+                  color: const Color(0xFF0891B2),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Lesson Preview V8',
                   style: TextStyle(color: Colors.grey.shade900),
                 ),
               ],

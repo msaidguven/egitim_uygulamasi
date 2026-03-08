@@ -1,0 +1,133 @@
+{
+  "lesson_id": "fen_tam_golge_01",
+  "title": "Tam Golgenin Olusumu",
+  "steps": [
+    {
+      "id": "intro",
+      "type": "text",
+      "title": "Golge Dedektifi Oyunu",
+      "subtitle": "Kisa, renkli ve adim adim",
+      "helper": "Her adimda tek bir mini gorev var. Dogru yap, sonraki adim acilsin.",
+      "content": "Tam golgeyi oyunla ogreneceksin. Isik, cisim ve ekranin yerini dogru kurarsan tum bulmacalari cozersin.",
+      "buttonText": "Oyuna Basla"
+    },
+    {
+      "id": "quick_rules",
+      "type": "info_highlights",
+      "title": "3 Altin Kural",
+      "helper": "Bu 3 kurali aklinda tutarsan tum oyunlari kolay cozersin.",
+      "points": [
+        "Isik duz yayilir.",
+        "Opak cisim isigi gecirmez.",
+        "Tam golge, cismin arkasinda olusur."
+      ],
+      "note": "Ipuclari bu kurallardan gelecek.",
+      "buttonText": "Gorevlere Gec"
+    },
+    {
+      "id": "hotspot",
+      "type": "hotspot_image",
+      "title": "Dokun ve Bul",
+      "instruction": "Resimde tam golgenin oldugu yere dokun.",
+      "helper": "Cismin arka tarafindaki karanlik bolgeye odaklan.",
+      "placeholderLabel": "Isik - Cisim - Ekran Diyagrami",
+      "hints": [
+        "Tam golge, isik kaynagina yakin tarafta olmaz.",
+        "Cismin arkasi en guclu adaydir."
+      ],
+      "hotspots": [
+        {"x": 0.20, "y": 0.38, "radius": 20, "correct": false},
+        {"x": 0.54, "y": 0.50, "radius": 20, "correct": false},
+        {"x": 0.82, "y": 0.53, "radius": 24, "correct": true}
+      ],
+      "concepts": ["tam_golge"]
+    },
+    {
+      "id": "timeline",
+      "type": "timeline_builder",
+      "title": "Gunun Golge Sirasi",
+      "instruction": "Sabah - Oglen - Aksam golge durumlarini sirala.",
+      "helper": "Oglen golge en kisa olur; siralamayi bunun etrafinda kur.",
+      "items": [
+        {"id": "oglen", "label": "Golge en kisa"},
+        {"id": "aksam", "label": "Golge tekrar uzar"},
+        {"id": "sabah", "label": "Golge uzundur"}
+      ],
+      "correctOrder": ["sabah", "oglen", "aksam"],
+      "hints": [
+        "Gunes en tepedeyken golge kisalir.",
+        "Sabah ve aksam golge uzundur."
+      ],
+      "buttonText": "Sirayi Onayla",
+      "concepts": ["golge_boyu"]
+    },
+    {
+      "id": "cause",
+      "type": "cause_effect_match",
+      "title": "Neden-Sonuc Eslestir",
+      "instruction": "Neden kartini dogru sonuc kutusuna birak.",
+      "helper": "Her karti tek tek dusun: mesafe artarsa veya azalirsa golge nasil degisir?",
+      "pairs": [
+        {
+          "cause": "Isik kaynagi cisme yaklasir",
+          "effect": "Golge buyume egilimi gosterir"
+        },
+        {
+          "cause": "Cisim ekrana yaklasir",
+          "effect": "Golge kuculur ve netlesir"
+        }
+      ],
+      "hints": [
+        "Kaynak yaklasirsa golge genelde buyur.",
+        "Ekrana yaklastikca golge netlesir."
+      ],
+      "buttonText": "Eslestirmeyi Bitir",
+      "concepts": ["degisken_etkisi"]
+    },
+    {
+      "id": "sim",
+      "type": "variable_simulator",
+      "title": "Mini Golge Simulasyonu",
+      "instruction": "Kaydiricilarla oynayip orta boy golgeyi yakala.",
+      "helper": "Kaynak-cisim ve cisim-ekran mesafesini degistir; alttaki bari izle.",
+      "targetRange": [46, 62],
+      "hints": [
+        "Bir anda hepsini degistirme, tek tek dene.",
+        "Kaynak-cisim mesafesini biraz azaltmayi dene."
+      ],
+      "buttonText": "Tamam, Bu Deger",
+      "concepts": ["simulasyon"]
+    },
+    {
+      "id": "memory",
+      "type": "memory_grid",
+      "title": "Hafiza Kartlari",
+      "instruction": "Kavram ve tanim kartlarini eslestir.",
+      "helper": "Once iki kart ac, es degilse konumlarini aklinda tut.",
+      "pairs": [
+        {"id": "m1", "left": "Opak", "right": "Isigi gecirmez"},
+        {"id": "m2", "left": "Tam golge", "right": "Isigin ulasamadigi bolge"},
+        {"id": "m3", "left": "Dogrusal yayilim", "right": "Isik duz cizgide ilerler"}
+      ],
+      "hints": [
+        "Ayni kavram ailesindeki kartlari takip et.",
+        "Bir onceki hamlede gordugun karti hatirla."
+      ],
+      "concepts": ["kavram_tekrar"]
+    },
+    {
+      "id": "summary",
+      "type": "summary",
+      "title": "Harika! Konuyu Cozdun",
+      "content": "Tam golgenin nasil olustugunu, golge boyunun neden degistigini ve kurulumdaki hatalari oyunlarla ogrendin.",
+      "keywords": [
+        "Tam golge",
+        "Opak cisim",
+        "Golge boyu",
+        "Neden-sonuc",
+        "Simulasyon"
+      ],
+      "buttonText": "Dersi Bitir"
+    }
+  ]
+}

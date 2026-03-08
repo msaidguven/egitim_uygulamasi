@@ -1,0 +1,116 @@
+{
+  "lesson_id": "solar_system_intro",
+  "title": "Gunes Sistemi Yolculugu",
+  "steps": [
+    {
+      "type": "text",
+      "title": "Hos Geldin Kasif",
+      "content": "Bugun gunes sistemimizin temel yapisini adim adim ogreneceksin.",
+      "buttonText": "Baslayalim"
+    },
+    {
+      "type": "info_highlights",
+      "title": "Bugun Neleri Gorecegiz?",
+      "subtitle": "Ders sonunda bu maddeleri net sekilde biliyor olacaksin.",
+      "points": [
+        "Gunes bir yildizdir ve sistemin merkezindedir.",
+        "Ic gezegenler kayalik yapiya sahiptir.",
+        "Dis gezegenlerin buyuk kismi gaz yapilidir."
+      ],
+      "note": "Not: Bu ozet her dersin basina ayni formatta eklenebilir.",
+      "buttonText": "Icerige Gec"
+    },
+    {
+      "type": "word_selector",
+      "title": "Gunesimizi Taniyalim",
+      "question": "Gunes sistemimizin merkezinde buyuk bir [ ] bulunur.",
+      "options": [
+        "Gezegen",
+        "Yildiz",
+        "Ay",
+        "Kuyruklu Yildiz"
+      ],
+      "correct": "Yildiz",
+      "hint": "Gunes isi ve isik ureten bir gok cismidir."
+    },
+    {
+      "type": "text",
+      "title": "Ic Gezegenler",
+      "content": "Gunes'e en yakin dort gezegen Merkur, Venus, Dunya ve Mars'tir.",
+      "buttonText": "Siralama Gorevine Git"
+    },
+    {
+      "type": "sequence_sorter",
+      "title": "Gunes'e Yakinlik Siralamasi",
+      "question": "Gezegenleri Gunes'e en yakin olandan baslayarak sirala.",
+      "items": [
+        "Mars",
+        "Merkur",
+        "Dunya",
+        "Venus"
+      ],
+      "correctOrder": [
+        "Merkur",
+        "Venus",
+        "Dunya",
+        "Mars"
+      ],
+      "hint": "En kucuk gezegen Merkur, Gunes'e en yakindir."
+    },
+    {
+      "type": "category_matcher",
+      "title": "Gezegen Turlerini Eslestir",
+      "instruction": "Gezegenleri dogru kategorilere tasi.",
+      "allItems": [
+        "Dunya",
+        "Jupiter",
+        "Merkur",
+        "Saturn"
+      ],
+      "categories": [
+        {
+          "name": "Kayalik Gezegenler",
+          "items": [
+            "Dunya",
+            "Merkur"
+          ]
+        },
+        {
+          "name": "Gaz Devleri",
+          "items": [
+            "Jupiter",
+            "Saturn"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "quiz_single_choice",
+      "title": "Kontrol Sorusu",
+      "question": "Asagidakilerden hangisi ic gezegenlerden biridir?",
+      "options": [
+        "Saturn",
+        "Merkur",
+        "Neptun",
+        "Jupiter"
+      ],
+      "correct": "Merkur",
+      "explanation": "Dogru. Merkur gunes sistemindeki ic gezegenlerden biridir.",
+      "incorrectHint": "Ipuclari icin onceki adimdaki ic gezegen listesini hatirla.",
+      "buttonText": "Cevabi Onayla"
+    },
+    {
+      "type": "summary",
+      "title": "Harika Is Cikardin",
+      "content": "Gunes sistemi ile ilgili temel kavramlari basariyla tamamladin.",
+      "keywords": [
+        "Gunes",
+        "Yildiz",
+        "Yorunge",
+        "Kayalik",
+        "Gaz Devleri"
+      ],
+      "buttonText": "Dersi Bitir"
+    }
+  ]
+}

@@ -53,6 +53,7 @@ dependencies:
 
   google_sign_in: ^6.2.1
   flutter_animate: ^4.5.2
+  scrollable_positioned_list: ^0.3.8
 
 
 dev_dependencies:
@@ -82,3 +83,8 @@ flutter:
   assets:
     - assets/images/
     - assets/audio/
+    - assets/lessons/fotosentez_v3.json
+    - assets/lessons/ai_security_01.json
+    - assets/lessons/lesson_engine.json
+    - assets/lessons/lesson_solar_system.json
+    - assets/lessons/lesson_tam_golge.json

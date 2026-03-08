@@ -1,0 +1,251 @@
+{
+  "id": "lesson_001",
+  "title": "Fotosentez",
+  "subject": "Biyoloji",
+  "totalPoints": 200,
+  "steps": [
+    {
+      "id": "step_1",
+      "type": "intro",
+      "title": "Fotosenteze Hos Geldin!",
+      "description": "Bu derste bitkilerin gunes isigi, su ve karbondioksit kullanarak kendi besinlerini nasil urettiğini ogreneceksin.",
+      "icon": "🌿",
+      "backgroundColor": "#1a472a"
+    },
+    {
+      "id": "step_1_info",
+      "type": "content",
+      "title": "Fotosentez Nedir?",
+      "explanation": "Fotosentez, bitkilerin, alglerin ve bazı bakterilerin güneş ışığını kullanarak su ve karbondioksitten (CO2) şeker (besin) ve oksijen ürettiği hayati bir süreçtir.",
+      "bulletPoints": [
+        "Bitkiler kendi besinlerini bu süreçle üretirler.",
+        "Dünyadaki oksijenin ana kaynağıdır.",
+        "Güneş enerjisi kimyasal enerjiye dönüştürülür."
+      ],
+      "image": "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=500"
+    },
+    {
+      "id": "step_2",
+      "type": "concept_cards",
+      "title": "Temel Kavramlar",
+      "cards": [
+        {
+          "term": "Fotosentez",
+          "definition": "Bitkilerin gunes isigi kullanarak CO2 ve suyu glikoz ve oksijene donusturdugu surectir.",
+          "icon": "☀️",
+          "color": "#2ecc71"
+        },
+        {
+          "term": "Klorofil",
+          "definition": "Bitkilerde isik enerjisini soğuran yesil pigmenttir.",
+          "icon": "🍃",
+          "color": "#27ae60"
+        },
+        {
+          "term": "Kloroplast",
+          "definition": "Bitki hucrelerinde fotosentezin gerceklestiği organeldir.",
+          "icon": "🔬",
+          "color": "#16a085"
+        },
+        {
+          "term": "Glikoz",
+          "definition": "Fotosentezle uretilen ve bitkinin enerji icin kullandigi sekerdir.",
+          "icon": "⚡",
+          "color": "#f39c12"
+        }
+      ]
+    },
+    {
+      "id": "step_3",
+      "type": "quiz",
+      "title": "Hizli Kontrol",
+      "questions": [
+        {
+          "question": "Fotosentezden hangi organel sorumludur?",
+          "options": [
+            "Mitokondri",
+            "Kloroplast",
+            "Cekirdek",
+            "Ribozom"
+          ],
+          "correctIndex": 1,
+          "explanation": "Kloroplastlar klorofil icerir ve fotosentezin gerceklestigi yerdir."
+        },
+        {
+          "question": "Bitkilerde isigi soğuran yesil pigment hangisidir?",
+          "options": [
+            "Melanin",
+            "Karoten",
+            "Klorofil",
+            "Ksantofil"
+          ],
+          "correctIndex": 2,
+          "explanation": "Klorofil, isigi soğuran temel pigmenttir."
+        },
+        {
+          "question": "Bitkiler fotosentez sirasinda hangi gazi salar?",
+          "options": [
+            "CO2",
+            "Azot",
+            "Oksijen",
+            "Hidrojen"
+          ],
+          "correctIndex": 2,
+          "explanation": "Su molekulleri ayrisirken yan urun olarak oksijen aciga cikar."
+        }
+      ],
+      "points": 20
+    },
+    {
+      "id": "step_4",
+      "type": "true_false",
+      "title": "Dogru mu Yanlis mi?",
+      "questions": [
+        {
+          "question": "Bitkiler fotosentezin yan urunu olarak oksijen salar.",
+          "correct": true,
+          "explanation": "Dogru! Su molekulleri ayristiginda oksijen aciga cikar."
+        },
+        {
+          "question": "Fotosentez mitokondride gerceklesir.",
+          "correct": false,
+          "explanation": "Yanlis! Fotosentez mitokondride degil, kloroplastta gerceklesir."
+        },
+        {
+          "question": "Klorofil bitkilere yesil rengini verir.",
+          "correct": true,
+          "explanation": "Evet! Klorofil yesil isiği yansittigi icin bitkiler yesil gorunur."
+        }
+      ],
+      "points": 15
+    },
+    {
+      "id": "step_5",
+      "type": "fill_in_the_blank",
+      "title": "Bosluklari Doldur",
+      "questions": [
+        {
+          "template": "Bitkiler glikoz uretmek icin ___ ve ___ kullanir.",
+          "blanks": 2,
+          "wordPool": [
+            "gunes isigi",
+            "su",
+            "azot",
+            "oksijen",
+            "CO2",
+            "tuz"
+          ],
+          "answers": [
+            "gunes isigi",
+            "su"
+          ],
+          "hint": "Bitkilerin gunes ve koklerden ne aldigini dusun."
+        },
+        {
+          "template": "Kloroplasttaki ___ isik enerjisini soğurur.",
+          "blanks": 1,
+          "wordPool": [
+            "klorofil",
+            "glikoz",
+            "nisasta",
+            "protein"
+          ],
+          "answers": [
+            "klorofil"
+          ],
+          "hint": "Yesil pigmenti hatirla!"
+        },
+        {
+          "template": "Fotosentez yan urun olarak ___ uretir.",
+          "blanks": 1,
+          "wordPool": [
+            "oksijen",
+            "karbon",
+            "azot",
+            "seker"
+          ],
+          "answers": [
+            "oksijen"
+          ],
+          "hint": "Bizim soludugumuz gaz."
+        }
+      ],
+      "points": 25
+    },
+    {
+      "id": "step_6",
+      "type": "matching",
+      "title": "Kavramlari Eslestir",
+      "pairs": [
+        {
+          "left": "Klorofil",
+          "right": "Yesil pigment"
+        },
+        {
+          "left": "Glikoz",
+          "right": "Bitki besini"
+        },
+        {
+          "left": "Stoma",
+          "right": "Gaz alisveris gozenekleri"
+        },
+        {
+          "left": "CO2",
+          "right": "Karbondioksit"
+        }
+      ],
+      "points": 30
+    },
+    {
+      "id": "step_6_info",
+      "type": "content",
+      "title": "Fotosentez Denklemi",
+      "explanation": "Fotosentezin nasıl gerçekleştiğini bir denklem gibi düşünebiliriz. Bitki dışarıdan maddeleri alır ve onları yeni maddelere dönüştürür.",
+      "bulletPoints": [
+        "Girenler: Güneş Işığı, Su ve Karbondioksit.",
+        "Çıkanlar: Glikoz (Şeker) ve Oksijen.",
+        "Bu süreç güneş enerjisini depolar."
+      ],
+      "image": "https://images.unsplash.com/photo-1471086569966-db3eebc25a59?q=80&w=500"
+    },
+    {
+      "id": "step_7",
+      "type": "activity",
+      "title": "Kelime Dizimi",
+      "instruction": "Az önce öğrendiğin bilgilere göre fotosentez denklemini kur:",
+      "wordPool": [
+        "Gunes Isigi",
+        "Su",
+        "Karbondioksit",
+        "Glikoz",
+        "Oksijen",
+        "CO2"
+      ],
+      "correctSequence": [
+        "Gunes Isigi",
+        "+",
+        "Su",
+        "+",
+        "Karbondioksit",
+        "->",
+        "Glikoz",
+        "+",
+        "Oksijen"
+      ],
+      "explanation": "Harika! Girdi olarak Işık, Su ve CO2 kullanılır; çıktı olarak Besin ve Oksijen üretilir.",
+      "points": 35,
+      "hint": "Güneş, Su ve Gaz girer -> Şeker ve Oksijen çıkar."
+    },
+    {
+      "id": "step_8",
+      "type": "summary",
+      "title": "Ders Tamamlandı!",
+      "points": [
+        "Bitkiler fotosentez icin gunes isigi, su ve CO2 kullanir.",
+        "Kloroplastlar, isigi soğuran klorofili icerir.",
+        "Besin olarak glikoz uretilir; oksijen aciga cikar.",
+        "Fotosentez, Dunya'daki yasam icin kritik oneme sahiptir."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ders JSON — Doğrula & Düzelt</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #faf8f5;
+  --surface: #ffffff;
+  --surface2: #f5f2ee;
+  --border: #e8e3dc;
+  --border2: #d4cec5;
+  --text: #1a1814;
+  --muted: #8c8579;
+  --accent: #2d5a3d;
+  --accent-light: #e8f0eb;
+  --red: #8b2020;
+  --red-light: #fdf0f0;
+  --red-border: #e8c4c4;
+  --yellow: #7a5c00;
+  --yellow-light: #fffbeb;
+  --mono: 'DM Mono', monospace;
+  --serif: 'Instrument Serif', serif;
+  --sans: 'DM Sans', sans-serif;
+  --radius: 10px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.app {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── HEADER ── */
+.header { text-align: center; padding-bottom: 8px; }
+.header h1 {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  line-height: 1.2;
+}
+.header h1 em { font-style: italic; color: var(--accent); }
+.header p { margin-top: 8px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.card-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface2);
+}
+.card-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.char-count { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+textarea {
+  width: 100%;
+  height: 260px;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--surface);
+  padding: 18px 20px;
+}
+textarea::placeholder { color: var(--border2); }
+
+/* ── BUTTON ── */
+.btn-row { display: flex; gap: 10px; }
+
+button {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  padding: 12px 22px;
+  transition: all 0.15s;
+}
+.btn-main {
+  background: var(--accent);
+  color: white;
+  flex: 1;
+}
+.btn-main:hover { background: #234832; }
+.btn-clear {
+  background: var(--surface2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-clear:hover { color: var(--text); }
+
+/* ── RESULT ── */
+#result { display: none; animation: rise 0.25s ease; }
+@keyframes rise { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* OK state */
+.ok-banner {
+  background: var(--accent-light);
+  border: 1px solid #b8d4c0;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.ok-icon { font-size: 26px; }
+.ok-title { font-size: 16px; font-weight: 600; color: var(--accent); }
+.ok-sub { font-size: 13px; color: #4a7a5a; margin-top: 2px; }
+
+.meta-row {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 0;
+}
+.meta-cell {
+  background: var(--surface);
+  padding: 14px 18px;
+}
+.meta-key { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.meta-val { font-size: 15px; font-weight: 600; margin-top: 3px; }
+.meta-title { grid-column: 1/-1; }
+.meta-title .meta-val { font-size: 14px; font-weight: 500; color: var(--muted); }
+
+.chips-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+.chips-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 5px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--accent);
+}
+
+/* ERR state */
+.err-banner {
+  background: var(--red-light);
+  border: 1px solid var(--red-border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.err-icon { font-size: 22px; }
+.err-title { font-size: 15px; font-weight: 600; color: var(--red); }
+.err-sub { font-size: 13px; color: #b05050; margin-top: 2px; }
+
+.errors-list {
+  border: 1px solid var(--red-border);
+  border-top: none;
+  border-radius: 0;
+  background: var(--surface);
+}
+.error-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--red-border);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.error-row:last-child { border-bottom: none; }
+.err-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: var(--red-light);
+  border: 1px solid var(--red-border);
+  color: var(--red);
+  border-radius: 4px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.err-path { font-family: var(--mono); font-size: 11px; color: var(--yellow); }
+.err-msg { color: var(--red); }
+
+/* ── FIX PROMPT BOX ── */
+.fix-box {
+  border: 1px solid var(--red-border);
+  border-top: 2px solid var(--red);
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--yellow-light);
+  overflow: hidden;
+}
+.fix-header {
+  padding: 14px 20px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.fix-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--yellow);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.fix-title span { font-size: 15px; }
+.btn-copy {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #d4b800;
+  background: white;
+  color: var(--yellow);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-copy:hover { background: var(--yellow); color: white; }
+.btn-copy.copied { background: var(--accent); border-color: var(--accent); color: white; }
+
+.fix-prompt {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: #3d3000;
+  padding: 0 20px 18px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.fix-tip {
+  margin: 0 20px 16px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #e8d87a;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--yellow);
+  line-height: 1.5;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <h1>Ders JSON<br><em>Doğrula & Düzelt</em></h1>
+    <p>AI'dan gelen JSON'u yapıştır. Hata varsa hazır düzeltme prompt'u oluşturulur —<br>kopyala, AI'a yapıştır, bitti.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-label">JSON İçeriği</span>
+      <span class="char-count" id="charCount">0 karakter</span>
+    </div>
+    <textarea id="jsonInput"
+      placeholder='{ "lesson": { "grade": "5. Sınıf", ... } }'></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-main" onclick="validate()">Kontrol Et →</button>
+    <button class="btn-clear" onclick="clearAll()">Temizle</button>
+  </div>
+
+  <div id="result"></div>
+
+</div>
+
+<script>
+// ── Karakter sayacı ──────────────────────────────────────────────────────────
+document.getElementById('jsonInput').addEventListener('input', function() {
+  document.getElementById('charCount').textContent =
+    this.value.length.toLocaleString('tr') + ' karakter';
+});
+
+function clearAll() {
+  document.getElementById('jsonInput').value = '';
+  document.getElementById('charCount').textContent = '0 karakter';
+  document.getElementById('result').style.display = 'none';
+}
+
+// ── Validator ────────────────────────────────────────────────────────────────
+const VALID_TYPES = new Set(['intro','concept_explanation','risk_analysis',
+  'scenario_activity','role_play','mini_game','quiz','critical_thinking',
+  'word_bank','summary','reflection','certificate']);
+const VALID_DIFF = new Set(['kolay','orta','zor']);
+const ACT_OPTIONAL = new Set(['certificate']);
+const ASM_OPTIONAL = new Set(['intro','summary','certificate']);
+
+const e = (path, msg) => ({ path, msg });
+
+function chkStr(o, f, path, errs) {
+  if (!(f in o)) { errs.push(e(path, `'${f}' alanı eksik`)); return false; }
+  if (typeof o[f] !== 'string' || !o[f].trim()) { errs.push(e(path, `'${f}' boş veya string değil`)); return false; }
+  return true;
+}
+function chkList(o, f, path, errs) {
+  if (!(f in o)) { errs.push(e(path, `'${f}' alanı eksik`)); return false; }
+  if (!Array.isArray(o[f]) || o[f].length === 0) { errs.push(e(path, `'${f}' boş veya liste değil`)); return false; }
+  return true;
+}
+
+function valCards(cards, path, errs) {
+  cards.forEach((c, i) => {
+    const p = `${path}.cards[${i}]`;
+    if (typeof c === 'string') { errs.push(e(p,'Düz string kullanılamaz — {item,label} nesnesi olmalı')); return; }
+    if (typeof c !== 'object') { errs.push(e(p,'Nesne değil')); return; }
+    chkStr(c,'item',p,errs); chkStr(c,'label',p,errs);
+  });
+}
+function valChoices(choices, path, errs) {
+  choices.forEach((c,i) => {
+    const p=`${path}.choices[${i}]`;
+    if (typeof c!=='object'){errs.push(e(p,'Nesne değil'));return;}
+    chkStr(c,'text',p,errs); chkStr(c,'feedback',p,errs);
+    if (!('correct' in c)) errs.push(e(p,"'correct' eksik"));
+    else if (typeof c.correct!=='boolean') errs.push(e(p,"'correct' true/false olmalı"));
+  });
+  if (Array.isArray(choices) && !choices.some(c=>c.correct===true))
+    errs.push(e(path,"choices içinde en az bir 'correct:true' olmalı"));
+}
+function valRolePlay(rp,path,errs){
+  rp.forEach((r,i)=>{
+    const p=`${path}.role_play[${i}]`;
+    if(typeof r==='string'){errs.push(e(p,'Düz string kullanılamaz — {role,action} olmalı'));return;}
+    if(typeof r!=='object'){errs.push(e(p,'Nesne değil'));return;}
+    chkStr(r,'role',p,errs); chkStr(r,'action',p,errs);
+  });
+}
+function valMiniGame(mg,path,errs){
+  mg.forEach((m,i)=>{
+    const p=`${path}.mini_game[${i}]`;
+    if(typeof m!=='object'){errs.push(e(p,'Nesne değil'));return;}
+    chkStr(m,'situation',p,errs); chkStr(m,'correct_answer',p,errs); chkStr(m,'feedback',p,errs);
+  });
+}
+function valQuizQs(qs,path,errs){
+  qs.forEach((q,i)=>{
+    const p=`${path}.quiz_questions[${i}]`;
+    if(typeof q!=='object'){errs.push(e(p,'Nesne değil'));return;}
+    chkStr(q,'question',p,errs); chkStr(q,'correct_answer',p,errs);
+    if(!('options' in q)) errs.push(e(p,"'options' eksik"));
+    else if(!Array.isArray(q.options)||q.options.length<2) errs.push(e(p,"'options' en az 2 elemanlı olmalı"));
+    else if(q.correct_answer && !q.options.includes(q.correct_answer))
+      errs.push(e(p,`'correct_answer' options içinde yok: "${q.correct_answer}"`));
+  });
+}
+
+
+function countBlanks(template) {
+  // ____+ (en az 3 alt çizgi) veya ___ veya {blank_N} formatlarını say
+  const patterns = [
+    /_{3,}/g,           // ___ veya ____ veya _____
+    /\{blank\w*\}/gi,   // {blank1}, {blank_1}, {BLANK}
+    /\{\s*\}/g,         // {} boş süslü parantez
+  ];
+  let max = 0;
+  for (const p of patterns) {
+    const m = template.match(p);
+    if (m && m.length > max) max = m.length;
+  }
+  return max;
+}
+
+function valWordBank(wb, path, errs) {
+  const p = path;
+  if (!wb.words || !Array.isArray(wb.words) || wb.words.length === 0)
+    errs.push(e(p, "'word_bank.words' eksik veya boş liste"));
+  if (!wb.template || !wb.template.trim())
+    errs.push(e(p, "'word_bank.template' eksik veya boş"));
+  if (!wb.blanks || !Array.isArray(wb.blanks) || wb.blanks.length === 0) {
+    errs.push(e(p, "'word_bank.blanks' eksik veya boş liste"));
+  } else {
+    const template = wb.template || '';
+    const blankCountInTemplate = countBlanks(template);
+    if (blankCountInTemplate > 0 && blankCountInTemplate !== wb.blanks.length)
+      errs.push(e(p, `template'de ${blankCountInTemplate} boşluk var ama blanks dizisinde ${wb.blanks.length} eleman var — eşit olmalı`));
+    else if (blankCountInTemplate === 0)
+      errs.push(e(p, "template içinde boşluk bulunamadı — '_____' veya '____' kullan"));
+    wb.blanks.forEach((b, i) => {
+      const bp = `${p}.blanks[${i}]`;
+      if (typeof b !== 'object') { errs.push(e(bp, 'Nesne değil')); return; }
+      if (!b.id || !String(b.id).trim()) errs.push(e(bp, "'id' eksik veya boş"));
+      if (!('correct_answer' in b)) errs.push(e(bp, "'correct_answer' eksik"));
+      else if (Array.isArray(wb.words) && !wb.words.includes(b.correct_answer))
+        errs.push(e(bp, `'correct_answer' ("${b.correct_answer}") 'words' listesinde bulunamadı`));
+    });
+  }
+}
+
+function valActivities(step,sp,errs){
+  const t=step.type||'', acts=step.activities||{}, p=`${sp}.activities`;
+  if(ACT_OPTIONAL.has(t)) return;
+  if(!acts||Object.keys(acts).length===0){errs.push(e(p,`type='${t}' için activities boş olamaz`));return;}
+  if(t==='intro') chkList(acts,'discussion_prompts',p,errs);
+  else if(t==='concept_explanation'||t==='risk_analysis'){
+    if(chkList(acts,'cards',p,errs)) valCards(acts.cards,p,errs);
+  }
+  else if(t==='scenario_activity'){
+    chkStr(acts,'scenario',p,errs);
+    if(chkList(acts,'choices',p,errs)) valChoices(acts.choices,p,errs);
+  }
+  else if(t==='role_play'){if(chkList(acts,'role_play',p,errs)) valRolePlay(acts.role_play,p,errs);}
+  else if(t==='mini_game'){if(chkList(acts,'mini_game',p,errs)) valMiniGame(acts.mini_game,p,errs);}
+  else if(t==='quiz'){if(chkList(acts,'quiz_questions',p,errs)) valQuizQs(acts.quiz_questions,p,errs);}
+  else if(t==='word_bank'){
+    if(!acts.word_bank) errs.push(e(p,"type='word_bank' için activities.word_bank nesnesi gerekli"));
+    else if(typeof acts.word_bank !== 'object') errs.push(e(p,"activities.word_bank bir nesne olmalı"));
+    else valWordBank(acts.word_bank, `${p}.word_bank`, errs);
+  }
+  else if(t==='critical_thinking'||t==='reflection'){
+    if(!acts.discussion_prompts&&!acts.evaluation_tasks)
+      errs.push(e(p,'discussion_prompts veya evaluation_tasks en az biri olmalı'));
+  }
+  else if(t==='summary') chkList(acts,'summary_points',p,errs);
+}
+
+function valAssessment(step,sp,errs){
+  const t=step.type||'', asmt=step.assessment||{}, p=`${sp}.assessment`;
+  if(ASM_OPTIONAL.has(t)) return;
+  if(t==='quiz'){
+    if(!asmt.quiz_questions?.length) errs.push(e(p,"type='quiz' için assessment.quiz_questions dolu olmalı"));
+    else valQuizQs(asmt.quiz_questions,p,errs);
+    return;
+  }
+  const has=asmt.quiz_questions?.length||asmt.reflective_questions?.length||asmt.evaluation_tasks?.length;
+  if(!has) errs.push(e(p,`type='${t}' için assessment en az bir dolu alan içermeli`));
+}
+
+function valStep(step,idx,errs){
+  const p=`steps[${idx}] (id=${step.id||'?'})`;
+  ['id','type','title'].forEach(f=>chkStr(step,f,p,errs));
+  if (!('duration_minutes' in step))
+    errs.push(e(p, "'duration_minutes' eksik"));
+  else if (typeof step.duration_minutes !== 'number' || step.duration_minutes <= 0)
+    errs.push(e(p, "'duration_minutes' pozitif bir sayı olmalı"));
+  const t=step.type||'';
+  if(t&&!VALID_TYPES.has(t)) errs.push(e(p,`Geçersiz type: '${t}'`));
+  if(!step.content) errs.push(e(p,"'content' eksik"));
+  else {
+    const cp=`${p}.content`;
+    chkStr(step.content,'explanation',cp,errs);
+    chkList(step.content,'key_points',cp,errs);
+    ['examples','real_life_connections'].forEach(f=>{
+      if(f in step.content&&!Array.isArray(step.content[f]))
+        errs.push(e(cp,`'${f}' liste olmalı`));
+    });
+  }
+  if(!('activities' in step)) errs.push(e(p,"'activities' eksik"));
+  else valActivities(step,p,errs);
+  if(!('assessment' in step)) errs.push(e(p,"'assessment' eksik"));
+  else valAssessment(step,p,errs);
+  if(!step.teacher_notes) errs.push(e(p,"'teacher_notes' eksik"));
+  else {
+    const tn=`${p}.teacher_notes`;
+    chkList(step.teacher_notes,'teaching_tips',tn,errs);
+    chkList(step.teacher_notes,'classroom_discussion',tn,errs);
+  }
+}
+
+function validateLesson(data){
+  const errs=[];
+  if(!data.lesson) return [false,[e('root',"'lesson' anahtarı eksik")]];
+  const L=data.lesson, p='lesson';
+  ['grade','subject','unit','topic','title','description','difficulty_level']
+    .forEach(f=>chkStr(L,f,p,errs));
+  if(L.difficulty_level&&!VALID_DIFF.has(L.difficulty_level))
+    errs.push(e(p,`difficulty_level '${L.difficulty_level}' geçersiz (kolay/orta/zor)`));
+  chkList(L,'learning_objectives',p,errs);
+  chkList(L,'keywords',p,errs);
+  if(!L.steps){errs.push(e(p,"'steps' eksik"));return [false,errs];}
+  if(!Array.isArray(L.steps)||L.steps.length===0){errs.push(e(p,"'steps' boş"));return [false,errs];}
+  // word_bank zorunlu
+  const stepTypes=L.steps.map(s=>s.type);
+  if(!stepTypes.includes('word_bank'))
+    errs.push(e(p,"Her derste en az 1 'word_bank' step'i zorunludur"));
+
+  const ids=L.steps.map(s=>s.id).filter(Boolean);
+  if(ids.length!==new Set(ids).size) errs.push(e('steps','Tekrar eden step id var'));
+  L.steps.forEach((s,i)=>{
+    if(typeof s!=='object'){errs.push(e(`steps[${i}]`,'Nesne değil'));return;}
+    valStep(s,i,errs);
+  });
+  return [errs.length===0, errs];
+}
+
+// ── Fix prompt üretici ───────────────────────────────────────────────────────
+function buildFixPrompt(errors, lessonTitle, rawJson) {
+  const errorLines = errors.map((err, i) =>
+    `${i+1}. Konum: ${err.path}\n   Sorun: ${err.msg}`
+  ).join('\n\n');
+
+  return `Aşağıdaki ders JSON'unda ${errors.length} hata var. Sadece bu hataları düzelt ve SADECE tam JSON'u döndür. JSON dışında hiçbir şey yazma.
+
+DERS: ${lessonTitle || '(bilinmiyor)'}
+
+HATALAR:
+${errorLines}
+
+KURALLAR (hatayı düzeltirken uygula):
+- classroom_discussion, teaching_tips gibi listeler ASLA boş [] bırakılamaz, en az 1 anlamlı madde içermeli
+- activities alanı ASLA {} boş bırakılamaz
+- word_bank zorunlu: her derste en az 1 word_bank step'i olmalı; eksikse ekle
+- cards her zaman {item, label} nesnesi olmalı, düz string yasak
+- choices her zaman {text, correct, feedback} içermeli
+- role_play her zaman {role, action} nesnesi olmalı
+- Hatalı alanları düzelt, geri kalan hiçbir şeyi değiştirme
+
+DÜZELTILECEK JSON:
+${rawJson}`;
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+function stripMarkdown(text) {
+  // ```json ... ``` veya ``` ... ``` bloklarını temizle
+  return text
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/\s*```$/i, '')
+    .trim();
+}
+
+function validate() {
+  const rawInput = document.getElementById('jsonInput').value.trim();
+  const raw = stripMarkdown(rawInput);
+  const el = document.getElementById('result');
+  el.style.display = 'block';
+
+  // Temizlendiyse textarea'yı güncelle
+  if (raw !== rawInput) {
+    document.getElementById('jsonInput').value = raw;
+    document.getElementById('charCount').textContent = raw.length.toLocaleString('tr') + ' karakter';
+  }
+
+  if (!raw) {
+    el.innerHTML = renderErr('Boş içerik', [{path:'input', msg:'Önce JSON yapıştır'}], '');
+    return;
+  }
+
+  let data;
+  try { data = JSON.parse(raw); }
+  catch(err) {
+    el.innerHTML = renderErr('JSON Yazım Hatası', [{path:'parse', msg: err.message}], '');
+    return;
+  }
+
+  const [ok, errors] = validateLesson(data);
+  const title = data?.lesson?.title || '';
+
+  if (ok) {
+    el.innerHTML = renderOk(data.lesson);
+  } else {
+    el.innerHTML = renderErr(`${errors.length} hata bulundu`, errors, title, raw);
+  }
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderOk(L) {
+  const chips = L.steps.map(s=>`<span class="chip">${s.type}</span>`).join('');
+  return `
+    <div class="ok-banner">
+      <span class="ok-icon">✅</span>
+      <div>
+        <div class="ok-title">JSON Geçerli — Kaydedebilirsin</div>
+        <div class="ok-sub">Tüm alanlar doğru formatta · ${L.steps.length} step</div>
+      </div>
+    </div>
+    <div class="meta-row" style="margin-top:12px">
+      <div class="meta-cell"><div class="meta-key">Sınıf</div><div class="meta-val">${L.grade}</div></div>
+      <div class="meta-cell"><div class="meta-key">Zorluk</div><div class="meta-val">${L.difficulty_level}</div></div>
+      <div class="meta-cell"><div class="meta-key">Toplam Süre</div><div class="meta-val">${L.steps.reduce((s,x)=>s+(x.duration_minutes||0),0)} dk</div></div>
+      <div class="meta-cell meta-title"><div class="meta-key">Başlık</div><div class="meta-val">${L.title}</div></div>
+    </div>
+    <div class="chips-card" style="margin-top:12px">
+      <div class="chips-label">Step Sırası</div>
+      <div class="chips">${chips}</div>
+    </div>`;
+}
+
+function renderErr(title, errors, lessonTitle, rawJson = '') {
+  const items = errors.map((err,i)=>`
+    <div class="error-row">
+      <span class="err-num">${i+1}</span>
+      <div>
+        <div class="err-path">${err.path}</div>
+        <div class="err-msg">${err.msg}</div>
+      </div>
+    </div>`).join('');
+
+  const fixPrompt = buildFixPrompt(errors, lessonTitle, rawJson);
+  const fixEscaped = fixPrompt.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  return `
+    <div class="err-banner">
+      <span class="err-icon">❌</span>
+      <div>
+        <div class="err-title">${title}</div>
+        <div class="err-sub">Aşağıdaki hazır prompt'u kopyala → AI'a yapıştır → düzeltilmiş JSON'u al → tekrar kontrol et</div>
+      </div>
+    </div>
+    <div class="errors-list">${items}</div>
+    <div class="fix-box">
+      <div class="fix-header">
+        <div class="fix-title"><span>🔧</span> AI'a Gönderilecek Düzeltme Prompt'u</div>
+        <button class="btn-copy" onclick="copyFix(this)" data-text="${fixPrompt.replace(/"/g,'&quot;')}">Kopyala</button>
+      </div>
+      <div class="fix-tip">
+        👆 Kopyala → AI sohbet penceresine git → yapıştır → <strong>orijinal JSON'u da ekle</strong> → gönder → gelen JSON'u buraya yapıştır → tekrar kontrol et
+      </div>
+      <div class="fix-prompt">${fixEscaped}</div>
+    </div>`;
+}
+
+function copyFix(btn) {
+  const text = btn.getAttribute('data-text').replace(/&quot;/g,'"');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopyalandı';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='Kopyala'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

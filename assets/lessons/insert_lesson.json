@@ -1,0 +1,727 @@
+{
+"lesson": {
+"grade": "5. Sınıf",
+"subject": "Fen Bilimleri",
+"unit": "Işığın Dünyası",
+"topic": "FB.5.4.3.Tam Gölgenin Oluşumu",
+"title": "Işık Engellenince Ne Olur? Tam Gölgenin Oluşumu",
+"description": "Bu derste öğrenciler ışığın doğrusal yayılması sonucunda tam gölgenin nasıl oluştuğunu, tam gölgenin özelliklerini ve gölgeyi etkileyen değişkenleri keşfeder. Günlük hayattan örnekler, senaryolar ve etkileşimli aktivitelerle öğrenciler gölgenin oluşumunu gözlemleyerek açıklamayı öğrenir.",
+"difficulty_level": "orta",
+"learning_objectives": [
+"Tam gölgenin nasıl oluştuğunu açıklar.",
+"Tam gölgenin temel özelliklerini tanımlar.",
+"Tam gölgeyi etkileyen değişkenleri açıklar.",
+"Gölge gözlemlerini kaydedip yorumlar."
+],
+"keywords": [
+"ışık",
+"tam gölge",
+"ışık kaynağı",
+"opak madde",
+"gölge boyutu",
+"ışığın doğrusal yayılması"
+],
+"steps": [
+{
+"id": "step1",
+"type": "intro",
+"title": "Gölgen Nereden Geliyor?",
+"duration_minutes": 8,
+"content": {
+"explanation": "Güneşli bir günde dışarı çıktığında yerde seninle birlikte hareket eden bir karanlık şekil fark etmişsindir. Bu şekil bazen uzun, bazen kısa olur; bazen de neredeyse ayaklarının altına gizlenir. İşte bu olay, ışığın nasıl davrandığını anlamamıza yardımcı olan en basit doğa olaylarından biridir. Peki gölge neden oluşur ve neden her zaman bizimle birlikte hareket eder?\n\nIşık kaynaklarından çıkan ışınlar doğrusal yani düz bir çizgi boyunca yayılır. Bu ışınların önüne ışığı geçirmeyen bir cisim geldiğinde ışık yoluna devam edemez ve cismin arkasında karanlık bir bölge oluşur. Bu tıpkı güneşli bir günde şemsiyenin altında kalmak gibidir — şemsiye güneş ışığını engellediği için altı serin ve gölgeli olur. Işığın engellenmesi sonucunda oluşan bu karanlık bölgeye gölge denir ve bu dersimizde özellikle tam gölgenin nasıl oluştuğunu inceleyeceğiz.\n\nGölgeyi anlamak sadece günlük hayatımızı açıklamak için değil, aynı zamanda birçok bilimsel olayı anlamak için de önemlidir. Örneğin güneş tutulması gibi gökyüzü olayları da gölge prensipleriyle açıklanır. Bu nedenle gölgenin nasıl oluştuğunu anlamak bizi hem doğa olaylarını hem de ışığın davranışını daha iyi kavramaya götürür.",
+"key_points": [
+"Gölge nedir: Gölge, ışığın bir cisim tarafından engellenmesi sonucunda oluşan karanlık bölgedir. Işık ulaşamadığı için bu bölge çevresine göre daha karanlık görünür. (Kazanım 1)",
+"Işığın doğrusal yayılması: Işık kaynaklarından çıkan ışınlar düz bir çizgi boyunca ilerler. Bu özellik gölge oluşumunun temel sebebidir. (Kazanım 1)",
+"Engel ve gölge ilişkisi: Işığın önüne opak bir cisim geldiğinde ışık durur ve cismin arkasında gölge oluşur. Engel ortadan kalkarsa gölge de kaybolur. (Kazanım 1)",
+"Gölge hareket eder: Gölgenin cisimle birlikte hareket etmesi, ışığın cisim tarafından sürekli engellenmesinden kaynaklanır. Bu yüzden gölge cismin aynası gibi görünür. (Kazanım 1)",
+"Gölgeyi incelemek neden önemli: Gölge oluşumunu anlamak güneş tutulması, aydınlatma sistemleri ve ışık deneyleri gibi birçok bilimsel olayı açıklamaya yardımcı olur. (Kazanım 3)"
+],
+"examples": [
+"Yaz günü yürürken yerde görülen insan gölgesi: Güneş ışınları vücudumuz tarafından engellenir ve arkamızda karanlık bir şekil oluşur. Güneşin konumuna göre gölgenin boyu değişir.",
+"El feneri ve oyuncak: Bir el fenerini oyuncak bir arabanın üzerine tuttuğunda masa üzerinde arabanın karanlık bir şekli oluşur. Bunun nedeni oyuncak arabanın ışığı geçirmemesidir.",
+"Sokak lambası altında oluşan gölge: Gece sokak lambasının altında yürürken gölgen bazen önüne bazen arkana düşer. Bunun nedeni ışık kaynağına göre konumunun değişmesidir.",
+"Ağacın gölgesi: Güneşli bir günde ağacın altında serin bir alan oluşur çünkü ağaç gövdesi ve yaprakları güneş ışığını engeller."
+],
+"real_life_connections": [
+"Önceki konu bağlantısı: Daha önce ışığın doğrusal yani düz çizgi boyunca yayıldığını öğrenmiştik. Gölge oluşumu da tam olarak bu özelliğin sonucudur.",
+"Sonraki konu bağlantısı: İlerleyen derslerde yarı gölge kavramını öğreneceğiz. Tam gölgeyi anlamak yarı gölgeyi kavramanın temelini oluşturur.",
+"Günlük yaşam bağlantısı: Yazın parkta insanların genellikle ağaç gölgesinde oturmasının nedeni, gölgenin güneş ışığını engelleyerek serin bir alan oluşturmasıdır.",
+"Bilimsel olay bağlantısı: Güneş tutulması sırasında Ay, Güneş ışığını engeller ve Dünya üzerinde büyük bir gölge oluşturur."
+]
+},
+"activities": {
+"discussion_prompts": [
+"Güneşli bir günde gölgen neden bazen çok uzun bazen çok kısa olur?",
+"Gece karanlıkta neden gölge göremeyiz?",
+"Bir ışık kaynağı olmadan gölge oluşabilir mi?"
+]
+},
+"assessment": {},
+"teacher_notes": {
+"teaching_tips": [
+"Dersin başında sınıf ışıklarını biraz azaltıp bir el feneri ve küçük bir oyuncak kullanarak masada gölge gösterin. Öğrencilere önce gözlem yaptırın, ardından explanation kısmını okuyun. Bu süreç yaklaşık 3 dakika sürer.",
+"Öğrencilerden kendi gölgelerini gözlemledikleri bir anı anlatmalarını isteyin. Bu yöntem öğrencilerin konuya kişisel deneyim üzerinden bağlanmasını sağlar.",
+"El feneri ile öğrencilerin ellerini duvara tutup gölge oluşturmalarını sağlayın. Bu basit etkinlik soyut kavramı somutlaştırır.",
+"Tahtaya bir ışık kaynağı, bir cisim ve gölge çizimi yaparak ışınların doğrusal ilerlediğini gösterin."
+],
+"common_misconceptions": [
+"Öğrenciler gölgenin cismin bir parçası olduğunu sanabilir çünkü gölge her zaman cisimle birlikte hareket eder. Doğrusu: gölge cismin parçası değildir; ışığın engellenmesi sonucu oluşan karanlık bölgedir.",
+"Öğrenciler gölgenin sadece güneş ışığında oluştuğunu sanabilir çünkü genellikle gölgeleri güneşli günlerde fark ederler. Doğrusu: herhangi bir ışık kaynağı gölge oluşturabilir.",
+"Öğrenciler gölgenin her zaman aynı büyüklükte olduğunu sanabilir çünkü günlük gözlemlerini dikkatli incelemezler. Doğrusu: ışık kaynağı ve mesafe değiştikçe gölge boyutu da değişir."
+],
+"classroom_discussion": [
+"Güneş sabah ve akşam gökyüzünde daha alçakta olur. Bu durumda gölgen nasıl görünür? (Beklenen: daha uzun çünkü ışık açılı gelir)",
+"Işık kaynağını cisme yaklaştırırsak gölge nasıl değişir? (Beklenen: gölge büyür)",
+"Cisim ortadan kaldırılırsa gölgeye ne olur? (Beklenen: gölge kaybolur)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden sınıftaki farklı nesnelerin gölgelerini tahmin etmelerini isteyin ve ardından el feneri ile test edin.",
+"Ev etkinliği: Bir el feneri ve küçük bir oyuncak kullanarak duvara gölge oluşturun. Feneri yaklaştırıp uzaklaştırarak gölgenin boyunun nasıl değiştiğini gözlemleyin ve deftere yazın.",
+"İleri araştırma: Güneş tutulması sırasında Dünya üzerinde oluşan gölge nasıl oluşur? Araştırıp kısa bir sunum hazırlayın."
+]
+}
+},
+{
+"id": "step2",
+"type": "concept_explanation",
+"title": "Tam Gölge Nedir?",
+"duration_minutes": 12,
+"content": {
+"explanation": "Işık kaynağından çıkan ışınlar bir cisme çarptığında bazen cismin arkasında tamamen karanlık bir bölge oluşur. Bu bölgeye tam gölge denir. Tam gölge, ışığın tamamen engellendiği bir alan olduğu için içine hiç ışık ulaşmaz. Bu nedenle tam gölge diğer alanlara göre çok daha karanlık görünür.\n\nTam gölge oluşabilmesi için ışığın önünde opak yani ışığı geçirmeyen bir madde bulunmalıdır. Cam gibi ışığı geçiren maddeler tam gölge oluşturmaz çünkü ışık bu maddelerin içinden geçebilir. Bu tıpkı bir yağmurun altında şemsiye tutmaya benzer — şemsiye suyu tamamen engeller ve altında kuru bir alan oluşur. Aynı şekilde opak cisim de ışığı tamamen engeller ve arkasında tam gölge oluşur.\n\nTam gölge kavramını anlamak gölge olaylarını doğru yorumlamamıza yardımcı olur. Örneğin sokak lambası altında oluşan keskin kenarlı karanlık alanlar tam gölge örneğidir. Bir sonraki adımda tam gölgenin özelliklerini ve onu etkileyen faktörleri daha ayrıntılı inceleyeceğiz.",
+"key_points": [
+"Tam gölge tanımı: Tam gölge ışığın tamamen engellenmesi sonucu oluşan karanlık bölgedir. Bu bölgeye hiçbir ışın ulaşmaz. (Kazanım 1)",
+"Opak madde gereklidir: Tam gölge oluşabilmesi için ışığı geçirmeyen opak bir madde bulunmalıdır. Saydam maddeler tam gölge oluşturamaz. (Kazanım 1)",
+"Keskin gölge kenarları: Tam gölgenin kenarları genellikle belirgindir çünkü ışık tamamen engellenir. Bu özellik tam gölgeyi diğer gölge türlerinden ayırır. (Kazanım 1)",
+"Işık kaynağı etkisi: Küçük ışık kaynakları genellikle daha net tam gölgeler oluşturur. Bu yüzden el feneri deneylerinde gölgeler daha belirgin görülür. (Kazanım 3)",
+"Bilimsel önemi: Tam gölge kavramı tutulmalar gibi astronomik olayları anlamak için de kullanılır. (Kazanım 3)"
+],
+"examples": [
+"El feneri ve kitap: Bir kitabı el fenerinin önüne tuttuğunda duvarda oluşan koyu alan tam gölgedir çünkü kitap ışığı tamamen engeller.",
+"Sokak lambası altındaki gölge: Gece bir sokak lambasının altında yürürken ayaklarının altında oluşan koyu alan tam gölgeye örnektir.",
+"Ağaç gövdesi: Güneşli bir günde ağacın kalın gövdesinin arkasında koyu bir gölge oluşur çünkü gövde ışığı geçirmez.",
+"Güneş tutulması: Ay, Güneş ışığını tamamen engellediğinde Dünya'nın bazı bölgelerinde tam gölge oluşur."
+],
+"real_life_connections": [
+"Önceki konu bağlantısı: Işığın doğrusal yayılması tam gölge oluşumunun temel sebebidir.",
+"Sonraki konu bağlantısı: İlerleyen derslerde yarı gölgeyi inceleyerek gölgenin neden bazen daha açık olduğunu öğreneceğiz.",
+"Günlük yaşam bağlantısı: Yazın şapka takmak yüzümüzde gölge oluşturur ve güneşten korunmamıza yardımcı olur.",
+"Teknoloji bağlantısı: Sahne ışıklarında kullanılan spot lambalar oyuncuların keskin gölgeler oluşturmasına neden olur."
+]
+},
+"activities": {
+"cards": [
+{ "item": "Tam gölge", "label": "Işığın tamamen engellendiği bölge" },
+{ "item": "Opak madde", "label": "Işığı geçirmeyen madde" },
+{ "item": "Işık kaynağı", "label": "Işık yayan nesne" },
+{ "item": "Gölge", "label": "Işığın engellenmesi sonucu oluşan karanlık alan" }
+]
+},
+"assessment": {
+"reflective_questions": [
+"Tam gölge oluşması için hangi koşullar gerekir?",
+"Neden saydam maddeler tam gölge oluşturamaz?"
+],
+"evaluation_tasks": [
+"Bir el feneri ve nesne kullanarak tam gölge oluştur ve gözlemini defterine yaz."
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Bir el feneri ve karton kullanarak duvarda tam gölge gösterin. Öğrencilerden gölgenin kenarlarını incelemelerini isteyin.",
+"Opak ve saydam nesneleri karşılaştırmalı gösterin. Cam ve kitap kullanarak farkı gözlemletin.",
+"Öğrencilerden sınıfta gölge oluşturabilecek nesneler bulmalarını isteyin.",
+"Gölge çizimlerini defterlerine çizdirerek kavramı görselleştirmelerini sağlayın."
+],
+"common_misconceptions": [
+"Öğrenciler saydam maddelerin de tam gölge oluşturduğunu sanabilir çünkü camın arkasında hafif karanlık oluşabilir. Doğrusu: saydam maddeler ışığı geçirdiği için tam gölge oluşturmaz.",
+"Öğrenciler gölgenin kendi başına bir madde olduğunu sanabilir çünkü karanlık bir alan olarak görülür. Doğrusu: gölge madde değildir, sadece ışığın ulaşamadığı bölgedir.",
+"Öğrenciler gölge oluşması için sadece güneş gerektiğini sanabilir çünkü en sık güneş gölgesi görürler. Doğrusu: her ışık kaynağı gölge oluşturabilir."
+],
+"classroom_discussion": [
+"El feneri yerine güneş kullanıldığında gölge nasıl değişir? (Beklenen: daha büyük olabilir)",
+"Bir cam parçası gölge oluşturur mu? Neden? (Beklenen: tam gölge oluşturmaz)",
+"Neden bazı gölgeler çok koyu görünür? (Beklenen: ışık tamamen engellenir)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden farklı nesnelerin gölgelerini karşılaştırmalarını isteyin.",
+"Ev etkinliği: Evde bir lamba ve oyuncak kullanarak gölge oluşturup çizimini yap.",
+"Araştırma: Güneş tutulması sırasında tam gölge nasıl oluşur?"
+]
+}
+},
+{
+"id": "step3",
+"type": "scenario_activity",
+"title": "Gölge Deneyi",
+"duration_minutes": 8,
+"content": {
+"explanation": "Bilim insanları doğa olaylarını anlamak için gözlem ve deney yaparlar. Gölge oluşumunu anlamak için de basit deneyler yapılabilir. Bir ışık kaynağı, bir cisim ve bir yüzey kullanarak gölgeyi incelemek mümkündür.\n\nBir deney sırasında değişkenleri dikkatle incelemek gerekir. Bu tıpkı bir tarif yapmaya benzer — malzemeler değişirse sonuç da değişir. Işık kaynağının uzaklığı, cismin büyüklüğü ve yüzeyin konumu gölgeyi etkileyebilir. Bu nedenle bilimsel gözlem yaparken tüm bu faktörleri dikkatle incelemek gerekir.\n\nŞimdi bir senaryo üzerinden düşünelim ve gölge oluşumunu anlamaya çalışalım.",
+"key_points": [
+"Deney ve gözlem: Bilimsel bilgiler gözlem ve deneylerle elde edilir. Gölge konusu da deneylerle anlaşılabilir. (Kazanım 2)",
+"Değişken kavramı: Bir deneyde sonucu etkileyen faktörlere değişken denir. Gölge boyu da çeşitli değişkenlere bağlıdır. (Kazanım 3)",
+"Kayıt tutma: Bilimsel çalışmalarda gözlemler not edilir. Böylece sonuçlar karşılaştırılabilir. (Kazanım 2)",
+"Deney güvenliği: Deney yaparken kullanılan araçlara dikkat edilmelidir. Özellikle güçlü ışık kaynakları göze tutulmamalıdır. (Kazanım 2)",
+"Bilimsel düşünme: Deneyler neden-sonuç ilişkisini anlamaya yardımcı olur. (Kazanım 2)"
+],
+"examples": [
+"El feneri ile yapılan gölge deneyi: Feneri yaklaştırdıkça gölge büyür çünkü cisim daha fazla ışın engeller.",
+"Güneş saati: İnsanlar eski zamanlarda gölgeyi kullanarak zamanı ölçmüştür.",
+"Tiyatro sahnesi: Sahne ışıkları oyuncuların arkasında gölge oluşturur.",
+"Fotoğraf çekimi: Fotoğrafçılar gölgeleri kontrol ederek ışık düzeni kurar."
+],
+"real_life_connections": [
+"Önceki konu bağlantısı: Tam gölgenin oluşumu ışığın doğrusal yayılması ile açıklanır.",
+"Sonraki konu bağlantısı: Yarı gölge konusuna geçildiğinde gölgenin neden bazen açık renkli olduğunu öğreneceğiz.",
+"Günlük yaşam bağlantısı: Çocuklar gölge oyunları yaparak farklı şekiller oluşturabilir.",
+"Bilim bağlantısı: Astronomlar gölgeleri inceleyerek gezegen hareketlerini anlamıştır."
+]
+},
+"activities": {
+"scenario": "Ayşe bir el fenerini masa üzerinde duran oyuncak bir dinozora tutuyor. Dinozorun arkasındaki duvarda koyu bir gölge oluşuyor. Ayşe el fenerini dinozora yaklaştırdığında gölgenin büyüdüğünü fark ediyor. Ayşe bunun neden olduğunu merak ediyor.",
+"choices": [
+{
+"text": "El feneri yaklaştığında dinozor daha fazla ışın engellediği için gölge büyür.",
+"correct": true,
+"feedback": "Doğru. Işık kaynağı yaklaştıkça cisim daha geniş bir ışın demetini engeller ve gölge büyür."
+},
+{
+"text": "El feneri yaklaştığında gölge küçülür çünkü ışık daha güçlü olur.",
+"correct": false,
+"feedback": "Yanlış. Işığın güçlü olması gölgenin küçülmesine neden olmaz."
+},
+{
+"text": "El feneri yaklaştığında gölge kaybolur.",
+"correct": false,
+"feedback": "Yanlış. Cisim ışığı engellediği sürece gölge oluşmaya devam eder."
+}
+]
+},
+"assessment": {
+"reflective_questions": [
+"Deneyde hangi değişken gölge boyunu etkiledi?",
+"Bu deneyde hangi gözlemi kaydedebilirsin?"
+],
+"evaluation_tasks": [
+"Benzer bir deney tasarla ve sonucu yaz."
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"El feneri ve oyuncak kullanarak senaryoyu sınıfta gerçek olarak gösterin.",
+"Öğrencilerden tahmin yapmalarını isteyin ve sonra deneyle doğrulayın.",
+"Gözlem sonuçlarını tahtaya yazdırın.",
+"Deney sırasında güvenlik kurallarını hatırlatın."
+],
+"common_misconceptions": [
+"Öğrenciler ışık güçlendikçe gölgenin küçüleceğini sanabilir çünkü parlaklık ile gölge boyunu karıştırabilirler. Doğrusu: gölge boyu mesafe ile ilgilidir.",
+"Öğrenciler gölgeyi yüzeyin oluşturduğunu sanabilir çünkü gölge yüzeyde görülür. Doğrusu: gölgeyi oluşturan ışığın engellenmesidir.",
+"Öğrenciler gölgenin rastgele oluştuğunu sanabilir çünkü değişkenleri fark etmeyebilirler. Doğrusu: gölge belirli kurallara bağlıdır."
+],
+"classroom_discussion": [
+"El fenerini uzaklaştırırsak gölge nasıl değişir? (Beklenen: küçülür)",
+"Farklı büyüklükte oyuncaklar kullanırsak ne olur? (Beklenen: gölge boyu değişir)",
+"Duvar yerine masa kullanırsak gölge oluşur mu? (Beklenen: evet)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrenciler gölge şekilleri ile hayvan figürleri oluşturabilir.",
+"Ev etkinliği: Evde bir masa lambası ve oyuncak kullanarak gölge deneyini tekrar edin.",
+"Araştırma: Eski uygarlıklar zamanı ölçmek için gölgeyi nasıl kullanıyordu?"
+]
+}
+},
+{
+"id": "step4",
+"type": "word_bank",
+"title": "Kelime Bankası",
+"duration_minutes": 5,
+"content": {
+"explanation": "Bilimsel konuları öğrenirken bazı önemli terimleri doğru anlamak gerekir. Bu terimler kavramları doğru ifade etmemize yardımcı olur. Işık ve gölge konularında da bazı temel kelimeler vardır.\n\nBu kelimeleri doğru yerde kullanmak, bilimsel düşünmeyi geliştirir. Bu tıpkı bir harita kullanmaya benzer — doğru yön isimlerini bilirsen yolunu daha kolay bulursun. Aynı şekilde doğru bilimsel terimleri kullanmak da konuyu doğru anlamayı sağlar.\n\nŞimdi öğrendiğimiz kavramları kullanarak boşlukları dolduralım.",
+"key_points": [
+"Bilimsel terimler önemlidir: Doğru kavramları kullanmak konuyu doğru anlamayı sağlar. (Kazanım 1)",
+"Kelime öğrenme: Kavramları tekrar etmek öğrenmeyi güçlendirir. (Kazanım 1)",
+"Kavram bağlantısı: Kelimeler kavramlar arasındaki ilişkileri gösterir. (Kazanım 3)",
+"Bilim dili: Bilimsel terimler evrensel iletişimi sağlar. (Kazanım 2)",
+"Tekrarın önemi: Kavram tekrarları bilgiyi kalıcı hale getirir. (Kazanım 1)"
+],
+"examples": [
+"Bilim derslerinde kavramları doğru kullanmak deney sonuçlarını doğru anlatmayı sağlar.",
+"Doktorların tıbbi terimleri kullanması iletişimi kolaylaştırır.",
+"Harita üzerinde yön isimleri yol bulmayı kolaylaştırır.",
+"Bilimsel rapor yazarken doğru kelimeler gerekir."
+],
+"real_life_connections": [
+"Önceki konu bağlantısı: Bu kelimeler ışığın doğrusal yayılması konusuyla bağlantılıdır.",
+"Sonraki konu bağlantısı: Yarı gölge kavramını öğrenirken bu terimler tekrar kullanılacaktır.",
+"Günlük yaşam bağlantısı: Okul derslerinde kavramları doğru kullanmak başarıyı artırır.",
+"Bilim bağlantısı: Bilim insanları araştırmalarında ortak kavramlar kullanır."
+]
+},
+"activities": {
+"word_bank": {
+"words": [
+"opak",
+"tam gölge",
+"ışık kaynağı",
+"saydam",
+"yansıma",
+"gölge"
+],
+"template": "Işığı tamamen geçirmeyen maddelere ____ denir. Işığın tamamen engellenmesiyle oluşan karanlık bölge ____ olarak adlandırılır. Işık yayan nesneye ____ denir.",
+"blanks": [
+{
+"id": "blank1",
+"correct_answer": "opak"
+},
+{
+"id": "blank2",
+"correct_answer": "tam gölge"
+},
+{
+"id": "blank3",
+"correct_answer": "ışık kaynağı"
+}
+]
+}
+},
+"assessment": {
+"reflective_questions": [
+"Tam gölge kavramını hangi kelimelerle açıklayabilirsin?",
+"Opak ve saydam kelimeleri arasındaki fark nedir?"
+],
+"evaluation_tasks": [
+"Kelime bankasındaki kavramları kullanarak bir cümle yaz."
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Kelime bankasını öğrencilerle birlikte okuyun.",
+"Yanıltıcı kelimelerin neden yanlış olduğunu tartışın.",
+"Kavramları tahtada örneklerle açıklayın.",
+"Öğrencilerin kendi cümlelerini yazmalarını sağlayın."
+],
+"common_misconceptions": [
+"Öğrenciler opak ve saydam kavramlarını karıştırabilir çünkü her ikisi de maddeleri tanımlar. Doğrusu: opak ışığı geçirmez, saydam geçirir.",
+"Öğrenciler ışık kaynağını sadece güneş olarak düşünebilir çünkü en büyük ışık kaynağıdır. Doğrusu: lamba ve el feneri de ışık kaynağıdır.",
+"Öğrenciler gölgeyi bir madde olarak düşünebilir çünkü gözle görülebilir. Doğrusu: gölge ışığın olmadığı alandır."
+],
+"classroom_discussion": [
+"Opak madde nedir? (Beklenen: ışığı geçirmeyen madde)",
+"Tam gölge ne zaman oluşur? (Beklenen: ışık tamamen engellendiğinde)",
+"Işık kaynağı örnekleri nelerdir? (Beklenen: güneş, lamba, el feneri)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrenciler kelimelerle kısa bir hikâye yazabilir.",
+"Ev etkinliği: Evde opak ve saydam nesneler bulup listele.",
+"Araştırma: Işığın yansıması nedir?"
+]
+}
+},
+{
+"id": "step5",
+"type": "risk_analysis",
+"title": "Yaygın Yanılgılar",
+"duration_minutes": 6,
+"content": {
+"explanation": "Bilim öğrenirken bazen gördüğümüz olayları yanlış yorumlayabiliriz. Bu durum özellikle günlük deneyimlerimizin bizi yanıltmasından kaynaklanabilir. Gölge konusu da öğrencilerin sıkça yanlış anladığı konulardan biridir.\n\nYanılgıları fark etmek öğrenmenin önemli bir parçasıdır. Bu tıpkı bir bulmacayı çözerken yanlış yolu fark etmek gibidir — yanlış yolu fark ettiğimizde doğru çözüme ulaşmak kolaylaşır. Bu nedenle bilimde yanlış düşünceleri incelemek doğru bilgiyi güçlendirir.\n\nŞimdi gölge konusunda sık yapılan bazı hatalı düşünceleri inceleyelim.",
+"key_points": [
+"Yanılgı nedir: Yanlış veya eksik bilgiye dayanan düşüncelere yanılgı denir. (Kazanım 1)",
+"Deneyim etkisi: Günlük deneyimler bazen yanlış yorumlara yol açabilir. (Kazanım 1)",
+"Bilimsel doğrulama: Bilimsel deneyler doğru bilgiyi ortaya çıkarır. (Kazanım 2)",
+"Eleştirel düşünme: Yanılgıları sorgulamak öğrenmeyi geliştirir. (Kazanım 3)",
+"Doğru bilgiye ulaşma: Yanılgıları düzeltmek bilimsel anlayışı güçlendirir. (Kazanım 1)"
+],
+"examples": [
+"Bir öğrenci gölgenin cismin parçası olduğunu düşünebilir çünkü cisimle birlikte hareket eder.",
+"Bazı öğrenciler gölgeyi yüzeyin oluşturduğunu sanabilir çünkü gölge yüzeyde görülür.",
+"Gölgenin sadece güneşle oluştuğunu düşünmek yaygın bir hatadır.",
+"Gölgenin her zaman aynı boyda olduğunu düşünmek de başka bir yanılgıdır."
+],
+"real_life_connections": [
+"Önceki konu bağlantısı: Işığın doğrusal yayılması gölge oluşumunu açıklar.",
+"Sonraki konu bağlantısı: Yarı gölge konusu bu yanılgıların bazılarını daha iyi açıklayacaktır.",
+"Günlük yaşam bağlantısı: İnsanlar bazen gölgeyi 'karanlık bir nesne' gibi düşünür.",
+"Bilim bağlantısı: Bilim insanları yanlış hipotezleri test ederek doğru bilgiye ulaşır."
+]
+},
+"activities": {
+"cards": [
+{
+"item": "Gölge cismin bir parçasıdır",
+"label": "yüksek risk"
+},
+{
+"item": "Gölge sadece güneş ışığında oluşur",
+"label": "orta risk"
+},
+{
+"item": "Gölge her zaman aynı boydadır",
+"label": "yüksek risk"
+}
+]
+},
+"assessment": {
+"reflective_questions": [
+"Gölge hakkında hangi yanlış düşünceler olabilir?",
+"Yanılgıları düzeltmek neden önemlidir?"
+],
+"evaluation_tasks": [
+"Bir yanılgıyı seç ve doğru açıklamasını yaz."
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Kartları öğrencilere dağıtarak tartışma yaptırın.",
+"Yanlış düşünceyi açıklayıp doğru bilgi ile karşılaştırın.",
+"Öğrencilerin kendi deneyimlerini paylaşmalarını isteyin.",
+"Tahtada doğru ve yanlış sütunları oluşturun."
+],
+"common_misconceptions": [
+"Öğrenciler gölgenin cismin parçası olduğunu sanabilir çünkü birlikte hareket eder. Doğrusu: gölge ışığın engellenmesiyle oluşur.",
+"Öğrenciler gölgenin sadece güneşle oluştuğunu sanabilir çünkü güneş gölgelerini sık görürler. Doğrusu: her ışık kaynağı gölge oluşturabilir.",
+"Öğrenciler gölgenin her zaman aynı boyda olduğunu sanabilir çünkü dikkatli gözlem yapmazlar. Doğrusu: gölge boyu değişir."
+],
+"classroom_discussion": [
+"Gölge neden cisimle birlikte hareket eder? (Beklenen: ışık sürekli engellenir)",
+"Gece sokak lambası altında gölge oluşur mu? (Beklenen: evet)",
+"Gölge boyu neden değişir? (Beklenen: ışık açısı değişir)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrenciler kendi yanılgı kartlarını yazabilir.",
+"Ev etkinliği: Gün içinde gölgenin boyunu gözlemleyip not al.",
+"Araştırma: Güneş saati nasıl çalışır?"
+]
+}
+},
+{
+"id": "step6",
+"type": "quiz",
+"title": "Bilgini Test Et",
+"duration_minutes": 8,
+"content": {
+"explanation": "Bir konuyu öğrendikten sonra bilgimizi test etmek önemlidir. Bu, hangi kavramları iyi anladığımızı ve hangi konulara tekrar bakmamız gerektiğini gösterir. Bilim öğrenirken sorular çözmek bilgiyi pekiştirir.\n\nBu tıpkı spor yaparken antrenman yapmak gibidir — tekrarlar kasları güçlendirir. Aynı şekilde sorular çözmek de zihinsel becerileri güçlendirir. Şimdi öğrendiklerimizi test edelim.\n\nSoruları dikkatle okuyup en doğru cevabı seç.",
+"key_points": [
+"Değerlendirme önemlidir: Sorular öğrenmenin kalıcı olmasını sağlar. (Kazanım 1)",
+"Bilgi kontrolü: Quiz öğrenme düzeyini ölçer. (Kazanım 1)",
+"Kavram pekiştirme: Sorular kavramların tekrar edilmesini sağlar. (Kazanım 2)",
+"Hata fark etme: Yanlış cevaplar öğrenme fırsatı oluşturur. (Kazanım 2)",
+"Öğrenme döngüsü: Öğrenme, uygulama ve değerlendirme birlikte ilerler. (Kazanım 3)"
+],
+"examples": [
+"Fen derslerinde quiz çözmek bilgiyi güçlendirir.",
+"Matematikte problem çözmek konuyu anlamayı kolaylaştırır.",
+"Dil öğrenirken testler kelime bilgisini geliştirir.",
+"Bilim olimpiyatlarında sorular kavramları ölçer."
+],
+"real_life_connections": [
+"Önceki konu bağlantısı: Quiz soruları tam gölge kavramını tekrar eder.",
+"Sonraki konu bağlantısı: Bu bilgiler yarı gölge konusunu öğrenmeye yardımcı olur.",
+"Günlük yaşam bağlantısı: Sınavlar öğrenilen bilgileri ölçmek için kullanılır.",
+"Bilim bağlantısı: Bilimsel araştırmalar da test ve ölçme içerir."
+]
+},
+"activities": {
+"quiz_questions": [
+{
+"question": "Tam gölge nasıl oluşur?",
+"options": [
+"Işık tamamen engellendiğinde",
+"Işık kırıldığında",
+"Işık yansıdığında",
+"Işık hızlandığında"
+],
+"correct_answer": "Işık tamamen engellendiğinde"
+},
+{
+"question": "Hangisi opak maddeye örnektir?",
+"options": [
+"Cam",
+"Su",
+"Tahta",
+"Hava"
+],
+"correct_answer": "Tahta"
+},
+{
+"question": "Işık kaynağı cisme yaklaştığında gölge nasıl değişir?",
+"options": [
+"Büyür",
+"Küçülür",
+"Yok olur",
+"Değişmez"
+],
+"correct_answer": "Büyür"
+},
+{
+"question": "Aşağıdakilerden hangisi ışık kaynağıdır?",
+"options": [
+"Ayna",
+"Güneş",
+"Duvar",
+"Kitap"
+],
+"correct_answer": "Güneş"
+}
+]
+},
+"assessment": {
+"quiz_questions": [
+{
+"question": "Tam gölge nasıl oluşur?",
+"options": [
+"Işık tamamen engellendiğinde",
+"Işık kırıldığında",
+"Işık yansıdığında",
+"Işık hızlandığında"
+],
+"correct_answer": "Işık tamamen engellendiğinde"
+},
+{
+"question": "Hangisi opak maddeye örnektir?",
+"options": [
+"Cam",
+"Su",
+"Tahta",
+"Hava"
+],
+"correct_answer": "Tahta"
+},
+{
+"question": "Işık kaynağı cisme yaklaştığında gölge nasıl değişir?",
+"options": [
+"Büyür",
+"Küçülür",
+"Yok olur",
+"Değişmez"
+],
+"correct_answer": "Büyür"
+},
+{
+"question": "Aşağıdakilerden hangisi ışık kaynağıdır?",
+"options": [
+"Ayna",
+"Güneş",
+"Duvar",
+"Kitap"
+],
+"correct_answer": "Güneş"
+}
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Quiz öncesi kısa bir tekrar yapın.",
+"Soruları sınıfça tartışarak çözebilirsiniz.",
+"Yanlış cevapları açıklayarak geri bildirim verin.",
+"Öğrencilerin kendi sorularını yazmasını isteyin."
+],
+"common_misconceptions": [
+"Öğrenciler ışık kırılması ile gölgeyi karıştırabilir çünkü her ikisi de ışıkla ilgilidir. Doğrusu: gölge ışığın engellenmesidir.",
+"Öğrenciler opak ve saydam kavramlarını karıştırabilir çünkü maddeleri tanımlarlar. Doğrusu: opak ışığı geçirmez.",
+"Öğrenciler ışık kaynağını sadece güneş sanabilir çünkü en güçlü kaynaktır. Doğrusu: lamba ve mum da ışık kaynağıdır."
+],
+"classroom_discussion": [
+"En zor soru hangisiydi ve neden? (Beklenen: öğrencinin kendi düşüncesi)",
+"Yanlış cevap neden yanlış? (Beklenen: kavram açıklaması)",
+"Gölge deneyini nasıl geliştirirdin? (Beklenen: yeni fikirler)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrenciler yeni quiz soruları yazabilir.",
+"Ev etkinliği: Ailenize gölge deneyini anlatın.",
+"Araştırma: Fotoğrafçılıkta gölgeler nasıl kullanılır?"
+]
+}
+},
+{
+"id": "step7",
+"type": "summary",
+"title": "Ders Özeti",
+"duration_minutes": 5,
+"content": {
+"explanation": "Bu derste ışığın engellenmesi sonucu oluşan gölge olayını öğrendik. Gölgenin nasıl oluştuğunu anlamak ışığın davranışını anlamamıza yardımcı olur. Tam gölge kavramı bu konunun temelini oluşturur.\n\nGölge oluşumu ışığın doğrusal yayılmasıyla doğrudan ilişkilidir. Opak cisimler ışığı tamamen engelleyerek tam gölge oluşturur. Ayrıca ışık kaynağı ile cisim arasındaki mesafe gölgenin boyunu etkiler.\n\nBu bilgiler hem günlük hayatımızda hem de bilimsel olayları anlamada bize yardımcı olur.",
+"key_points": [
+"Işık doğrusal yayılır: Işık düz çizgi boyunca ilerler. Bu özellik gölge oluşumunun temelidir. (Kazanım 1)",
+"Tam gölge oluşumu: Işık opak bir cisim tarafından tamamen engellendiğinde tam gölge oluşur. (Kazanım 1)",
+"Opak madde rolü: Opak maddeler ışığı geçirmez ve gölge oluşturur. (Kazanım 1)",
+"Değişkenler: Işık kaynağı uzaklığı gölge boyunu etkiler. (Kazanım 3)",
+"Bilimsel gözlem: Deney ve gözlem gölgeyi anlamamızı sağlar. (Kazanım 2)"
+],
+"examples": [
+"Ağaç gölgesi güneş ışığını engeller.",
+"El feneri ile oyuncak gölgesi oluşur.",
+"Sokak lambası altında gölge oluşur.",
+"Güneş tutulmasında gölge oluşur."
+],
+"real_life_connections": [
+"Önceki konu bağlantısı: Işığın doğrusal yayılması.",
+"Sonraki konu bağlantısı: Yarı gölge.",
+"Günlük yaşam: Ağaç gölgeleri serinlik sağlar.",
+"Bilim: Tutulmalar gölge prensipleriyle açıklanır."
+]
+},
+"activities": {
+"summary_points": [
+"Işık doğrusal yayılır.",
+"Opak maddeler ışığı engeller.",
+"Tam gölge oluşur.",
+"Gölge boyu değişebilir.",
+"Deneylerle gölge incelenebilir.",
+"Gölge günlük hayatta görülür.",
+"Bilimsel olaylarla bağlantılıdır."
+]
+},
+"assessment": {},
+"teacher_notes": {
+"teaching_tips": [
+"Öğrencilerden özet cümleleri yüksek sesle okumalarını isteyin.",
+"Tahtada kavram haritası oluşturun.",
+"Öğrencilerin kendi özetlerini yazmalarını sağlayın.",
+"Kısa tekrar soruları sorun."
+],
+"common_misconceptions": [
+"Öğrenciler gölgeyi madde sanabilir çünkü görünür. Doğrusu: gölge ışığın yokluğudur.",
+"Öğrenciler sadece güneş gölgesi olduğunu düşünebilir çünkü en sık onu görürler. Doğrusu: her ışık kaynağı gölge oluşturur.",
+"Öğrenciler gölge boyunun sabit olduğunu düşünebilir çünkü dikkatli gözlem yapmazlar. Doğrusu: gölge boyu değişir."
+],
+"classroom_discussion": [
+"Bugün öğrendiğin en önemli bilgi neydi? (Beklenen: öğrencinin kendi cevabı)",
+"Gölge oluşumunu tek cümleyle nasıl açıklarsın? (Beklenen: ışığın engellenmesi)",
+"Gölge deneyini nasıl geliştirebilirsin? (Beklenen: yeni fikir)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrenciler kavram haritası çizebilir.",
+"Ev etkinliği: Gün içinde gölge boyunu gözlemle.",
+"Araştırma: Güneş saati yapımı."
+]
+}
+},
+{
+"id": "step8",
+"type": "reflection",
+"title": "Öğrendiklerini Düşün",
+"duration_minutes": 4,
+"content": {
+"explanation": "Bir konuyu öğrendikten sonra kendi öğrenmemizi değerlendirmek önemlidir. Bu sayede hangi konuları iyi anladığımızı ve hangi konulara tekrar bakmamız gerektiğini fark ederiz.\n\nBu tıpkı bir yolculuk sonunda haritaya bakıp nereden geldiğimizi düşünmek gibidir — geriye dönüp baktığımızda öğrendiklerimizi daha iyi anlarız. Şimdi öğrendiklerini düşün ve değerlendirme sorularını cevapla.",
+"key_points": [
+"Öz değerlendirme önemlidir: Öğrenmenin farkına varmayı sağlar. (Kazanım 2)",
+"Düşünme becerisi: Öğrenilen bilgileri analiz etmeye yardımcı olur. (Kazanım 2)",
+"Bilgi farkındalığı: Öğrencinin güçlü yönlerini görmesini sağlar. (Kazanım 2)",
+"Gelişim: Eksik konuların fark edilmesini sağlar. (Kazanım 2)",
+"Öğrenme süreci: Öğrenme sadece bilgi almak değil, düşünmektir. (Kazanım 2)"
+],
+"examples": [
+"Bir öğrenci gölge deneyini tekrar ederek öğrenmesini pekiştirebilir.",
+"Bir öğrenci gölge konusunu arkadaşına anlatarak bilgiyi pekiştirir.",
+"Bir öğrenci notlarını tekrar okuyarak konuyu hatırlar.",
+"Bir öğrenci yeni sorular yazarak kendini test eder."
+],
+"real_life_connections": [
+"Önceki konu bağlantısı: Tam gölge kavramını değerlendirmek.",
+"Sonraki konu bağlantısı: Yarı gölge konusuna hazırlık.",
+"Günlük yaşam: Öğrenme günlük deneyimlerle gelişir.",
+"Bilim: Bilim insanları da çalışmalarını değerlendirir."
+]
+},
+"activities": {
+"discussion_prompts": [
+"Tam gölge konusunu ne kadar anladığını düşünüyorsun?",
+"Hangi etkinlik sana en çok yardımcı oldu?",
+"Bu konuyu arkadaşına nasıl anlatırsın?"
+],
+"evaluation_tasks": [
+"Tam gölgeyi açıklayan kısa bir paragraf yaz.",
+"Bir gölge deneyini çizerek göster."
+]
+},
+"assessment": {
+"reflective_questions": [
+"En iyi anladığın kavram hangisiydi?",
+"Tekrar etmek istediğin bir konu var mı?"
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Öğrencilerin cevaplarını gönüllü olarak paylaşmasını isteyin.",
+"Kısa yazılı cevaplar toplamak öğrenme durumunu anlamayı sağlar.",
+"Öğrencilerin birbirlerine geri bildirim vermesini sağlayın.",
+"Öğrencileri yeni sorular üretmeye teşvik edin."
+],
+"common_misconceptions": [
+"Öğrenciler konuyu tamamen anladıklarını sanabilir çünkü basit görünür. Doğrusu: deney ve gözlemle tekrar etmek gerekir.",
+"Öğrenciler gölgeyi sadece güneşle ilişkilendirebilir çünkü en sık o görülür. Doğrusu: her ışık kaynağı gölge oluşturur.",
+"Öğrenciler gölge boyunun sabit olduğunu düşünebilir çünkü kısa gözlem yaparlar. Doğrusu: gölge sürekli değişir."
+],
+"classroom_discussion": [
+"Bu derste seni en çok şaşırtan bilgi neydi? (Beklenen: öğrencinin kendi görüşü)",
+"Gölge deneyini tekrar yapsan neyi değiştirirdin? (Beklenen: değişkenler)",
+"Bu konuyu başka hangi dersle ilişkilendirebilirsin? (Beklenen: fen veya astronomi)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrenciler yeni gölge deneyleri tasarlayabilir.",
+"Ev etkinliği: Gün içinde üç farklı zamanda gölge boyunu ölç.",
+"Araştırma: Fotoğrafçılar gölgeleri nasıl kullanır?"
+]
+}
+},
+{
+"id": "step9",
+"type": "certificate",
+"title": "Tebrikler!",
+"duration_minutes": 1,
+"content": {
+"explanation": "Bir dersin sonunda öğrendiklerimizi kutlamak önemlidir. Bu sadece başarıyı değil, öğrenme sürecini de değerli kılar. Tam gölge konusunu öğrenerek ışığın davranışı hakkında önemli bir adım attın.\n\nBilim öğrenmek merak etmekle başlar ve keşfetmekle devam eder. Bu tıpkı karanlık bir odada el feneriyle yeni yerler keşfetmek gibidir — ışık açıldıkça yeni şeyler görürüz. Sen de bu derste ışığın nasıl gölge oluşturduğunu keşfettin.\n\nŞimdi öğrendiklerini kullanarak çevrendeki gölgeleri daha dikkatli inceleyebilirsin.",
+"key_points": [
+"Öğrenme başarısı: Tam gölge kavramını öğrendin. (Kazanım 1)",
+"Bilimsel düşünme: Deney ve gözlem yaptın. (Kazanım 2)",
+"Kavram anlayışı: Gölgeyi etkileyen değişkenleri öğrendin. (Kazanım 3)",
+"Günlük yaşam bağlantısı: Gölge olaylarını artık açıklayabilirsin. (Kazanım 1)",
+"Yeni keşifler: Bir sonraki adım yarı gölgeyi öğrenmek olacak. (Kazanım 3)"
+],
+"examples": [
+"Artık gölge oluşumunu arkadaşlarına açıklayabilirsin.",
+"Evde gölge deneyleri yapabilirsin.",
+"Güneşli günlerde gölge boyunu gözlemleyebilirsin.",
+"Bilim projelerinde gölgeyi kullanabilirsin."
+],
+"real_life_connections": [
+"Önceki konu bağlantısı: Işığın doğrusal yayılması.",
+"Sonraki konu bağlantısı: Yarı gölge konusu.",
+"Günlük yaşam: Parkta ağaç gölgesi gözlemi.",
+"Bilim: Tutulmaların anlaşılması."
+]
+},
+"activities": {
+"certificate_message": "Harika! Tam gölgenin nasıl oluştuğunu, hangi faktörlerin gölgeyi etkilediğini ve bilimsel gözlem yapmayı öğrendin. Artık çevrendeki gölgeleri bir bilim insanı gibi inceleyebilirsin!",
+"earned_badges": [
+"Gölge Kaşifi",
+"Işık Bilimcisi",
+"Deney Ustası"
+]
+},
+"assessment": {},
+"teacher_notes": {
+"teaching_tips": [
+"Ders sonunda öğrencileri tebrik edin.",
+"Rozetleri sembolik olarak tahtaya yazın.",
+"Öğrencilerin başarılarını paylaşmasına izin verin.",
+"Bir sonraki dersin konusuna kısa giriş yapın."
+],
+"common_misconceptions": [
+"Öğrenciler gölge konusunun sadece basit bir doğa olayı olduğunu sanabilir çünkü günlük yaşamda sık görülür. Doğrusu: bu olay ışık fiziğinin temel prensiplerinden biridir.",
+"Öğrenciler konunun sadece dersle sınırlı olduğunu düşünebilir çünkü okul ortamında öğrenilir. Doğrusu: gölge kavramı günlük yaşamda sürekli karşımıza çıkar.",
+"Öğrenciler gölgeyi tamamen öğrendiklerini sanabilir çünkü temel kavramları bilirler. Doğrusu: yarı gölge gibi daha ileri kavramlar da vardır."
+],
+"classroom_discussion": [
+"Bu derste öğrendiğin en ilginç şey neydi? (Beklenen: öğrencinin kendi görüşü)",
+"Gölgeyi hangi durumlarda kullanabiliriz? (Beklenen: günlük yaşam örnekleri)",
+"Bir sonraki derste ne öğrenmek istersin? (Beklenen: merak edilen konular)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrenciler gölge ile ilgili poster hazırlayabilir.",
+"Ev etkinliği: Gün batımında gölge fotoğrafları çek.",
+"Araştırma: Fotoğrafçılıkta gölge sanatı."
+]
+}
+}
+]
+}
+}
