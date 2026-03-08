@@ -132,6 +132,23 @@ class _LessonPageState extends State<LessonPage> {
     setState(() => _stepIdx--);
   }
 
+  Future<void> _handleHeaderMenuAction(String value) async {
+    switch (value) {
+      case 'font_decrease':
+        fontSizeNotifier.decrease();
+        break;
+      case 'font_increase':
+        fontSizeNotifier.increase();
+        break;
+      case 'toggle_theme':
+        themeNotifier.toggle();
+        break;
+      case 'toggle_music':
+        await _toggleMusic();
+        break;
+    }
+  }
+
   void _awardBadge(String id) => setState(() => _earnedBadges.add(id));
 
   void _restart() => setState(() {
@@ -479,112 +496,78 @@ class _LessonPageState extends State<LessonPage> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    _HeaderIconButton(
-                      icon: Icons.arrow_back_rounded,
-                      color: col,
-                      onTap: _goPrevious,
-                    ),
-                    const SizedBox(width: 8),
-                    _HeaderIconButton(
-                      icon: Icons.home_rounded,
-                      color: col,
-                      onTap: () => Navigator.of(context).maybePop(),
-                    ),
-                    const SizedBox(width: 8),
-
-                    // Step emoji kutusu
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: col.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(11),
-                        border: Border.all(
-                          color: col.withValues(alpha: 0.5),
-                          width: 1.5,
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        _stepEmoji(step?.type ?? ''),
-                        style: const TextStyle(fontSize: 19),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            lessonTitle,
-                            style: TextStyle(
-                              color: tc.textBody,
-                              fontWeight: FontWeight.w800,
-                              fontSize: AppFS.labelLg,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 1),
-                          Text(
-                            'ADIM ${_stepIdx + 1} / ${lessonSteps.length}',
-                            style: TextStyle(
-                              color: col,
-                              fontSize: AppFS.small,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                _HeaderIconButton(
+                  icon: Icons.home_rounded,
+                  color: col,
+                  onTap: () => Navigator.of(context).maybePop(),
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            _FontSizeBtn(
-                              label: 'A−',
-                              enabled: fontSizeNotifier.canDecrease,
-                              color: col,
-                              onTap: fontSizeNotifier.decrease,
-                            ),
-                            const SizedBox(width: 4),
-                            _FontSizeBtn(
-                              label: 'A+',
-                              enabled: fontSizeNotifier.canIncrease,
-                              color: col,
-                              onTap: fontSizeNotifier.increase,
-                            ),
-                            const SizedBox(width: 6),
-                            _ThemeToggle(color: col),
-                            const SizedBox(width: 5),
-                            _MusicToggle(
-                              isOn: _musicOn,
-                              onTap: _toggleMusic,
-                              color: col,
-                            ),
-                          ],
+                const SizedBox(width: 8),
+                _HeaderIconButton(
+                  icon: Icons.arrow_back_rounded,
+                  color: col,
+                  onTap: _goPrevious,
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: col.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(11),
+                    border: Border.all(
+                      color: col.withValues(alpha: 0.5),
+                      width: 1.5,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    _stepEmoji(step?.type ?? ''),
+                    style: const TextStyle(fontSize: 19),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        lessonTitle,
+                        style: TextStyle(
+                          color: tc.textBody,
+                          fontWeight: FontWeight.w800,
+                          fontSize: AppFS.labelLg,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        'ADIM ${_stepIdx + 1} / ${lessonSteps.length}',
+                        style: TextStyle(
+                          color: col,
+                          fontSize: AppFS.small,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.0,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    AnimatedBuilder(
-                      animation: fontSizeNotifier,
-                      builder: (_, __) => XpChip(xp: _xp),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                AnimatedBuilder(
+                  animation: fontSizeNotifier,
+                  builder: (_, __) => XpChip(xp: _xp),
+                ),
+                const SizedBox(width: 8),
+                _HeaderActionsMenu(
+                  color: col,
+                  musicOn: _musicOn,
+                  canDecreaseFont: fontSizeNotifier.canDecrease,
+                  canIncreaseFont: fontSizeNotifier.canIncrease,
+                  isDark: tc.isDark,
+                  onSelected: _handleHeaderMenuAction,
                 ),
               ],
             ),
@@ -810,6 +793,65 @@ class _HeaderIconButton extends StatelessWidget {
       child: Icon(icon, color: color, size: 20),
     ),
   );
+}
+
+class _HeaderActionsMenu extends StatelessWidget {
+  final Color color;
+  final bool musicOn;
+  final bool canDecreaseFont;
+  final bool canIncreaseFont;
+  final bool isDark;
+  final Future<void> Function(String value) onSelected;
+
+  const _HeaderActionsMenu({
+    required this.color,
+    required this.musicOn,
+    required this.canDecreaseFont,
+    required this.canIncreaseFont,
+    required this.isDark,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      tooltip: 'Ayarlar',
+      onSelected: (value) {
+        onSelected(value);
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem<String>(
+          value: 'font_decrease',
+          enabled: canDecreaseFont,
+          child: const Text('A- Yaziyi kucult'),
+        ),
+        PopupMenuItem<String>(
+          value: 'font_increase',
+          enabled: canIncreaseFont,
+          child: const Text('A+ Yaziyi buyut'),
+        ),
+        PopupMenuItem<String>(
+          value: 'toggle_theme',
+          child: Text(isDark ? 'Light temaya gec' : 'Dark temaya gec'),
+        ),
+        PopupMenuItem<String>(
+          value: 'toggle_music',
+          child: Text(musicOn ? 'Muzigi kapat' : 'Muzigi ac'),
+        ),
+      ],
+      child: Container(
+        width: 38,
+        height: 38,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: TC.of(context).isDark ? 0.15 : 0.10),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.55), width: 1.4),
+        ),
+        alignment: Alignment.center,
+        child: Icon(Icons.tune_rounded, color: color, size: 20),
+      ),
+    );
+  }
 }
 
 // ─── TEMA TOGGLE ☀️/🌙 ───────────────────────────────────────────────────────
