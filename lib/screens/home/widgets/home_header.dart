@@ -21,6 +21,8 @@ import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v7/main.dart'
     as lesson_v7;
 import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v8/main.dart'
     as lesson_v8;
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v9/main.dart'
+    as lesson_v9;
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -351,6 +353,13 @@ class _HomeHeaderState extends State<HomeHeader>
               builder: (context) => const lesson_v8.LessonPage(),
             ),
           );
+        } else if (value == 'lesson_preview_v9') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const lesson_v9.LessonPage(),
+            ),
+          );
         } else if (value == 'show_games') {
           _showGameSelectionDialog(context);
         } else if (value == 'question_test_page') {
@@ -595,6 +604,23 @@ class _HomeHeaderState extends State<HomeHeader>
                 const SizedBox(width: 12),
                 Text(
                   'Lesson Preview V8',
+                  style: TextStyle(color: Colors.grey.shade900),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem<String?>(
+            value: 'lesson_preview_v9',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.auto_awesome_motion_outlined,
+                  color: const Color(0xFF0F766E),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Lesson Preview V9',
                   style: TextStyle(color: Colors.grey.shade900),
                 ),
               ],
