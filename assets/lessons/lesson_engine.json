@@ -405,8 +405,8 @@
 "activities": {
 "word_bank": {
 "words": [
-"hak",
-"sorumluluk",
+"haklar",
+"sorumlulukları",
 "demokrasi",
 "eşitlik",
 "oyuncak",
@@ -415,7 +415,7 @@
 ],
 "template": "Her insanın bazı temel ____ vardır ve bu hakların korunması için bazı ____ yerine getirilmelidir. Bu denge ____ kültürünün gelişmesine yardımcı olur.",
 "blanks": [
-  { "id": "blank1", "correct_answer": "hakları" },
+  { "id": "blank1", "correct_answer": "haklar" },
   { "id": "blank2", "correct_answer": "sorumlulukları" },
   { "id": "blank3", "correct_answer": "demokrasi" }
 ]

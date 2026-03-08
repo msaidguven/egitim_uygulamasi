@@ -479,98 +479,112 @@ class _LessonPageState extends State<LessonPage> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _HeaderIconButton(
-                  icon: Icons.arrow_back_rounded,
-                  color: col,
-                  onTap: _goPrevious,
-                ),
-                const SizedBox(width: 8),
-                _HeaderIconButton(
-                  icon: Icons.home_rounded,
-                  color: col,
-                  onTap: () => Navigator.of(context).maybePop(),
-                ),
-                const SizedBox(width: 8),
-
-                // Step emoji kutusu
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: col.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(11),
-                    border: Border.all(
-                      color: col.withValues(alpha: 0.5),
-                      width: 1.5,
+                Row(
+                  children: [
+                    _HeaderIconButton(
+                      icon: Icons.arrow_back_rounded,
+                      color: col,
+                      onTap: _goPrevious,
                     ),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    _stepEmoji(step?.type ?? ''),
-                    style: const TextStyle(fontSize: 19),
-                  ),
-                ),
-                const SizedBox(width: 10),
+                    const SizedBox(width: 8),
+                    _HeaderIconButton(
+                      icon: Icons.home_rounded,
+                      color: col,
+                      onTap: () => Navigator.of(context).maybePop(),
+                    ),
+                    const SizedBox(width: 8),
 
-                // Ders adı + adım
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        lessonTitle,
-                        style: TextStyle(
-                          color: tc.textBody,
-                          fontWeight: FontWeight.w800,
-                          fontSize: AppFS.labelLg,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 1),
-                      Text(
-                        'ADIM ${_stepIdx + 1} / ${lessonSteps.length}',
-                        style: TextStyle(
-                          color: col,
-                          fontSize: AppFS.small,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.0,
+                    // Step emoji kutusu
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: col.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(11),
+                        border: Border.all(
+                          color: col.withValues(alpha: 0.5),
+                          width: 1.5,
                         ),
                       ),
-                    ],
-                  ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        _stepEmoji(step?.type ?? ''),
+                        style: const TextStyle(fontSize: 19),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            lessonTitle,
+                            style: TextStyle(
+                              color: tc.textBody,
+                              fontWeight: FontWeight.w800,
+                              fontSize: AppFS.labelLg,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 1),
+                          Text(
+                            'ADIM ${_stepIdx + 1} / ${lessonSteps.length}',
+                            style: TextStyle(
+                              color: col,
+                              fontSize: AppFS.small,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-
-                // A− / A+ butonları
-                _FontSizeBtn(
-                  label: 'A−',
-                  enabled: fontSizeNotifier.canDecrease,
-                  color: col,
-                  onTap: fontSizeNotifier.decrease,
-                ),
-                const SizedBox(width: 4),
-                _FontSizeBtn(
-                  label: 'A+',
-                  enabled: fontSizeNotifier.canIncrease,
-                  color: col,
-                  onTap: fontSizeNotifier.increase,
-                ),
-                const SizedBox(width: 6),
-
-                // Tema toggle ☀️/🌙
-                _ThemeToggle(color: col),
-                const SizedBox(width: 5),
-
-                // Müzik toggle
-                _MusicToggle(isOn: _musicOn, onTap: _toggleMusic, color: col),
-                const SizedBox(width: 8),
-
-                // XP chip
-                AnimatedBuilder(
-                  animation: fontSizeNotifier,
-                  builder: (_, __) => XpChip(xp: _xp),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _FontSizeBtn(
+                              label: 'A−',
+                              enabled: fontSizeNotifier.canDecrease,
+                              color: col,
+                              onTap: fontSizeNotifier.decrease,
+                            ),
+                            const SizedBox(width: 4),
+                            _FontSizeBtn(
+                              label: 'A+',
+                              enabled: fontSizeNotifier.canIncrease,
+                              color: col,
+                              onTap: fontSizeNotifier.increase,
+                            ),
+                            const SizedBox(width: 6),
+                            _ThemeToggle(color: col),
+                            const SizedBox(width: 5),
+                            _MusicToggle(
+                              isOn: _musicOn,
+                              onTap: _toggleMusic,
+                              color: col,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    AnimatedBuilder(
+                      animation: fontSizeNotifier,
+                      builder: (_, __) => XpChip(xp: _xp),
+                    ),
+                  ],
                 ),
               ],
             ),
