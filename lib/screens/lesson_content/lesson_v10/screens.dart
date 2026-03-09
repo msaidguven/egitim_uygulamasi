@@ -389,40 +389,15 @@ class ConceptCardsScreen extends StatefulWidget {
 }
 
 class _ConceptCardsState extends State<ConceptCardsScreen> {
-  // Hangi kartlar açık — null = hepsi kapalı, index = o kart açık
-  int? _openIndex;
-  final Set<int> _seen = {};
-
-  static const _colors = [
-    AppTheme.concept,
-    AppTheme.intro,
-    AppTheme.quiz,
-    AppTheme.word,
-    AppTheme.scenario,
-    AppTheme.reflect,
-  ];
-
-  List<Color> _lightBgs(TC tc) => [
-    tc.cBgGreen,
-    tc.cBgBlue,
-    tc.cBgPurple,
-    tc.cBgPink,
-    tc.cBgOrange,
-    tc.cBgTeal,
-  ];
-
-  void _toggle(int i) {
-    setState(() {
-      _seen.add(i);
-      _openIndex = (_openIndex == i) ? null : i;
-    });
-  }
+  bool _showNotebookPage = false;
 
   @override
   Widget build(BuildContext context) {
     final tc = TC.of(context);
-    final bgs = _lightBgs(tc);
-    final done = _seen.length == widget.items.length;
+    final hasNotebook =
+        widget.notebookDefinition.isNotEmpty ||
+        widget.notebookItems.isNotEmpty ||
+        widget.notebookSections.isNotEmpty;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 48),
@@ -440,7 +415,9 @@ class _ConceptCardsState extends State<ConceptCardsScreen> {
             ),
             const SizedBox(height: 6),
             Text(
-              'Her karta dokunarak kilidi aç! 🔓',
+              _showNotebookPage
+                  ? 'Simdi bu bilgileri duzenli sekilde defterine gecirebilirsin.'
+                  : 'Once kavram notlarini oku, sonra ayri sayfada deftere yaz bolumune gec.',
               style: TextStyle(
                 color: tc.textMuted,
                 fontSize: AppFS.body,
@@ -449,224 +426,247 @@ class _ConceptCardsState extends State<ConceptCardsScreen> {
             ),
             const SizedBox(height: 20),
 
-            // ── Tam genişlik kart listesi ──────────────────────────────────
-            ...List.generate(widget.items.length, (i) {
-              final item = widget.items[i];
-              final col = _colors[i % _colors.length];
-              final bg = bgs[i % bgs.length];
-              final isOpen = _openIndex == i;
-              final wasSeen = _seen.contains(i);
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: GestureDetector(
-                  onTap: () => _toggle(i),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: isOpen ? bg : tc.card,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isOpen
-                            ? col
-                            : wasSeen
-                            ? col.withValues(alpha: 0.5)
-                            : tc.border,
-                        width: isOpen ? 2.5 : 1.5,
-                      ),
-                      boxShadow: isOpen
-                          ? [
-                              BoxShadow(
-                                color: col.withValues(alpha: 0.25),
-                                blurRadius: 18,
-                                spreadRadius: 1,
-                                offset: const Offset(0, 4),
-                              ),
-                            ]
-                          : [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.08),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                    ),
-                    child: Column(
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 260),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (child, animation) {
+                final slide = Tween<Offset>(
+                  begin: const Offset(0.05, 0),
+                  end: Offset.zero,
+                ).animate(animation);
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(position: slide, child: child),
+                );
+              },
+              child: _showNotebookPage
+                  ? Column(
+                      key: const ValueKey('notebook_page'),
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ── Başlık satırı ──────────────────────────────────
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(18, 18, 18, 0),
-                          child: Row(
-                            children: [
-                              // Numara/emoji kutusu
-                              Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  color: isOpen
-                                      ? col
-                                      : col.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: col.withValues(alpha: 0.4),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  isOpen ? item.icon : '🔒',
-                                  style: const TextStyle(fontSize: 22),
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              // Kavram adı
-                              Expanded(
-                                child: Text(
-                                  item.title,
-                                  style: TextStyle(
-                                    color: isOpen ? tc.cText : tc.textBody,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: AppFS.titleLg,
-                                    height: 1.25,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              // Ok ikonu
-                              AnimatedRotation(
-                                turns: isOpen ? 0.5 : 0,
-                                duration: const Duration(milliseconds: 250),
-                                child: Icon(
-                                  Icons.keyboard_arrow_down_rounded,
-                                  color: isOpen ? col : tc.muted,
-                                  size: 28,
-                                ),
-                              ),
-                            ],
-                          ),
+                        _NotebookSection(
+                          definition: widget.notebookDefinition,
+                          items: widget.notebookItems,
+                          sections: widget.notebookSections,
                         ),
+                        const SizedBox(height: 18),
+                      ],
+                    )
+                  : Column(
+                      key: const ValueKey('concept_notes_page'),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.items.isNotEmpty)
+                          _ConceptNotesSheet(items: widget.items),
+                        if (widget.items.isNotEmpty) const SizedBox(height: 18),
+                      ],
+                    ),
+            ),
 
-                        // ── Açıklama (sadece açıkken görünür) ─────────────
-                        AnimatedCrossFade(
-                          firstChild: const SizedBox(height: 18),
-                          secondChild: Padding(
-                            padding: const EdgeInsets.fromLTRB(18, 14, 18, 20),
+            if (hasNotebook && !_showNotebookPage)
+              PrimaryButton(
+                label: 'İLERİ  →  DEFTERE YAZ',
+                onPressed: () => setState(() => _showNotebookPage = true),
+                color: AppTheme.concept,
+              )
+            else if (hasNotebook && _showNotebookPage)
+              Row(
+                children: [
+                  Expanded(
+                    child: SecondaryButton(
+                      label: '←  KAVRAM NOTLARI',
+                      onPressed: () =>
+                          setState(() => _showNotebookPage = false),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: PrimaryButton(
+                      label: '✅  DEFTERE GECIRDIM',
+                      onPressed: widget.onComplete,
+                      color: AppTheme.concept,
+                    ),
+                  ),
+                ],
+              )
+            else
+              PrimaryButton(
+                label: '✅  DEVAM ET',
+                onPressed: widget.onComplete,
+                color: AppTheme.concept,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ConceptNotesSheet extends StatelessWidget {
+  final List<ConceptItem> items;
+  const _ConceptNotesSheet({required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    final tc = TC.of(context);
+
+    const Color nbYellow = Color(0xFFFFFDE7);
+    const Color nbYellowDk = Color(0xFFFFF9C4);
+    const Color nbBorder = Color(0xFFE6C200);
+    const Color nbLine = Color(0xFFE8E0A0);
+    const Color nbText = Color(0xFF3E2F00);
+    const Color nbMuted = Color(0xFF6B5800);
+    const Color nbAccent = Color(0xFFB8860B);
+
+    return AnimatedBuilder(
+      animation: fontSizeNotifier,
+      builder: (_, __) => Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: tc.isDark ? const Color(0xFF2A2200) : nbYellow,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: nbBorder, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: nbBorder.withValues(alpha: 0.35),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
+              decoration: BoxDecoration(
+                color: tc.isDark ? const Color(0xFF3A3000) : nbYellowDk,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(18),
+                ),
+                border: Border(bottom: BorderSide(color: nbBorder, width: 1.5)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: nbAccent.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: nbAccent.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    child: const Text('✍️', style: TextStyle(fontSize: 20)),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'KAVRAM NOTLARI',
+                        style: TextStyle(
+                          color: nbAccent,
+                          fontSize: AppFS.small,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.4,
+                        ),
+                      ),
+                      Text(
+                        'Bu bolumdeki bilgileri sirayla defterine yazabilirsin',
+                        style: TextStyle(
+                          color: nbMuted,
+                          fontSize: AppFS.small,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18),
+              child: CustomPaint(
+                painter: _NotebookLinesPainter(
+                  lineColor: tc.isDark
+                      ? nbLine.withValues(alpha: 0.15)
+                      : nbLine,
+                  lineHeight: AppFS.bodyLg * 1.8 + 18,
+                ),
+                child: Column(
+                  children: items.asMap().entries.map((entry) {
+                    final item = entry.value;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 34,
+                            height: 34,
+                            decoration: BoxDecoration(
+                              color: nbAccent,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${entry.key + 1}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: AppFS.small,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  height: 2,
-                                  decoration: BoxDecoration(
-                                    color: col.withValues(alpha: 0.3),
-                                    borderRadius: BorderRadius.circular(99),
-                                  ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${item.icon} ',
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        item.title,
+                                        style: TextStyle(
+                                          color: tc.isDark
+                                              ? const Color(0xFFFFF9C4)
+                                              : nbText,
+                                          fontSize: AppFS.bodyLg,
+                                          fontWeight: FontWeight.w800,
+                                          height: 1.4,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 14),
+                                const SizedBox(height: 6),
                                 Text(
                                   item.desc,
                                   style: TextStyle(
-                                    color: tc.cTextMid,
-                                    fontSize: AppFS.bodyLg,
-                                    height: 1.6,
+                                    color: tc.isDark
+                                        ? const Color(0xFFFFF9C4)
+                                        : nbText,
+                                    fontSize: AppFS.body,
                                     fontWeight: FontWeight.w600,
+                                    height: 1.6,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          crossFadeState: isOpen
-                              ? CrossFadeState.showSecond
-                              : CrossFadeState.showFirst,
-                          duration: const Duration(milliseconds: 280),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }),
-
-            const SizedBox(height: 8),
-
-            // ── Progress ───────────────────────────────────────────────────
-            Row(
-              children: [
-                Expanded(
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: tc.surface,
-                          borderRadius: BorderRadius.circular(99),
-                        ),
+                        ],
                       ),
-                      if (widget.items.isNotEmpty)
-                        FractionallySizedBox(
-                          widthFactor: _seen.length / widget.items.length,
-                          child: Container(
-                            height: 8,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [AppTheme.concept, AppTheme.intro],
-                              ),
-                              borderRadius: BorderRadius.circular(99),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppTheme.concept.withValues(
-                                    alpha: 0.5,
-                                  ),
-                                  blurRadius: 8,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  '${_seen.length}/${widget.items.length}',
-                  style: TextStyle(
-                    color: AppTheme.concept,
-                    fontSize: AppFS.bodyLg,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 18),
-
-            // ── Defter Bölümü — tüm kartlar açıldıktan sonra görünür ──────
-            if (done &&
-                (widget.notebookDefinition.isNotEmpty ||
-                    widget.notebookItems.isNotEmpty ||
-                    widget.notebookSections.isNotEmpty))
-              _NotebookSection(
-                definition: widget.notebookDefinition,
-                items: widget.notebookItems,
-                sections: widget.notebookSections,
-              ),
-
-            if (done &&
-                (widget.notebookDefinition.isNotEmpty ||
-                    widget.notebookItems.isNotEmpty ||
-                    widget.notebookSections.isNotEmpty))
-              const SizedBox(height: 18),
-
-            AnimatedOpacity(
-              opacity: done ? 1 : 0.35,
-              duration: const Duration(milliseconds: 300),
-              child: IgnorePointer(
-                ignoring: !done,
-                child: PrimaryButton(
-                  label: done ? '✅  TÜMÜNÜ AÇTIM!' : '🔒  Tüm kartları aç...',
-                  onPressed: widget.onComplete,
-                  color: AppTheme.concept,
+                    );
+                  }).toList(),
                 ),
               ),
             ),
@@ -700,6 +700,7 @@ class _NotebookSectionState extends State<_NotebookSection>
   late AnimationController _ctrl;
   late Animation<double> _fade;
   late Animation<Offset> _slide;
+  int _pageIndex = 0;
 
   @override
   void initState() {
@@ -730,6 +731,15 @@ class _NotebookSectionState extends State<_NotebookSection>
             if (widget.items.isNotEmpty)
               NotebookSectionData(title: 'OZET NOTLAR', items: widget.items),
           ];
+    final sectionPages = _buildSectionPages(sections);
+    final currentPageIndex = sectionPages.isEmpty
+        ? 0
+        : (_pageIndex >= sectionPages.length
+              ? sectionPages.length - 1
+              : _pageIndex);
+    final visibleSections = sectionPages.isEmpty
+        ? sections
+        : sectionPages[currentPageIndex];
     // Defter sarısı — her iki temada da okunabilir
     const Color nbYellow = Color(0xFFFFFDE7);
     const Color nbYellowDk = Color(0xFFFFF9C4);
@@ -801,14 +811,6 @@ class _NotebookSectionState extends State<_NotebookSection>
                               letterSpacing: 1.5,
                             ),
                           ),
-                          Text(
-                            'Öğretmen tahtaya yazar, sen deftere geçirirsin',
-                            style: TextStyle(
-                              color: tc.isDark ? nbMuted : nbMuted,
-                              fontSize: AppFS.small,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
                         ],
                       ),
                     ],
@@ -861,8 +863,8 @@ class _NotebookSectionState extends State<_NotebookSection>
                         const SizedBox(height: 20),
                       ],
 
-                      if (sections.isNotEmpty)
-                        ...sections.asMap().entries.expand((entry) {
+                      if (visibleSections.isNotEmpty)
+                        ...visibleSections.asMap().entries.expand((entry) {
                           final sectionIndex = entry.key;
                           final section = entry.value;
                           return [
@@ -957,10 +959,107 @@ class _NotebookSectionState extends State<_NotebookSection>
                                 ),
                               ),
                             ],
-                            if (sectionIndex != sections.length - 1)
+                            if (sectionIndex != visibleSections.length - 1)
                               const SizedBox(height: 20),
                           ];
                         }),
+
+                      if (sectionPages.length > 1) ...[
+                        const SizedBox(height: 18),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: nbAccent.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(999),
+                                border: Border.all(
+                                  color: nbAccent.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Text(
+                                'Bolum ${currentPageIndex + 1}/${sectionPages.length}',
+                                style: TextStyle(
+                                  color: nbAccent,
+                                  fontSize: AppFS.small,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Row(
+                                children: List.generate(sectionPages.length, (
+                                  i,
+                                ) {
+                                  final active = i == currentPageIndex;
+                                  return Expanded(
+                                    child: Container(
+                                      height: 7,
+                                      margin: EdgeInsets.only(
+                                        right: i == sectionPages.length - 1
+                                            ? 0
+                                            : 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: active
+                                            ? nbAccent
+                                            : nbAccent.withValues(alpha: 0.2),
+                                        borderRadius: BorderRadius.circular(
+                                          999,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: AnimatedOpacity(
+                                opacity: currentPageIndex == 0 ? 0.55 : 1,
+                                duration: const Duration(milliseconds: 180),
+                                child: IgnorePointer(
+                                  ignoring: currentPageIndex == 0,
+                                  child: SecondaryButton(
+                                    label: '←  ONCEKI BOLUM',
+                                    onPressed: () =>
+                                        setState(() => _pageIndex--),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: AnimatedOpacity(
+                                opacity:
+                                    currentPageIndex == sectionPages.length - 1
+                                    ? 0.55
+                                    : 1,
+                                duration: const Duration(milliseconds: 180),
+                                child: IgnorePointer(
+                                  ignoring:
+                                      currentPageIndex ==
+                                      sectionPages.length - 1,
+                                  child: PrimaryButton(
+                                    label: 'SONRAKI BOLUM  →',
+                                    onPressed: () =>
+                                        setState(() => _pageIndex++),
+                                    color: nbAccent,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -970,6 +1069,41 @@ class _NotebookSectionState extends State<_NotebookSection>
         ),
       ),
     );
+  }
+
+  List<List<NotebookSectionData>> _buildSectionPages(
+    List<NotebookSectionData> sections,
+  ) {
+    if (sections.isEmpty) return const [];
+
+    const int maxItemsPerPage = 6;
+    const int maxSectionsPerPage = 2;
+    final pages = <List<NotebookSectionData>>[];
+    var currentPage = <NotebookSectionData>[];
+    var currentItems = 0;
+
+    for (final section in sections) {
+      final sectionItems = section.items.length;
+      final exceedsSectionLimit = currentPage.length >= maxSectionsPerPage;
+      final exceedsItemLimit =
+          currentPage.isNotEmpty &&
+          currentItems + sectionItems > maxItemsPerPage;
+
+      if (exceedsSectionLimit || exceedsItemLimit) {
+        pages.add(currentPage);
+        currentPage = <NotebookSectionData>[];
+        currentItems = 0;
+      }
+
+      currentPage.add(section);
+      currentItems += sectionItems;
+    }
+
+    if (currentPage.isNotEmpty) {
+      pages.add(currentPage);
+    }
+
+    return pages;
   }
 }
 
@@ -1021,8 +1155,16 @@ class InfoListScreen extends StatefulWidget {
 }
 
 class _InfoListState extends State<InfoListScreen> {
-  int? _open;
+  int _currentIndex = 0;
   final Set<int> _seen = {};
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.items.isNotEmpty) {
+      _seen.add(0);
+    }
+  }
 
   Color _riskColor(String level) {
     final normalized = level
@@ -1047,6 +1189,9 @@ class _InfoListState extends State<InfoListScreen> {
   @override
   Widget build(BuildContext context) {
     final tc = TC.of(context);
+    final hasItems = widget.items.isNotEmpty;
+    final item = hasItems ? widget.items[_currentIndex] : null;
+    final isLast = !hasItems || _currentIndex == widget.items.length - 1;
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 48),
       child: AnimatedBuilder(
@@ -1067,165 +1212,235 @@ class _InfoListState extends State<InfoListScreen> {
               style: TextStyle(color: tc.textMuted, fontSize: AppFS.label),
             ),
             const SizedBox(height: 14),
-
-            ...widget.items.asMap().entries.map((e) {
-              final i = e.key;
-              final item = e.value;
-              final open = _open == i;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: GestureDetector(
-                  onTap: () => setState(() {
-                    _open = open ? null : i;
-                    _seen.add(i);
-                  }),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: open ? tc.cBgOrange : tc.card,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: open ? AppTheme.risk : tc.border,
-                        width: open ? 2 : 1.5,
-                      ),
-                      boxShadow: open
-                          ? [
-                              BoxShadow(
-                                color: AppTheme.risk.withValues(alpha: 0.3),
-                                blurRadius: 14,
-                              ),
-                            ]
-                          : [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.15),
-                                blurRadius: 5,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+            if (hasItems) ...[
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: open ? AppTheme.risk : tc.surface,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: open ? AppTheme.risk : tc.border,
-                                ),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                '${i + 1}',
-                                style: TextStyle(
-                                  color: open ? Colors.white : tc.textMuted,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: AppFS.labelLg,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                item.misconception,
-                                style: TextStyle(
-                                  color: open ? tc.cText : tc.textBody,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: AppFS.body,
-                                ),
-                              ),
-                            ),
-                            Icon(
-                              open
-                                  ? Icons.expand_less_rounded
-                                  : Icons.expand_more_rounded,
-                              color: open ? AppTheme.risk : tc.muted,
-                              size: 22,
-                            ),
-                          ],
-                        ),
-                        if (open) ...[
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: _riskColor(
-                                    item.riskLevel,
-                                  ).withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(999),
-                                  border: Border.all(
-                                    color: _riskColor(
-                                      item.riskLevel,
-                                    ).withValues(alpha: 0.35),
-                                  ),
-                                ),
-                                child: Text(
-                                  _riskLabel(item.riskLevel),
-                                  style: TextStyle(
-                                    color: _riskColor(item.riskLevel),
-                                    fontSize: AppFS.small,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          if (item.whyItHappens.isNotEmpty) ...[
-                            const SizedBox(height: 10),
-                            _RiskDetailCard(
-                              icon: '🧠',
-                              title: 'Neden boyle dusunuluyor?',
-                              text: item.whyItHappens,
-                              color: const Color(0xFFFFB300),
-                            ),
-                          ],
-                          if (item.truth.isNotEmpty) ...[
-                            const SizedBox(height: 10),
-                            _RiskDetailCard(
-                              icon: '✅',
-                              title: 'Dogrusu ne?',
-                              text: item.truth,
-                              color: const Color(0xFF43A047),
-                            ),
-                          ],
-                          if (item.fixTip.isNotEmpty) ...[
-                            const SizedBox(height: 10),
-                            _RiskDetailCard(
-                              icon: '🛠️',
-                              title: 'Nasil duzeltilir?',
-                              text: item.fixTip,
-                              color: const Color(0xFF1E88E5),
-                            ),
-                          ],
-                          if (item.miniCheck.isNotEmpty) ...[
-                            const SizedBox(height: 10),
-                            _RiskDetailCard(
-                              icon: '❓',
-                              title: 'Mini kontrol',
-                              text: item.miniCheck,
-                              color: AppTheme.risk,
-                            ),
-                          ],
-                        ],
-                      ],
+                    decoration: BoxDecoration(
+                      color: tc.cBgOrange,
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(
+                        color: AppTheme.risk.withValues(alpha: 0.35),
+                      ),
+                    ),
+                    child: Text(
+                      'Risk ${_currentIndex + 1}/${widget.items.length}',
+                      style: TextStyle(
+                        color: AppTheme.risk,
+                        fontSize: AppFS.small,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Row(
+                      children: List.generate(widget.items.length, (index) {
+                        final active = index == _currentIndex;
+                        final seen = _seen.contains(index);
+                        return Expanded(
+                          child: Container(
+                            height: 8,
+                            margin: EdgeInsets.only(
+                              right: index == widget.items.length - 1 ? 0 : 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: active
+                                  ? AppTheme.risk
+                                  : seen
+                                  ? AppTheme.risk.withValues(alpha: 0.35)
+                                  : tc.surface,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 280),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) {
+                  final slide = Tween<Offset>(
+                    begin: const Offset(0.08, 0),
+                    end: Offset.zero,
+                  ).animate(animation);
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(position: slide, child: child),
+                  );
+                },
+                child: Container(
+                  key: ValueKey(_currentIndex),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: tc.cBgOrange,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: AppTheme.risk, width: 1.8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.risk.withValues(alpha: 0.22),
+                        blurRadius: 14,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: AppTheme.risk,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${_currentIndex + 1}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                fontSize: AppFS.labelLg,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              item!.misconception,
+                              style: TextStyle(
+                                color: tc.cText,
+                                fontWeight: FontWeight.w800,
+                                fontSize: AppFS.title,
+                                height: 1.35,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _riskColor(
+                                item.riskLevel,
+                              ).withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: _riskColor(
+                                  item.riskLevel,
+                                ).withValues(alpha: 0.35),
+                              ),
+                            ),
+                            child: Text(
+                              _riskLabel(item.riskLevel),
+                              style: TextStyle(
+                                color: _riskColor(item.riskLevel),
+                                fontSize: AppFS.small,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (item.whyItHappens.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        _RiskDetailCard(
+                          icon: '🧠',
+                          title: 'Neden boyle dusunuluyor?',
+                          text: item.whyItHappens,
+                          color: const Color(0xFFFFB300),
+                        ),
+                      ],
+                      if (item.truth.isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        _RiskDetailCard(
+                          icon: '✅',
+                          title: 'Dogrusu ne?',
+                          text: item.truth,
+                          color: const Color(0xFF43A047),
+                        ),
+                      ],
+                      if (item.fixTip.isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        _RiskDetailCard(
+                          icon: '🛠️',
+                          title: 'Nasil duzeltilir?',
+                          text: item.fixTip,
+                          color: const Color(0xFF1E88E5),
+                        ),
+                      ],
+                      if (item.miniCheck.isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        _RiskDetailCard(
+                          icon: '❓',
+                          title: 'Mini kontrol',
+                          text: item.miniCheck,
+                          color: AppTheme.risk,
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
-              );
-            }),
-
-            const SizedBox(height: 6),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: AnimatedOpacity(
+                      opacity: _currentIndex == 0 ? 0.55 : 1,
+                      duration: const Duration(milliseconds: 200),
+                      child: IgnorePointer(
+                        ignoring: _currentIndex == 0,
+                        child: PrimaryButton(
+                          label: '←  GERI',
+                          onPressed: () => setState(() => _currentIndex--),
+                          color: AppTheme.risk,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: AnimatedOpacity(
+                      opacity: isLast ? 0.55 : 1,
+                      duration: const Duration(milliseconds: 200),
+                      child: IgnorePointer(
+                        ignoring: isLast,
+                        child: PrimaryButton(
+                          label: isLast ? 'SON RISKI GORDUM' : 'ILERI  →',
+                          onPressed: () => setState(() {
+                            _currentIndex++;
+                            _seen.add(_currentIndex);
+                          }),
+                          color: AppTheme.risk,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
             AnimatedOpacity(
               opacity: _seen.length == widget.items.length ? 1 : 0.35,
               duration: const Duration(milliseconds: 300),
@@ -3716,22 +3931,130 @@ class AnalysisScreen extends StatelessWidget {
 class KeywordsScreen extends StatelessWidget {
   final VoidCallback onComplete;
   final List<KeywordItem> items;
+  final String title;
+  final String description;
   const KeywordsScreen({
     super.key,
     required this.onComplete,
     required this.items,
+    this.title = 'Anahtar Kavramlar',
+    this.description = '',
   });
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    padding: const EdgeInsets.all(20),
-    child: Column(
-      children: [
-        const SizedBox(height: 20),
-        PrimaryButton(label: 'DEVAM  →', onPressed: onComplete),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) {
+    final tc = TC.of(context);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 48),
+      child: AnimatedBuilder(
+        animation: fontSizeNotifier,
+        builder: (_, __) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            StepHeader(
+              emoji: '🗝️',
+              label: 'ANAHTAR KAVRAMLAR',
+              title: title,
+              color: AppTheme.word,
+              colorLt: AppTheme.wordLt,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              description.isNotEmpty
+                  ? description
+                  : 'Bu derste sik karsilasacagin temel kavramlari once tanimak isini kolaylastirir.',
+              style: TextStyle(
+                color: tc.textMuted,
+                fontSize: AppFS.body,
+                fontWeight: FontWeight.w600,
+                height: 1.55,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ...items.asMap().entries.map((entry) {
+              final item = entry.value;
+              final showDef = item.def.trim().isNotEmpty;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: tc.cBgPurple,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppTheme.word.withValues(alpha: 0.35),
+                      width: 1.4,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.word.withValues(alpha: 0.16),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 34,
+                        height: 34,
+                        decoration: BoxDecoration(
+                          color: AppTheme.word,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '${entry.key + 1}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: AppFS.small,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.term,
+                              style: TextStyle(
+                                color: tc.cText,
+                                fontSize: AppFS.bodyLg,
+                                fontWeight: FontWeight.w800,
+                                height: 1.35,
+                              ),
+                            ),
+                            if (showDef) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                item.def,
+                                style: TextStyle(
+                                  color: tc.cTextMid,
+                                  fontSize: AppFS.body,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.55,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+            const SizedBox(height: 16),
+            PrimaryButton(label: 'DEVAM  →', onPressed: onComplete),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class ProgressTrackerScreen extends StatelessWidget {

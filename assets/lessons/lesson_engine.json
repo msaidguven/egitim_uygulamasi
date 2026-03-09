@@ -1,196 +1,180 @@
 {
 "lesson": {
 "grade": "5. Sınıf",
-"subject": "Sosyal Bilgiler",
-"unit": "Yaşayan Demokrasimiz",
-"topic": "Temel Haklar, Sorumluluklar ve Önemi",
-"title": "Temel Haklar ve Sorumluluklar Neden Önemlidir?",
-"description": "Bu derste öğrenciler temel insan haklarının ve sorumluluklarının ne olduğunu, neden önemli olduklarını ve toplum hayatını nasıl etkilediklerini keşfeder. Öğrenciler 5N1K tekniğini kullanarak hak ve sorumluluklar hakkında sorular sormayı öğrenir ve günlük yaşam örnekleri üzerinden kavramları pekiştirir.",
+"subject": "Fen Bilimleri",
+"unit": "Maddenin Doğası",
+"topic": "FB.5.5.1. Maddenin Tanecikli Yapısı",
+"title": "Maddenin Görünmez Dünyası: Tanecikler",
+"description": "Maddenin en küçük yapı birimlerini, bu birimlerin nasıl hareket ettiğini ve katı, sıvı, gaz hallerindeki düzenlerini keşfedeceğimiz derinlemesine bir yolculuk.",
 "difficulty_level": "orta",
 "learning_objectives": [
-"Temel insan haklarının ne olduğunu açıklar.",
-"Hak ve sorumluluk arasındaki ilişkiyi açıklar.",
-"Toplumsal yaşamda hak ve sorumlulukların neden önemli olduğunu açıklar.",
-"Hak ve sorumluluklarla ilgili merak ettiği konular hakkında 5N1K soruları sorar."
+"Maddelerin tanecikli, boşluklu ve hareketli yapısının niteliklerini belirler.",
+"Maddeleri tanecikli, boşluklu ve hareketli yapısına göre ayrıştırır.",
+"Maddeleri tanecikli, boşluklu ve hareketli yapısına göre katı, sıvı ve gaz olarak gruplandırır.",
+"Maddeleri tanecikli, boşluklu ve hareketli yapılarına göre farklı gruplar altında etiketler."
 ],
 "keywords": [
-"insan hakları",
-"sorumluluk",
-"temel haklar",
-"eşitlik",
-"özgürlük",
-"demokrasi",
-"5N1K"
+"tanecik",
+"boşluklu yapı",
+"hareketli yapı",
+"titreşim",
+"öteleme",
+"dönme",
+"katı",
+"sıvı",
+"gaz",
+"mikroskobik bakış"
 ],
 "steps": [
 {
 "id": "step1",
 "type": "intro",
-"title": "Herkesin Sahip Olduğu Haklar Var mı?",
+"title": "Görünmezin Peşinde",
 "duration_minutes": 10,
 "content": {
 "slides": [
 {
 "type": "hook",
-"text": "Doğduğun anda sana verilen ama satın alamayacağın bir şey olduğunu biliyor muydun?"
+"text": "Eline aldığın bir taşın veya içtiğin suyun aslında minicik, hareketli toplardan oluştuğunu hiç düşündün mü?"
 },
 {
 "type": "fact",
-"text": "Her insan yalnızca insan olduğu için bazı temel haklara sahiptir. Bunlara insan hakları denir."
+"text": "Bütün maddeler, gözle görülemeyecek kadar küçük birimlerden yani taneciklerden (atom/molekül) oluşur."
 },
 {
 "type": "analogy",
-"text": "Bu tıpkı güneş ışığı gibidir; güneş kimi aydınlatacağını seçmez, herkese eşit şekilde ulaşır."
+"text": "Bu tıpkı bir kumsalın uzaktan tek parça görünmesi ama yakından binlerce kum tanesinden oluşması gibidir."
 },
 {
 "type": "example",
-"text": "Okula gitme hakkı, güven içinde yaşama hakkı ve düşüncelerini söyleme özgürlüğü temel haklara örnektir."
+"text": "Bir kağıdı ne kadar küçük parçalara bölersen böl, en sonunda kağıt özelliğini taşıyan o en küçük taneciğe ulaşırsın."
 },
 {
 "type": "bridge",
-"text": "Şimdi insan haklarının tam olarak ne olduğunu daha yakından keşfedelim."
+"text": "Şimdi bu gizemli taneciklerin dünyasına biraz daha yakından bakalım."
 }
 ],
-"explanation": "İnsanlar dünyaya geldikleri anda bazı temel haklara sahip olur. Bu haklara insan hakları (human rights) denir. İnsan hakları; yaşama, eğitim alma, güvenlik içinde yaşama ve düşüncelerini ifade etme gibi temel hakları içerir. Bu haklar insanların onurlu bir yaşam sürmesini sağlar. İnsan haklarının en önemli özelliği, herkes için geçerli olmasıdır. Hiç kimse bu hakları sadece bazı insanlara veremez veya başkalarından keyfi olarak alamaz.\n\nİnsan haklarını anlamak için günlük hayattan bir benzetme yapabiliriz. Bu tıpkı güneş ışığı gibidir — güneş ışığı belirli insanları seçmez, herkesi aydınlatır. İnsan hakları da tüm insanlar için eşit şekilde geçerlidir. Toplumların huzurlu ve adil olabilmesi için insanların hem haklarını bilmesi hem de başkalarının haklarına saygı duyması gerekir. Bu nedenle hakların yanında sorumluluklar da önemlidir. Birazdan hak ve sorumluluk arasındaki ilişkiyi birlikte inceleyeceğiz.",
+"explanation": "Çevremizdeki tüm maddeler, ister sert bir kaya olsun ister soluduğumuz hava, aslında kesintisiz bir bütün değildir. Maddelerin en küçük yapı taşlarına tanecik adını veriyoruz. Bu tanecikler o kadar küçüktür ki en gelişmiş mikroskoplarla bile onları görmek oldukça zordur. Bu durum tıpkı dijital bir fotoğrafın binlerce küçük pikselden oluşmasına benzer; uzaktan bakınca pürüzsüz bir resim görürüz ama yaklaştıkça kareleri fark ederiz. Maddenin tanecikli yapıda olması, onun sadece parçalı değil, aynı zamanda aralarında boşluklar olan bir yapıda olduğunu da bize anlatır. Bugün bu taneciklerin nasıl davrandığını ve maddenin hallerini nasıl oluşturduğunu birlikte keşfedeceğiz.",
 "key_points": [
-"İnsan hakları kavramı: İnsan hakları her insanın doğuştan sahip olduğu temel haklardır ve bu haklar insanların güvenli ve onurlu bir yaşam sürmesini sağlar. (Kazanım 1)",
-"Hakların evrenselliği: İnsan hakları din, dil, ırk veya ülke farkı olmadan tüm insanlar için geçerlidir. Bu özellik hakların evrensel olmasını sağlar. (Kazanım 1)",
-"Toplumdaki rolü: İnsan hakları toplumda adaletin, güvenin ve barışın oluşmasına yardımcı olur. Hakların korunması toplum düzenini güçlendirir. (Kazanım 1)",
-"Hakları bilmenin önemi: İnsanlar haklarını bildiklerinde kendilerini koruyabilir ve başkalarının haklarına saygı göstermeyi öğrenir. (Kazanım 1)",
-"Hak ve sorumluluk ilişkisi: Hakların doğru kullanılabilmesi için insanların sorumluluklarını da yerine getirmesi gerekir. (Kazanım 1)"
+"Tanecikli Yapı: Evrendeki tüm maddeler (katı, sıvı, gaz) bağımsız küçük birimlerden oluşur. (Kazanım a)",
+"Boşluklu Yapı: Tanecikler arasında mutlaka belirli bir miktar boşluk bulunur. (Kazanım a)",
+"Sürekli Hareket: Madde tanecikleri hiçbir zaman durmaz, her zaman bir hareket halindedir. (Kazanım a)",
+"Görünmezlik: Tanecikler o kadar küçüktür ki çıplak gözle fark edilemezler. (Kazanım a)",
+"Madde Kimliği: Her maddenin taneciği kendine özgüdür ve maddenin özelliklerini taşır. (Kazanım b)"
 ],
 "examples": [
-"Okula gitme hakkı: Bir çocuk eğitim alma hakkına sahiptir. Bu hak sayesinde çocuklar okula giderek bilgi ve beceri kazanır.",
-"Güvenli yaşam hakkı: İnsanlar güvenli bir ortamda yaşama hakkına sahiptir. Polis ve yasalar bu hakkın korunmasına yardımcı olur.",
-"Düşünce özgürlüğü: İnsanlar düşüncelerini ifade edebilir. Bu sayede farklı fikirler ortaya çıkar ve toplum gelişir.",
-"Sağlık hizmetlerinden yararlanma: İnsanların sağlık hizmetlerinden yararlanma hakkı vardır. Hastaneler ve sağlık çalışanları bu hakkın gerçekleşmesini sağlar."
+"Toz Şeker: Bir kavanoz şekere uzaktan bakınca tek parça görünür ama içine baktığınızda binlerce kristal tanecik görürsünüz.",
+"Parfüm Kokusu: Odanın bir ucunda sıkılan parfümün diğer uca yayılması, gaz taneciklerinin boşluklarda hareket ettiğinin kanıtıdır.",
+"Sünger ve Su: Bir süngerin suyu emmesi, sünger yapısındaki ve suyun içindeki büyük/küçük boşlukların varlığını hissettirir.",
+"Piksel Ekranlar: Bilgisayar ekranındaki her görüntü, binlerce küçük ışık noktasının birleşmesiyle oluşur."
 ],
 "real_life_connections": [
-"Önceki derslerde toplum kurallarını öğrenmiş olabilirsiniz. Bu kuralların önemli bir amacı insanların haklarını korumaktır.",
-"Bir sınıfta herkes konuşma hakkına sahip olsa bile başkalarını dinleme sorumluluğu vardır. Bu durum hak ve sorumlulukların birlikte çalıştığını gösterir.",
-"Trafik kuralları insanların güvenli yaşama hakkını korumak için oluşturulmuştur. Kurallara uymak bir sorumluluktur.",
-"Bir sonraki derslerde demokrasi kavramını daha ayrıntılı inceleyeceğiz. Demokrasi, insanların haklarının korunmasıyla yakından ilişkilidir."
+"Önceki Konu Bağlantısı: Maddenin hallerini öğrenmiştik; şimdi bu hallerin iç yapısındaki tanecik sırrını çözüyoruz.",
+"Sonraki Konu Bağlantısı: Bu taneciklerin hareket enerjisi, ileride öğreneceğimiz 'ısı ve sıcaklık' konusunun temelini oluşturur.",
+"Günlük Hayat: Çaya atılan şekerin kaybolması aslında şekerin yok olması değil, su tanecikleri arasındaki boşluklara dağılmasıdır.",
+"Teknoloji: Nanoteknoloji dediğimiz bilim dalı, tam da bu küçük tanecikleri kontrol ederek yeni malzemeler üretir."
 ]
 },
 "activities": {
 "discussion_prompts": [
-"Sence insanlar doğuştan bazı haklara sahip olmalı mı? Neden?",
-"Bir insanın eğitim alma hakkı olmasaydı toplum nasıl etkilenirdi?",
-"Hakların korunmadığı bir toplumda insanlar nasıl hissederdi?"
+"Bir bardağı suyla ağzına kadar doldursak, içine bir kaşık şeker eklediğimizde su neden hemen taşmaz?",
+"Neden katıları sıkıştıramıyoruz da gazları kolayca sıkıştırabiliyoruz?",
+"Demir bir çubuk neden akıp gitmezken su akar? Taneciklerin tutunmasıyla ilgisi olabilir mi?"
 ]
 },
-"assessment": {},
 "teacher_notes": {
 "teaching_tips": [
-"Derse başlamadan önce öğrencilere 'Sence dünyaya geldiğinde sana verilen şeyler neler olabilir?' sorusunu sorun. 2 dakika fikirlerini söylemelerine izin verin ve ardından insan hakları kavramına geçin.",
-"Tahtaya 'hak' kelimesini yazın ve öğrencilerden akıllarına gelen hak örneklerini söylemelerini isteyin. Bu etkinliği 3–4 dakika sürdürerek öğrencilerin ön bilgilerini ortaya çıkarın.",
-"Bir öğrenciden kısa bir hikâye anlatmasını isteyin: 'Okula gidemeyen bir çocuk nasıl hisseder?' Bu örnek üzerinden eğitim hakkını tartışın.",
-"Öğrencilerin kavramı daha iyi anlaması için günlük yaşamdan örnekler vermelerini isteyin ve her örneği tahtaya yazın."
+"Sınıfa bir kutu Lego getirin ve büyük bir yapı oluşturun. 'Bu yapı bir madde ise Lego parçaları nedir?' diye sorarak girişi somutlaştırın.",
+"Öğrencilerin 'tanecik' kavramını atom veya hücre ile karıştırmaması için 'maddenin en küçük yapı birimi' vurgusunu yapın.",
+"Sınıfta parfüm veya oda spreyi sıkarak kokunun yayılma süresini gözlemletin, bu süreci 3-4 dakika tartışın."
 ],
 "common_misconceptions": [
-"Öğrenciler insan haklarının yalnızca bazı ülkelerde geçerli olduğunu sanabilir çünkü farklı ülkelerde farklı kurallar olduğunu görürler. Doğrusu: İnsan hakları evrenseldir ve tüm insanlar için geçerlidir.",
-"Öğrenciler hakların devlet tarafından verildiğini sanabilir çünkü yasaları devletin koyduğunu düşünürler. Doğrusu: İnsan hakları doğuştan gelir, devletlerin görevi bu hakları korumaktır.",
-"Öğrenciler hakların sınırsız olduğunu sanabilir çünkü özgürlük kavramını yanlış anlayabilirler. Doğrusu: Haklar kullanılırken başkalarının haklarına zarar verilmemelidir."
+"Öğrenciler taneciklerin içinde de başka şeyler (hava gibi) olduğunu sanabilir. Doğrusu: Taneciklerin arası tamamen boşluktur; orada hava bile yoktur.",
+"Maddenin tanecikleri duruyor sanılabilir. Doğrusu: En soğuk maddede bile tanecikler en azından titreşim hareketi yapar."
 ],
 "classroom_discussion": [
-"Eğer bir toplumda insanların eğitim hakkı olmasaydı neler olurdu? (Beklenen: toplum gelişemez, insanlar bilgi edinemez)",
-"Bir kişinin hakkı ile başka bir kişinin hakkı çakışırsa ne yapılmalıdır? (Beklenen: adalet ve kurallar devreye girer)",
-"Hakların korunması toplumun huzurunu nasıl etkiler? (Beklenen: güven ve barış sağlar)"
+"Havayı neden göremiyoruz ama hissedebiliyoruz? (Beklenen: Tanecikler arası boşluk çok fazla ve tanecikler çok küçük olduğu için ışığı engellemiyorlar.)",
+"Maddenin halleri değişince taneciklerin kendisi değişir mi? (Beklenen: Hayır, sadece aralarındaki mesafe ve hareket hızı değişir.)"
 ],
 "extension_ideas": [
-"Hızlı bitiren öğrencilerden defterlerine üç temel hak yazmalarını ve her biri için kısa bir örnek oluşturmalarını isteyin.",
-"Ev ödevi olarak öğrencilerden aile bireylerine 'Sizce en önemli insan hakkı nedir?' sorusunu sormalarını ve cevapları not etmelerini isteyin.",
-"Meraklı öğrenciler için araştırma: İnsan Hakları Evrensel Bildirgesi nedir ve neden hazırlanmıştır?"
+"Hızlı bitirenler için: 'Tanecikler arası boşluk olmasaydı dünya nasıl bir yer olurdu?' konulu kısa bir paragraf yazdırın.",
+"Ev deneyi: Bir bardak soğuk ve bir bardak sıcak suya aynı anda mürekkep damlatıp yayılma hızlarını karşılaştırın; hareketli yapıyı gözlemleyin.",
+"Araştırma: 'Gözle görülemeyen bu tanecikleri bilim insanları nasıl keşfetti?' konusunu araştırmalarını isteyin."
 ]
 }
 },
 {
 "id": "step2",
 "type": "concept_explanation",
-"title": "Temel İnsan Hakları Nedir?",
-"duration_minutes": 20,
+"title": "Taneciklerin Dansı: Hareket ve Boşluk",
+"duration_minutes": 15,
 "content": {
 "slides": [
 {
 "type": "hook",
-"text": "Sence insanlar hangi haklara mutlaka sahip olmalıdır?"
+"text": "Madde tanecikleri asla yerinde durmaz! Peki, nasıl hareket ederler?"
 },
 {
 "type": "fact",
-"text": "Temel insan hakları, insanların yalnızca insan olduğu için sahip olduğu vazgeçilmez haklardır."
+"text": "Tanecikler üç temel hareket yapar: Titreşim (yerinde sallanma), Öteleme (yer değiştirme) ve Dönme."
 },
 {
 "type": "fact",
-"text": "Bu haklar yaşama hakkı, eğitim hakkı, düşünce özgürlüğü ve güvenlik hakkı gibi temel hakları içerir."
+"text": "Katılar sadece titreşim yaparken; sıvılar ve gazlar titreşim, öteleme ve dönme hareketlerini bir arada yapar."
 },
 {
 "type": "analogy",
-"text": "Bu tıpkı bir binanın temeli gibidir; temel sağlam olmazsa bina ayakta duramaz."
+"text": "Bu tıpkı bir konser alanındaki kalabalık gibidir: Koltukta oturanlar (katı) sadece sallanır, ayaktakiler (sıvı/gaz) birbirine çarparak gezebilir."
 },
 {
 "type": "example",
-"text": "Bir öğrencinin okula gitmesi eğitim hakkının kullanılmasıdır."
+"text": "Suya damlatılan boyanın yayılması, su taneciklerinin öteleme hareketi yaparak boyayı her yere taşıması sayesindedir."
 },
 {
 "type": "key",
-"text": "Temel insan hakları doğuştan gelir ve herkes için geçerlidir."
+"text": "Boşluk azsa hareket kısıtlıdır; boşluk çoksa hareket özgürlüğü artar."
 },
 {
 "type": "bridge",
-"text": "Şimdi hakların yanında sorumlulukların neden önemli olduğunu inceleyelim."
+"text": "Şimdi defterlerimizi hazırlayalım ve bu hareket türlerini not edelim."
 }
 ],
-"explanation": "Temel insan hakları, insanların yalnızca insan oldukları için sahip oldukları vazgeçilmez haklardır. Bu haklar insanların güvenli, özgür ve onurlu bir yaşam sürmesini sağlar. Yaşama hakkı, eğitim hakkı, sağlık hizmetlerinden yararlanma hakkı ve düşünce özgürlüğü bu haklara örnek olarak verilebilir. Bu hakların en önemli özelliği doğuştan gelmesidir. Yani insanlar bu hakları sonradan kazanmaz; doğdukları anda bu haklara sahip olurlar.\n\nTemel hakları anlamak için bir analoji kullanabiliriz. Bu tıpkı bir binanın temeli gibidir — bir bina sağlam bir temel olmadan ayakta duramaz. Aynı şekilde bir toplum da insanların temel hakları korunmadan sağlıklı şekilde gelişemez. İnsan hakları korunmadığında toplumda adaletsizlik ve huzursuzluk ortaya çıkar. Bu nedenle devletler ve toplumlar insan haklarını korumak için yasalar ve kurumlar oluşturur. Bir sonraki bölümde bu hakların sorumluluklarla nasıl dengelendiğini öğreneceğiz.",
+"explanation": "Maddenin tanecikleri arasındaki boşluk miktarı, o maddenin fiziksel halini ve hareket yeteneğini belirler. Katılarda tanecikler birbirine o kadar yakındır ki birbirlerinin üzerinden kayamazlar; sadece oldukları yerde sağa-sola, yukarı-aşağı 'titreşim' yaparlar. Bu tıpkı yan yana dizilmiş ve el ele tutuşmuş öğrencilerin yerlerinden kımıldamadan sallanmaları gibidir. Sıvılarda ise boşluk biraz daha artar, tanecikler birbirine temas eder ama birbirleri üzerinden kayarak yer değiştirebilirler (öteleme). Gazlarda ise boşluk inanılmaz fazladır; tanecikler bağımsız birer sporcu gibi her yöne hızla koşar, döner ve çarparlar. Bu yüzden gazlar bulundukları kabın her yerine yayılırlar.",
 "key_points": [
-"Temel insan hakları nedir: Temel insan hakları insanların yalnızca insan olduğu için sahip olduğu vazgeçilmez haklardır. Bu haklar herkes için geçerlidir ve devredilemez. (Kazanım 1)",
-"Doğuştan gelme özelliği: İnsan hakları doğuştan gelir ve sonradan kazanılmaz. Bu nedenle kimse bu hakları keyfi olarak ortadan kaldıramaz. (Kazanım 1)",
-"Toplum için önemi: İnsan haklarının korunması toplumda adalet ve güven ortamı oluşturur. (Kazanım 1)",
-"Temel hak örnekleri: Yaşama hakkı, eğitim hakkı, düşünce özgürlüğü ve sağlık hakkı temel haklara örnek gösterilebilir. (Kazanım 1)",
-"Hakların korunması: Devletler yasalar ve kurumlar aracılığıyla insanların haklarını korumaya çalışır. (Kazanım 1)"
+"Titreşim Hareketi: Taneciklerin bulunduğu noktada yaptığı sallanma hareketidir; tüm hallerde görülür. (Kazanım a)",
+"Öteleme Hareketi: Taneciklerin bir noktadan başka bir noktaya kayarak gitmesidir; akışkanlığı sağlar. (Kazanım b)",
+"Dönme Hareketi: Taneciklerin kendi ekseni etrafında dönmesidir; sıvı ve gazlarda görülür. (Kazanım a)",
+"Boşluk ve Sıkışma: Gazlarda boşluk çok olduğu için sıkıştırılabilirler, katılarda boşluk yok denecek kadar azdır. (Kazanım b)"
 ],
 "examples": [
-"Bir çocuğun okula gitmesi: Eğitim hakkı sayesinde çocuklar okula giderek bilgi ve beceri kazanır.",
-"Bir kişinin düşüncesini söylemesi: İnsanlar düşüncelerini özgürce ifade edebilir ve bu toplumun gelişmesini sağlar.",
-"Hastanede tedavi görmek: Sağlık hizmetlerinden yararlanmak insanların temel haklarından biridir.",
-"Güvenli bir evde yaşamak: İnsanların güvenli bir ortamda yaşama hakkı vardır."
+"Sıkıştırılan Hava: Bir şırınganın ağzını kapatıp pistonu ittiğinizde hava tanecikleri arasındaki boşluklar azalır ve hava sıkışır.",
+"Isınan Demir: Demir raylar yazın genleşir çünkü tanecikleri daha hızlı titreşir ve daha fazla alan kaplamak ister.",
+"Akışkan Su: Suyun bir kaptan diğerine dökülmesi, taneciklerin öteleme hareketi yapabildiğini kanıtlar.",
+"Parfümün Yayılması: Gaz taneciklerinin çok hızlı öteleme yapması sayesinde kokuyu kısa sürede alırız."
 ],
 "real_life_connections": [
-"Okulda herkesin eğitim alabilmesi eğitim hakkının günlük hayattaki bir örneğidir.",
-"Trafik kurallarına uymak insanların güvenli yaşama hakkını korur.",
-"Sınıf içinde konuşma sırası beklemek başkalarının ifade özgürlüğüne saygı göstermektir.",
-"Bir sonraki bölümde hakların yanında sorumlulukların neden gerekli olduğunu öğreneceğiz."
+"Teknoloji: Deodorant kutularına gazın yüksek basınçla doldurulması, gazların boşluklu yapısından faydalanır.",
+"İnşaat: Köprülerdeki genleşme payları, sıcakta hızlanan taneciklerin birbirini itmesini hesaba katar.",
+"Mutfak: Çorbayı karıştırdığımızda tuzun her yere dağılması taneciklerin öteleme hareketinin sonucudur."
 ],
 "notebook": {
-"definition": "Temel insan hakları, insanların yalnızca insan olduğu için doğuştan sahip olduğu ve herkes için geçerli olan vazgeçilmez haklardır.",
-"summary_items": [
-"Temel haklar doğuştan gelir",
-"Herkes için geçerlidir",
-"Toplum düzeni için önemlidir"
-],
+"definition": "Tanecik hareketi, maddenin iç yapısındaki birimlerin enerji durumuna göre yaptığı titreşim, öteleme ve dönme eylemleridir.",
 "sections": [
 {
-"title": "Temel Bilgiler",
+"title": "Temel Hareket Türleri",
 "items": [
-"İnsan hakları doğuştan kazanılır.",
-"Bu haklar tüm insanlar için geçerlidir.",
-"Haklar devredilemez ve vazgeçilmezdir.",
-"Toplum düzeninin korunmasına yardımcı olur."
-]
+"Titreşim: Taneciklerin yerinde sallanmasıdır (Katı, Sıvı, Gaz yapar).",
+"Öteleme: Taneciklerin yer değiştirerek akmasıdır (Sıvı ve Gaz yapar).",
+"Dönme: Taneciklerin kendi etrafında tur atmasıdır (Sıvı ve Gaz yapar)."
+],
+"note": "Unutma! Katılar sadece titreşim yapar; akamazlar."
 },
 {
-"title": "Örnek Notları",
+"title": "Boşluk ve Hal İlişkisi",
 "items": [
-"Okula gitmek eğitim hakkının kullanılmasıdır.",
-"Fikirlerini söylemek düşünce özgürlüğünün bir örneğidir.",
-"Güvenli bir ortamda yaşamak temel bir insan hakkıdır."
-]
-},
-{
-"title": "Hatırla",
-"items": [
-"Haklar doğuştan gelir.",
-"Herkes için eşittir.",
-"Korunması gerekir."
+"Katılar: Tanecikler arası boşluk yok denecek kadar azdır.",
+"Sıvılar: Boşluk katılara göre biraz daha fazladır.",
+"Gazlar: Tanecikler arası boşluk çok fazladır; en düzensiz haldir."
 ]
 }
 ]
@@ -198,596 +182,500 @@
 },
 "activities": {
 "cards": [
-{ "item": "Yaşama hakkı", "label": "Temel insan hakkı" },
-{ "item": "Eğitim hakkı", "label": "Temel insan hakkı" },
-{ "item": "Sağlık hizmeti alma", "label": "Temel insan hakkı" },
-{ "item": "Düşünce özgürlüğü", "label": "Temel insan hakkı" }
-]
+{
+"item": "Katı",
+"label": "Sadece Titreşim yapar, en düzenli haldir."
 },
-"assessment": {
-"evaluation_tasks": [
-"Bir temel insan hakkını seç ve bu hakkın neden önemli olduğunu iki cümle ile açıkla."
+{
+"item": "Sıvı",
+"label": "Titreşim, Öteleme ve Dönme yapar; akışkandır."
+},
+{
+"item": "Gaz",
+"label": "En hızlı hareket, en fazla boşluk ve en düzensiz yapı."
+},
+{
+"item": "Sıkıştırılma",
+"label": "Sadece gazlarda belirgin olarak görülen özellik."
+}
 ]
 },
 "teacher_notes": {
 "teaching_tips": [
-"Tahtaya 'Temel Haklar' başlığını yazın ve öğrencilerden bildikleri hakları söylemelerini isteyin. 3 dakika boyunca fikirleri listeleyin.",
-"Her hak için kısa bir örnek vererek öğrencilerin kavramı somutlaştırmasını sağlayın.",
-"Bir öğrenciden 'Eğitim hakkı neden önemlidir?' sorusuna cevap vermesini isteyin.",
-"Hakların korunmadığı bir toplum örneği üzerinden kısa bir tartışma başlatın."
+"Öğrencileri ayağa kaldırın. Birbirlerine omuz omuza değerek sadece sallanmalarını (katı), birbirlerine değerek yürümelerini (sıvı) ve serbestçe koşmalarını (gaz) isteyin.",
+"Sıkıştırılma özelliğini göstermek için bir şırınga (iğnesiz) kullanın. İçine önce su, sonra hava çekerek pistonu itmelerini isteyin."
 ],
 "common_misconceptions": [
-"Öğrenciler bazı insanların daha fazla hakka sahip olduğunu sanabilir çünkü toplumda farklı roller görürler. Doğrusu: İnsan hakları tüm insanlar için eşittir.",
-"Öğrenciler hakların devlet tarafından verildiğini sanabilir çünkü yasaları devlet koyar. Doğrusu: Haklar doğuştan gelir ve devletler bu hakları korur.",
-"Öğrenciler hakların yalnızca yetişkinlere ait olduğunu sanabilir çünkü yetişkinlerin daha fazla sorumluluğu vardır. Doğrusu: Çocukların da temel hakları vardır."
+"Öğrenciler sıvıların sıkıştırılabildiğini düşünebilir. Doğrusu: Sıvılar ve katılar 'sıkıştırılamaz' kabul edilir; boşlukları çok azdır.",
+"Gaz tanecikleri arasında hava olduğu sanılır. Doğrusu: Gaz zaten kendisidir, taneciklerin arası bomboştur."
 ],
 "classroom_discussion": [
-"Bir toplumda eğitim hakkı olmazsa neler olur? (Beklenen: gelişme olmaz)",
-"Herkesin aynı haklara sahip olması neden önemlidir? (Beklenen: eşitlik ve adalet sağlar)",
-"Sence en önemli insan hakkı hangisidir? (Beklenen: farklı görüşler olabilir)"
+"Bir demir parçasını elimizle neden küçültemiyoruz? (Beklenen: Tanecikler arası boşluk yok ve birbirlerini çok güçlü çekiyorlar.)",
+"Neden gazlar bulundukları her yere yayılır? (Beklenen: Tanecikleri bağımsızdır ve her yöne öteleme hareketi yaparlar.)"
 ],
 "extension_ideas": [
-"Hızlı bitiren öğrencilerden bir hak için kısa bir poster tasarlamalarını isteyin.",
-"Evde aile bireylerine 'Sizce en önemli insan hakkı hangisidir?' sorusunu sormalarını isteyin.",
-"Meraklı öğrenciler için araştırma: Birleşmiş Milletler neden insan haklarını korumaya çalışır?"
+"Zeka sorusu: 'Bir bardak kum akıyor, o zaman kum sıvı mıdır?' (Cevap: Hayır, her bir kum tanesi katıdır, sadece küçük oldukları için akıyor gibi görünürler.)",
+"Araştırma: 'Plazma hali'ndeki tanecik hareketi nasıldır?"
 ]
 }
 },
 {
 "id": "step3",
-"type": "concept_explanation",
-"title": "Hak ve Sorumluluk İlişkisi",
-"duration_minutes": 20,
+"type": "scenario_activity",
+"title": "Mikroskop Altında Bir Gün",
+"duration_minutes": 8,
 "content": {
-"slides": [
-{
-"type": "hook",
-"text": "Sadece haklarımız olsa ama hiç sorumluluğumuz olmasa toplum nasıl olurdu?"
-},
-{
-"type": "fact",
-"text": "Haklar insanların sahip olduğu özgürlüklerdir, sorumluluklar ise bu hakları kullanırken uymamız gereken görevlerdir."
-},
-{
-"type": "fact",
-"text": "Bir hakkı kullanırken başkalarının haklarına zarar vermemek gerekir."
-},
-{
-"type": "analogy",
-"text": "Bu tıpkı bir oyundaki kurallar gibidir; kurallar olmazsa oyun düzenli şekilde oynanamaz."
-},
-{
-"type": "example",
-"text": "Konuşma hakkın vardır ama başkaları konuşurken dinlemek de bir sorumluluktur."
-},
-{
-"type": "key",
-"text": "Hak ve sorumluluk birlikte çalışır."
-},
-{
-"type": "bridge",
-"text": "Şimdi bu ilişkiyi gerçek bir durum üzerinden inceleyelim."
-}
-],
-"explanation": "Haklar insanların sahip olduğu özgürlükleri ifade ederken, sorumluluklar bu hakları kullanırken uymamız gereken görevleri ifade eder. İnsanların haklarını doğru kullanabilmesi için sorumluluklarını da yerine getirmesi gerekir. Örneğin bir öğrencinin eğitim alma hakkı vardır. Ancak aynı öğrencinin derslere katılma, öğretmenini dinleme ve okul kurallarına uyma sorumluluğu da vardır.\n\nHak ve sorumluluk arasındaki ilişkiyi anlamak için bir oyun örneği düşünebiliriz. Bu tıpkı bir oyundaki kurallar gibidir — herkes istediğini yaparsa oyun düzenli şekilde oynanamaz. Kurallar sayesinde herkes adil şekilde oynar. Aynı şekilde sorumluluklar da toplum içinde düzeni sağlar. İnsanlar haklarını kullanırken başkalarının haklarına saygı gösterdiğinde toplum daha adil ve huzurlu olur. Bu nedenle haklar ve sorumluluklar birbirinden ayrılmaz.",
+"explanation": "Hayal et ki elinde 'Tanecik Gözlüğü' var. Bu gözlüğü taktığında maddelerin içindeki o minik topları görebiliyorsun. Gözlüğü sırasıyla bir buz küpüne, bir bardak meyve suyuna ve odadaki havaya tutuyorsun. Karşılaştığın manzaraları değerlendirmelisin.",
 "key_points": [
-"Hak nedir: Hak, insanların sahip olduğu özgürlük ve yetkilerdir. İnsanlar bu hakları kullanarak hayatlarını düzenler. (Kazanım 1)",
-"Sorumluluk nedir: Sorumluluk insanların yerine getirmesi gereken görevlerdir. (Kazanım 1)",
-"Hak ve sorumluluk ilişkisi: Haklar ve sorumluluklar birlikte çalışır ve toplum düzenini sağlar. (Kazanım 1)",
-"Toplumdaki rolü: İnsanlar sorumluluklarını yerine getirdiğinde toplumda adalet ve düzen oluşur. (Kazanım 1)",
-"Denge kavramı: Hakların doğru kullanılması için sorumlulukların yerine getirilmesi gerekir. (Kazanım 1)"
+"Düzenlilik: Katıdan gaza doğru gidildikçe düzen azalır. (Kazanım c)",
+"Hareketlilik: Sıcaklık arttıkça tanecik hızı artar. (Kazanım a)"
 ],
 "examples": [
-"Sınıfta konuşma hakkı: Her öğrenci konuşma hakkına sahiptir. Ancak başkalarını dinlemek de bir sorumluluktur.",
-"Temiz çevrede yaşama hakkı: İnsanlar temiz bir çevrede yaşama hakkına sahiptir. Çevreyi temiz tutmak ise sorumluluktur.",
-"Eğitim hakkı: Okula gitmek bir haktır. Derslere düzenli katılmak sorumluluktur.",
-"Güvenli trafik hakkı: Trafikte güvenli olmak bir haktır. Kurallara uymak sorumluluktur."
-],
-"real_life_connections": [
-"Sınıfta sırayla konuşmak hak ve sorumluluk ilişkisinin günlük hayattaki bir örneğidir.",
-"Çevreyi temiz tutmak insanların sağlıklı yaşama hakkını korur.",
-"Trafik kurallarına uymak herkesin güvenli yaşama hakkını destekler.",
-"Bir sonraki etkinlikte hak ve sorumluluk ilişkisini gerçek bir senaryo üzerinden inceleyeceğiz."
-],
-"notebook": {
-"definition": "Hak ve sorumluluk ilişkisi, insanların sahip oldukları hakları kullanırken yerine getirmesi gereken görevlerle dengelenmesidir.",
-"summary_items": [
-"Hak ve sorumluluk birlikte çalışır",
-"Toplum düzeni için gereklidir"
-],
-"sections": [
-{
-"title": "Temel Bilgiler",
-"items": [
-"Hak özgürlük ve yetki anlamına gelir.",
-"Sorumluluk yerine getirilmesi gereken görevdir.",
-"Haklar ve sorumluluklar birbirini tamamlar."
+"Buz: Askerler gibi yan yana dizilmiş, sadece hafifçe titreyen tanecikler.",
+"Meyve Suyu: Birbirine çarpan ama gruptan ayrılmayan, kaykay yapan tanecikler.",
+"Hava: Birbirinden çok uzakta, çılgınca her yöne uçuşan tanecikler."
 ]
-},
-{
-"title": "Karşılaştırma",
-"items": [
-"Hak kullanma özgürlüğüdür.",
-"Sorumluluk görev ve yükümlülüktür."
-]
-},
-{
-"title": "Örnek Notları",
-"items": [
-"Konuşma hakkı vardır ama başkalarını dinleme sorumluluğu vardır.",
-"Temiz çevre hakkı vardır ama çevreyi kirletmemek sorumluluktur."
-]
-},
-{
-"title": "Hatırla",
-"items": [
-"Hak ve sorumluluk birlikte çalışır.",
-"Toplum düzeni için gereklidir."
-]
-}
-]
-}
 },
 "activities": {
-"cards": [
-{ "item": "Konuşma hakkı", "label": "Hak" },
-{ "item": "Başkalarını dinlemek", "label": "Sorumluluk" },
-{ "item": "Temiz çevrede yaşamak", "label": "Hak" },
-{ "item": "Çevreyi kirletmemek", "label": "Sorumluluk" }
-]
+"scenario": "Gözlüğünü taktın ve masanın üzerindeki demir anahtara bakıyorsun. Taneciklerin birbirine çok yakın olduğunu ve sadece titreştiklerini gördün. Sonra bu anahtarı çok sıcak bir fırına attığını ve anahtarın eriyip sıvılaştığını hayal et. Gözlüğünle baktığında gördüğün manzarada ne değişmiş olabilir?",
+"choices": [
+{
+"text": "Tanecikler arası boşluk azaldı ve tanecikler durdu.",
+"correct": false,
+"feedback": "Yanlış. Madde sıvılaştığında boşluk artar ve hareketlilik (öteleme) başlar."
 },
-"assessment": {
-"evaluation_tasks": [
-"Hak ve sorumluluk ilişkisine bir günlük hayat örneği yaz."
+{
+"text": "Tanecikler birbirinden biraz uzaklaştı ve birbirleri üzerinden kaymaya başladı.",
+"correct": true,
+"feedback": "Harika! Erime sonucunda tanecikler arasındaki bağ zayıflar, boşluk artar ve öteleme hareketi başlar."
+},
+{
+"text": "Taneciklerin sayısı arttı ve her biri devasa boyutlara ulaştı.",
+"correct": false,
+"feedback": "Maalesef. Hal değişimi sırasında taneciklerin sayısı veya büyüklüğü değişmez, sadece düzenleri ve hareketleri değişir."
+}
 ]
 },
 "teacher_notes": {
 "teaching_tips": [
-"Sınıfta küçük bir rol örneği oluşturun: Bir öğrenci konuşsun, diğerleri dinlesin. Bu etkinlik üzerinden hak ve sorumluluk ilişkisini açıklayın.",
-"Tahtaya iki sütun çizin: Hak ve Sorumluluk. Öğrencilerden örnekler söylemelerini isteyin.",
-"Kısa bir tartışma başlatın: 'Herkes konuşursa ne olur?'",
-"Öğrencilerden defterlerine bir hak ve bir sorumluluk yazmalarını isteyin."
+"Bu senaryoyu anlatırken tahtaya üç farklı kap çizip içindeki tanecik modellerini (daireler) öğrencilere çizdirin.",
+"Öğrencilerin 'hal değişimi' ile 'tanecik yapısı' arasındaki bağı kurmasını sağlayın."
 ],
 "common_misconceptions": [
-"Öğrenciler hakların sorumluluk gerektirmediğini sanabilir çünkü özgürlük kavramını yanlış anlayabilirler. Doğrusu: Her hak bir sorumlulukla dengelenir.",
-"Öğrenciler sorumlulukların yalnızca yetişkinlere ait olduğunu sanabilir çünkü yetişkinlerin daha fazla görevi vardır. Doğrusu: Çocukların da sorumlulukları vardır.",
-"Öğrenciler sorumlulukların zorunlu kurallar olduğunu sanabilir çünkü kurallarla karıştırabilirler. Doğrusu: Sorumluluklar toplum düzenini koruyan görevlerdir."
+"Öğrenciler madde ısınınca taneciklerin büyüdüğünü sanır. Doğrusu: Tanecik boyutu değişmez, sadece taneciklerin arası açılır."
 ],
 "classroom_discussion": [
-"Sence herkes istediğini yapsaydı toplum nasıl olurdu? (Beklenen: düzen bozulur)",
-"Hakların korunması için sorumluluklar neden gereklidir? (Beklenen: başkalarının haklarını korumak için)",
-"Sınıfta hangi sorumlulukları yerine getiriyorsun? (Beklenen: dinlemek, kurallara uymak)"
+"Sıvı bir madde gaz haline geçtiğinde taneciklerin hızı nasıl değişir? (Beklenen: Hız artar çünkü enerji almıştır.)"
 ],
 "extension_ideas": [
-"Hızlı bitiren öğrencilerden bir hak ve buna karşılık gelen sorumluluğu yazmalarını isteyin.",
-"Evde aile bireylerine 'Evde hangi sorumlulukları yerine getiriyoruz?' sorusunu sormalarını isteyin.",
-"Meraklı öğrenciler için araştırma: Çocuk Hakları Sözleşmesi nedir?"
+"Öğrencilerden bu üç hali temsil eden bir 'tanecik dansı' koreografisi tasarlamalarını isteyin."
 ]
 }
 },
 {
 "id": "step4",
-"type": "scenario_activity",
-"title": "Sınıfta Hak ve Sorumluluk",
+"type": "mini_game",
+"title": "Tanecik Dedektifi: Hangisiyim?",
 "duration_minutes": 10,
-"content": {},
-"activities": {
-"scenario": "Bir sınıfta öğrenciler konuşma hakkına sahiptir. Ancak bazı öğrenciler sürekli konuşur ve başkalarını dinlemez. Bu durum sınıfta karışıklık yaratır ve bazı öğrenciler kendilerini ifade edemez. Öğretmen bu durumu çözmek ister.",
-"choices": [
-{
-"text": "Herkes istediği zaman konuşmaya devam etsin.",
-"correct": false,
-"feedback": "Bu durumda sınıfta düzen sağlanamaz. Başkalarının konuşma hakkı ihlal edilir."
-},
-{
-"text": "Konuşma hakkı sırayla kullanılmalı ve herkes birbirini dinlemeli.",
-"correct": true,
-"feedback": "Bu seçenek hak ve sorumluluk dengesini sağlar. Herkes konuşma hakkını kullanabilir ve başkalarının hakkına saygı gösterir."
-},
-{
-"text": "Sadece öğretmen konuşsun, öğrenciler hiç konuşmasın.",
-"correct": false,
-"feedback": "Bu durumda öğrencilerin ifade özgürlüğü sınırlanır. Hakların dengeli şekilde kullanılmasına izin verilmelidir."
-}
+"content": {
+"explanation": "Aşağıda bazı madde taneciklerinin özellikleri verilmiştir. Bu özelliklerin hangi fiziksel hale (Katı, Sıvı, Gaz) ait olduğunu bulabilir misin?",
+"key_points": [
+"Ayırt Edici Özellikler: Her halin kendine has bir 'tanecik kimliği' vardır. (Kazanım ç)"
 ]
 },
-"assessment": {
-"evaluation_tasks": [
-"Bu senaryoda hangi hak ve hangi sorumluluk yer alıyor açıklayın."
+"activities": {
+"mini_game": [
+{
+"situation": "Taneciklerim arasında çok büyük boşluklar var ve her yöne çok hızlı hareket ediyorum. Sıkıştırılabilirim!",
+"correct_answer": "Gaz",
+"feedback": "Doğru! Gazlar en boşluklu ve en hareketli haldir."
+},
+{
+"situation": "Taneciklerim birbirine temas eder ama birbirleri üzerinden kayabilir. Belirli bir şeklim yok, kabın şeklini alırım.",
+"correct_answer": "Sıvı",
+"feedback": "Harika! Sıvılar öteleme hareketi sayesinde akışkanlık kazanır."
+},
+{
+"situation": "Çok düzenliyim. Taneciklerim o kadar sıkı ki sadece olduğum yerde sallanabiliyorum (titreşim).",
+"correct_answer": "Katı",
+"feedback": "Kesinlikle! Katılar en düzenli ve istikrarlı tanecik yapısına sahiptir."
+},
+{
+"situation": "Beni bir şırıngaya koyup itersen hacmim küçülmez. Taneciklerim arasında neredeyse hiç boşluk yok.",
+"correct_answer": "Katı veya Sıvı",
+"feedback": "Doğru! Hem katılar hem de sıvılar sıkıştırılamaz kabul edilir."
+},
+{
+"situation": "Odanın bir köşesinden sıkıldığımda diğer köşesine taneciklerim öteleme yaparak hızla ulaşır.",
+"correct_answer": "Gaz",
+"feedback": "Evet! Gazların yayılma hızı taneciklerinin bağımsız hareketinden gelir."
+}
 ]
 },
 "teacher_notes": {
 "teaching_tips": [
-"Senaryoyu yüksek sesle okuyun ve öğrencilerden hangi seçeneğin doğru olduğunu düşünmelerini isteyin.",
-"Öğrencilerin neden bu seçeneği seçtiklerini açıklamalarını isteyin.",
-"Hak ve sorumluluk dengesini tekrar vurgulayın.",
-"Örnekleri öğrencilerin günlük hayatından seçmeye çalışın."
+"Bu oyunu sınıfta 'Evet/Hayır' kartlarıyla veya ayağa kalkma/oturma şeklinde fiziksel bir aktiviteye dönüştürebilirsiniz.",
+"Yanlış cevaplarda nedenini (boşluk/hareket ilişkisi) mutlaka tekrar edin."
 ],
-"common_misconceptions": [
-"Öğrenciler konuşma hakkının sınırsız olduğunu sanabilir çünkü ifade özgürlüğünü yanlış yorumlayabilirler. Doğrusu: Başkalarının haklarına saygı gösterilmelidir.",
-"Öğrenciler sorumlulukların özgürlüğü kısıtladığını sanabilir çünkü kuralları sınırlama olarak görebilirler. Doğrusu: Sorumluluklar özgürlüklerin korunmasını sağlar.",
-"Öğrenciler yalnızca öğretmenin karar verebileceğini sanabilir çünkü otoriteye alışkındırlar. Doğrusu: Kurallar ve haklar birlikte düzen oluşturur."
-],
-"classroom_discussion": [
-"Bu sınıf senaryosunda hangi haklar var? (Beklenen: konuşma hakkı)",
-"Hangi sorumluluklar yerine getirilmeli? (Beklenen: dinlemek)",
-"Bu durum başka nerelerde yaşanabilir? (Beklenen: ailede, arkadaş ortamında)"
-],
-"extension_ideas": [
-"Hızlı bitiren öğrencilerden benzer bir sınıf senaryosu yazmalarını isteyin.",
-"Evde aile bireyleriyle konuşma sırası örneği üzerine kısa bir gözlem yapmalarını isteyin.",
-"Meraklı öğrenciler için araştırma: Demokrasi nedir?"
-]
+"common_misconceptions": [],
+"classroom_discussion": [],
+"extension_ideas": []
 }
 },
 {
 "id": "step5",
-"type": "word_bank",
-"title": "Hak ve Sorumluluk Cümlesini Tamamla",
-"duration_minutes": 8,
-"content": {},
-"activities": {
-"word_bank": {
-"words": [
-"hakları",
-"sorumluluklarını",
-"özgürlüğünü",
-"kurallarını",
-"eşitliğini"
-],
-"template": "Her insanın bazı temel ____ vardır ve bu hakları korumak için bazı ____ yerine getirmesi gerekir.",
-"blanks": [
-{
-"id": "blank1",
-"correct_answer": "hakları"
-},
-{
-"id": "blank2",
-"correct_answer": "sorumluluklarını"
-}
+"type": "critical_thinking",
+"title": "Derin Düşünce: Boşlukların Gücü",
+"duration_minutes": 12,
+"content": {
+"explanation": "Maddenin tanecikli ve boşluklu yapısını öğrendik. Şimdi bu bilgileri biraz zorlayalım. Eğer dünya üzerindeki tüm boşlukları yok edebilseydik ne olurdu?",
+"key_points": [
+"Analiz: Boşluk miktarının maddenin hacmine etkisi. (Kazanım a)"
 ]
-}
 },
-"assessment": {
+"activities": {
+"discussion_prompts": [
+"Eğer bir insanın vücudundaki tüm atomların arasındaki boşlukları yok etseydik, o insan bir toz tanesi kadar küçülürdü ama ağırlığı aynı kalırdı. Bu durumu nasıl açıklarsınız?",
+"Lastik bir balonu soğuk havaya çıkardığımızda neden büzülür? Taneciklerin hızı ve boşlukla nasıl bir ilgisi olabilir?",
+"Maddenin tanecikleri arasındaki boşluklarda 'hava' olsaydı, o zaman havanın tanecikleri nerede dururdu? Bu mantıklı mı?"
+],
 "evaluation_tasks": [
-"Cümleyi tamamladıktan sonra kendi hak ve sorumluluklarından birini yaz."
+"Katı, sıvı ve gaz hallerini 'Tanecik Düzeni', 'Hareket Türü' ve 'Sıkıştırılabilirlik' kriterlerine göre bir tablo halinde karşılaştırın.",
+"Çevrenizden bir madde seçin ve onun taneciklerinin şu an ne yaptığını anlatan 3 cümlelik bir 'tanecik günlüğü' yazın."
 ]
 },
 "teacher_notes": {
 "teaching_tips": [
-"Öğrencilere kelimeleri tek tek okuyun ve anlamlarını hatırlatın.",
-"Cümleyi birlikte okuyarak doğru kelimeleri seçmelerini isteyin.",
-"Yanlış seçeneklerin neden uygun olmadığını tartışın.",
-"Cümleyi tamamladıktan sonra öğrencilerden kendi örneklerini yazmalarını isteyin."
+"Öğrencilerin 'boşluk' kavramını 'hiçlik' olarak algılamasını sağlayın. Boşlukta hava bile yoktur.",
+"Balon örneğini sınıfa bir balon getirerek veya bir video ile destekleyin."
 ],
 "common_misconceptions": [
-"Öğrenciler hakların sorumluluk gerektirmediğini sanabilir çünkü özgürlüğü yanlış yorumlayabilirler. Doğrusu: Haklar sorumluluklarla dengelenir.",
-"Öğrenciler yalnızca yetişkinlerin sorumlulukları olduğunu sanabilir çünkü evde görevlerin çoğunu yetişkinler yapar. Doğrusu: Çocukların da sorumlulukları vardır.",
-"Öğrenciler kuralların yalnızca cezalandırmak için olduğunu sanabilir çünkü disiplinle ilişkilendirirler. Doğrusu: Kurallar hakları korumak için vardır."
+"Soğuyan maddenin taneciklerinin küçüldüğü sanılır. Doğrusu: Tanecikler küçülmez, sadece birbirine yaklaşır."
 ],
 "classroom_discussion": [
-"Cümlede geçen haklar neden önemlidir? (Beklenen: insanların özgür yaşaması)",
-"Sorumluluklar yerine getirilmezse ne olur? (Beklenen: düzen bozulur)",
-"Sınıfta hangi sorumluluklarımız var? (Beklenen: kurallara uymak)"
+"Sıkıştırılan bir gazın tanecik sayısında değişiklik olur mu? (Beklenen: Hayır, sadece aralarındaki boşluk azalır.)"
 ],
 "extension_ideas": [
-"Hızlı bitiren öğrencilerden yeni bir hak ve sorumluluk cümlesi yazmalarını isteyin.",
-"Evde aile bireyleriyle birlikte hak ve sorumluluk örnekleri bulmalarını isteyin.",
-"Meraklı öğrenciler için araştırma: Çocukların sorumlulukları nelerdir?"
+"Meraklısı için: 'Kara delikler' maddeyi o kadar sıkıştırır ki atomların arasındaki boşluklar bile yok olur. Bu konuyu araştırmalarını isteyin."
 ]
 }
 },
 {
 "id": "step6",
-"type": "risk_analysis",
-"title": "Haklar ve Sorumluluklar Hakkında Yanlış Düşünceler",
-"duration_minutes": 10,
-"content": {},
+"type": "word_bank",
+"title": "Kavramları Yerleştirelim",
+"duration_minutes": 7,
+"content": {
+"explanation": "Öğrendiğimiz anahtar kelimeleri cümle içerisindeki uygun boşluklara yerleştirerek bilgilerimizi tazeleyelim.",
+"key_points": [
+"Terminoloji: Tanecik, boşluk ve hareket kavramlarının doğru kullanımı. (Kazanım a, b)"
+]
+},
 "activities": {
-"cards": [
+"word_bank": {
+"words": [
+"tanecikli",
+"boşluklu",
+"titreşim",
+"sıkıştırılamaz",
+"gaz",
+"öteleme",
+"sıvı",
+"katı"
+],
+"template": "Bütün maddeler ____, ____ ve hareketli yapıdadır. Maddenin ____ hali sadece ____ hareketi yaparken, ____ ve ____ halindeki tanecikler hem titreşim hem de ____ hareketi yapabilirler. Bu yüzden katılar ve sıvılar ____ kabul edilir.",
+"blanks": [
 {
-"misconception": "Haklar sınırsızdır.",
-"risk_level": "yüksek risk",
-"why_it_happens": "Öğrenciler özgürlük kavramını sınırsızlık olarak düşünebilir.",
-"truth": "Haklar başkalarının haklarına zarar vermeden kullanılmalıdır.",
-"fix_tip": "Hak ve sorumluluk dengesini örneklerle açıklayın.",
-"mini_check": "Bir kişi istediği zaman konuşursa sınıfta ne olur?"
+"id": "blank1",
+"correct_answer": "tanecikli"
 },
 {
-"misconception": "Sorumluluklar sadece yetişkinlere aittir.",
-"risk_level": "orta risk",
-"why_it_happens": "Evde birçok görevi yetişkinlerin yaptığını görürler.",
-"truth": "Çocukların da sorumlulukları vardır.",
-"fix_tip": "Okuldaki sorumluluk örneklerini tartışın.",
-"mini_check": "Okulda hangi sorumlulukların var?"
+"id": "blank2",
+"correct_answer": "boşluklu"
 },
 {
-"misconception": "Haklar devlet tarafından verilir.",
-"risk_level": "orta risk",
-"why_it_happens": "Yasaların devlet tarafından oluşturulduğunu bilirler.",
-"truth": "Haklar doğuştan gelir, devletler bu hakları korur.",
-"fix_tip": "İnsan haklarının doğuştan geldiğini vurgulayın.",
-"mini_check": "Bir insan doğduğunda hangi haklara sahiptir?"
+"id": "blank3",
+"correct_answer": "katı"
 },
 {
-"misconception": "Haklar sadece belirli insanlara aittir.",
-"risk_level": "düşük risk",
-"why_it_happens": "Toplumda farklı roller görmeleri bu düşünceyi oluşturabilir.",
-"truth": "Haklar tüm insanlar için eşittir.",
-"fix_tip": "Eşitlik kavramını örneklerle açıklayın.",
-"mini_check": "İnsan hakları herkese mi aittir?"
+"id": "blank4",
+"correct_answer": "titreşim"
+},
+{
+"id": "blank5",
+"correct_answer": "sıvı"
+},
+{
+"id": "blank6",
+"correct_answer": "gaz"
+},
+{
+"id": "blank7",
+"correct_answer": "öteleme"
+},
+{
+"id": "blank8",
+"correct_answer": "sıkıştırılamaz"
 }
 ]
-},
-"assessment": {
-"evaluation_tasks": [
-"Yanlış düşüncelerden birini seç ve neden yanlış olduğunu açıkla."
-]
+}
 },
 "teacher_notes": {
 "teaching_tips": [
-"Her yanlış düşünceyi okuyun ve öğrencilerden doğru olup olmadığını tahmin etmelerini isteyin.",
-"Doğru açıklamayı örneklerle destekleyin.",
-"Öğrencilerin kendi deneyimlerinden örnekler vermelerini isteyin.",
-"Her karttan sonra kısa bir tartışma yapın."
+"Cümlelerin akışını kontrol etmeleri için metni yüksek sesle okutun.",
+"Özellikle 'sıkıştırılamaz' kelimesinin neden hem katı hem sıvı için kullanıldığını vurgulayın."
 ],
-"common_misconceptions": [
-"Öğrenciler hakların sınırsız olduğunu sanabilir çünkü özgürlük kavramını yanlış anlayabilirler. Doğrusu: Haklar başkalarının haklarına zarar vermeden kullanılmalıdır.",
-"Öğrenciler sorumlulukların yalnızca yetişkinlere ait olduğunu sanabilir çünkü evde yetişkinlerin görevleri daha fazladır. Doğrusu: Çocukların da sorumlulukları vardır.",
-"Öğrenciler hakların devlet tarafından verildiğini sanabilir çünkü yasaları devletin yaptığını bilirler. Doğrusu: Haklar doğuştan gelir."
-],
-"classroom_discussion": [
-"Haklar sınırsız olsaydı toplumda neler olurdu? (Beklenen: düzen bozulur)",
-"Sorumluluklar neden gereklidir? (Beklenen: düzen sağlamak)",
-"Haklar ve sorumluluklar birlikte nasıl çalışır? (Beklenen: denge sağlar)"
-],
-"extension_ideas": [
-"Hızlı bitiren öğrencilerden bir yanlış düşünce ve doğru açıklamasını yazmalarını isteyin.",
-"Evde aile bireylerine hak ve sorumluluk örnekleri sormalarını isteyin.",
-"Meraklı öğrenciler için araştırma: İnsan hakları neden korunmalıdır?"
-]
+"common_misconceptions": [],
+"classroom_discussion": [],
+"extension_ideas": []
 }
 },
 {
 "id": "step7",
-"type": "quiz",
-"title": "Bilgini Test Et",
+"type": "risk_analysis",
+"title": "Yanlışları Ayıklayalım",
 "duration_minutes": 10,
-"content": {},
+"content": {
+"explanation": "Maddenin tanecikli yapısı hakkında bazen yanlış şeyler düşünebiliriz. Bu 'akıl çeldiricileri' birlikte inceleyelim.",
+"key_points": [
+"Kavram Yanılgıları: Hatalı mantık yürütmelerin düzeltilmesi. (Kazanım a)"
+]
+},
+"activities": {
+"cards": [
+{
+"misconception": "Madde ısındığında tanecikleri şişer ve büyür.",
+"risk_level": "yüksek risk",
+"why_it_happens": "Genleşme sırasında maddenin hacmi arttığı için öğrenciler taneciklerin de büyüdüğünü varsayıyor.",
+"truth": "Taneciklerin boyutu asla değişmez. Isınan maddede tanecikler sadece daha hızlı hareket eder ve birbirinden uzaklaşır.",
+"fix_tip": "Öğrencilere 'bir sınıftaki öğrenci sayısı değişmeden öğrencilerin birbirinden uzaklaşması' örneğini verin.",
+"mini_check": "Bir demir ray yazın uzadığında içindeki taneciklerin büyüklüğü değişir mi? (Hayır)"
+},
+{
+"misconception": "Tanecikler arasındaki boşluklarda hava vardır.",
+"risk_level": "orta risk",
+"why_it_happens": "Gözle göremediğimiz her yerin hava ile dolu olduğunu düşünme eğilimindeyiz.",
+"truth": "Hava da bir maddedir ve kendi tanecikleri vardır. Taneciklerin arası ise 'mutlak boşluk'tur (hiçlik).",
+"fix_tip": "Hava taneciklerini de birer top gibi çizip aralarındaki mesafeyi gösterin.",
+"mini_check": "Su tanecikleri arasındaki boşlukta ne vardır? (Hiçbir şey/Boşluk)"
+},
+{
+"misconception": "Sıvılar sıkıştırılabilir.",
+"risk_level": "yüksek risk",
+"why_it_happens": "Sıvıların akışkan olması ve şekil değiştirmesi, onların hacminin de küçülebileceği yanılgısını yaratıyor.",
+"truth": "Sıvı tanecikleri birbirine çok yakındır ve temas halindedir. Bu yüzden üzerlerine baskı uygulandığında boşluklar kapanmaz.",
+"fix_tip": "Şırınga deneyiyle suyun sıkışmadığını gözle göstererek ispatlayın.",
+"mini_check": "Ağzı kapalı su dolu bir şişeye bastırdığımızda suyun hacmi azalır mı? (Hayır)"
+}
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Bu bölümü 'Doğru mu Yanlış mı?' tartışması açarak işleyin.",
+"Özellikle genleşme-tanecik boyutu ilişkisi üzerinde durun, sınavların en sevdiği tuzak sorudur."
+],
+"common_misconceptions": [],
+"classroom_discussion": [],
+"extension_ideas": []
+}
+},
+{
+"id": "step8",
+"type": "quiz",
+"title": "Bilgi Kontrolü",
+"duration_minutes": 15,
+"content": {
+"explanation": "Ders boyunca öğrendiklerimizi test etme vakti! Bakalım taneciklerin dünyasına ne kadar hakimsin?",
+"key_points": [
+"Değerlendirme: Tüm alt kazanımların ölçülmesi."
+]
+},
 "activities": {
 "quiz_questions": [
 {
-"question": "İnsan hakları ne zaman kazanılır?",
+"question": "Aşağıdaki özelliklerden hangisi maddenin katı, sıvı ve gaz hallerinin tamamı için ortaktır?",
 "options": [
-"Doğduğumuz anda",
-"Okula başladığımızda",
-"Yetişkin olduğumuzda",
-"Devlet izin verdiğinde"
+"Sıkıştırılabilir olma",
+"Öteleme hareketi yapma",
+"Tanecikli yapıda olma",
+"Belirli bir şekle sahip olma"
 ],
-"correct_answer": "Doğduğumuz anda"
+"correct_answer": "Tanecikli yapıda olma",
+"solution_text": "Bütün maddeler, halleri ne olursa olsun taneciklerden oluşur. Sıkıştırılma sadece gazlarda, öteleme sıvı ve gazlarda, belirli şekil ise sadece katılarda görülür."
 },
 {
-"question": "Aşağıdakilerden hangisi temel insan hakkına örnektir?",
+"question": "Bir deodorant kutusunun içine çok miktarda gazın sığdırılabilmesi, gazların hangi özelliği sayesinde gerçekleşir?",
 "options": [
-"Eğitim hakkı",
-"Ev temizlemek",
-"Ödev yapmak",
-"Erken uyumak"
+"Taneciklerinin çok büyük olması",
+"Tanecikleri arasında çok boşluk olması",
+"Sadece titreşim hareketi yapmaları",
+"Belirli bir kütlelerinin olmaması"
 ],
-"correct_answer": "Eğitim hakkı"
+"correct_answer": "Tanecikleri arasında çok boşluk olması",
+"solution_text": "Gaz tanecikleri arasındaki boşluk çok fazla olduğu için dışarıdan bir basınçla bu boşluklar azaltılabilir ve gaz sıkıştırılabilir."
 },
 {
-"question": "Hak ve sorumluluk ilişkisi neyi ifade eder?",
+"question": "Sıvıların akışkan olmasını sağlayan temel tanecik hareketi aşağıdakilerden hangisidir?",
 "options": [
-"Hakların sınırsız olduğunu",
-"Hakların sorumluluklarla dengelendiğini",
-"Sorumlulukların gereksiz olduğunu",
-"Sadece yetişkinlerin hakları olduğunu"
+"Titreşim",
+"Sıkışma",
+"Öteleme",
+"Donma"
 ],
-"correct_answer": "Hakların sorumluluklarla dengelendiğini"
+"correct_answer": "Öteleme",
+"solution_text": "Öteleme hareketi, taneciklerin birbirleri üzerinden kayarak yer değiştirmesidir. Bu hareket sıvı ve gazlara akışkanlık kazandırır."
 },
 {
-"question": "Aşağıdakilerden hangisi sorumluluğa örnektir?",
+"question": "Taneciklerin en düzenli olduğu hal ile en düzensiz olduğu hal aşağıdakilerden hangisinde doğru eşleştirilmiştir?",
 "options": [
-"Başkalarını dinlemek",
-"Eğitim almak",
-"Sağlık hizmeti almak",
-"Düşünce özgürlüğü"
+"Katı - Sıvı",
+"Gaz - Katı",
+"Sıvı - Gaz",
+"Katı - Gaz"
 ],
-"correct_answer": "Başkalarını dinlemek"
+"correct_answer": "Katı - Gaz",
+"solution_text": "Katılarda tanecikler istiflenmiş gibi düzenlidir. Gazlarda ise tanecikler bağımsız ve dağınık olduğundan en düzensiz haldir."
 }
 ]
 },
 "assessment": {
 "quiz_questions": [
 {
-"question": "İnsan hakları ne zaman kazanılır?",
+"question": "Aşağıdaki özelliklerden hangisi maddenin katı, sıvı ve gaz hallerinin tamamı için ortaktır?",
 "options": [
-"Doğduğumuz anda",
-"Okula başladığımızda",
-"Yetişkin olduğumuzda",
-"Devlet izin verdiğinde"
+"Sıkıştırılabilir olma",
+"Öteleme hareketi yapma",
+"Tanecikli yapıda olma",
+"Belirli bir şekle sahip olma"
 ],
-"correct_answer": "Doğduğumuz anda"
+"correct_answer": "Tanecikli yapıda olma",
+"solution_text": "Bütün maddeler, halleri ne olursa olsun taneciklerden oluşur. Sıkıştırılma sadece gazlarda, öteleme sıvı ve gazlarda, belirli şekil ise sadece katılarda görülür."
 },
 {
-"question": "Aşağıdakilerden hangisi temel insan hakkına örnektir?",
+"question": "Bir deodorant kutusunun içine çok miktarda gazın sığdırılabilmesi, gazların hangi özelliği sayesinde gerçekleşir?",
 "options": [
-"Eğitim hakkı",
-"Ev temizlemek",
-"Ödev yapmak",
-"Erken uyumak"
+"Taneciklerinin çok büyük olması",
+"Tanecikleri arasında çok boşluk olması",
+"Sadece titreşim hareketi yapmaları",
+"Belirli bir kütlelerinin olmaması"
 ],
-"correct_answer": "Eğitim hakkı"
+"correct_answer": "Tanecikleri arasında çok boşluk olması",
+"solution_text": "Gaz tanecikleri arasındaki boşluk çok fazla olduğu için dışarıdan bir basınçla bu boşluklar azaltılabilir ve gaz sıkıştırılabilir."
 },
 {
-"question": "Hak ve sorumluluk ilişkisi neyi ifade eder?",
+"question": "Sıvıların akışkan olmasını sağlayan temel tanecik hareketi aşağıdakilerden hangisidir?",
 "options": [
-"Hakların sınırsız olduğunu",
-"Hakların sorumluluklarla dengelendiğini",
-"Sorumlulukların gereksiz olduğunu",
-"Sadece yetişkinlerin hakları olduğunu"
+"Titreşim",
+"Sıkışma",
+"Öteleme",
+"Donma"
 ],
-"correct_answer": "Hakların sorumluluklarla dengelendiğini"
+"correct_answer": "Öteleme",
+"solution_text": "Öteleme hareketi, taneciklerin birbirleri üzerinden kayarak yer değiştirmesidir. Bu hareket sıvı ve gazlara akışkanlık kazandırır."
 },
 {
-"question": "Aşağıdakilerden hangisi sorumluluğa örnektir?",
+"question": "Taneciklerin en düzenli olduğu hal ile en düzensiz olduğu hal aşağıdakilerden hangisinde doğru eşleştirilmiştir?",
 "options": [
-"Başkalarını dinlemek",
-"Eğitim almak",
-"Sağlık hizmeti almak",
-"Düşünce özgürlüğü"
+"Katı - Sıvı",
+"Gaz - Katı",
+"Sıvı - Gaz",
+"Katı - Gaz"
 ],
-"correct_answer": "Başkalarını dinlemek"
+"correct_answer": "Katı - Gaz",
+"solution_text": "Katılarda tanecikler istiflenmiş gibi düzenlidir. Gazlarda ise tanecikler bağımsız ve dağınık olduğundan en düzensiz haldir."
 }
 ]
 },
 "teacher_notes": {
 "teaching_tips": [
-"Soruları sırayla okuyun ve öğrencilerin düşünmeleri için kısa süre verin.",
-"Her sorudan sonra doğru cevabı açıklayın.",
-"Yanlış cevapların neden yanlış olduğunu tartışın.",
-"Öğrencilerin kendi örneklerini vermelerini isteyin."
+"Soruları çözerken sadece doğru şıkkı söylemeyin, yanlış şıkların neden yanlış olduğunu da açıklayın.",
+"Öğrencilere kendi sorularını hazırlatıp birbirlerine sormalarını isteyebilirsiniz."
 ],
-"common_misconceptions": [
-"Öğrenciler hakların devlet tarafından verildiğini sanabilir çünkü yasaları devletin yaptığını bilirler. Doğrusu: Haklar doğuştan gelir.",
-"Öğrenciler sorumlulukların gereksiz olduğunu sanabilir çünkü özgürlük kavramını yanlış yorumlayabilirler. Doğrusu: Sorumluluklar düzen sağlar.",
-"Öğrenciler yalnızca yetişkinlerin hakları olduğunu sanabilir çünkü yetişkinlerin daha fazla yetkisi vardır. Doğrusu: Her insanın hakları vardır."
-],
-"classroom_discussion": [
-"En zor soru hangisiydi? (Beklenen: farklı cevaplar)",
-"Hak ve sorumluluk ilişkisi neden önemlidir? (Beklenen: düzen sağlar)",
-"Haklar korunmazsa toplum nasıl etkilenir? (Beklenen: adaletsizlik olur)"
-],
-"extension_ideas": [
-"Hızlı bitiren öğrencilerden yeni bir quiz sorusu yazmalarını isteyin.",
-"Evde aile bireylerine quiz sorularını sormalarını isteyin.",
-"Meraklı öğrenciler için araştırma: İnsan haklarını koruyan kurumlar nelerdir?"
-]
-}
-},
-{
-"id": "step8",
-"type": "summary",
-"title": "Dersi Özetleyelim",
-"duration_minutes": 6,
-"content": {
-"slides": [
-{
-"type": "key",
-"text": "İnsan hakları doğuştan gelir ve herkes için geçerlidir."
-},
-{
-"type": "key",
-"text": "Yaşama, eğitim ve düşünce özgürlüğü temel insan haklarıdır."
-},
-{
-"type": "key",
-"text": "Haklar ve sorumluluklar birlikte çalışır."
-},
-{
-"type": "key",
-"text": "Sorumluluklar toplum düzenini korur."
-},
-{
-"type": "bridge",
-"text": "Artık temel haklar ve sorumluluklar konusunu öğrendin."
-}
-],
-"explanation": "Bu derste temel insan haklarının ne olduğunu ve neden önemli olduğunu öğrendik. İnsan haklarının doğuştan geldiğini ve herkes için eşit olduğunu gördük. Eğitim hakkı, yaşama hakkı ve düşünce özgürlüğü gibi hakların insanların onurlu bir yaşam sürmesini sağladığını keşfettik. İnsan haklarının korunması toplumda adalet ve güven ortamı oluşturur.\n\nAyrıca hakların sorumluluklarla birlikte çalıştığını öğrendik. Bir insanın haklarını kullanırken başkalarının haklarına saygı göstermesi gerekir. Bu tıpkı bir oyunun kuralları gibidir — kurallar sayesinde oyun düzenli şekilde oynanır. Aynı şekilde sorumluluklar da toplum düzenini korur. İnsanlar hem haklarını bildiklerinde hem de sorumluluklarını yerine getirdiklerinde daha adil bir toplum oluşur.",
-"key_points": [
-"İnsan hakları: İnsan hakları doğuştan gelen ve herkes için geçerli olan temel haklardır. (Kazanım 1)",
-"Hak örnekleri: Yaşama hakkı, eğitim hakkı ve düşünce özgürlüğü temel insan haklarına örnektir. (Kazanım 1)",
-"Sorumluluk kavramı: Sorumluluk insanların yerine getirmesi gereken görevlerdir. (Kazanım 1)",
-"Hak ve sorumluluk ilişkisi: Haklar sorumluluklarla birlikte çalışır ve toplum düzenini sağlar. (Kazanım 1)",
-"Toplumsal önem: Hak ve sorumlulukların bilinmesi adil ve huzurlu bir toplum oluşmasına yardımcı olur. (Kazanım 1)"
-],
-"examples": [
-"Bir öğrencinin eğitim alması eğitim hakkının kullanılmasıdır.",
-"Sınıfta konuşma sırasını beklemek sorumluluk örneğidir.",
-"Trafik kurallarına uymak insanların güvenli yaşama hakkını korur.",
-"Çevreyi temiz tutmak toplum sağlığını korur."
-],
-"real_life_connections": [
-"Okul kuralları öğrencilerin haklarını korumak için oluşturulmuştur.",
-"Trafik kuralları insanların güvenli yaşama hakkını destekler.",
-"Sınıfta sırayla konuşmak hak ve sorumluluk dengesini gösterir.",
-"Bir sonraki konularda demokrasi kavramının haklarla ilişkisini inceleyeceğiz."
-]
-},
-"activities": {
-"summary_points": [
-"İnsan hakları doğuştan gelir.",
-"Herkes için geçerlidir.",
-"Eğitim hakkı temel haklardan biridir.",
-"Haklar sorumluluklarla dengelenir.",
-"Sorumluluklar toplum düzenini sağlar.",
-"Haklara saygı göstermek önemlidir.",
-"Hak ve sorumluluk bilinci demokratik toplum için gereklidir."
-]
-},
-"assessment": {},
-"teacher_notes": {
-"teaching_tips": [
-"Özet slaytlarını sırayla okuyarak öğrencilerin tekrar etmesini sağlayın.",
-"Her madde için kısa bir örnek verin.",
-"Öğrencilerden kendi cümleleriyle konuyu açıklamalarını isteyin.",
-"Ders sonunda kısa bir sözlü tekrar yapın."
-],
-"common_misconceptions": [
-"Öğrenciler hakların sınırsız olduğunu sanabilir çünkü özgürlüğü yanlış anlayabilirler. Doğrusu: Haklar sorumluluklarla dengelenir.",
-"Öğrenciler sorumlulukların gereksiz olduğunu sanabilir çünkü kuralları sınırlama olarak görürler. Doğrusu: Sorumluluklar düzen sağlar.",
-"Öğrenciler hakların yalnızca yetişkinlere ait olduğunu sanabilir çünkü yetişkinlerin daha fazla yetkisi vardır. Doğrusu: Her insanın hakları vardır."
-],
-"classroom_discussion": [
-"Bugün öğrendiğin en önemli kavram neydi? (Beklenen: farklı cevaplar)",
-"Hak ve sorumluluk ilişkisi neden önemlidir? (Beklenen: düzen sağlar)",
-"Bu bilgileri günlük hayatta nasıl kullanabilirsin? (Beklenen: kurallara uymak)"
-],
-"extension_ideas": [
-"Hızlı bitiren öğrencilerden üç hak ve üç sorumluluk yazmalarını isteyin.",
-"Evde aile bireyleriyle hak ve sorumluluk örnekleri konuşmalarını isteyin.",
-"Meraklı öğrenciler için araştırma: Demokrasi ve insan hakları ilişkisi nedir?"
-]
+"common_misconceptions": [],
+"classroom_discussion": [],
+"extension_ideas": []
 }
 },
 {
 "id": "step9",
-"type": "certificate",
-"title": "Tebrikler!",
-"duration_minutes": 1,
-"content": {},
-"activities": {
-"certificate_message": "Tebrikler! Temel haklar ve sorumluluklar konusunu başarıyla tamamladın. Artık hem haklarını biliyor hem de sorumlulukların toplum için neden önemli olduğunu anlıyorsun.",
-"earned_badges": [
-"Hak Bilinci Rozeti",
-"Sorumluluk Lideri Rozeti",
-"Demokrasi Kaşifi Rozeti"
+"type": "summary",
+"title": "Ders Özeti",
+"duration_minutes": 5,
+"content": {
+"slides": [
+{
+"type": "key",
+"text": "Madde bir bütündür ama aslında taneciklerden oluşur (Tanecikli Yapı)."
+},
+{
+"type": "key",
+"text": "Tanecikler arasında türüne göre az veya çok boşluk bulunur (Boşluklu Yapı)."
+},
+{
+"type": "key",
+"text": "Tanecikler her zaman hareket halindedir: Titreşim, öteleme veya dönme yaparlar."
+},
+{
+"type": "key",
+"text": "Katılar en düzenli, gazlar ise en düzensiz ve en boşluklu haldir."
+},
+{
+"type": "bridge",
+"text": "Harikasın! Maddenin görünmez dünyasını başarıyla keşfettin."
+}
+],
+"explanation": "Bugün maddenin en derinlerine, taneciklerin dünyasına indik. Maddelerin kesintisiz bir yapı gibi görünmesine rağmen aslında aralarında boşluklar bulunan minik parçacıklardan oluştuğunu öğrendik. Katıların sadece titreşerek şekillerini koruduğunu, sıvıların öteleme yaparak akabildiğini ve gazların bağımsızca her yere yayılabildiğini kavradık. Ayrıca gazların boşluklu yapısı sayesinde sıkıştırılabildiğini, katı ve sıvıların ise bu konuda daha 'inatçı' olduğunu gördük.",
+"key_points": [
+"Tanecik: Maddenin en küçük yapı birimi.",
+"Hareket: Titreşim (tüm haller), Öteleme/Dönme (sıvı, gaz).",
+"Boşluk: En az katıda, en çok gazda.",
+"Düzen: Katı (Düzenli) > Sıvı > Gaz (Düzensiz).",
+"Sıkışma: Sadece gazlarda belirgindir."
 ]
 },
-"assessment": {},
+"activities": {
+"summary_points": [
+"Maddenin tanecikli, boşluklu ve hareketli bir yapısı vardır.",
+"Tanecikler gözle görülemeyecek kadar küçüktür.",
+"Katı tanecikleri sadece titreşim hareketi yapar.",
+"Sıvı ve gaz tanecikleri titreşim, öteleme ve dönme hareketi yapar.",
+"Gazlar tanecikler arası boşluk çok olduğu için sıkıştırılabilir.",
+"Maddenin halleri değiştikçe tanecik boyutu değişmez, aralarındaki boşluk ve hız değişir.",
+"Katıdan gaza doğru gidildikçe tanecikler arası çekim kuvveti azalır."
+]
+},
 "teacher_notes": {
 "teaching_tips": [
-"Ders sonunda öğrencileri tebrik edin ve öğrendikleri kavramları hatırlatın.",
-"Rozetleri sembolik olarak sınıfta kutlayabilirsiniz.",
-"Öğrencilerden derste öğrendikleri bir şeyi paylaşmalarını isteyin.",
-"Kısa bir alkış etkinliği ile dersi kapatın."
+"Öğrencilere 'Bugün eve gittiğinizde ailenize maddenin tanecikli yapısını kanıtlayan bir örnek gösterin' ödevi verin (Örn: Parfüm sıkmak veya şekerli çay).",
+"Summary alanındaki slide'ları yavaşça geçerek her birinin üzerinden son bir kez geçin."
 ],
-"common_misconceptions": [
-"Öğrenciler hak ve sorumlulukların yalnızca okulda geçerli olduğunu sanabilir çünkü ders ortamında öğrenirler. Doğrusu: Bu kavramlar hayatın her alanında geçerlidir.",
-"Öğrenciler sorumlulukların yalnızca görev olduğunu sanabilir çünkü görevlerle karıştırırlar. Doğrusu: Sorumluluklar hakların korunmasını sağlar.",
-"Öğrenciler hakların yalnızca bireysel olduğunu sanabilir çünkü kişisel örnekler görürler. Doğrusu: Haklar toplumsal düzeni de etkiler."
-],
-"classroom_discussion": [
-"Bu dersten sonra haklar hakkında ne düşünüyorsun? (Beklenen: daha bilinçli cevaplar)",
-"Sorumluluklarını yerine getirmek neden önemlidir? (Beklenen: toplum düzeni)",
-"Haklarını korumak için neler yapabilirsin? (Beklenen: kurallara uymak)"
-],
-"extension_ideas": [
-"Hızlı bitiren öğrencilerden öğrendikleri bir hak hakkında poster hazırlamalarını isteyin.",
-"Evde aile bireyleriyle hak ve sorumlulukları konuşmalarını isteyin.",
-"Meraklı öğrenciler için araştırma: İnsan haklarını koruyan uluslararası kuruluşlar nelerdir?"
+"common_misconceptions": [],
+"classroom_discussion": [],
+"extension_ideas": []
+}
+},
+{
+"id": "step10",
+"type": "certificate",
+"title": "Tebrikler!",
+"duration_minutes": 2,
+"content": {},
+"activities": {
+"certificate_message": "Tebrikler Ömer Eymen Güven! Maddenin mikro dünyasındaki sırları çözdün ve bir 'Tanecik Uzmanı' oldun. Artık çevrendeki her şeye bakarken o minik dans eden tanecikleri görebilirsin!",
+"earned_badges": [
+"Mikro Kaşif",
+"Tanecik Ustası",
+"Boşluk Analizcisi"
 ]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Öğrencileri alkışlatarak dersi bitirin.",
+"Sertifikalarını mobil uygulama üzerinden kontrol etmelerini hatırlatın."
+],
+"common_misconceptions": [],
+"classroom_discussion": [],
+"extension_ideas": []
 }
 }
 ]

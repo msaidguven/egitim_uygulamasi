@@ -8,6 +8,7 @@ const String kDefaultLessonAssetPath = 'assets/lessons/lesson_engine.json';
 
 String lessonTitle = 'Yapay Zeka Guvenlik Dersi';
 int lessonTotalXP = 650;
+List<KeywordItem> lessonKeywords = <KeywordItem>[];
 
 List<LessonStep> lessonSteps = <LessonStep>[];
 
@@ -40,6 +41,8 @@ int _xpForType(String type) {
       return 30;
     case 'word_bank':
       return 20;
+    case 'keywords':
+      return 15;
     case 'quiz':
       return 40;
     case 'security_score':
@@ -69,6 +72,24 @@ Future<void> loadLessonDataFromJsonAsset([
   lessonTitle = (lesson['title'] as String?)?.trim().isNotEmpty == true
       ? lesson['title'] as String
       : lessonTitle;
+  lessonKeywords = (lesson['keywords'] as List<dynamic>? ?? const <dynamic>[])
+      .map((item) {
+        if (item is Map<String, dynamic>) {
+          final term = (item['term'] ?? item['keyword'] ?? '')
+              .toString()
+              .trim();
+          final def = (item['definition'] ?? item['description'] ?? '')
+              .toString()
+              .trim();
+          if (term.isEmpty) return null;
+          return KeywordItem(term: term, def: def);
+        }
+        final term = item.toString().trim();
+        if (term.isEmpty) return null;
+        return KeywordItem(term: term, def: '');
+      })
+      .whereType<KeywordItem>()
+      .toList();
 
   final parsedSteps = <LessonStep>[];
   for (final step in dynamicSteps) {
@@ -153,6 +174,31 @@ Future<void> loadLessonDataFromJsonAsset([
         data: {'title': 'Sertifika'},
       ),
     ];
+  }
+  if (lessonKeywords.isNotEmpty) {
+    final alreadyHasKeywords = lessonSteps.any(
+      (step) => step.type == 'keywords',
+    );
+    if (!alreadyHasKeywords) {
+      final keywordStep = LessonStep(
+        id: 'step_keywords',
+        type: 'keywords',
+        xp: _xpForType('keywords'),
+        data: const {
+          'title': 'Anahtar Kavramlar',
+          'content': {
+            'explanation':
+                'Bu derste sık geçecek kavramları önce tanı. Böylece sonraki adımlarda geçen terimleri daha rahat takip edersin.',
+          },
+        },
+      );
+      final introIndex = lessonSteps.indexWhere((step) => step.type == 'intro');
+      if (introIndex >= 0) {
+        lessonSteps.insert(introIndex + 1, keywordStep);
+      } else {
+        lessonSteps.insert(0, keywordStep);
+      }
+    }
   }
 
   lessonTotalXP = lessonSteps.fold<int>(0, (acc, s) => acc + s.xp);

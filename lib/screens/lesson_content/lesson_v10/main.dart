@@ -278,6 +278,7 @@ class _LessonPageState extends State<LessonPage> {
     'scenario_choice' => AppTheme.scenario,
     'role_play' => AppTheme.scenario,
     'mini_game' => AppTheme.game,
+    'keywords' => AppTheme.word,
     'word_bank' => AppTheme.word,
     'quiz' => AppTheme.quiz,
     'critical_thinking' => AppTheme.quiz,
@@ -294,6 +295,7 @@ class _LessonPageState extends State<LessonPage> {
     'scenario_choice' => '🎯',
     'role_play' => '🎭',
     'mini_game' => '🎮',
+    'keywords' => '🗝️',
     'word_bank' => '🧩',
     'quiz' => '❓',
     'critical_thinking' => '🧠',
@@ -457,6 +459,14 @@ class _LessonPageState extends State<LessonPage> {
               .toString(),
         );
 
+      case 'keywords':
+        return KeywordsScreen(
+          onComplete: _complete,
+          items: lessonKeywords.isNotEmpty ? lessonKeywords : defaultKeywords,
+          title: (step.data['title'] ?? 'Anahtar Kavramlar').toString(),
+          description: (content['explanation'] ?? '').toString(),
+        );
+
       case 'quiz':
         final qs =
             ((assessment['quiz_questions'] ?? activities['quiz_questions'])
@@ -469,11 +479,14 @@ class _LessonPageState extends State<LessonPage> {
               .map((e) => e.toString())
               .toList();
           final correct = (q['correct_answer'] ?? '').toString();
+          final solutionText = (q['solution_text'] ?? '').toString().trim();
           var ans = opts.indexOf(correct);
           if (ans < 0) ans = 0;
           return QuizQuestion(
             q: (q['question'] ?? '').toString(),
-            exp: 'Doğru: $correct',
+            exp: solutionText.isNotEmpty
+                ? 'Doğru: $correct\n\n$solutionText'
+                : 'Doğru: $correct',
             opts: opts.isEmpty ? ['Seçenek yok'] : opts,
             ans: ans,
           );
@@ -587,6 +600,7 @@ class _LessonPageState extends State<LessonPage> {
     final step = lessonSteps.isNotEmpty ? lessonSteps[_stepIdx] : null;
     final col = _stepColor(step?.type ?? '');
     final tc = TC.of(context);
+    final currentTitle = (step?.data['title'] ?? lessonTitle).toString();
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -621,6 +635,36 @@ class _LessonPageState extends State<LessonPage> {
                   color: col,
                   onTap: _goPrevious,
                 ),
+                const Spacer(),
+                _HeaderIconButton(
+                  icon: Icons.text_decrease_rounded,
+                  color: AppTheme.quiz,
+                  enabled: fontSizeNotifier.canDecrease,
+                  onTap: () => _handleHeaderMenuAction('font_decrease'),
+                ),
+                const SizedBox(width: 8),
+                _HeaderIconButton(
+                  icon: Icons.text_increase_rounded,
+                  color: AppTheme.intro,
+                  enabled: fontSizeNotifier.canIncrease,
+                  onTap: () => _handleHeaderMenuAction('font_increase'),
+                ),
+                const SizedBox(width: 8),
+                _HeaderIconButton(
+                  icon: tc.isDark
+                      ? Icons.light_mode_rounded
+                      : Icons.dark_mode_rounded,
+                  color: AppTheme.word,
+                  onTap: () => _handleHeaderMenuAction('toggle_theme'),
+                ),
+                const SizedBox(width: 8),
+                _HeaderIconButton(
+                  icon: _musicOn
+                      ? Icons.volume_off_rounded
+                      : Icons.music_note_rounded,
+                  color: AppTheme.concept,
+                  onTap: () => _handleHeaderMenuAction('toggle_music'),
+                ),
                 const SizedBox(width: 10),
                 Container(
                   width: 40,
@@ -640,46 +684,35 @@ class _LessonPageState extends State<LessonPage> {
                   ),
                 ),
                 const SizedBox(width: 10),
+                _HeaderXpChip(xp: _xp),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+            child: Row(
+              children: [
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        lessonTitle,
-                        style: TextStyle(
-                          color: tc.textBody,
-                          fontWeight: FontWeight.w800,
-                          fontSize: AppFS.labelLg,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 1),
-                      Text(
-                        'ADIM ${_stepIdx + 1} / ${lessonSteps.length}',
-                        style: TextStyle(
-                          color: col,
-                          fontSize: AppFS.small,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    currentTitle,
+                    style: TextStyle(
+                      color: tc.textBody,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 10),
-                AnimatedBuilder(
-                  animation: fontSizeNotifier,
-                  builder: (_, __) => XpChip(xp: _xp),
-                ),
-                const SizedBox(width: 8),
-                _HeaderActionsMenu(
-                  color: col,
-                  musicOn: _musicOn,
-                  canDecreaseFont: fontSizeNotifier.canDecrease,
-                  canIncreaseFont: fontSizeNotifier.canIncrease,
-                  isDark: tc.isDark,
-                  onSelected: _handleHeaderMenuAction,
+                const SizedBox(width: 12),
+                Text(
+                  'ADIM ${_stepIdx + 1} / ${lessonSteps.length}',
+                  style: TextStyle(
+                    color: col,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
+                  ),
                 ),
               ],
             ),
@@ -942,27 +975,76 @@ class _HeaderIconButton extends StatelessWidget {
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
+  final bool enabled;
 
   const _HeaderIconButton({
     required this.icon,
     required this.color,
     required this.onTap,
+    this.enabled = true,
   });
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      width: 38,
-      height: 38,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: TC.of(context).isDark ? 0.15 : 0.10),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.55), width: 1.4),
+  Widget build(BuildContext context) {
+    final tc = TC.of(context);
+    final effectiveColor = enabled ? color : tc.muted;
+    return IgnorePointer(
+      ignoring: !enabled,
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 180),
+          opacity: enabled ? 1 : 0.45,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: effectiveColor.withValues(alpha: tc.isDark ? 0.15 : 0.10),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: effectiveColor.withValues(alpha: 0.55),
+                width: 1.4,
+              ),
+            ),
+            alignment: Alignment.center,
+            child: Icon(icon, color: effectiveColor, size: 20),
+          ),
+        ),
       ),
-      alignment: Alignment.center,
-      child: Icon(icon, color: color, size: 20),
+    );
+  }
+}
+
+class _HeaderXpChip extends StatelessWidget {
+  final int xp;
+  const _HeaderXpChip({required this.xp});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: BoxDecoration(
+      gradient: AppTheme.certGrad,
+      borderRadius: BorderRadius.circular(99),
+      boxShadow: [
+        BoxShadow(color: AppTheme.cert.withValues(alpha: 0.5), blurRadius: 12),
+      ],
+      border: Border.all(color: Colors.white.withValues(alpha: 0.25), width: 1),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('⚡', style: TextStyle(fontSize: 12)),
+        const SizedBox(width: 4),
+        Text(
+          '$xp XP',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
+            fontSize: 11,
+          ),
+        ),
+      ],
     ),
   );
 }
