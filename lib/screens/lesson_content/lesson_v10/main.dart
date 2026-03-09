@@ -245,6 +245,31 @@ class _LessonPageState extends State<LessonPage> {
     return _strList(nb['summary_items']);
   }
 
+  List<NotebookSectionData> _notebookSections(LessonStep step) {
+    final nb = (_contentOf(step)['notebook'] as Map<String, dynamic>?) ?? {};
+    final rawSections = (nb['sections'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>();
+    final sections = rawSections
+        .map((section) {
+          final title = (section['title'] ?? '').toString().trim();
+          final items = _strList(section['items']);
+          final note = (section['note'] ?? '').toString().trim();
+          if (title.isEmpty || items.isEmpty) return null;
+          return NotebookSectionData(
+            title: title,
+            items: items,
+            note: note.isEmpty ? null : note,
+          );
+        })
+        .whereType<NotebookSectionData>()
+        .toList();
+    if (sections.isNotEmpty) return sections;
+
+    final fallbackItems = _notebookItems(step);
+    if (fallbackItems.isEmpty) return const [];
+    return [NotebookSectionData(title: 'Ozet Notlar', items: fallbackItems)];
+  }
+
   // ── Renk & emoji ───────────────────────────────────────────────────────────
   Color _stepColor(String type) => switch (type) {
     'intro' => AppTheme.intro,
@@ -287,7 +312,6 @@ class _LessonPageState extends State<LessonPage> {
     final teacherNotes = _teacherNotesOf(step);
 
     switch (step.type) {
-
       // ── INTRO ──────────────────────────────────────────────────────────────
       case 'intro':
         final slides = _slidesOf(step);
@@ -315,6 +339,7 @@ class _LessonPageState extends State<LessonPage> {
         final conceptItems = _conceptItems(step);
         final nbDef = _notebookDefinition(step);
         final nbItems = _notebookItems(step);
+        final nbSections = _notebookSections(step);
         if (slides.isNotEmpty) {
           return _SlidesThenCardsScreen(
             slides: slides,
@@ -323,6 +348,7 @@ class _LessonPageState extends State<LessonPage> {
             onComplete: _complete,
             notebookDefinition: nbDef,
             notebookItems: nbItems,
+            notebookSections: nbSections,
           );
         }
         return ConceptCardsScreen(
@@ -331,6 +357,7 @@ class _LessonPageState extends State<LessonPage> {
           onComplete: _complete,
           notebookDefinition: nbDef,
           notebookItems: nbItems,
+          notebookSections: nbSections,
         );
 
       case 'word_bank':
@@ -358,14 +385,25 @@ class _LessonPageState extends State<LessonPage> {
         return InfoListScreen(
           items: (activities['cards'] as List<dynamic>? ?? [])
               .map((e) {
-                if (e is Map<String, dynamic>)
+                if (e is Map<String, dynamic>) {
+                  final misconception = (e['misconception'] ?? e['item'] ?? '')
+                      .toString();
+                  final riskLevel = (e['risk_level'] ?? e['label'] ?? '')
+                      .toString();
                   return InfoItem(
-                    text: (e['item'] ?? '').toString(),
-                    example: (e['label'] ?? '').toString(),
+                    misconception: misconception,
+                    riskLevel: riskLevel,
+                    whyItHappens: (e['why_it_happens'] ?? e['reason'] ?? '')
+                        .toString(),
+                    truth: (e['truth'] ?? e['correction'] ?? '').toString(),
+                    fixTip: (e['fix_tip'] ?? e['action'] ?? '').toString(),
+                    miniCheck: (e['mini_check'] ?? e['question'] ?? '')
+                        .toString(),
                   );
-                return InfoItem(text: e.toString(), example: '');
+                }
+                return InfoItem(misconception: e.toString(), riskLevel: '');
               })
-              .where((e) => e.text.trim().isNotEmpty)
+              .where((e) => e.misconception.trim().isNotEmpty)
               .toList(),
           title: (step.data['title'] ?? '').toString(),
           icon: '⚠️',
@@ -661,11 +699,12 @@ class _LessonPageState extends State<LessonPage> {
                 ),
                 if (lessonSteps.isNotEmpty)
                   FractionallySizedBox(
-                    widthFactor: (_stepIdx /
-                            (lessonSteps.length <= 1
-                                ? 1
-                                : lessonSteps.length - 1))
-                        .clamp(0.0, 1.0),
+                    widthFactor:
+                        (_stepIdx /
+                                (lessonSteps.length <= 1
+                                    ? 1
+                                    : lessonSteps.length - 1))
+                            .clamp(0.0, 1.0),
                     child: Container(
                       height: 6,
                       decoration: BoxDecoration(
@@ -805,6 +844,7 @@ class _SlidesThenCardsScreen extends StatefulWidget {
   final VoidCallback onComplete;
   final String notebookDefinition;
   final List<String> notebookItems;
+  final List<NotebookSectionData> notebookSections;
 
   const _SlidesThenCardsScreen({
     required this.slides,
@@ -813,6 +853,7 @@ class _SlidesThenCardsScreen extends StatefulWidget {
     required this.onComplete,
     this.notebookDefinition = '',
     this.notebookItems = const [],
+    this.notebookSections = const [],
   });
 
   @override
@@ -841,6 +882,7 @@ class _SlidesThenCardsState extends State<_SlidesThenCardsScreen> {
       onComplete: widget.onComplete,
       notebookDefinition: widget.notebookDefinition,
       notebookItems: widget.notebookItems,
+      notebookSections: widget.notebookSections,
     );
   }
 }

@@ -373,6 +373,7 @@ class ConceptCardsScreen extends StatefulWidget {
   final VoidCallback onComplete;
   final String notebookDefinition;
   final List<String> notebookItems;
+  final List<NotebookSectionData> notebookSections;
   const ConceptCardsScreen({
     super.key,
     required this.items,
@@ -380,6 +381,7 @@ class ConceptCardsScreen extends StatefulWidget {
     required this.onComplete,
     this.notebookDefinition = '',
     this.notebookItems = const [],
+    this.notebookSections = const [],
   });
 
   @override
@@ -614,7 +616,9 @@ class _ConceptCardsState extends State<ConceptCardsScreen> {
                               borderRadius: BorderRadius.circular(99),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppTheme.concept.withValues(alpha: 0.5),
+                                  color: AppTheme.concept.withValues(
+                                    alpha: 0.5,
+                                  ),
                                   blurRadius: 8,
                                 ),
                               ],
@@ -640,15 +644,18 @@ class _ConceptCardsState extends State<ConceptCardsScreen> {
             // ── Defter Bölümü — tüm kartlar açıldıktan sonra görünür ──────
             if (done &&
                 (widget.notebookDefinition.isNotEmpty ||
-                    widget.notebookItems.isNotEmpty))
+                    widget.notebookItems.isNotEmpty ||
+                    widget.notebookSections.isNotEmpty))
               _NotebookSection(
                 definition: widget.notebookDefinition,
                 items: widget.notebookItems,
+                sections: widget.notebookSections,
               ),
 
             if (done &&
                 (widget.notebookDefinition.isNotEmpty ||
-                    widget.notebookItems.isNotEmpty))
+                    widget.notebookItems.isNotEmpty ||
+                    widget.notebookSections.isNotEmpty))
               const SizedBox(height: 18),
 
             AnimatedOpacity(
@@ -677,7 +684,12 @@ class _ConceptCardsState extends State<ConceptCardsScreen> {
 class _NotebookSection extends StatefulWidget {
   final String definition;
   final List<String> items;
-  const _NotebookSection({required this.definition, required this.items});
+  final List<NotebookSectionData> sections;
+  const _NotebookSection({
+    required this.definition,
+    required this.items,
+    this.sections = const [],
+  });
 
   @override
   State<_NotebookSection> createState() => _NotebookSectionState();
@@ -712,6 +724,12 @@ class _NotebookSectionState extends State<_NotebookSection>
   @override
   Widget build(BuildContext context) {
     final tc = TC.of(context);
+    final sections = widget.sections.isNotEmpty
+        ? widget.sections
+        : [
+            if (widget.items.isNotEmpty)
+              NotebookSectionData(title: 'OZET NOTLAR', items: widget.items),
+          ];
     // Defter sarısı — her iki temada da okunabilir
     const Color nbYellow = Color(0xFFFFFDE7);
     const Color nbYellowDk = Color(0xFFFFF9C4);
@@ -749,9 +767,7 @@ class _NotebookSectionState extends State<_NotebookSection>
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
                   decoration: BoxDecoration(
-                    color: tc.isDark
-                        ? const Color(0xFF3A3000)
-                        : nbYellowDk,
+                    color: tc.isDark ? const Color(0xFF3A3000) : nbYellowDk,
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(18),
                     ),
@@ -770,10 +786,7 @@ class _NotebookSectionState extends State<_NotebookSection>
                             color: nbAccent.withValues(alpha: 0.4),
                           ),
                         ),
-                        child: const Text(
-                          '📓',
-                          style: TextStyle(fontSize: 20),
-                        ),
+                        child: const Text('📓', style: TextStyle(fontSize: 20)),
                       ),
                       const SizedBox(width: 12),
                       Column(
@@ -835,7 +848,9 @@ class _NotebookSectionState extends State<_NotebookSection>
                           child: Text(
                             widget.definition,
                             style: TextStyle(
-                              color: tc.isDark ? const Color(0xFFFFF9C4) : nbText,
+                              color: tc.isDark
+                                  ? const Color(0xFFFFF9C4)
+                                  : nbText,
                               fontSize: AppFS.bodyLg,
                               fontWeight: FontWeight.w700,
                               height: 1.6,
@@ -846,72 +861,106 @@ class _NotebookSectionState extends State<_NotebookSection>
                         const SizedBox(height: 20),
                       ],
 
-                      // Özet maddeler
-                      if (widget.items.isNotEmpty) ...[
-                        Text(
-                          'ÖZET NOTLAR',
-                          style: TextStyle(
-                            color: nbAccent,
-                            fontSize: AppFS.small,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        // Çizgili arka plan simülasyonu
-                        CustomPaint(
-                          painter: _NotebookLinesPainter(
-                            lineColor: tc.isDark
-                                ? nbLine.withValues(alpha: 0.15)
-                                : nbLine,
-                            lineHeight: AppFS.bodyLg * 1.65 + 12,
-                          ),
-                          child: Column(
-                            children: widget.items.asMap().entries.map((e) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Madde numarası
-                                    Container(
-                                      width: 26,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                        color: nbAccent,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        '${e.key + 1}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: AppFS.small,
-                                          fontWeight: FontWeight.w900,
+                      if (sections.isNotEmpty)
+                        ...sections.asMap().entries.expand((entry) {
+                          final sectionIndex = entry.key;
+                          final section = entry.value;
+                          return [
+                            Text(
+                              section.title.toUpperCase(),
+                              style: TextStyle(
+                                color: nbAccent,
+                                fontSize: AppFS.small,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            CustomPaint(
+                              painter: _NotebookLinesPainter(
+                                lineColor: tc.isDark
+                                    ? nbLine.withValues(alpha: 0.15)
+                                    : nbLine,
+                                lineHeight: AppFS.bodyLg * 1.65 + 12,
+                              ),
+                              child: Column(
+                                children: section.items.asMap().entries.map((
+                                  e,
+                                ) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 12),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: 26,
+                                          height: 26,
+                                          decoration: BoxDecoration(
+                                            color: nbAccent,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${e.key + 1}',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: AppFS.small,
+                                              fontWeight: FontWeight.w900,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Text(
-                                        e.value,
-                                        style: TextStyle(
-                                          color: tc.isDark
-                                              ? const Color(0xFFFFF9C4)
-                                              : nbText,
-                                          fontSize: AppFS.bodyLg,
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.55,
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Text(
+                                            e.value,
+                                            style: TextStyle(
+                                              color: tc.isDark
+                                                  ? const Color(0xFFFFF9C4)
+                                                  : nbText,
+                                              fontSize: AppFS.bodyLg,
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.55,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            if ((section.note ?? '').trim().isNotEmpty) ...[
+                              const SizedBox(height: 10),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(
+                                    alpha: tc.isDark ? 0.06 : 0.7,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: nbAccent.withValues(alpha: 0.25),
+                                  ),
                                 ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
+                                child: Text(
+                                  section.note!,
+                                  style: TextStyle(
+                                    color: tc.isDark
+                                        ? const Color(0xFFFFF9C4)
+                                        : nbMuted,
+                                    fontSize: AppFS.labelLg,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.5,
+                                  ),
+                                ),
+                              ),
+                            ],
+                            if (sectionIndex != sections.length - 1)
+                              const SizedBox(height: 20),
+                          ];
+                        }),
                     ],
                   ),
                 ),
@@ -975,6 +1024,26 @@ class _InfoListState extends State<InfoListScreen> {
   int? _open;
   final Set<int> _seen = {};
 
+  Color _riskColor(String level) {
+    final normalized = level
+        .toLowerCase()
+        .replaceAll('ü', 'u')
+        .replaceAll('ş', 's')
+        .replaceAll('ı', 'i')
+        .replaceAll('ö', 'o')
+        .replaceAll('ç', 'c')
+        .replaceAll('ğ', 'g');
+    if (normalized.contains('yuksek')) return const Color(0xFFE53935);
+    if (normalized.contains('orta')) return const Color(0xFFFB8C00);
+    if (normalized.contains('dusuk')) return const Color(0xFF43A047);
+    return AppTheme.risk;
+  }
+
+  String _riskLabel(String level) {
+    if (level.trim().isEmpty) return 'incele';
+    return level;
+  }
+
   @override
   Widget build(BuildContext context) {
     final tc = TC.of(context);
@@ -994,7 +1063,7 @@ class _InfoListState extends State<InfoListScreen> {
             ),
             const SizedBox(height: 6),
             Text(
-              'Her tehlikeyi incele',
+              'Yanilgi, nedeni ve duzeltme yolunu adim adim incele',
               style: TextStyle(color: tc.textMuted, fontSize: AppFS.label),
             ),
             const SizedBox(height: 14),
@@ -1063,7 +1132,7 @@ class _InfoListState extends State<InfoListScreen> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
-                                item.text,
+                                item.misconception,
                                 style: TextStyle(
                                   color: open ? tc.cText : tc.textBody,
                                   fontWeight: FontWeight.w700,
@@ -1080,41 +1149,74 @@ class _InfoListState extends State<InfoListScreen> {
                             ),
                           ],
                         ),
-                        if (open && item.example.isNotEmpty) ...[
-                          const SizedBox(height: 10),
-                          Container(
-                            padding: const EdgeInsets.all(11),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.8),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border(
-                                left: BorderSide(
-                                  color: AppTheme.risk,
-                                  width: 3,
+                        if (open) ...[
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
                                 ),
-                              ),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  '💬 ',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    item.example,
-                                    style: TextStyle(
-                                      color: tc.cTextMid,
-                                      fontSize: AppFS.labelLg,
-                                      height: 1.5,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                decoration: BoxDecoration(
+                                  color: _riskColor(
+                                    item.riskLevel,
+                                  ).withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                    color: _riskColor(
+                                      item.riskLevel,
+                                    ).withValues(alpha: 0.35),
                                   ),
                                 ),
-                              ],
-                            ),
+                                child: Text(
+                                  _riskLabel(item.riskLevel),
+                                  style: TextStyle(
+                                    color: _riskColor(item.riskLevel),
+                                    fontSize: AppFS.small,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          if (item.whyItHappens.isNotEmpty) ...[
+                            const SizedBox(height: 10),
+                            _RiskDetailCard(
+                              icon: '🧠',
+                              title: 'Neden boyle dusunuluyor?',
+                              text: item.whyItHappens,
+                              color: const Color(0xFFFFB300),
+                            ),
+                          ],
+                          if (item.truth.isNotEmpty) ...[
+                            const SizedBox(height: 10),
+                            _RiskDetailCard(
+                              icon: '✅',
+                              title: 'Dogrusu ne?',
+                              text: item.truth,
+                              color: const Color(0xFF43A047),
+                            ),
+                          ],
+                          if (item.fixTip.isNotEmpty) ...[
+                            const SizedBox(height: 10),
+                            _RiskDetailCard(
+                              icon: '🛠️',
+                              title: 'Nasil duzeltilir?',
+                              text: item.fixTip,
+                              color: const Color(0xFF1E88E5),
+                            ),
+                          ],
+                          if (item.miniCheck.isNotEmpty) ...[
+                            const SizedBox(height: 10),
+                            _RiskDetailCard(
+                              icon: '❓',
+                              title: 'Mini kontrol',
+                              text: item.miniCheck,
+                              color: AppTheme.risk,
+                            ),
+                          ],
                         ],
                       ],
                     ),
@@ -1138,6 +1240,64 @@ class _InfoListState extends State<InfoListScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _RiskDetailCard extends StatelessWidget {
+  final String icon;
+  final String title;
+  final String text;
+  final Color color;
+  const _RiskDetailCard({
+    required this.icon,
+    required this.title,
+    required this.text,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final tc = TC.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(11),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(10),
+        border: Border(left: BorderSide(color: color, width: 3)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('$icon ', style: const TextStyle(fontSize: 14)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: AppFS.small,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: tc.cTextMid,
+                    fontSize: AppFS.labelLg,
+                    height: 1.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -88,3 +88,5 @@ flutter:
     - assets/lessons/lesson_engine.json
     - assets/lessons/lesson_solar_system.json
     - assets/lessons/lesson_tam_golge.json
+    - assets/prompts/lesson_content_prompt_v1.md
+    - assets/prompts/lesson_questions_prompt_v1.md

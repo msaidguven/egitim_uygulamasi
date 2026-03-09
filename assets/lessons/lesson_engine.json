@@ -1,741 +1,795 @@
 {
-  "lesson": {
-    "grade": "5. Sınıf",
-    "subject": "Sosyal Bilgiler",
-    "unit": "Yaşayan Demokrasimiz",
-    "topic": "Temel Haklar, Sorumluluklar ve Önemi",
-    "title": "Temel Haklar ve Sorumluluklar Neden Önemlidir?",
-    "description": "Bu derste öğrenciler temel insan haklarının ve sorumlulukların ne olduğunu, neden önemli olduklarını ve günlük yaşamda nasıl kullanıldıklarını keşfeder. 5N1K tekniği ile hak ve sorumluluklara dair sorular üretir ve gerçek yaşam örnekleriyle kavramları pekiştirir.",
-    "difficulty_level": "kolay",
-    "learning_objectives": [
-      "Temel insan haklarının ne olduğunu açıklar.",
-      "Hak ve sorumluluk kavramlarının birbirleriyle ilişkisini açıklar.",
-      "Toplumsal yaşamda hak ve sorumlulukların önemini örneklerle açıklar.",
-      "Hak ve sorumluluklarla ilgili merak ettiği konular hakkında 5N1K soruları sorar."
-    ],
-    "keywords": [
-      "insan hakları",
-      "sorumluluk",
-      "eşitlik",
-      "özgürlük",
-      "toplumsal düzen",
-      "5N1K"
-    ],
-    "steps": [
-      {
-        "id": "step1",
-        "type": "intro",
-        "title": "Haklarımız ve Sorumluluklarımız",
-        "duration_minutes": 10,
-        "content": {
-          "slides": [
-            {
-              "type": "hook",
-              "text": "Sana hiç kimsenin senden alamayacağı bazı şeyler olduğunu biliyor musun?"
-            },
-            {
-              "type": "fact",
-              "text": "İnsan hakları, her insanın sadece insan olduğu için sahip olduğu temel haklardır."
-            },
-            {
-              "type": "analogy",
-              "text": "Bu tıpkı güneş ışığı gibidir — güneş kimi aydınlatacağını seçmez, herkese eşit ulaşır."
-            },
-            {
-              "type": "example",
-              "text": "Okula gitme hakkın, düşüncelerini söyleyebilmen ve güvenli bir yerde yaşaman temel haklara örnektir."
-            },
-            {
-              "type": "bridge",
-              "text": "Şimdi bu hakların neden önemli olduğunu birlikte keşfedelim."
-            }
-          ],
-          "explanation": "Her insan doğduğu andan itibaren bazı temel haklara sahiptir. Bu haklara insan hakları denir ve yaşama hakkı, eğitim hakkı, düşünce özgürlüğü gibi birçok önemli hakkı içerir. Bu haklar insanın güvenli, özgür ve saygın bir şekilde yaşayabilmesi için vardır. İnsan hakları dünyanın birçok ülkesinde yasalar ve uluslararası sözleşmelerle korunur. Bu sayede insanların eşit ve adil bir yaşam sürmesi hedeflenir.\n\nİnsan haklarının yanında sorumluluklarımız da vardır. Çünkü toplum içinde yaşarken sadece kendi haklarımızı düşünmek yeterli değildir. Başkalarının haklarına saygı göstermek de bir sorumluluktur. Bu tıpkı bir oyun sahası gibidir — herkes oyunu kurallara göre oynarsa herkes eğlenebilir. Eğer biri kurallara uymazsa oyun bozulur. Haklar ve sorumluluklar da toplumun düzen içinde yaşayabilmesi için birlikte çalışır.",
-          "key_points": [
-            "İnsan Haklarının Tanımı: İnsan hakları her insanın yalnızca insan olduğu için sahip olduğu temel haklardır ve bu haklar doğuştan kazanılır. Hiç kimse bu haklardan keyfi olarak mahrum bırakılamaz. (Kazanım 1)",
-            "Hakların Evrenselliği: İnsan hakları dünyanın her yerindeki insanlar için geçerlidir. Irk, dil, din veya cinsiyet farkı gözetmez. (Kazanım 1)",
-            "Sorumluluk Kavramı: Sorumluluk, sahip olduğumuz hakları kullanırken başkalarının haklarına zarar vermemek için yerine getirmemiz gereken görevlerdir. (Kazanım 1)",
-            "Toplumsal Düzen: Hak ve sorumluluklar toplumda düzen ve adaletin sağlanmasına yardımcı olur. (Kazanım 1)",
-            "Hak ve Sorumluluk Dengesi: Bir kişinin hakkı başka bir kişinin hakkının başladığı yerde sınır bulur. (Kazanım 1)"
-          ],
-          "examples": [
-            "Okulda eğitim hakkını kullanmak: Her öğrencinin okula gitme hakkı vardır. Bu hak sayesinde öğrenciler bilgi öğrenir ve kendilerini geliştirir.",
-            "Oyun oynarken kurallara uymak: Oyun oynama hakkımız vardır ancak başkalarının oyununu bozmak doğru değildir. Kurallara uymak sorumluluğumuzdur.",
-            "Toplu taşımada sıraya girmek: Otobüse binmek herkesin hakkıdır. Ancak sıraya girmek başkalarının hakkına saygı göstermenin bir sorumluluğudur.",
-            "Parkları temiz kullanmak: Parklardan yararlanmak bir haktır. Ancak çevreyi temiz tutmak bir sorumluluktur."
-          ],
-          "real_life_connections": [
-            "Önceki derslerde toplumda birlikte yaşamanın kurallarını öğrenmiştiniz. Hak ve sorumluluklar bu kuralların en önemli parçalarından biridir.",
-            "Günlük hayatta sınıfta söz alırken parmak kaldırmanız hem hakkınızı kullanmanız hem de başkalarının konuşma hakkına saygı göstermeniz anlamına gelir.",
-            "Aile içinde herkesin bazı hakları vardır. Ancak evdeki işleri paylaşmak veya odanızı toplamak gibi sorumluluklar da vardır.",
-            "Sonraki derslerde demokrasi kavramını daha yakından öğreneceksiniz. Demokrasi, insanların haklarını korumaya çalışan bir yönetim biçimidir."
-          ]
-        },
-        "activities": {
-          "discussion_prompts": [
-            "Sence insanlar neden bazı temel haklara sahip olmalıdır?",
-            "Eğer insanların hakları olmasaydı toplumda ne gibi sorunlar ortaya çıkabilirdi?",
-            "Haklarımızı kullanırken neden sorumluluklarımızı da düşünmeliyiz?"
-          ]
-        },
-        "assessment": {},
-        "teacher_notes": {
-          "teaching_tips": [
-            "Derse başlamadan önce öğrencilere 'Sana hiç kimsenin senden alamayacağı bir şey olabilir mi?' sorusunu sorun. Öğrencilerin tahminlerini aldıktan sonra insan hakları kavramını tanıtın.",
-            "Sınıfta kısa bir etkinlik yaparak öğrencilere 'okula gelmek', 'çöpleri yere atmamak' gibi örnekler verin ve bunun hak mı sorumluluk mu olduğunu tartışmalarını isteyin.",
-            "Tahtaya iki sütun çizin ve birine 'Haklar', diğerine 'Sorumluluklar' yazın. Öğrencilerden günlük hayattan örnekler söylemelerini isteyin.",
-            "Konuyu anlatırken gerçek yaşamdan örnekler kullanın ve öğrencilerin kendi deneyimlerini paylaşmasına fırsat verin."
-          ],
-          "common_misconceptions": [
-            "Öğrenciler hakların sınırsız olduğunu sanabilir çünkü hak kavramını özgürlükle karıştırabilirler. Doğrusu: Haklar başkalarının haklarına zarar vermeyecek şekilde kullanılmalıdır.",
-            "Öğrenciler sorumlulukların sadece çocuklara ait olduğunu sanabilir çünkü çoğu kural onlara hatırlatılır. Doğrusu: Sorumluluklar toplumdaki herkes için geçerlidir.",
-            "Öğrenciler sadece yasaların hakları koruduğunu sanabilir çünkü devlet kavramını böyle öğrenmiş olabilirler. Doğrusu: Hakların korunması için toplumdaki herkesin bilinçli olması gerekir."
-          ],
-          "classroom_discussion": [
-            "Bir kişi kendi haklarını kullanırken başkasının hakkını ihlal edebilir mi? (Beklenen: Evet, bu yüzden haklar sorumluluklarla birlikte düşünülmelidir.)",
-            "Sınıfta herkes aynı anda konuşursa ne olur? (Beklenen: Kimse birbirini anlayamaz, düzen bozulur.)",
-            "Toplumda herkes sorumluluklarını yerine getirirse nasıl bir ortam oluşur? (Beklenen: Daha düzenli, adil ve güvenli bir toplum.)"
-          ],
-          "extension_ideas": [
-            "Hızlı bitiren öğrencilerden sınıfta gördükleri üç hak ve üç sorumluluğu yazmalarını isteyin.",
-            "Evde yapılabilecek etkinlik: Öğrencilerden aileleriyle konuşarak evdeki hak ve sorumluluklarını listelemelerini isteyin.",
-            "Meraklı öğrenciler için araştırma: İnsan Hakları Evrensel Bildirgesi nedir ve neden hazırlanmıştır?"
-          ]
-        }
-      },
-      {
-        "id": "step2",
-        "type": "concept_explanation",
-        "title": "Temel İnsan Hakları",
-        "duration_minutes": 15,
-        "content": {
-          "slides": [
-            {
-              "type": "hook",
-              "text": "Sence bir insanın en önemli hakkı hangisidir?"
-            },
-            {
-              "type": "fact",
-              "text": "Temel insan hakları, her insanın doğuştan sahip olduğu ve vazgeçilmez olan haklardır."
-            },
-            {
-              "type": "fact",
-              "text": "Bu haklar yaşama hakkı, eğitim hakkı, düşünce özgürlüğü ve güvenlik hakkı gibi hakları içerir."
-            },
-            {
-              "type": "analogy",
-              "text": "Bu tıpkı bir ağacın kökleri gibidir — kökler güçlü olursa ağaç sağlıklı büyür."
-            },
-            {
-              "type": "example",
-              "text": "Bir öğrencinin okula gidebilmesi eğitim hakkının bir örneğidir."
-            },
-            {
-              "type": "key",
-              "text": "Temel haklar doğuştan gelir ve herkese eşittir."
-            },
-            {
-              "type": "bridge",
-              "text": "Şimdi bu hakların günlük yaşamımızda nasıl göründüğünü inceleyelim."
-            }
-          ],
-          "explanation": "Temel insan hakları, insanların sadece insan oldukları için sahip oldukları haklardır. Bu haklar doğuştan kazanılır ve kimse tarafından keyfi olarak alınamaz. İnsanların güvenli, özgür ve saygın bir şekilde yaşayabilmesi için bu haklar çok önemlidir. Yaşama hakkı, eğitim hakkı, düşünce özgürlüğü ve güvenlik hakkı bu hakların en bilinen örnekleridir. Bu haklar sayesinde insanlar kendilerini geliştirebilir ve toplum içinde eşit bir şekilde yaşayabilir.\n\nTemel hakları bir ağacın köklerine benzetebiliriz. Bu tıpkı bir ağacın köklerinin ağacı beslemesi gibidir — kökler güçlü olmazsa ağaç da büyüyemez. İnsan hakları da toplumun sağlıklı bir şekilde gelişebilmesi için gereklidir. Eğer insanlar haklarını kullanamazsa toplumda adaletsizlik ve eşitsizlik ortaya çıkabilir. Bu nedenle hakların korunması hem bireyler hem de devletler için büyük önem taşır.",
-          "key_points": [
-            "Temel Hak Kavramı: Temel insan hakları insanların doğuştan sahip olduğu ve vazgeçilmez olan haklardır. Bu haklar tüm insanlar için eşit şekilde geçerlidir. (Kazanım 1)",
-            "Yaşama Hakkı: Her insanın güvenli bir şekilde yaşama hakkı vardır. Bu hak tüm diğer hakların temelini oluşturur. (Kazanım 1)",
-            "Eğitim Hakkı: Her bireyin eğitim alma ve kendini geliştirme hakkı vardır. Eğitim toplumun ilerlemesini sağlar. (Kazanım 1)",
-            "Özgürlük Hakları: İnsanlar düşüncelerini ifade etme ve fikirlerini paylaşma hakkına sahiptir. Bu özgürlük toplumun gelişmesi için önemlidir. (Kazanım 1)",
-            "Hakların Korunması: İnsan hakları yasalar ve uluslararası anlaşmalar ile korunmaya çalışılır. (Kazanım 1)"
-          ],
-          "examples": [
-            "Bir çocuğun okula gitmesi: Eğitim hakkı sayesinde çocuklar okula giderek bilgi öğrenir ve beceriler kazanır.",
-            "Bir kişinin düşüncesini söylemesi: İnsanlar düşüncelerini barışçıl bir şekilde ifade edebilir. Bu ifade özgürlüğünün bir örneğidir.",
-            "Hastanede tedavi olmak: Sağlık hizmetlerinden yararlanmak insanların yaşam ve sağlık hakkıyla ilişkilidir.",
-            "Seçimlerde oy kullanmak: Bazı ülkelerde yetişkin bireyler yöneticilerini seçmek için oy kullanabilir."
-          ],
-          "real_life_connections": [
-            "Daha önce toplum kuralları konusunu öğrenmiştiniz. İnsan hakları bu kuralların en önemli temelini oluşturur.",
-            "Okulda herkesin eşit şekilde söz alabilmesi insan haklarıyla ilgili bir durumdur.",
-            "Aile içinde herkesin saygı görmesi insan haklarının günlük yaşamda uygulanmasına örnektir.",
-            "Sonraki derslerde demokrasi ve vatandaşlık kavramlarını öğrenirken bu hakların nasıl korunduğunu inceleyeceksiniz."
-          ],
-          "notebook": {
-            "definition": "Temel insan hakları, her insanın yalnızca insan olduğu için doğuştan sahip olduğu ve vazgeçilemeyen temel haklardır.",
-            "summary_items": [
-              "Temel insan hakları doğuştan kazanılır.",
-              "Bu haklar tüm insanlar için eşittir.",
-              "Yaşama hakkı en temel haklardan biridir.",
-              "Eğitim ve düşünce özgürlüğü önemli haklardandır.",
-              "Hakların korunması toplumun düzeni için gereklidir."
-            ]
-          }
-        },
-        "activities": {
-          "cards": [
-            {
-              "item": "Yaşama hakkı",
-              "label": "temel hak"
-            },
-            {
-              "item": "Eğitim hakkı",
-              "label": "temel hak"
-            },
-            {
-              "item": "Düşünce özgürlüğü",
-              "label": "temel hak"
-            },
-            {
-              "item": "Güvenlik hakkı",
-              "label": "temel hak"
-            }
-          ]
-        },
-        "assessment": {
-          "reflective_questions": [
-            "Sence hangi insan hakkı toplum için en önemlidir?",
-            "İnsan haklarının olmadığı bir toplum nasıl olurdu?"
-          ],
-          "evaluation_tasks": [
-            "Bir temel insan hakkını seç ve günlük hayatta nasıl kullanıldığını anlat."
-          ]
-        },
-        "teacher_notes": {
-          "teaching_tips": [
-            "Tahtaya dört temel hak yazın ve öğrencilerden bu hakların günlük yaşamda nasıl kullanıldığını örneklerle açıklamalarını isteyin.",
-            "Öğrencilerden küçük gruplar oluşturup her gruba bir insan hakkı verin ve kısa bir poster hazırlamalarını isteyin.",
-            "Hak kavramını somutlaştırmak için sınıf içinde kısa canlandırmalar yapılmasını sağlayın.",
-            "Örnekler verirken öğrencilerin günlük yaşamlarından olaylar seçmeye özen gösterin."
-          ],
-          "common_misconceptions": [
-            "Öğrenciler insan haklarının sadece yetişkinler için olduğunu sanabilir çünkü birçok hak yetişkinlerle ilişkilendirilir. Doğrusu: İnsan hakları çocuklar dahil tüm insanlar içindir.",
-            "Öğrenciler hakların devlet tarafından verildiğini sanabilir çünkü yasalarla korunur. Doğrusu: Haklar doğuştan gelir, devlet sadece onları korur.",
-            "Öğrenciler bazı insanların daha fazla hakka sahip olduğunu sanabilir çünkü toplumda farklı roller vardır. Doğrusu: Temel haklar herkes için eşittir."
-          ],
-          "classroom_discussion": [
-            "Sence neden tüm insanlar aynı haklara sahip olmalıdır? (Beklenen: Eşitlik ve adalet için.)",
-            "Bir kişinin hakkı ihlal edilirse ne gibi sorunlar ortaya çıkabilir? (Beklenen: Adaletsizlik ve çatışma.)",
-            "Hakların korunması için toplumda kimlerin sorumluluğu vardır? (Beklenen: Herkesin.)"
-          ],
-          "extension_ideas": [
-            "Hızlı bitiren öğrencilerden bir insan hakkı için kısa bir slogan yazmalarını isteyin.",
-            "Ev etkinliği: Öğrenciler aile üyeleriyle konuşarak evde hangi haklara sahip olduklarını listeleyebilir.",
-            "Meraklı öğrenciler için araştırma: Birleşmiş Milletler hangi amaçla kurulmuştur?"
-          ]
-        }
-      },
-      {
-        "id": "step3",
-        "type": "word_bank",
-        "title": "Hak ve Sorumluluk Cümleleri",
-        "duration_minutes": 5,
-        "content": {
-          "explanation": "Bu etkinlikte öğrenciler hak ve sorumluluk kavramlarını doğru kelimelerle tamamlayarak pekiştirir. Kelimeler cümleye uygun çekimli biçimde verilmiştir.",
-          "key_points": [
-            "Hakların Tanınması: Haklar toplum içinde bireylerin özgürce yaşayabilmesi için vardır. (Kazanım 1)",
-            "Sorumluluk Bilinci: Hakları kullanırken başkalarının haklarına saygı göstermek gerekir. (Kazanım 1)",
-            "Toplumsal Denge: Hak ve sorumluluk birlikte toplum düzenini sağlar. (Kazanım 1)",
-            "Dil Kullanımı: Kelimeler cümle içinde doğru eklerle kullanıldığında anlam doğru şekilde oluşur. (Kazanım 2)",
-            "Kavram Pekiştirme: Kelime bankası etkinliği kavramların daha iyi öğrenilmesini sağlar. (Kazanım 2)"
-          ],
-          "examples": [
-            "Sınıfta konuşma hakkını kullanırken arkadaşlarımızı dinlemek sorumluluğumuzdur.",
-            "Okul kütüphanesinden yararlanmak bir haktır ancak kitapları korumak sorumluluktur.",
-            "Parkları kullanmak herkesin hakkıdır ancak temiz tutmak sorumluluktur.",
-            "Oyun oynarken kurallara uymak hem hakkı hem sorumluluğu gösterir."
-          ],
-          "real_life_connections": [
-            "Sınıf kurallarına uymak hak ve sorumlulukların günlük yaşamda nasıl uygulandığını gösterir.",
-            "Evde odanı toplamak bir sorumluluktur ve aile içi düzeni sağlar.",
-            "Toplu alanları temiz kullanmak herkesin hakkına saygı göstermeyi öğretir.",
-            "Sonraki derslerde demokrasi içinde vatandaşların hakları ve sorumluluklarını daha ayrıntılı inceleyeceksiniz."
-          ]
-        },
-        "activities": {
-          "word_bank": {
-            "words": [
-              "hakları",
-              "sorumlulukları",
-              "özgürlüğü",
-              "eşitliği",
-              "kuralları"
-            ],
-            "template": "Her insanın bazı temel ____ vardır ve toplum içinde bu hakları korumak için bazı ____ yerine getirmesi gerekir.",
-            "blanks": [
-              {
-                "id": "blank1",
-                "correct_answer": "hakları"
-              },
-              {
-                "id": "blank2",
-                "correct_answer": "sorumlulukları"
-              }
-            ]
-          }
-        },
-        "assessment": {
-          "reflective_questions": [
-            "Hak ve sorumluluk kelimelerini cümlede doğru kullanmak neden önemlidir?",
-            "Sence günlük hayatta en sık hangi sorumlulukları yerine getiriyorsun?"
-          ],
-          "evaluation_tasks": [
-            "Hak ve sorumluluk kelimelerini kullanarak iki yeni cümle yaz."
-          ]
-        },
-        "teacher_notes": {
-          "teaching_tips": [
-            "Kelime bankası etkinliğini öğrenciler bireysel olarak tamamladıktan sonra sınıfça kontrol edin.",
-            "Yanıltıcı kelimelerin neden yanlış olduğunu tartışarak kavramları pekiştirin.",
-            "Cümleyi yüksek sesle okuyarak doğru kelimenin kulağa nasıl uyduğunu gösterin.",
-            "Etkinliği kısa bir yarışma şeklinde yaparak sınıfın ilgisini artırabilirsiniz."
-          ],
-          "common_misconceptions": [
-            "Öğrenciler hak ve özgürlük kavramlarını aynı sanabilir çünkü günlük dilde benzer kullanılır. Doğrusu: Haklar yasalarla tanınan imkanlardır, özgürlük ise bu hakların kullanımıyla ilgilidir.",
-            "Öğrenciler sorumlulukların sadece kurallarla ilgili olduğunu sanabilir çünkü çoğu sorumluluk kurallarla anlatılır. Doğrusu: Sorumluluklar toplumsal yaşamın birçok alanını kapsar.",
-            "Öğrenciler kelimelerin kök halini kullanmanın yeterli olduğunu sanabilir çünkü Türkçedeki ek sistemini tam kavrayamayabilir. Doğrusu: Kelimeler cümleye uygun eklerle kullanılmalıdır."
-          ],
-          "classroom_discussion": [
-            "Hak kelimesi ile özgürlük kelimesi aynı şeyi mi ifade eder? (Beklenen: Benzer ama tamamen aynı değildir.)",
-            "Bir insan sorumluluklarını yerine getirmezse toplumda ne olur? (Beklenen: Düzen bozulur.)",
-            "Haklarımızı korumak için neler yapabiliriz? (Beklenen: Kurallara uymak ve başkalarının haklarına saygı göstermek.)"
-          ],
-          "extension_ideas": [
-            "Hızlı bitiren öğrencilerden hak ve sorumluluk kelimelerini kullanarak yeni bir cümle kurmalarını isteyin.",
-            "Ev etkinliği: Öğrenciler evde aileleriyle konuşarak üç hak ve üç sorumluluk örneği yazabilir.",
-            "Meraklı öğrenciler için araştırma: Çocuk hakları sözleşmesi nedir?"
-          ]
-        }
-      },
-      {
-        "id": "step4",
-        "type": "risk_analysis",
-        "title": "Haklar ve Sorumluluklarla İlgili Yanılgılar",
-        "duration_minutes": 6,
-        "content": {
-          "explanation": "Bazı öğrenciler hak ve sorumluluk kavramlarını yanlış anlayabilir. Bu bölümde yaygın yanlış düşünceler analiz edilir ve doğruları açıklanır.",
-          "key_points": [
-            "Hakların Sınırı: Haklar sınırsız değildir ve başkalarının haklarıyla dengelenir. (Kazanım 1)",
-            "Sorumlulukların Önemi: Sorumluluklar toplum düzenini korur. (Kazanım 1)",
-            "Eşit Haklar: Her insan temel haklar bakımından eşittir. (Kazanım 1)",
-            "Yanılgıların Fark Edilmesi: Yanlış düşünceleri fark etmek öğrenmenin önemli bir parçasıdır. (Kazanım 2)",
-            "Eleştirel Düşünme: Doğru bilgiyi bulmak için sorgulamak gerekir. (Kazanım 2)"
-          ],
-          "examples": [
-            "Bir öğrenci istediği zaman konuşabileceğini düşünebilir. Ancak sınıfta başkalarının konuşma hakkına saygı göstermek gerekir.",
-            "Bir kişi parkı istediği gibi kirletebileceğini düşünebilir. Ancak parkı temiz tutmak herkesin sorumluluğudur.",
-            "Bazı insanlar yalnızca güçlü kişilerin haklara sahip olduğunu sanabilir. Oysa haklar tüm insanlar için eşittir.",
-            "Bir çocuk sorumlulukların sadece yetişkinlere ait olduğunu düşünebilir. Oysa çocukların da sorumlulukları vardır."
-          ],
-          "real_life_connections": [
-            "Sınıfta söz almak için parmak kaldırmak hak ve sorumluluk dengesini gösterir.",
-            "Toplu taşıma araçlarında sıraya girmek toplumsal düzenin korunmasına yardımcı olur.",
-            "Evde görev paylaşımı aile içinde sorumluluk bilincini geliştirir.",
-            "Demokrasi konusunu öğrenirken hakların korunmasının neden önemli olduğunu daha iyi anlayacaksınız."
-          ]
-        },
-        "activities": {
-          "cards": [
-            {
-              "item": "İnsanlar istedikleri her şeyi yapma hakkına sahiptir.",
-              "label": "yüksek risk"
-            },
-            {
-              "item": "Haklar sadece yetişkinler içindir.",
-              "label": "orta risk"
-            },
-            {
-              "item": "Sorumluluklar toplum düzenini korur.",
-              "label": "düşük risk"
-            }
-          ]
-        },
-        "assessment": {
-          "reflective_questions": [
-            "Hakların sınırsız olmadığını nasıl açıklarsın?",
-            "Sorumlulukların toplum için neden önemli olduğunu düşünüyorsun?"
-          ],
-          "evaluation_tasks": [
-            "Bir yanlış düşünce seç ve neden yanlış olduğunu açıklayan kısa bir paragraf yaz."
-          ]
-        },
-        "teacher_notes": {
-          "teaching_tips": [
-            "Kartları tahtaya yazın ve öğrencilerden doğru veya yanlış olduklarını tartışmalarını isteyin.",
-            "Her yanlış düşünce için öğrencilerden doğru açıklamayı birlikte oluşturmalarını isteyin.",
-            "Öğrencilerin günlük hayattan örnekler vermesine izin verin.",
-            "Yanlış düşünceleri ele alırken öğrencileri yargılamadan tartışma ortamı oluşturun."
-          ],
-          "common_misconceptions": [
-            "Öğrenciler hakların sınırsız olduğunu sanabilir çünkü özgürlük kavramını yanlış yorumlayabilir. Doğrusu: Haklar başkalarının haklarına zarar vermeyecek şekilde kullanılmalıdır.",
-            "Öğrenciler çocukların haklarının olmadığını sanabilir çünkü yetişkinler daha fazla karar alır. Doğrusu: Çocukların da birçok temel hakkı vardır.",
-            "Öğrenciler sorumlulukların sadece ceza korkusuyla yerine getirildiğini sanabilir çünkü kurallar böyle anlatılır. Doğrusu: Sorumluluklar toplum düzeni için gereklidir."
-          ],
-          "classroom_discussion": [
-            "Haklar sınırsız olsaydı toplum nasıl olurdu? (Beklenen: Kaos ve düzensizlik olurdu.)",
-            "Sorumluluklarımızı yerine getirmezsek ne olur? (Beklenen: Başkalarının hakları zarar görür.)",
-            "Bir toplumda herkes haklara saygı gösterirse nasıl bir ortam oluşur? (Beklenen: Adil ve düzenli bir toplum.)"
-          ],
-          "extension_ideas": [
-            "Hızlı bitiren öğrencilerden bir yanlış düşünce için kısa bir karikatür çizmelerini isteyin.",
-            "Ev etkinliği: Aile üyeleriyle hak ve sorumluluk örnekleri hakkında konuşup not alın.",
-            "Meraklı öğrenciler için araştırma: Çocuk hakları hangi uluslararası belgede yer alır?"
-          ]
-        }
-      },
-      {
-        "id": "step5",
-        "type": "quiz",
-        "title": "Bilgini Test Et",
-        "duration_minutes": 8,
-        "content": {
-          "explanation": "Bu bölümde öğrenciler ders boyunca öğrendikleri kavramları çoktan seçmeli sorularla değerlendirir.",
-          "key_points": [
-            "Bilgi Değerlendirme: Quiz etkinliği öğrencilerin öğrendiklerini ölçmeye yardımcı olur. (Kazanım 1)",
-            "Kavram Pekiştirme: Sorular temel hak ve sorumluluk kavramlarını tekrar etmeyi sağlar. (Kazanım 1)",
-            "Eleştirel Düşünme: Sorular öğrencilerin düşünerek cevap vermesini gerektirir. (Kazanım 2)",
-            "Öz Değerlendirme: Öğrenciler hangi konuları iyi öğrendiklerini fark eder. (Kazanım 2)",
-            "Öğrenme Süreci: Yanlış cevaplar öğrenme için yeni fırsatlar oluşturur. (Kazanım 2)"
-          ],
-          "examples": [
-            "Bir öğrenci sınıfta söz alarak düşüncesini ifade eder. Bu ifade özgürlüğüne örnektir.",
-            "Bir kişi parkı temiz tutar. Bu sorumluluk davranışıdır.",
-            "Bir çocuk okula gider. Bu eğitim hakkının kullanılmasına örnektir.",
-            "Toplu taşıma sırasında sıraya girmek sorumluluğa örnektir."
-          ],
-          "real_life_connections": [
-            "Sınavlar öğrencilerin öğrenme sürecini değerlendirmede sık kullanılan araçlardır.",
-            "Quiz soruları günlük yaşam örnekleri üzerinden düşünmeyi sağlar.",
-            "Okul hayatında öğrendiklerimizi test etmek öğrenmeyi güçlendirir.",
-            "Sonraki derslerde demokrasi kavramını öğrenirken bu bilgilerden yararlanacaksınız."
-          ]
-        },
-        "activities": {
-          "quiz_questions": [
-            {
-              "question": "Aşağıdakilerden hangisi temel bir insan hakkıdır?",
-              "options": [
-                "Eğitim hakkı",
-                "Çöpleri yere atma",
-                "Kurallara uymama",
-                "Başkalarının sözünü kesme"
-              ],
-              "correct_answer": "Eğitim hakkı"
-            },
-            {
-              "question": "Aşağıdakilerden hangisi bir sorumluluğa örnektir?",
-              "options": [
-                "Okula gitme",
-                "Parkı temiz tutma",
-                "Düşünce özgürlüğü",
-                "Yaşama hakkı"
-              ],
-              "correct_answer": "Parkı temiz tutma"
-            },
-            {
-              "question": "Hak ve sorumlulukların birlikte olması neden önemlidir?",
-              "options": [
-                "Toplumda düzen sağlamak için",
-                "Sadece kurallar koymak için",
-                "Sadece cezalar vermek için",
-                "İnsanları sınırlamak için"
-              ],
-              "correct_answer": "Toplumda düzen sağlamak için"
-            },
-            {
-              "question": "Aşağıdakilerden hangisi düşünce özgürlüğüne örnektir?",
-              "options": [
-                "Sıraya girmek",
-                "Fikrini saygılı şekilde söylemek",
-                "Çöpleri yere atmak",
-                "Kuralları görmezden gelmek"
-              ],
-              "correct_answer": "Fikrini saygılı şekilde söylemek"
-            }
-          ]
-        },
-        "assessment": {
-          "quiz_questions": [
-            {
-              "question": "Aşağıdakilerden hangisi temel bir insan hakkıdır?",
-              "options": [
-                "Eğitim hakkı",
-                "Çöpleri yere atma",
-                "Kurallara uymama",
-                "Başkalarının sözünü kesme"
-              ],
-              "correct_answer": "Eğitim hakkı"
-            },
-            {
-              "question": "Aşağıdakilerden hangisi bir sorumluluğa örnektir?",
-              "options": [
-                "Okula gitme",
-                "Parkı temiz tutma",
-                "Düşünce özgürlüğü",
-                "Yaşama hakkı"
-              ],
-              "correct_answer": "Parkı temiz tutma"
-            },
-            {
-              "question": "Hak ve sorumlulukların birlikte olması neden önemlidir?",
-              "options": [
-                "Toplumda düzen sağlamak için",
-                "Sadece kurallar koymak için",
-                "Sadece cezalar vermek için",
-                "İnsanları sınırlamak için"
-              ],
-              "correct_answer": "Toplumda düzen sağlamak için"
-            },
-            {
-              "question": "Aşağıdakilerden hangisi düşünce özgürlüğüne örnektir?",
-              "options": [
-                "Sıraya girmek",
-                "Fikrini saygılı şekilde söylemek",
-                "Çöpleri yere atmak",
-                "Kuralları görmezden gelmek"
-              ],
-              "correct_answer": "Fikrini saygılı şekilde söylemek"
-            }
-          ]
-        },
-        "teacher_notes": {
-          "teaching_tips": [
-            "Quiz öncesinde öğrencilerin konuyu kısaca gözden geçirmesine izin verin.",
-            "Her sorudan sonra doğru cevabı açıklayarak kısa bir tartışma yapın.",
-            "Yanlış cevapların neden yanlış olduğunu öğrencilerle birlikte analiz edin.",
-            "Quiz sonucunu not vermek yerine öğrenme geri bildirimi olarak kullanın."
-          ],
-          "common_misconceptions": [
-            "Öğrenciler bazı davranışların hem hak hem sorumluluk olabileceğini karıştırabilir çünkü günlük yaşamda iç içe görülür. Doğrusu: Haklar imkanları, sorumluluklar ise görevleri ifade eder.",
-            "Öğrenciler sadece yasaların hakları belirlediğini sanabilir çünkü hukuk kavramını böyle öğrenmiş olabilirler. Doğrusu: Haklar doğuştan gelir.",
-            "Öğrenciler sorumlulukların sadece okul kurallarıyla ilgili olduğunu düşünebilir. Doğrusu: Sorumluluklar hayatın her alanında vardır."
-          ],
-          "classroom_discussion": [
-            "Quizde en zor bulduğun soru hangisiydi ve neden? (Beklenen: Öğrenci kendi düşüncesini açıklar.)",
-            "Hak ve sorumluluk kavramlarını günlük yaşamda nasıl kullanıyoruz? (Beklenen: Günlük örnekler.)",
-            "Haklarımızı korumak için neler yapabiliriz? (Beklenen: Kurallara uymak ve saygı göstermek.)"
-          ],
-          "extension_ideas": [
-            "Hızlı bitiren öğrencilerden yeni bir quiz sorusu yazmalarını isteyin.",
-            "Ev etkinliği: Aile üyelerine hak ve sorumluluklarla ilgili bir soru sorup cevaplarını yazın.",
-            "Meraklı öğrenciler için araştırma: Birleşmiş Milletler İnsan Hakları Evrensel Bildirgesi hangi yıl kabul edilmiştir?"
-          ]
-        }
-      },
-      {
-        "id": "step6",
-        "type": "summary",
-        "title": "Dersin Özeti",
-        "duration_minutes": 5,
-        "content": {
-          "slides": [
-            {
-              "type": "key",
-              "text": "İnsan hakları her insanın doğuştan sahip olduğu temel haklardır."
-            },
-            {
-              "type": "key",
-              "text": "Haklar tüm insanlar için eşit ve vazgeçilmezdir."
-            },
-            {
-              "type": "key",
-              "text": "Sorumluluklar başkalarının haklarına saygı göstermemizi sağlar."
-            },
-            {
-              "type": "key",
-              "text": "Hak ve sorumluluklar toplum düzeninin temelidir."
-            },
-            {
-              "type": "bridge",
-              "text": "Harika! Bu dersle hak ve sorumlulukların önemini öğrendin."
-            }
-          ],
-          "explanation": "Bu derste temel insan haklarının ne olduğunu ve neden önemli olduklarını öğrendik. İnsan hakları her insanın doğuştan sahip olduğu haklardır ve herkes için eşittir. Bu haklar insanların özgür, güvenli ve saygın bir yaşam sürmesini sağlar. Yaşama hakkı, eğitim hakkı ve düşünce özgürlüğü bu hakların en önemli örneklerindendir.\n\nAyrıca sorumlulukların da toplum için önemli olduğunu gördük. Haklarımızı kullanırken başkalarının haklarına saygı göstermek gerekir. Bu tıpkı bir takım oyunu gibidir — herkes kurallara uyarsa oyun düzenli ve eğlenceli olur. Hak ve sorumluluklar birlikte toplumda düzen ve adaletin oluşmasına yardımcı olur.",
-          "key_points": [
-            "İnsan Haklarının Önemi: İnsan hakları insanların özgür ve güvenli yaşamalarını sağlar. (Kazanım 1)",
-            "Eşitlik İlkesi: Temel haklar tüm insanlar için eşittir ve ayrım yapılmaz. (Kazanım 1)",
-            "Sorumluluk Bilinci: Sorumluluklar başkalarının haklarına saygı göstermemizi sağlar. (Kazanım 1)",
-            "Toplumsal Düzen: Hak ve sorumluluklar toplumda düzen oluşturur. (Kazanım 1)",
-            "5N1K Soruları: Hak ve sorumluluklar hakkında merak edilen konular 5N1K sorularıyla araştırılabilir. (Kazanım 2)"
-          ],
-          "examples": [
-            "Bir öğrenci sınıfta söz alarak düşüncesini paylaşır. Bu düşünce özgürlüğünün bir örneğidir.",
-            "Bir kişi parkı temiz kullanır. Bu sorumluluk bilincinin göstergesidir.",
-            "Bir çocuk okula gider. Bu eğitim hakkının kullanılmasıdır.",
-            "Toplu taşımada sıraya girmek başkalarının hakkına saygı göstermektir."
-          ],
-          "real_life_connections": [
-            "Günlük yaşamda kurallara uymak hem hakları hem sorumlulukları korur.",
-            "Aile içinde görev paylaşımı sorumluluk bilincini geliştirir.",
-            "Okulda arkadaşlara saygı göstermek hakların korunmasını sağlar.",
-            "Sonraki derslerde demokrasi kavramı ile hakların nasıl korunduğunu öğreneceksiniz."
-          ]
-        },
-        "activities": {
-          "summary_points": [
-            "İnsan hakları doğuştan kazanılır.",
-            "Haklar tüm insanlar için eşittir.",
-            "Sorumluluklar başkalarının haklarını korur.",
-            "Hak ve sorumluluk birlikte düşünülmelidir.",
-            "Toplumsal düzen hak ve sorumluluklarla sağlanır.",
-            "Hakların korunması herkesin görevidir.",
-            "5N1K soruları merak edilen konuları araştırmayı sağlar."
-          ]
-        },
-        "assessment": {},
-        "teacher_notes": {
-          "teaching_tips": [
-            "Öğrencilerden derste öğrendikleri üç önemli kavramı söylemelerini isteyin.",
-            "Tahtaya hak ve sorumluluk kelimelerini yazıp kısa bir tekrar yapın.",
-            "Öğrencilerin günlük yaşamdan örnekler vermesini isteyin.",
-            "Özet bölümünü hızlı bir sınıf tartışmasıyla tamamlayın."
-          ],
-          "common_misconceptions": [
-            "Öğrenciler hakların sadece yazılı kurallar olduğunu sanabilir çünkü çoğu zaman böyle öğretilir. Doğrusu: Haklar insanların doğuştan sahip olduğu değerlerdir.",
-            "Öğrenciler sorumlulukların sadece okul kuralları olduğunu düşünebilir. Doğrusu: Sorumluluklar hayatın tüm alanlarında vardır.",
-            "Öğrenciler hak ve sorumlulukların birbirinden bağımsız olduğunu sanabilir. Doğrusu: İkisi birlikte toplum düzenini sağlar."
-          ],
-          "classroom_discussion": [
-            "Bugün öğrendiğin en önemli kavram hangisi? (Beklenen: Öğrenci kendi görüşünü açıklar.)",
-            "Hak ve sorumluluklar toplum için neden önemlidir? (Beklenen: Düzen ve adalet sağlar.)",
-            "Haklarımızı korumak için neler yapabiliriz? (Beklenen: Kurallara uymak ve saygı göstermek.)"
-          ],
-          "extension_ideas": [
-            "Hızlı bitiren öğrencilerden hak ve sorumluluk konusuyla ilgili kısa bir slogan yazmalarını isteyin.",
-            "Ev etkinliği: Ailenizle birlikte evdeki hak ve sorumlulukları listeleyin.",
-            "Meraklı öğrenciler için araştırma: Demokrasi ile insan hakları arasında nasıl bir ilişki vardır?"
-          ]
-        }
-      },
-      {
-        "id": "step7",
-        "type": "reflection",
-        "title": "Kendi Öğrenmeni Değerlendir",
-        "duration_minutes": 4,
-        "content": {
-          "explanation": "Bu bölüm öğrencilerin kendi öğrenmelerini değerlendirmelerine yardımcı olur. Öğrenciler öğrendikleri kavramları düşünerek kendilerini geliştirme fırsatı bulur.",
-          "key_points": [
-            "Öz Değerlendirme: Öğrenciler kendi öğrenme süreçlerini değerlendirebilir. (Kazanım 2)",
-            "Düşünme Süreci: Sorular öğrencilerin düşünmesini sağlar. (Kazanım 2)",
-            "Kavram Pekiştirme: Hak ve sorumluluk kavramları tekrar edilir. (Kazanım 1)",
-            "Kişisel Farkındalık: Öğrenciler kendi davranışlarını değerlendirebilir. (Kazanım 2)",
-            "Sorumluluk Bilinci: Günlük yaşamda sorumluluk bilinci gelişir. (Kazanım 1)"
-          ],
-          "examples": [
-            "Bir öğrenci sınıfta söz almadan konuştuğunu fark edebilir ve bunu düzeltmeye karar verebilir.",
-            "Bir öğrenci parkta çöplerini yere atmaması gerektiğini düşünebilir.",
-            "Bir öğrenci arkadaşlarının haklarına saygı göstermesi gerektiğini fark edebilir.",
-            "Bir öğrenci evde sorumluluklarını daha iyi yerine getirmeye karar verebilir."
-          ],
-          "real_life_connections": [
-            "Kendi davranışlarımızı düşünmek daha iyi bir toplum oluşturur.",
-            "Sorumluluklarımızı fark etmek günlük yaşamda düzen sağlar.",
-            "Okulda öğrendiğimiz değerler hayatımız boyunca bize rehberlik eder.",
-            "Demokrasi ve vatandaşlık konularını öğrenirken bu farkındalık önemlidir."
-          ]
-        },
-        "activities": {
-          "discussion_prompts": [
-            "Bu derste öğrendiğin en önemli bilgi neydi?",
-            "Hak ve sorumluluk kavramları günlük yaşamını nasıl etkiliyor?",
-            "Sorumluluklarını daha iyi yerine getirmek için ne yapabilirsin?"
-          ],
-          "evaluation_tasks": [
-            "Hak ve sorumluluklarla ilgili öğrendiğin üç bilgiyi yaz.",
-            "Günlük yaşamda yerine getirdiğin bir sorumluluğu anlat."
-          ]
-        },
-        "assessment": {
-          "reflective_questions": [
-            "Hak ve sorumluluk kavramlarını daha iyi anladığını düşünüyor musun?",
-            "Bu dersten sonra davranışlarında bir değişiklik yapmayı düşünüyor musun?"
-          ],
-          "evaluation_tasks": [
-            "Hak ve sorumluluklarla ilgili kısa bir günlük yaz."
-          ]
-        },
-        "teacher_notes": {
-          "teaching_tips": [
-            "Öğrencilere düşünmeleri için kısa bir süre verin ve ardından cevaplarını paylaşmalarını isteyin.",
-            "Cevapları değerlendirmeden önce tüm öğrencilerin fikirlerini ifade etmelerine fırsat verin.",
-            "Bu bölümde not vermek yerine öğrencilerin düşüncelerini paylaşmasını teşvik edin.",
-            "Öğrencilerin günlük yaşam örnekleri vermesine izin verin."
-          ],
-          "common_misconceptions": [
-            "Öğrenciler düşüncelerinin yanlış olabileceğinden çekinebilir çünkü değerlendirilmekten korkabilir. Doğrusu: Bu bölümde amaç düşünmektir.",
-            "Öğrenciler sorumluluklarını küçük şeyler olarak görebilir çünkü günlük yaşamda sıradan görünür. Doğrusu: Küçük sorumluluklar büyük düzeni sağlar.",
-            "Öğrenciler hakların sadece teorik olduğunu düşünebilir. Doğrusu: Haklar günlük yaşamda sürekli kullanılır."
-          ],
-          "classroom_discussion": [
-            "Bugün öğrendiğin bilgileri hayatında nasıl kullanabilirsin? (Beklenen: Günlük örnekler.)",
-            "Sorumluluklarını yerine getirdiğinde nasıl hissedersin? (Beklenen: Olumlu duygular.)",
-            "Haklara saygı gösterilen bir toplum nasıl olur? (Beklenen: Adil ve güvenli.)"
-          ],
-          "extension_ideas": [
-            "Hızlı bitiren öğrencilerden hak ve sorumluluk konulu kısa bir afiş hazırlamalarını isteyin.",
-            "Ev etkinliği: Ailenizle birlikte evdeki sorumlulukları gözden geçirin.",
-            "Meraklı öğrenciler için araştırma: Çocuk hakları hangi kurumlar tarafından korunur?"
-          ]
-        }
-      },
-      {
-        "id": "step8",
-        "type": "certificate",
-        "title": "Tebrikler!",
-        "duration_minutes": 1,
-        "content": {
-          "explanation": "Öğrenci dersin tüm aşamalarını tamamlamıştır ve temel haklar ile sorumlulukların önemini öğrenmiştir.",
-          "key_points": [
-            "Başarı: Öğrenci ders içeriğini tamamlamıştır. (Kazanım 1)",
-            "Kavram Bilgisi: Temel hak ve sorumluluk kavramları öğrenilmiştir. (Kazanım 1)",
-            "Sorgulama: 5N1K soruları ile merak edilen konular araştırılmıştır. (Kazanım 2)",
-            "Toplumsal Bilinç: Haklara saygı ve sorumluluk bilinci gelişmiştir. (Kazanım 1)",
-            "Öğrenme Süreci: Ders başarıyla tamamlanmıştır. (Kazanım 2)"
-          ],
-          "examples": [
-            "Öğrenci hak ve sorumluluk kavramlarını günlük yaşamda kullanabilir.",
-            "Öğrenci arkadaşlarının haklarına saygı göstermenin önemini öğrenmiştir.",
-            "Öğrenci sorumluluklarını yerine getirmenin toplum için önemli olduğunu anlamıştır.",
-            "Öğrenci haklar hakkında sorular sorarak araştırma yapabilir."
-          ],
-          "real_life_connections": [
-            "Hak ve sorumluluk bilinci toplumun gelişmesine katkı sağlar.",
-            "Okulda ve evde sorumluluklarını yerine getirmek düzeni artırır.",
-            "Haklara saygı göstermek insanlar arasında güven oluşturur.",
-            "Demokrasi konusunu öğrenirken bu bilgiler temel oluşturacaktır."
-          ]
-        },
-        "activities": {
-          "certificate_message": "Harika! Temel haklar ve sorumlulukların önemini başarıyla öğrendin. Artık haklarını bilir ve sorumluluklarını yerine getirmenin toplum için neden önemli olduğunu anlayabilirsin.",
-          "earned_badges": [
-            "Hak Bilinci Kaşifi",
-            "Sorumluluk Şampiyonu",
-            "Demokrasi Öğrencisi"
-          ]
-        },
-        "assessment": {},
-        "teacher_notes": {
-          "teaching_tips": [
-            "Ders sonunda öğrencileri tebrik edin ve öğrendikleri bilgileri günlük yaşamda kullanmalarını teşvik edin.",
-            "Rozetleri göstererek öğrencilerin motivasyonunu artırabilirsiniz.",
-            "Dersin sonunda kısa bir alkış veya kutlama yapabilirsiniz.",
-            "Öğrencilerin öğrendiklerini aileleriyle paylaşmalarını teşvik edin."
-          ],
-          "common_misconceptions": [
-            "Öğrenciler dersin sadece okul için olduğunu düşünebilir çünkü değerlendirme yapılır. Doğrusu: Bu bilgiler günlük yaşam için de önemlidir.",
-            "Öğrenciler hakların sadece kitaplarda yazılı olduğunu sanabilir. Doğrusu: Haklar hayatın her alanında kullanılır.",
-            "Öğrenciler sorumlulukların zorunlu görevler olduğunu düşünebilir. Doğrusu: Sorumluluklar toplum düzeni için gereklidir."
-          ],
-          "classroom_discussion": [
-            "Bugün öğrendiğin bilgileri arkadaşlarına nasıl anlatırsın? (Beklenen: Kendi cümleleriyle açıklama.)",
-            "Hak ve sorumluluklar hayatımızı nasıl etkiler? (Beklenen: Düzen ve saygı sağlar.)",
-            "Sence bu konuyu öğrenmek neden önemlidir? (Beklenen: Toplumda iyi bir birey olmak için.)"
-          ],
-          "extension_ideas": [
-            "Hızlı bitiren öğrencilerden hak ve sorumluluk konulu kısa bir hikaye yazmalarını isteyin.",
-            "Ev etkinliği: Aile üyeleriyle birlikte hak ve sorumluluk örnekleri hakkında konuşun.",
-            "Meraklı öğrenciler için araştırma: Dünyada insan haklarını koruyan kurumlar hangileridir?"
-          ]
-        }
-      }
-    ]
-  }
+"lesson": {
+"grade": "5. Sınıf",
+"subject": "Sosyal Bilgiler",
+"unit": "Yaşayan Demokrasimiz",
+"topic": "Temel Haklar, Sorumluluklar ve Önemi",
+"title": "Temel Haklar ve Sorumluluklar Neden Önemlidir?",
+"description": "Bu derste öğrenciler temel insan haklarının ve sorumluluklarının ne olduğunu, neden önemli olduklarını ve toplum hayatını nasıl etkilediklerini keşfeder. Öğrenciler 5N1K tekniğini kullanarak hak ve sorumluluklar hakkında sorular sormayı öğrenir ve günlük yaşam örnekleri üzerinden kavramları pekiştirir.",
+"difficulty_level": "orta",
+"learning_objectives": [
+"Temel insan haklarının ne olduğunu açıklar.",
+"Hak ve sorumluluk arasındaki ilişkiyi açıklar.",
+"Toplumsal yaşamda hak ve sorumlulukların neden önemli olduğunu açıklar.",
+"Hak ve sorumluluklarla ilgili merak ettiği konular hakkında 5N1K soruları sorar."
+],
+"keywords": [
+"insan hakları",
+"sorumluluk",
+"temel haklar",
+"eşitlik",
+"özgürlük",
+"demokrasi",
+"5N1K"
+],
+"steps": [
+{
+"id": "step1",
+"type": "intro",
+"title": "Herkesin Sahip Olduğu Haklar Var mı?",
+"duration_minutes": 10,
+"content": {
+"slides": [
+{
+"type": "hook",
+"text": "Doğduğun anda sana verilen ama satın alamayacağın bir şey olduğunu biliyor muydun?"
+},
+{
+"type": "fact",
+"text": "Her insan yalnızca insan olduğu için bazı temel haklara sahiptir. Bunlara insan hakları denir."
+},
+{
+"type": "analogy",
+"text": "Bu tıpkı güneş ışığı gibidir; güneş kimi aydınlatacağını seçmez, herkese eşit şekilde ulaşır."
+},
+{
+"type": "example",
+"text": "Okula gitme hakkı, güven içinde yaşama hakkı ve düşüncelerini söyleme özgürlüğü temel haklara örnektir."
+},
+{
+"type": "bridge",
+"text": "Şimdi insan haklarının tam olarak ne olduğunu daha yakından keşfedelim."
+}
+],
+"explanation": "İnsanlar dünyaya geldikleri anda bazı temel haklara sahip olur. Bu haklara insan hakları (human rights) denir. İnsan hakları; yaşama, eğitim alma, güvenlik içinde yaşama ve düşüncelerini ifade etme gibi temel hakları içerir. Bu haklar insanların onurlu bir yaşam sürmesini sağlar. İnsan haklarının en önemli özelliği, herkes için geçerli olmasıdır. Hiç kimse bu hakları sadece bazı insanlara veremez veya başkalarından keyfi olarak alamaz.\n\nİnsan haklarını anlamak için günlük hayattan bir benzetme yapabiliriz. Bu tıpkı güneş ışığı gibidir — güneş ışığı belirli insanları seçmez, herkesi aydınlatır. İnsan hakları da tüm insanlar için eşit şekilde geçerlidir. Toplumların huzurlu ve adil olabilmesi için insanların hem haklarını bilmesi hem de başkalarının haklarına saygı duyması gerekir. Bu nedenle hakların yanında sorumluluklar da önemlidir. Birazdan hak ve sorumluluk arasındaki ilişkiyi birlikte inceleyeceğiz.",
+"key_points": [
+"İnsan hakları kavramı: İnsan hakları her insanın doğuştan sahip olduğu temel haklardır ve bu haklar insanların güvenli ve onurlu bir yaşam sürmesini sağlar. (Kazanım 1)",
+"Hakların evrenselliği: İnsan hakları din, dil, ırk veya ülke farkı olmadan tüm insanlar için geçerlidir. Bu özellik hakların evrensel olmasını sağlar. (Kazanım 1)",
+"Toplumdaki rolü: İnsan hakları toplumda adaletin, güvenin ve barışın oluşmasına yardımcı olur. Hakların korunması toplum düzenini güçlendirir. (Kazanım 1)",
+"Hakları bilmenin önemi: İnsanlar haklarını bildiklerinde kendilerini koruyabilir ve başkalarının haklarına saygı göstermeyi öğrenir. (Kazanım 1)",
+"Hak ve sorumluluk ilişkisi: Hakların doğru kullanılabilmesi için insanların sorumluluklarını da yerine getirmesi gerekir. (Kazanım 1)"
+],
+"examples": [
+"Okula gitme hakkı: Bir çocuk eğitim alma hakkına sahiptir. Bu hak sayesinde çocuklar okula giderek bilgi ve beceri kazanır.",
+"Güvenli yaşam hakkı: İnsanlar güvenli bir ortamda yaşama hakkına sahiptir. Polis ve yasalar bu hakkın korunmasına yardımcı olur.",
+"Düşünce özgürlüğü: İnsanlar düşüncelerini ifade edebilir. Bu sayede farklı fikirler ortaya çıkar ve toplum gelişir.",
+"Sağlık hizmetlerinden yararlanma: İnsanların sağlık hizmetlerinden yararlanma hakkı vardır. Hastaneler ve sağlık çalışanları bu hakkın gerçekleşmesini sağlar."
+],
+"real_life_connections": [
+"Önceki derslerde toplum kurallarını öğrenmiş olabilirsiniz. Bu kuralların önemli bir amacı insanların haklarını korumaktır.",
+"Bir sınıfta herkes konuşma hakkına sahip olsa bile başkalarını dinleme sorumluluğu vardır. Bu durum hak ve sorumlulukların birlikte çalıştığını gösterir.",
+"Trafik kuralları insanların güvenli yaşama hakkını korumak için oluşturulmuştur. Kurallara uymak bir sorumluluktur.",
+"Bir sonraki derslerde demokrasi kavramını daha ayrıntılı inceleyeceğiz. Demokrasi, insanların haklarının korunmasıyla yakından ilişkilidir."
+]
+},
+"activities": {
+"discussion_prompts": [
+"Sence insanlar doğuştan bazı haklara sahip olmalı mı? Neden?",
+"Bir insanın eğitim alma hakkı olmasaydı toplum nasıl etkilenirdi?",
+"Hakların korunmadığı bir toplumda insanlar nasıl hissederdi?"
+]
+},
+"assessment": {},
+"teacher_notes": {
+"teaching_tips": [
+"Derse başlamadan önce öğrencilere 'Sence dünyaya geldiğinde sana verilen şeyler neler olabilir?' sorusunu sorun. 2 dakika fikirlerini söylemelerine izin verin ve ardından insan hakları kavramına geçin.",
+"Tahtaya 'hak' kelimesini yazın ve öğrencilerden akıllarına gelen hak örneklerini söylemelerini isteyin. Bu etkinliği 3–4 dakika sürdürerek öğrencilerin ön bilgilerini ortaya çıkarın.",
+"Bir öğrenciden kısa bir hikâye anlatmasını isteyin: 'Okula gidemeyen bir çocuk nasıl hisseder?' Bu örnek üzerinden eğitim hakkını tartışın.",
+"Öğrencilerin kavramı daha iyi anlaması için günlük yaşamdan örnekler vermelerini isteyin ve her örneği tahtaya yazın."
+],
+"common_misconceptions": [
+"Öğrenciler insan haklarının yalnızca bazı ülkelerde geçerli olduğunu sanabilir çünkü farklı ülkelerde farklı kurallar olduğunu görürler. Doğrusu: İnsan hakları evrenseldir ve tüm insanlar için geçerlidir.",
+"Öğrenciler hakların devlet tarafından verildiğini sanabilir çünkü yasaları devletin koyduğunu düşünürler. Doğrusu: İnsan hakları doğuştan gelir, devletlerin görevi bu hakları korumaktır.",
+"Öğrenciler hakların sınırsız olduğunu sanabilir çünkü özgürlük kavramını yanlış anlayabilirler. Doğrusu: Haklar kullanılırken başkalarının haklarına zarar verilmemelidir."
+],
+"classroom_discussion": [
+"Eğer bir toplumda insanların eğitim hakkı olmasaydı neler olurdu? (Beklenen: toplum gelişemez, insanlar bilgi edinemez)",
+"Bir kişinin hakkı ile başka bir kişinin hakkı çakışırsa ne yapılmalıdır? (Beklenen: adalet ve kurallar devreye girer)",
+"Hakların korunması toplumun huzurunu nasıl etkiler? (Beklenen: güven ve barış sağlar)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden defterlerine üç temel hak yazmalarını ve her biri için kısa bir örnek oluşturmalarını isteyin.",
+"Ev ödevi olarak öğrencilerden aile bireylerine 'Sizce en önemli insan hakkı nedir?' sorusunu sormalarını ve cevapları not etmelerini isteyin.",
+"Meraklı öğrenciler için araştırma: İnsan Hakları Evrensel Bildirgesi nedir ve neden hazırlanmıştır?"
+]
+}
+},
+{
+"id": "step2",
+"type": "concept_explanation",
+"title": "Temel İnsan Hakları Nedir?",
+"duration_minutes": 20,
+"content": {
+"slides": [
+{
+"type": "hook",
+"text": "Sence insanlar hangi haklara mutlaka sahip olmalıdır?"
+},
+{
+"type": "fact",
+"text": "Temel insan hakları, insanların yalnızca insan olduğu için sahip olduğu vazgeçilmez haklardır."
+},
+{
+"type": "fact",
+"text": "Bu haklar yaşama hakkı, eğitim hakkı, düşünce özgürlüğü ve güvenlik hakkı gibi temel hakları içerir."
+},
+{
+"type": "analogy",
+"text": "Bu tıpkı bir binanın temeli gibidir; temel sağlam olmazsa bina ayakta duramaz."
+},
+{
+"type": "example",
+"text": "Bir öğrencinin okula gitmesi eğitim hakkının kullanılmasıdır."
+},
+{
+"type": "key",
+"text": "Temel insan hakları doğuştan gelir ve herkes için geçerlidir."
+},
+{
+"type": "bridge",
+"text": "Şimdi hakların yanında sorumlulukların neden önemli olduğunu inceleyelim."
+}
+],
+"explanation": "Temel insan hakları, insanların yalnızca insan oldukları için sahip oldukları vazgeçilmez haklardır. Bu haklar insanların güvenli, özgür ve onurlu bir yaşam sürmesini sağlar. Yaşama hakkı, eğitim hakkı, sağlık hizmetlerinden yararlanma hakkı ve düşünce özgürlüğü bu haklara örnek olarak verilebilir. Bu hakların en önemli özelliği doğuştan gelmesidir. Yani insanlar bu hakları sonradan kazanmaz; doğdukları anda bu haklara sahip olurlar.\n\nTemel hakları anlamak için bir analoji kullanabiliriz. Bu tıpkı bir binanın temeli gibidir — bir bina sağlam bir temel olmadan ayakta duramaz. Aynı şekilde bir toplum da insanların temel hakları korunmadan sağlıklı şekilde gelişemez. İnsan hakları korunmadığında toplumda adaletsizlik ve huzursuzluk ortaya çıkar. Bu nedenle devletler ve toplumlar insan haklarını korumak için yasalar ve kurumlar oluşturur. Bir sonraki bölümde bu hakların sorumluluklarla nasıl dengelendiğini öğreneceğiz.",
+"key_points": [
+"Temel insan hakları nedir: Temel insan hakları insanların yalnızca insan olduğu için sahip olduğu vazgeçilmez haklardır. Bu haklar herkes için geçerlidir ve devredilemez. (Kazanım 1)",
+"Doğuştan gelme özelliği: İnsan hakları doğuştan gelir ve sonradan kazanılmaz. Bu nedenle kimse bu hakları keyfi olarak ortadan kaldıramaz. (Kazanım 1)",
+"Toplum için önemi: İnsan haklarının korunması toplumda adalet ve güven ortamı oluşturur. (Kazanım 1)",
+"Temel hak örnekleri: Yaşama hakkı, eğitim hakkı, düşünce özgürlüğü ve sağlık hakkı temel haklara örnek gösterilebilir. (Kazanım 1)",
+"Hakların korunması: Devletler yasalar ve kurumlar aracılığıyla insanların haklarını korumaya çalışır. (Kazanım 1)"
+],
+"examples": [
+"Bir çocuğun okula gitmesi: Eğitim hakkı sayesinde çocuklar okula giderek bilgi ve beceri kazanır.",
+"Bir kişinin düşüncesini söylemesi: İnsanlar düşüncelerini özgürce ifade edebilir ve bu toplumun gelişmesini sağlar.",
+"Hastanede tedavi görmek: Sağlık hizmetlerinden yararlanmak insanların temel haklarından biridir.",
+"Güvenli bir evde yaşamak: İnsanların güvenli bir ortamda yaşama hakkı vardır."
+],
+"real_life_connections": [
+"Okulda herkesin eğitim alabilmesi eğitim hakkının günlük hayattaki bir örneğidir.",
+"Trafik kurallarına uymak insanların güvenli yaşama hakkını korur.",
+"Sınıf içinde konuşma sırası beklemek başkalarının ifade özgürlüğüne saygı göstermektir.",
+"Bir sonraki bölümde hakların yanında sorumlulukların neden gerekli olduğunu öğreneceğiz."
+],
+"notebook": {
+"definition": "Temel insan hakları, insanların yalnızca insan olduğu için doğuştan sahip olduğu ve herkes için geçerli olan vazgeçilmez haklardır.",
+"summary_items": [
+"Temel haklar doğuştan gelir",
+"Herkes için geçerlidir",
+"Toplum düzeni için önemlidir"
+],
+"sections": [
+{
+"title": "Temel Bilgiler",
+"items": [
+"İnsan hakları doğuştan kazanılır.",
+"Bu haklar tüm insanlar için geçerlidir.",
+"Haklar devredilemez ve vazgeçilmezdir.",
+"Toplum düzeninin korunmasına yardımcı olur."
+]
+},
+{
+"title": "Örnek Notları",
+"items": [
+"Okula gitmek eğitim hakkının kullanılmasıdır.",
+"Fikirlerini söylemek düşünce özgürlüğünün bir örneğidir.",
+"Güvenli bir ortamda yaşamak temel bir insan hakkıdır."
+]
+},
+{
+"title": "Hatırla",
+"items": [
+"Haklar doğuştan gelir.",
+"Herkes için eşittir.",
+"Korunması gerekir."
+]
+}
+]
+}
+},
+"activities": {
+"cards": [
+{ "item": "Yaşama hakkı", "label": "Temel insan hakkı" },
+{ "item": "Eğitim hakkı", "label": "Temel insan hakkı" },
+{ "item": "Sağlık hizmeti alma", "label": "Temel insan hakkı" },
+{ "item": "Düşünce özgürlüğü", "label": "Temel insan hakkı" }
+]
+},
+"assessment": {
+"evaluation_tasks": [
+"Bir temel insan hakkını seç ve bu hakkın neden önemli olduğunu iki cümle ile açıkla."
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Tahtaya 'Temel Haklar' başlığını yazın ve öğrencilerden bildikleri hakları söylemelerini isteyin. 3 dakika boyunca fikirleri listeleyin.",
+"Her hak için kısa bir örnek vererek öğrencilerin kavramı somutlaştırmasını sağlayın.",
+"Bir öğrenciden 'Eğitim hakkı neden önemlidir?' sorusuna cevap vermesini isteyin.",
+"Hakların korunmadığı bir toplum örneği üzerinden kısa bir tartışma başlatın."
+],
+"common_misconceptions": [
+"Öğrenciler bazı insanların daha fazla hakka sahip olduğunu sanabilir çünkü toplumda farklı roller görürler. Doğrusu: İnsan hakları tüm insanlar için eşittir.",
+"Öğrenciler hakların devlet tarafından verildiğini sanabilir çünkü yasaları devlet koyar. Doğrusu: Haklar doğuştan gelir ve devletler bu hakları korur.",
+"Öğrenciler hakların yalnızca yetişkinlere ait olduğunu sanabilir çünkü yetişkinlerin daha fazla sorumluluğu vardır. Doğrusu: Çocukların da temel hakları vardır."
+],
+"classroom_discussion": [
+"Bir toplumda eğitim hakkı olmazsa neler olur? (Beklenen: gelişme olmaz)",
+"Herkesin aynı haklara sahip olması neden önemlidir? (Beklenen: eşitlik ve adalet sağlar)",
+"Sence en önemli insan hakkı hangisidir? (Beklenen: farklı görüşler olabilir)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden bir hak için kısa bir poster tasarlamalarını isteyin.",
+"Evde aile bireylerine 'Sizce en önemli insan hakkı hangisidir?' sorusunu sormalarını isteyin.",
+"Meraklı öğrenciler için araştırma: Birleşmiş Milletler neden insan haklarını korumaya çalışır?"
+]
+}
+},
+{
+"id": "step3",
+"type": "concept_explanation",
+"title": "Hak ve Sorumluluk İlişkisi",
+"duration_minutes": 20,
+"content": {
+"slides": [
+{
+"type": "hook",
+"text": "Sadece haklarımız olsa ama hiç sorumluluğumuz olmasa toplum nasıl olurdu?"
+},
+{
+"type": "fact",
+"text": "Haklar insanların sahip olduğu özgürlüklerdir, sorumluluklar ise bu hakları kullanırken uymamız gereken görevlerdir."
+},
+{
+"type": "fact",
+"text": "Bir hakkı kullanırken başkalarının haklarına zarar vermemek gerekir."
+},
+{
+"type": "analogy",
+"text": "Bu tıpkı bir oyundaki kurallar gibidir; kurallar olmazsa oyun düzenli şekilde oynanamaz."
+},
+{
+"type": "example",
+"text": "Konuşma hakkın vardır ama başkaları konuşurken dinlemek de bir sorumluluktur."
+},
+{
+"type": "key",
+"text": "Hak ve sorumluluk birlikte çalışır."
+},
+{
+"type": "bridge",
+"text": "Şimdi bu ilişkiyi gerçek bir durum üzerinden inceleyelim."
+}
+],
+"explanation": "Haklar insanların sahip olduğu özgürlükleri ifade ederken, sorumluluklar bu hakları kullanırken uymamız gereken görevleri ifade eder. İnsanların haklarını doğru kullanabilmesi için sorumluluklarını da yerine getirmesi gerekir. Örneğin bir öğrencinin eğitim alma hakkı vardır. Ancak aynı öğrencinin derslere katılma, öğretmenini dinleme ve okul kurallarına uyma sorumluluğu da vardır.\n\nHak ve sorumluluk arasındaki ilişkiyi anlamak için bir oyun örneği düşünebiliriz. Bu tıpkı bir oyundaki kurallar gibidir — herkes istediğini yaparsa oyun düzenli şekilde oynanamaz. Kurallar sayesinde herkes adil şekilde oynar. Aynı şekilde sorumluluklar da toplum içinde düzeni sağlar. İnsanlar haklarını kullanırken başkalarının haklarına saygı gösterdiğinde toplum daha adil ve huzurlu olur. Bu nedenle haklar ve sorumluluklar birbirinden ayrılmaz.",
+"key_points": [
+"Hak nedir: Hak, insanların sahip olduğu özgürlük ve yetkilerdir. İnsanlar bu hakları kullanarak hayatlarını düzenler. (Kazanım 1)",
+"Sorumluluk nedir: Sorumluluk insanların yerine getirmesi gereken görevlerdir. (Kazanım 1)",
+"Hak ve sorumluluk ilişkisi: Haklar ve sorumluluklar birlikte çalışır ve toplum düzenini sağlar. (Kazanım 1)",
+"Toplumdaki rolü: İnsanlar sorumluluklarını yerine getirdiğinde toplumda adalet ve düzen oluşur. (Kazanım 1)",
+"Denge kavramı: Hakların doğru kullanılması için sorumlulukların yerine getirilmesi gerekir. (Kazanım 1)"
+],
+"examples": [
+"Sınıfta konuşma hakkı: Her öğrenci konuşma hakkına sahiptir. Ancak başkalarını dinlemek de bir sorumluluktur.",
+"Temiz çevrede yaşama hakkı: İnsanlar temiz bir çevrede yaşama hakkına sahiptir. Çevreyi temiz tutmak ise sorumluluktur.",
+"Eğitim hakkı: Okula gitmek bir haktır. Derslere düzenli katılmak sorumluluktur.",
+"Güvenli trafik hakkı: Trafikte güvenli olmak bir haktır. Kurallara uymak sorumluluktur."
+],
+"real_life_connections": [
+"Sınıfta sırayla konuşmak hak ve sorumluluk ilişkisinin günlük hayattaki bir örneğidir.",
+"Çevreyi temiz tutmak insanların sağlıklı yaşama hakkını korur.",
+"Trafik kurallarına uymak herkesin güvenli yaşama hakkını destekler.",
+"Bir sonraki etkinlikte hak ve sorumluluk ilişkisini gerçek bir senaryo üzerinden inceleyeceğiz."
+],
+"notebook": {
+"definition": "Hak ve sorumluluk ilişkisi, insanların sahip oldukları hakları kullanırken yerine getirmesi gereken görevlerle dengelenmesidir.",
+"summary_items": [
+"Hak ve sorumluluk birlikte çalışır",
+"Toplum düzeni için gereklidir"
+],
+"sections": [
+{
+"title": "Temel Bilgiler",
+"items": [
+"Hak özgürlük ve yetki anlamına gelir.",
+"Sorumluluk yerine getirilmesi gereken görevdir.",
+"Haklar ve sorumluluklar birbirini tamamlar."
+]
+},
+{
+"title": "Karşılaştırma",
+"items": [
+"Hak kullanma özgürlüğüdür.",
+"Sorumluluk görev ve yükümlülüktür."
+]
+},
+{
+"title": "Örnek Notları",
+"items": [
+"Konuşma hakkı vardır ama başkalarını dinleme sorumluluğu vardır.",
+"Temiz çevre hakkı vardır ama çevreyi kirletmemek sorumluluktur."
+]
+},
+{
+"title": "Hatırla",
+"items": [
+"Hak ve sorumluluk birlikte çalışır.",
+"Toplum düzeni için gereklidir."
+]
+}
+]
+}
+},
+"activities": {
+"cards": [
+{ "item": "Konuşma hakkı", "label": "Hak" },
+{ "item": "Başkalarını dinlemek", "label": "Sorumluluk" },
+{ "item": "Temiz çevrede yaşamak", "label": "Hak" },
+{ "item": "Çevreyi kirletmemek", "label": "Sorumluluk" }
+]
+},
+"assessment": {
+"evaluation_tasks": [
+"Hak ve sorumluluk ilişkisine bir günlük hayat örneği yaz."
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Sınıfta küçük bir rol örneği oluşturun: Bir öğrenci konuşsun, diğerleri dinlesin. Bu etkinlik üzerinden hak ve sorumluluk ilişkisini açıklayın.",
+"Tahtaya iki sütun çizin: Hak ve Sorumluluk. Öğrencilerden örnekler söylemelerini isteyin.",
+"Kısa bir tartışma başlatın: 'Herkes konuşursa ne olur?'",
+"Öğrencilerden defterlerine bir hak ve bir sorumluluk yazmalarını isteyin."
+],
+"common_misconceptions": [
+"Öğrenciler hakların sorumluluk gerektirmediğini sanabilir çünkü özgürlük kavramını yanlış anlayabilirler. Doğrusu: Her hak bir sorumlulukla dengelenir.",
+"Öğrenciler sorumlulukların yalnızca yetişkinlere ait olduğunu sanabilir çünkü yetişkinlerin daha fazla görevi vardır. Doğrusu: Çocukların da sorumlulukları vardır.",
+"Öğrenciler sorumlulukların zorunlu kurallar olduğunu sanabilir çünkü kurallarla karıştırabilirler. Doğrusu: Sorumluluklar toplum düzenini koruyan görevlerdir."
+],
+"classroom_discussion": [
+"Sence herkes istediğini yapsaydı toplum nasıl olurdu? (Beklenen: düzen bozulur)",
+"Hakların korunması için sorumluluklar neden gereklidir? (Beklenen: başkalarının haklarını korumak için)",
+"Sınıfta hangi sorumlulukları yerine getiriyorsun? (Beklenen: dinlemek, kurallara uymak)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden bir hak ve buna karşılık gelen sorumluluğu yazmalarını isteyin.",
+"Evde aile bireylerine 'Evde hangi sorumlulukları yerine getiriyoruz?' sorusunu sormalarını isteyin.",
+"Meraklı öğrenciler için araştırma: Çocuk Hakları Sözleşmesi nedir?"
+]
+}
+},
+{
+"id": "step4",
+"type": "scenario_activity",
+"title": "Sınıfta Hak ve Sorumluluk",
+"duration_minutes": 10,
+"content": {},
+"activities": {
+"scenario": "Bir sınıfta öğrenciler konuşma hakkına sahiptir. Ancak bazı öğrenciler sürekli konuşur ve başkalarını dinlemez. Bu durum sınıfta karışıklık yaratır ve bazı öğrenciler kendilerini ifade edemez. Öğretmen bu durumu çözmek ister.",
+"choices": [
+{
+"text": "Herkes istediği zaman konuşmaya devam etsin.",
+"correct": false,
+"feedback": "Bu durumda sınıfta düzen sağlanamaz. Başkalarının konuşma hakkı ihlal edilir."
+},
+{
+"text": "Konuşma hakkı sırayla kullanılmalı ve herkes birbirini dinlemeli.",
+"correct": true,
+"feedback": "Bu seçenek hak ve sorumluluk dengesini sağlar. Herkes konuşma hakkını kullanabilir ve başkalarının hakkına saygı gösterir."
+},
+{
+"text": "Sadece öğretmen konuşsun, öğrenciler hiç konuşmasın.",
+"correct": false,
+"feedback": "Bu durumda öğrencilerin ifade özgürlüğü sınırlanır. Hakların dengeli şekilde kullanılmasına izin verilmelidir."
+}
+]
+},
+"assessment": {
+"evaluation_tasks": [
+"Bu senaryoda hangi hak ve hangi sorumluluk yer alıyor açıklayın."
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Senaryoyu yüksek sesle okuyun ve öğrencilerden hangi seçeneğin doğru olduğunu düşünmelerini isteyin.",
+"Öğrencilerin neden bu seçeneği seçtiklerini açıklamalarını isteyin.",
+"Hak ve sorumluluk dengesini tekrar vurgulayın.",
+"Örnekleri öğrencilerin günlük hayatından seçmeye çalışın."
+],
+"common_misconceptions": [
+"Öğrenciler konuşma hakkının sınırsız olduğunu sanabilir çünkü ifade özgürlüğünü yanlış yorumlayabilirler. Doğrusu: Başkalarının haklarına saygı gösterilmelidir.",
+"Öğrenciler sorumlulukların özgürlüğü kısıtladığını sanabilir çünkü kuralları sınırlama olarak görebilirler. Doğrusu: Sorumluluklar özgürlüklerin korunmasını sağlar.",
+"Öğrenciler yalnızca öğretmenin karar verebileceğini sanabilir çünkü otoriteye alışkındırlar. Doğrusu: Kurallar ve haklar birlikte düzen oluşturur."
+],
+"classroom_discussion": [
+"Bu sınıf senaryosunda hangi haklar var? (Beklenen: konuşma hakkı)",
+"Hangi sorumluluklar yerine getirilmeli? (Beklenen: dinlemek)",
+"Bu durum başka nerelerde yaşanabilir? (Beklenen: ailede, arkadaş ortamında)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden benzer bir sınıf senaryosu yazmalarını isteyin.",
+"Evde aile bireyleriyle konuşma sırası örneği üzerine kısa bir gözlem yapmalarını isteyin.",
+"Meraklı öğrenciler için araştırma: Demokrasi nedir?"
+]
+}
+},
+{
+"id": "step5",
+"type": "word_bank",
+"title": "Hak ve Sorumluluk Cümlesini Tamamla",
+"duration_minutes": 8,
+"content": {},
+"activities": {
+"word_bank": {
+"words": [
+"hakları",
+"sorumluluklarını",
+"özgürlüğünü",
+"kurallarını",
+"eşitliğini"
+],
+"template": "Her insanın bazı temel ____ vardır ve bu hakları korumak için bazı ____ yerine getirmesi gerekir.",
+"blanks": [
+{
+"id": "blank1",
+"correct_answer": "hakları"
+},
+{
+"id": "blank2",
+"correct_answer": "sorumluluklarını"
+}
+]
+}
+},
+"assessment": {
+"evaluation_tasks": [
+"Cümleyi tamamladıktan sonra kendi hak ve sorumluluklarından birini yaz."
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Öğrencilere kelimeleri tek tek okuyun ve anlamlarını hatırlatın.",
+"Cümleyi birlikte okuyarak doğru kelimeleri seçmelerini isteyin.",
+"Yanlış seçeneklerin neden uygun olmadığını tartışın.",
+"Cümleyi tamamladıktan sonra öğrencilerden kendi örneklerini yazmalarını isteyin."
+],
+"common_misconceptions": [
+"Öğrenciler hakların sorumluluk gerektirmediğini sanabilir çünkü özgürlüğü yanlış yorumlayabilirler. Doğrusu: Haklar sorumluluklarla dengelenir.",
+"Öğrenciler yalnızca yetişkinlerin sorumlulukları olduğunu sanabilir çünkü evde görevlerin çoğunu yetişkinler yapar. Doğrusu: Çocukların da sorumlulukları vardır.",
+"Öğrenciler kuralların yalnızca cezalandırmak için olduğunu sanabilir çünkü disiplinle ilişkilendirirler. Doğrusu: Kurallar hakları korumak için vardır."
+],
+"classroom_discussion": [
+"Cümlede geçen haklar neden önemlidir? (Beklenen: insanların özgür yaşaması)",
+"Sorumluluklar yerine getirilmezse ne olur? (Beklenen: düzen bozulur)",
+"Sınıfta hangi sorumluluklarımız var? (Beklenen: kurallara uymak)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden yeni bir hak ve sorumluluk cümlesi yazmalarını isteyin.",
+"Evde aile bireyleriyle birlikte hak ve sorumluluk örnekleri bulmalarını isteyin.",
+"Meraklı öğrenciler için araştırma: Çocukların sorumlulukları nelerdir?"
+]
+}
+},
+{
+"id": "step6",
+"type": "risk_analysis",
+"title": "Haklar ve Sorumluluklar Hakkında Yanlış Düşünceler",
+"duration_minutes": 10,
+"content": {},
+"activities": {
+"cards": [
+{
+"misconception": "Haklar sınırsızdır.",
+"risk_level": "yüksek risk",
+"why_it_happens": "Öğrenciler özgürlük kavramını sınırsızlık olarak düşünebilir.",
+"truth": "Haklar başkalarının haklarına zarar vermeden kullanılmalıdır.",
+"fix_tip": "Hak ve sorumluluk dengesini örneklerle açıklayın.",
+"mini_check": "Bir kişi istediği zaman konuşursa sınıfta ne olur?"
+},
+{
+"misconception": "Sorumluluklar sadece yetişkinlere aittir.",
+"risk_level": "orta risk",
+"why_it_happens": "Evde birçok görevi yetişkinlerin yaptığını görürler.",
+"truth": "Çocukların da sorumlulukları vardır.",
+"fix_tip": "Okuldaki sorumluluk örneklerini tartışın.",
+"mini_check": "Okulda hangi sorumlulukların var?"
+},
+{
+"misconception": "Haklar devlet tarafından verilir.",
+"risk_level": "orta risk",
+"why_it_happens": "Yasaların devlet tarafından oluşturulduğunu bilirler.",
+"truth": "Haklar doğuştan gelir, devletler bu hakları korur.",
+"fix_tip": "İnsan haklarının doğuştan geldiğini vurgulayın.",
+"mini_check": "Bir insan doğduğunda hangi haklara sahiptir?"
+},
+{
+"misconception": "Haklar sadece belirli insanlara aittir.",
+"risk_level": "düşük risk",
+"why_it_happens": "Toplumda farklı roller görmeleri bu düşünceyi oluşturabilir.",
+"truth": "Haklar tüm insanlar için eşittir.",
+"fix_tip": "Eşitlik kavramını örneklerle açıklayın.",
+"mini_check": "İnsan hakları herkese mi aittir?"
+}
+]
+},
+"assessment": {
+"evaluation_tasks": [
+"Yanlış düşüncelerden birini seç ve neden yanlış olduğunu açıkla."
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Her yanlış düşünceyi okuyun ve öğrencilerden doğru olup olmadığını tahmin etmelerini isteyin.",
+"Doğru açıklamayı örneklerle destekleyin.",
+"Öğrencilerin kendi deneyimlerinden örnekler vermelerini isteyin.",
+"Her karttan sonra kısa bir tartışma yapın."
+],
+"common_misconceptions": [
+"Öğrenciler hakların sınırsız olduğunu sanabilir çünkü özgürlük kavramını yanlış anlayabilirler. Doğrusu: Haklar başkalarının haklarına zarar vermeden kullanılmalıdır.",
+"Öğrenciler sorumlulukların yalnızca yetişkinlere ait olduğunu sanabilir çünkü evde yetişkinlerin görevleri daha fazladır. Doğrusu: Çocukların da sorumlulukları vardır.",
+"Öğrenciler hakların devlet tarafından verildiğini sanabilir çünkü yasaları devletin yaptığını bilirler. Doğrusu: Haklar doğuştan gelir."
+],
+"classroom_discussion": [
+"Haklar sınırsız olsaydı toplumda neler olurdu? (Beklenen: düzen bozulur)",
+"Sorumluluklar neden gereklidir? (Beklenen: düzen sağlamak)",
+"Haklar ve sorumluluklar birlikte nasıl çalışır? (Beklenen: denge sağlar)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden bir yanlış düşünce ve doğru açıklamasını yazmalarını isteyin.",
+"Evde aile bireylerine hak ve sorumluluk örnekleri sormalarını isteyin.",
+"Meraklı öğrenciler için araştırma: İnsan hakları neden korunmalıdır?"
+]
+}
+},
+{
+"id": "step7",
+"type": "quiz",
+"title": "Bilgini Test Et",
+"duration_minutes": 10,
+"content": {},
+"activities": {
+"quiz_questions": [
+{
+"question": "İnsan hakları ne zaman kazanılır?",
+"options": [
+"Doğduğumuz anda",
+"Okula başladığımızda",
+"Yetişkin olduğumuzda",
+"Devlet izin verdiğinde"
+],
+"correct_answer": "Doğduğumuz anda"
+},
+{
+"question": "Aşağıdakilerden hangisi temel insan hakkına örnektir?",
+"options": [
+"Eğitim hakkı",
+"Ev temizlemek",
+"Ödev yapmak",
+"Erken uyumak"
+],
+"correct_answer": "Eğitim hakkı"
+},
+{
+"question": "Hak ve sorumluluk ilişkisi neyi ifade eder?",
+"options": [
+"Hakların sınırsız olduğunu",
+"Hakların sorumluluklarla dengelendiğini",
+"Sorumlulukların gereksiz olduğunu",
+"Sadece yetişkinlerin hakları olduğunu"
+],
+"correct_answer": "Hakların sorumluluklarla dengelendiğini"
+},
+{
+"question": "Aşağıdakilerden hangisi sorumluluğa örnektir?",
+"options": [
+"Başkalarını dinlemek",
+"Eğitim almak",
+"Sağlık hizmeti almak",
+"Düşünce özgürlüğü"
+],
+"correct_answer": "Başkalarını dinlemek"
+}
+]
+},
+"assessment": {
+"quiz_questions": [
+{
+"question": "İnsan hakları ne zaman kazanılır?",
+"options": [
+"Doğduğumuz anda",
+"Okula başladığımızda",
+"Yetişkin olduğumuzda",
+"Devlet izin verdiğinde"
+],
+"correct_answer": "Doğduğumuz anda"
+},
+{
+"question": "Aşağıdakilerden hangisi temel insan hakkına örnektir?",
+"options": [
+"Eğitim hakkı",
+"Ev temizlemek",
+"Ödev yapmak",
+"Erken uyumak"
+],
+"correct_answer": "Eğitim hakkı"
+},
+{
+"question": "Hak ve sorumluluk ilişkisi neyi ifade eder?",
+"options": [
+"Hakların sınırsız olduğunu",
+"Hakların sorumluluklarla dengelendiğini",
+"Sorumlulukların gereksiz olduğunu",
+"Sadece yetişkinlerin hakları olduğunu"
+],
+"correct_answer": "Hakların sorumluluklarla dengelendiğini"
+},
+{
+"question": "Aşağıdakilerden hangisi sorumluluğa örnektir?",
+"options": [
+"Başkalarını dinlemek",
+"Eğitim almak",
+"Sağlık hizmeti almak",
+"Düşünce özgürlüğü"
+],
+"correct_answer": "Başkalarını dinlemek"
+}
+]
+},
+"teacher_notes": {
+"teaching_tips": [
+"Soruları sırayla okuyun ve öğrencilerin düşünmeleri için kısa süre verin.",
+"Her sorudan sonra doğru cevabı açıklayın.",
+"Yanlış cevapların neden yanlış olduğunu tartışın.",
+"Öğrencilerin kendi örneklerini vermelerini isteyin."
+],
+"common_misconceptions": [
+"Öğrenciler hakların devlet tarafından verildiğini sanabilir çünkü yasaları devletin yaptığını bilirler. Doğrusu: Haklar doğuştan gelir.",
+"Öğrenciler sorumlulukların gereksiz olduğunu sanabilir çünkü özgürlük kavramını yanlış yorumlayabilirler. Doğrusu: Sorumluluklar düzen sağlar.",
+"Öğrenciler yalnızca yetişkinlerin hakları olduğunu sanabilir çünkü yetişkinlerin daha fazla yetkisi vardır. Doğrusu: Her insanın hakları vardır."
+],
+"classroom_discussion": [
+"En zor soru hangisiydi? (Beklenen: farklı cevaplar)",
+"Hak ve sorumluluk ilişkisi neden önemlidir? (Beklenen: düzen sağlar)",
+"Haklar korunmazsa toplum nasıl etkilenir? (Beklenen: adaletsizlik olur)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden yeni bir quiz sorusu yazmalarını isteyin.",
+"Evde aile bireylerine quiz sorularını sormalarını isteyin.",
+"Meraklı öğrenciler için araştırma: İnsan haklarını koruyan kurumlar nelerdir?"
+]
+}
+},
+{
+"id": "step8",
+"type": "summary",
+"title": "Dersi Özetleyelim",
+"duration_minutes": 6,
+"content": {
+"slides": [
+{
+"type": "key",
+"text": "İnsan hakları doğuştan gelir ve herkes için geçerlidir."
+},
+{
+"type": "key",
+"text": "Yaşama, eğitim ve düşünce özgürlüğü temel insan haklarıdır."
+},
+{
+"type": "key",
+"text": "Haklar ve sorumluluklar birlikte çalışır."
+},
+{
+"type": "key",
+"text": "Sorumluluklar toplum düzenini korur."
+},
+{
+"type": "bridge",
+"text": "Artık temel haklar ve sorumluluklar konusunu öğrendin."
+}
+],
+"explanation": "Bu derste temel insan haklarının ne olduğunu ve neden önemli olduğunu öğrendik. İnsan haklarının doğuştan geldiğini ve herkes için eşit olduğunu gördük. Eğitim hakkı, yaşama hakkı ve düşünce özgürlüğü gibi hakların insanların onurlu bir yaşam sürmesini sağladığını keşfettik. İnsan haklarının korunması toplumda adalet ve güven ortamı oluşturur.\n\nAyrıca hakların sorumluluklarla birlikte çalıştığını öğrendik. Bir insanın haklarını kullanırken başkalarının haklarına saygı göstermesi gerekir. Bu tıpkı bir oyunun kuralları gibidir — kurallar sayesinde oyun düzenli şekilde oynanır. Aynı şekilde sorumluluklar da toplum düzenini korur. İnsanlar hem haklarını bildiklerinde hem de sorumluluklarını yerine getirdiklerinde daha adil bir toplum oluşur.",
+"key_points": [
+"İnsan hakları: İnsan hakları doğuştan gelen ve herkes için geçerli olan temel haklardır. (Kazanım 1)",
+"Hak örnekleri: Yaşama hakkı, eğitim hakkı ve düşünce özgürlüğü temel insan haklarına örnektir. (Kazanım 1)",
+"Sorumluluk kavramı: Sorumluluk insanların yerine getirmesi gereken görevlerdir. (Kazanım 1)",
+"Hak ve sorumluluk ilişkisi: Haklar sorumluluklarla birlikte çalışır ve toplum düzenini sağlar. (Kazanım 1)",
+"Toplumsal önem: Hak ve sorumlulukların bilinmesi adil ve huzurlu bir toplum oluşmasına yardımcı olur. (Kazanım 1)"
+],
+"examples": [
+"Bir öğrencinin eğitim alması eğitim hakkının kullanılmasıdır.",
+"Sınıfta konuşma sırasını beklemek sorumluluk örneğidir.",
+"Trafik kurallarına uymak insanların güvenli yaşama hakkını korur.",
+"Çevreyi temiz tutmak toplum sağlığını korur."
+],
+"real_life_connections": [
+"Okul kuralları öğrencilerin haklarını korumak için oluşturulmuştur.",
+"Trafik kuralları insanların güvenli yaşama hakkını destekler.",
+"Sınıfta sırayla konuşmak hak ve sorumluluk dengesini gösterir.",
+"Bir sonraki konularda demokrasi kavramının haklarla ilişkisini inceleyeceğiz."
+]
+},
+"activities": {
+"summary_points": [
+"İnsan hakları doğuştan gelir.",
+"Herkes için geçerlidir.",
+"Eğitim hakkı temel haklardan biridir.",
+"Haklar sorumluluklarla dengelenir.",
+"Sorumluluklar toplum düzenini sağlar.",
+"Haklara saygı göstermek önemlidir.",
+"Hak ve sorumluluk bilinci demokratik toplum için gereklidir."
+]
+},
+"assessment": {},
+"teacher_notes": {
+"teaching_tips": [
+"Özet slaytlarını sırayla okuyarak öğrencilerin tekrar etmesini sağlayın.",
+"Her madde için kısa bir örnek verin.",
+"Öğrencilerden kendi cümleleriyle konuyu açıklamalarını isteyin.",
+"Ders sonunda kısa bir sözlü tekrar yapın."
+],
+"common_misconceptions": [
+"Öğrenciler hakların sınırsız olduğunu sanabilir çünkü özgürlüğü yanlış anlayabilirler. Doğrusu: Haklar sorumluluklarla dengelenir.",
+"Öğrenciler sorumlulukların gereksiz olduğunu sanabilir çünkü kuralları sınırlama olarak görürler. Doğrusu: Sorumluluklar düzen sağlar.",
+"Öğrenciler hakların yalnızca yetişkinlere ait olduğunu sanabilir çünkü yetişkinlerin daha fazla yetkisi vardır. Doğrusu: Her insanın hakları vardır."
+],
+"classroom_discussion": [
+"Bugün öğrendiğin en önemli kavram neydi? (Beklenen: farklı cevaplar)",
+"Hak ve sorumluluk ilişkisi neden önemlidir? (Beklenen: düzen sağlar)",
+"Bu bilgileri günlük hayatta nasıl kullanabilirsin? (Beklenen: kurallara uymak)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden üç hak ve üç sorumluluk yazmalarını isteyin.",
+"Evde aile bireyleriyle hak ve sorumluluk örnekleri konuşmalarını isteyin.",
+"Meraklı öğrenciler için araştırma: Demokrasi ve insan hakları ilişkisi nedir?"
+]
+}
+},
+{
+"id": "step9",
+"type": "certificate",
+"title": "Tebrikler!",
+"duration_minutes": 1,
+"content": {},
+"activities": {
+"certificate_message": "Tebrikler! Temel haklar ve sorumluluklar konusunu başarıyla tamamladın. Artık hem haklarını biliyor hem de sorumlulukların toplum için neden önemli olduğunu anlıyorsun.",
+"earned_badges": [
+"Hak Bilinci Rozeti",
+"Sorumluluk Lideri Rozeti",
+"Demokrasi Kaşifi Rozeti"
+]
+},
+"assessment": {},
+"teacher_notes": {
+"teaching_tips": [
+"Ders sonunda öğrencileri tebrik edin ve öğrendikleri kavramları hatırlatın.",
+"Rozetleri sembolik olarak sınıfta kutlayabilirsiniz.",
+"Öğrencilerden derste öğrendikleri bir şeyi paylaşmalarını isteyin.",
+"Kısa bir alkış etkinliği ile dersi kapatın."
+],
+"common_misconceptions": [
+"Öğrenciler hak ve sorumlulukların yalnızca okulda geçerli olduğunu sanabilir çünkü ders ortamında öğrenirler. Doğrusu: Bu kavramlar hayatın her alanında geçerlidir.",
+"Öğrenciler sorumlulukların yalnızca görev olduğunu sanabilir çünkü görevlerle karıştırırlar. Doğrusu: Sorumluluklar hakların korunmasını sağlar.",
+"Öğrenciler hakların yalnızca bireysel olduğunu sanabilir çünkü kişisel örnekler görürler. Doğrusu: Haklar toplumsal düzeni de etkiler."
+],
+"classroom_discussion": [
+"Bu dersten sonra haklar hakkında ne düşünüyorsun? (Beklenen: daha bilinçli cevaplar)",
+"Sorumluluklarını yerine getirmek neden önemlidir? (Beklenen: toplum düzeni)",
+"Haklarını korumak için neler yapabilirsin? (Beklenen: kurallara uymak)"
+],
+"extension_ideas": [
+"Hızlı bitiren öğrencilerden öğrendikleri bir hak hakkında poster hazırlamalarını isteyin.",
+"Evde aile bireyleriyle hak ve sorumlulukları konuşmalarını isteyin.",
+"Meraklı öğrenciler için araştırma: İnsan haklarını koruyan uluslararası kuruluşlar nelerdir?"
+]
+}
+}
+]
+}
 }

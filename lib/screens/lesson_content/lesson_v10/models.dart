@@ -24,9 +24,32 @@ class ConceptItem {
   });
 }
 
+class NotebookSectionData {
+  final String title;
+  final List<String> items;
+  final String? note;
+  const NotebookSectionData({
+    required this.title,
+    required this.items,
+    this.note,
+  });
+}
+
 class InfoItem {
-  final String text, example;
-  const InfoItem({required this.text, required this.example});
+  final String misconception;
+  final String riskLevel;
+  final String whyItHappens;
+  final String truth;
+  final String fixTip;
+  final String miniCheck;
+  const InfoItem({
+    required this.misconception,
+    required this.riskLevel,
+    this.whyItHappens = '',
+    this.truth = '',
+    this.fixTip = '',
+    this.miniCheck = '',
+  });
 }
 
 class CaseStudy {

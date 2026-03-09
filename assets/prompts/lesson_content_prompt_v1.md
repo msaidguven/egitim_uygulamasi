@@ -262,6 +262,25 @@ ZORUNLU JSON ŞEMASI
 NOT: "estimated_time" alanı YOKTUR. Süre her step'te "duration_minutes" olarak taşınır.
 
 ═══════════════════════════════════════
+V5 TASARIM NOTU — DAHA FAZLA BİLGİ, DAHA FAZLA PEKİŞTİRME
+═══════════════════════════════════════
+
+Bu promptun amacı kısa içerik üretmek DEĞİLDİR.
+Amaç:
+  • Her ana kavram için öğretmenin doğrudan anlatabileceği güçlü açıklama üretmek
+  • Öğrencinin defterine geçireceği düzenli ve zengin not alanları oluşturmak
+  • Reflection yerine bilgi yoğun ve uygulamalı pekiştirme step'leri eklemek
+
+ZORUNLU ÜRETİM İLKELERİ:
+  • Her ana kavram için en az 1 concept_explanation step'i üret.
+  • Her concept_explanation step'inden sonra mümkünse en az 1 pekiştirme step'i ekle:
+    scenario_activity veya mini_game veya critical_thinking
+  • Ders genelinde en az 2 pekiştirme aktivitesi bulunmalı.
+  • Ders genelinde en az 2 word_bank veya 1 word_bank + 1 mini_game bulunması tercih edilir.
+  • Reflection step'i KULLANMA.
+  • Bilgi yükünü summary'ye bırakma; ana bilgi kavram step'lerinde verilmelidir.
+
+═══════════════════════════════════════
 STEP ŞEMASI
 ═══════════════════════════════════════
 
@@ -285,8 +304,16 @@ STEP ŞEMASI
     "notebook": {
       "definition": "string — kavramın tek cümlelik net tanımı, öğrenci deftere birebir yazar",
       "summary_items": [
-        "string — deftere yazılacak kısa madde (en fazla 1 cümle, özlü)"
-        // en az 4, en fazla 6 madde
+        "string — geriye dönük uyumluluk için kısa madde"
+      ],
+      "sections": [
+        {
+          "title": "string — örn. Temel Bilgiler / Karşılaştırma / Örnek Notları / Hatırla",
+          "items": [
+            "string — deftere yazılacak kısa, tek cümlelik madde"
+          ],
+          "note": "string — kısa öğretmen notu veya dikkat cümlesi (opsiyonel)"
+        }
       ]
     }
   },
@@ -307,7 +334,7 @@ STEP ŞEMASI
   • Diğer type'lar (scenario_activity, mini_game, quiz vb.) → slides OLMAZ
 
 ⚠️ notebook ZORUNLULUK KURALI:
-  • concept_explanation → notebook ZORUNLU (definition + summary_items)
+  • concept_explanation → notebook ZORUNLU (definition + sections)
   • Diğer type'lar → notebook OLMAZ
 
 ═══════════════════════════════════════
@@ -338,29 +365,74 @@ NOTEBOOK KURALLARI:
   Örnek: "İnsan hakları, her insanın yalnızca insan olduğu için sahip olduğu
           doğuştan gelen ve devredilemez temel haklardır."
 
-• summary_items — 4–6 madde, her biri en fazla 1 cümle.
-  Her madde tek bir bilgiyi taşır, öğrencinin kolayca not alacağı özlükte.
-  Maddeler birbirini tekrar etmez — her biri farklı bir açıdan bilgi verir.
+• sections — ZORUNLU ana not yapısıdır. En az 2, idealde 3–4 bölüm olmalıdır.
+  Her section farklı bir işlev taşır; aynı tip bilgileri tekrar etmez.
 
-  KÖTÜ ÖRNEK (YAPMA):
-    "İnsan hakları önemlidir."
-    "Haklarımızı bilmeliyiz."
+ÖNERİLEN SECTION TÜRLERİ:
+  • "Temel Bilgiler" → 3–5 madde
+  • "Karşılaştırma" → 2–4 madde
+  • "Örnek Notları" → 2–4 madde
+  • "Hatırla" → 1–3 kısa madde
 
-  İYİ ÖRNEK (BÖYLE YAZ):
-    "İnsan hakları doğuştan kazanılır — kimse seni bunlardan yoksun bırakamaz."
-    "Yaşama, eğitim, düşünce özgürlüğü ve güvenlik en temel haklardan dördüdür."
-    "Bu haklar uluslararası sözleşmelerle tüm ülkelerde güvence altına alınmıştır."
-    "Haklarını kullanırken başkalarının haklarına saygı göstermek de bir sorumluluktur."
+SECTION KURALLARI:
+  • Her item en fazla 1 cümle olmalı.
+  • Tüm sections toplamında en az 6, idealde 8–12 not maddesi olmalı.
+  • "Karşılaştırma" section'ı varsa benzer kavramlarla farkı açıkça yazmalı.
+  • "Örnek Notları" section'ı varsa günlük hayattan somut durum içermeli.
+  • summary_items alanı geriye dönük uyumluluk için bırakılabilir ama ana yapı sections olmalıdır.
+
+KÖTÜ ÖRNEK (YAPMA):
+  "Temel Bilgiler": ["İnsan hakları önemlidir.", "Haklarımızı bilmeliyiz."]
+
+İYİ ÖRNEK (BÖYLE YAZ):
+  "sections": [
+    {
+      "title": "Temel Bilgiler",
+      "items": [
+        "İnsan hakları doğuştan kazanılır — kimse seni bunlardan keyfine göre mahrum bırakamaz.",
+        "Bu haklar yalnızca belirli gruplara değil, bütün insanlara aittir.",
+        "Yaşama, eğitim, güvenlik ve düşünce özgürlüğü temel haklar arasındadır."
+      ],
+      "note": "Öğrencilere bu üç maddeyi sırayla deftere yazdır."
+    },
+    {
+      "title": "Karşılaştırma",
+      "items": [
+        "Hak bir yetkidir; sorumluluk ise bu hakkı kullanırken uyman gereken yükümlülüktür.",
+        "Kendi hakkını kullanmak, başkasının hakkını ihlal etme izni vermez."
+      ]
+    },
+    {
+      "title": "Hatırla",
+      "items": [
+        "Doğuştan gelir.",
+        "Herkes için geçerlidir.",
+        "Korunması gerekir."
+      ]
+    }
+  ]
 
 ─── TYPE: risk_analysis ──────────────
 Kullanım: Yaygın yanılgıları ve yanlış düşünceleri ele al.
 slides: YOK
 "activities": {
   "cards": [
-    { "item": "string — yanlış düşünce", "label": "yüksek risk | orta risk | düşük risk" }
-    // en az 3 kart
+    {
+      "misconception": "string — yanlış düşünce",
+      "risk_level": "yüksek risk | orta risk | düşük risk",
+      "why_it_happens": "string — öğrenci neden böyle düşünüyor, 1–2 cümle",
+      "truth": "string — doğrusu ne, 1–3 cümle",
+      "fix_tip": "string — bunu düzeltmek için ne yapılmalı, 1–2 cümle",
+      "mini_check": "string — kısa kontrol sorusu veya durum"
+    }
+    // en az 4 kart
   ]
 }
+
+RISK ANALYSIS KURALLARI:
+• Sadece yanlış düşünceyi yazıp bırakma; her kartta neden + doğrusu + düzeltme mutlaka olsun.
+• Kartların en az biri yüksek risk, biri orta risk olmalıdır.
+• mini_check öğrencinin kendi kendine "Şimdi doğruyu ayırt edebiliyor muyum?" diye düşünmesini sağlamalıdır.
 
 ─── TYPE: scenario_activity ──────────
 Kullanım: Kavramı gerçek bir durumda uygulat. Aynı derste birden fazla olabilir.
@@ -394,7 +466,7 @@ slides: YOK
 }
 
 ─── TYPE: word_bank ──────────────────
-Kullanım: ZORUNLU — her derste en az 1 tane bulunmalıdır.
+Kullanım: ZORUNLU — her derste en az 1 tane bulunmalıdır, bilgi yoğun derslerde 2 tane tercih edilir.
 slides: YOK
 Öğrenci kelime listesinden tıklayarak boşlukları doldurur.
 "activities": {
@@ -471,14 +543,6 @@ slides: ZORUNLU (her key slide bir kazanımı özetler, son slide bridge olur)
   "summary_points": ["string — en az 7 madde, tüm kazanım ve kavramları kapsar"]
 }
 
-─── TYPE: reflection ─────────────────
-Kullanım: Öğrencinin kendi öğrenmesini değerlendirmesi.
-slides: YOK
-"activities": {
-  "discussion_prompts": ["string — en az 3 öz değerlendirme sorusu"],
-  "evaluation_tasks": ["string — en az 2 somut görev"]
-}
-
 ─── TYPE: certificate ────────────────
 Kullanım: Dersin son step'i.
 slides: YOK
@@ -494,7 +558,6 @@ ASSESSMENT ŞEMASI
 • intro, summary, certificate → assessment: {} boş bırakılabilir
 • quiz → assessment.quiz_questions DOLU OLMALI (activities ile birebir aynı)
 • Diğer type'lar → en az bir alan dolu:
-    reflective_questions: ["string — en az 2"]
     evaluation_tasks: ["string — en az 1"]
     quiz_questions: [{ question, options:[4], correct_answer }]
 
@@ -518,7 +581,8 @@ DERS YAPISI
    └─ critical_thinking    ← zorlu kavramlarda ekle
 
 3. KELİME BANKASI
-   └─ word_bank
+   ├─ word_bank
+   └─ ikinci word_bank veya mini_game (tercihen)
 
 4. YANILGI ANALİZİ
    └─ risk_analysis
@@ -528,7 +592,6 @@ DERS YAPISI
 
 6. KAPANIŞ
    ├─ summary  ← slides ZORUNLU
-   ├─ reflection
    └─ certificate
 
 ═══════════════════════════════════════
@@ -540,8 +603,9 @@ JSON'u bitirmeden önce her step için kontrol et:
 □ intro, concept_explanation, summary type'larında slides dizisi var mı?
 □ concept_explanation type'larında notebook alanı var mı?
 □ notebook.definition tek cümle ve eksiksiz mi ("[KAVRAM], [ne olduğu] — [açıklama]" formatında)?
-□ notebook.summary_items 4–6 madde mi, her madde en fazla 1 cümle mi?
-□ summary_items birbirini tekrar etmiyor, her biri farklı bir bilgi mi taşıyor?
+□ notebook.sections en az 2 bölüm mü?
+□ notebook.sections içindeki toplam not sayısı en az 6 mı?
+□ Her section farklı amaç taşıyor mu (temel bilgi / karşılaştırma / örnek / hatırla gibi)?
 □ Her slide maksimum 2 cümle mi?
 □ Her slide tek bir fikir mi taşıyor?
 □ Her step'te en az 1 "fact" ve 1 "analogy" veya "example" slide var mı?
@@ -551,9 +615,11 @@ JSON'u bitirmeden önce her step için kontrol et:
 □ Her key_point "BAŞLIK: açıklama (Kazanım X)" formatında mı?
 □ Her example 2–3 cümle ve neden olduğunu açıklıyor mu?
 □ Her misconception "X sanabilir çünkü Y. Doğrusu: Z." formatında mı?
+□ risk_analysis kartlarında why_it_happens + truth + fix_tip + mini_check alanları dolu mu?
 □ Her classroom_discussion sorusu beklenen cevabı taşıyor mu?
 □ word_bank var mı? ____ sayısı ile blanks sayısı eşit mi?
 □ word_bank kelimeler cümleye uyan çekimli/ekli halleriyle mi yazıldı?
+□ Reflection step'i hiç kullanılmadı mı?
 □ quiz correct_answer değerleri options içindeki yazımla birebir aynı mı?
 □ assessment.quiz_questions ile activities.quiz_questions birebir aynı mı?
 □ Her step duration_minutes taşıyor mu?
