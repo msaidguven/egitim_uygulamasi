@@ -16,37 +16,6 @@
           "destination": "/index.html"
         }
       ]
-    },
-    {
-      "target": "seo",
-      "public": "seo_output",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "cleanUrls": true,
-      "trailingSlash": false,
-      "headers": [
-        {
-          "source": "**/*.html",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "public,max-age=600"
-            }
-          ]
-        },
-        {
-          "source": "/sitemap.xml",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "public,max-age=600"
-            }
-          ]
-        }
-      ]
     }
   ]
 }

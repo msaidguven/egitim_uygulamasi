@@ -1,132 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-enum AdminPromptType { content, questions }
-
-class AdminCopyButton extends StatelessWidget {
-  final String gradeName;
-  final String lessonName;
-  final String unitTitle;
-  final String topicTitle;
-  final List<Map<String, dynamic>> outcomes;
-  final AdminPromptType promptType;
-
-  const AdminCopyButton({
-    super.key,
-    required this.gradeName,
-    required this.lessonName,
-    required this.unitTitle,
-    required this.topicTitle,
-    required this.outcomes,
-    this.promptType = AdminPromptType.content,
-  });
-
-  static String buildPrompt({
-    required String gradeName,
-    required String lessonName,
-    required String unitTitle,
-    required String topicTitle,
-    required List<Map<String, dynamic>> outcomes,
-    required AdminPromptType promptType,
-  }) {
-    final outcomesBuffer = StringBuffer();
-    if (outcomes.isEmpty) {
-      outcomesBuffer.writeln('(Kazanım bulunamadı)');
-    } else {
-      for (final outcome in outcomes) {
-        final description = (outcome['description'] as String? ?? '').trim();
-        if (description.isNotEmpty) {
-          outcomesBuffer.writeln('- $description');
-        }
-      }
-    }
-
-    if (promptType == AdminPromptType.content) {
-      return _buildContentPrompt(
-        gradeName: gradeName,
-        lessonName: lessonName,
-        unitTitle: unitTitle,
-        topicTitle: topicTitle,
-        outcomesText: outcomesBuffer.toString(),
-      );
-    }
-    return _buildQuestionsPrompt(
-      gradeName: gradeName,
-      lessonName: lessonName,
-      unitTitle: unitTitle,
-      topicTitle: topicTitle,
-      outcomesText: outcomesBuffer.toString(),
-    );
-  }
-
-  static Future<void> copyPrompt(
-    BuildContext context, {
-    required String gradeName,
-    required String lessonName,
-    required String unitTitle,
-    required String topicTitle,
-    required List<Map<String, dynamic>> outcomes,
-    required AdminPromptType promptType,
-  }) async {
-    final prompt = buildPrompt(
-      gradeName: gradeName,
-      lessonName: lessonName,
-      unitTitle: unitTitle,
-      topicTitle: topicTitle,
-      outcomes: outcomes,
-      promptType: promptType,
-    );
-
-    try {
-      await Clipboard.setData(ClipboardData(text: prompt));
-      if (context.mounted) {
-        String message;
-        switch (promptType) {
-          case AdminPromptType.content:
-            message = 'İçerik bilgileri kopyalandı';
-            break;
-          case AdminPromptType.questions:
-            message = 'Soru hazırlama promptu kopyalandı';
-            break;
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            duration: const Duration(seconds: 2),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Kopyalama hatası: $e')));
-      }
-    }
-  }
-
-  Future<void> _copyToClipboard(BuildContext context) {
-    return copyPrompt(
-      context,
-      gradeName: gradeName,
-      lessonName: lessonName,
-      unitTitle: unitTitle,
-      topicTitle: topicTitle,
-      outcomes: outcomes,
-      promptType: promptType,
-    );
-  }
-
-  static String _buildContentPrompt({
-    required String gradeName,
-    required String lessonName,
-    required String unitTitle,
-    required String topicTitle,
-    required String outcomesText,
-  }) {
-    return '''Sen bir öğretim programı geliştiricisi, eğitim tasarımcısı ve öğretmen kılavuz kitabı yazarısın.
+Sen bir öğretim programı geliştiricisi, eğitim tasarımcısı ve öğretmen kılavuz kitabı yazarısın.
 
 Görevin verilen ders bilgilerine göre TAM, PEDAGOJİK ve ETKİLEŞİMLİ bir ders içeriği oluşturmaktır.
 
@@ -409,13 +281,12 @@ STEP ŞEMASI
       "string — KISA BAŞLIK: 2–3 cümle açıklama (Kazanım X)"
     ],
     "examples": ["string — 2–3 cümle, neden olduğunu açıklayan"],
-    "real_life_connections": ["string — 2–3 cümle, köprü kuran"]
     "real_life_connections": ["string — 2–3 cümle, köprü kuran"],
     "notebook": {
       "definition": "string — kavramın tek cümlelik net tanımı, öğrenci deftere birebir yazar",
       "summary_items": [
         "string — deftere yazılacak kısa madde (en fazla 1 cümle, özlü)"
-        // en az 3, en fazla 7 madde
+        // en az 4, en fazla 6 madde
       ]
     }
   },
@@ -467,7 +338,7 @@ NOTEBOOK KURALLARI:
   Örnek: "İnsan hakları, her insanın yalnızca insan olduğu için sahip olduğu
           doğuştan gelen ve devredilemez temel haklardır."
 
-• summary_items — 3–7 madde, her biri en fazla 1 cümle.
+• summary_items — 4–6 madde, her biri en fazla 1 cümle.
   Her madde tek bir bilgiyi taşır, öğrencinin kolayca not alacağı özlükte.
   Maddeler birbirini tekrar etmez — her biri farklı bir açıdan bilgi verir.
 
@@ -552,11 +423,11 @@ slides: YOK
     → Sonuç: "Her insanın bazı temel HAK vardır" — dilbilgisel olarak yanlış!
 
   İYİ ÖRNEK (BÖYLE YAZ):
-    words: ["hakları", "sorumlulukları", "demokrasi", "özgürlüğü", "eşitliği"]
+    words: ["hakları", "sorumluluklarını", "demokrasi", "özgürlüğü", "eşitliği"]
     template: "Her insanın bazı temel ____ vardır ve bu hakları korumak için bazı ____ yerine getirmesi gerekir."
     blanks: [
       { "id": "blank1", "correct_answer": "hakları" },
-      { "id": "blank2", "correct_answer": "sorumlulukları" }
+      { "id": "blank2", "correct_answer": "sorumluluklarını" }
     ]
     → Sonuç: "Her insanın bazı temel HAKLARI vardır" — dilbilgisel olarak doğru ✓
 
@@ -669,7 +540,7 @@ JSON'u bitirmeden önce her step için kontrol et:
 □ intro, concept_explanation, summary type'larında slides dizisi var mı?
 □ concept_explanation type'larında notebook alanı var mı?
 □ notebook.definition tek cümle ve eksiksiz mi ("[KAVRAM], [ne olduğu] — [açıklama]" formatında)?
-□ notebook.summary_items 3–7 madde mi, her madde en fazla 1 cümle mi?
+□ notebook.summary_items 4–6 madde mi, her madde en fazla 1 cümle mi?
 □ summary_items birbirini tekrar etmiyor, her biri farklı bir bilgi mi taşıyor?
 □ Her slide maksimum 2 cümle mi?
 □ Her slide tek bir fikir mi taşıyor?
@@ -693,162 +564,9 @@ JSON'u bitirmeden önce her step için kontrol et:
 KULLANICI GİRDİSİ
 ═══════════════════════════════════════
 
-Sınıf: $gradeName
-Ders: $lessonName
-Ünite: $unitTitle
-Konu: $topicTitle
+Sınıf: {grade}
+Ders: {subject}
+Ünite: {unit}
+Konu: {topic}
 Kazanımlar:
-$outcomesText''';
-  }
-
-  static String _buildQuestionsPrompt({
-    required String gradeName,
-    required String lessonName,
-    required String unitTitle,
-    required String topicTitle,
-    required String outcomesText,
-  }) {
-    return '''
-Sen deneyimli bir ölçme-değerlendirme uzmanı ve pedagojik içerik geliştiricisisin.
-
-Görevin, verilen ders bilgileri ve kazanımlara göre, çeşitli tiplerde ve zorluk seviyelerinde 10 adet soru üretmektir.
-
-Cevap SADECE geçerli JSON olmalıdır. JSON dışında hiçbir açıklama, markdown, yorum satırı yazma.
-
-═══════════════════════════════════════
-GENEL KURALLAR
-═══════════════════════════════════════
-
-• Toplam 10 soru üret.
-• Sorular kazanımlarla doğrudan ilişkili olmalı.
-• Sorular ezber değil, anlamaya dayalı olmalı.
-• En az bir soru kavram yanılgısını ölçmeli.
-• Zorluk dağılımı dengeli olmalı (kolay-orta-zor karışık).
-• Her soru için mutlaka "solution_text" adında bir açıklama/çözüm alanı eklenmeli.
-• Günlük hayat bağlantılı sorulara yer ver.
-• En az 1 analiz düzeyi soru ekle.
-• Soru tipleri dengeli dağıtılsın.
-
-═══════════════════════════════════════
-DESTEKLENEN SORU TİPLERİ
-═══════════════════════════════════════
-
-- 1 = Çoktan Seçmeli
-- 2 = Doğru / Yanlış
-- 3 = Boşluk Doldurma (Drag & Drop)
-- 5 = Eşleştirme
-
-═══════════════════════════════════════
-FORMAT KURALLARI
-═══════════════════════════════════════
-
-• Çoktan seçmeli (ID: 1): 4 seçenek olmalı, sadece 1 doğru cevap olmalı.
-• Doğru / Yanlış (ID: 2): "correct_answer" alanı olmalı. "choices" veya "blank" OLMAYACAK.
-• Boşluk doldurma (ID: 3): "blank.options" en az 3 seçenek içermeli, 1 tanesi doğru olmalı.
-• Eşleştirme (ID: 5): "pairs" en az 3 eşleştirme çifti olmalı.
-
-═══════════════════════════════════════
-ZORUNLU JSON ÇIKTI ŞEMASI
-═══════════════════════════════════════
-
-{
-  "topic": "$topicTitle",
-  "_supported_question_types": [
-    { "type": "Çoktan Seçmeli", "id": 1, "keyboard_input": false },
-    { "type": "Doğru / Yanlış", "id": 2, "keyboard_input": false },
-    { "type": "Boşluk Doldurma (Drag & Drop)", "id": 3, "keyboard_input": false },
-    { "type": "Eşleştirme", "id": 5, "keyboard_input": false }
-  ],
-  "questions": [
-    {
-      "question_type_id": 1,
-      "question_text": "Soru metni...",
-      "difficulty": 1,
-      "score": 1,
-      "solution_text": "Bu sorunun çözümü şöyledir çünkü...",
-      "choices": [
-        { "text": "Doğru Seçenek", "is_correct": true },
-        { "text": "Yanlış Seçenek 1", "is_correct": false },
-        { "text": "Yanlış Seçenek 2", "is_correct": false },
-        { "text": "Yanlış Seçenek 3", "is_correct": false }
-      ]
-    },
-    {
-      "question_type_id": 2,
-      "question_text": "Doğru yanlış soru metni...",
-      "difficulty": 2,
-      "score": 1,
-      "solution_text": "İfadenin doğruluğu/yanlışlığı şuna dayanır...",
-      "correct_answer": true
-    },
-    {
-      "question_type_id": 3,
-      "question_text": "Boşluk doldurma metni ____...",
-      "difficulty": 3,
-      "score": 1,
-      "solution_text": "Cümledeki boşluğa gelecek kavram şudur çünkü...",
-      "blank": {
-        "options": [
-          { "text": "Doğru", "is_correct": true },
-          { "text": "Yanlış 1", "is_correct": false },
-          { "text": "Yanlış 2", "is_correct": false }
-        ]
-      }
-    },
-    {
-      "question_type_id": 5,
-      "question_text": "Eşleştirme sorusu metni...",
-      "difficulty": 3,
-      "score": 1,
-      "solution_text": "Eşleştirmelerin mantığı şöyledir...",
-      "pairs": [
-        { "left_text": "Sol 1", "right_text": "Sağ 1" },
-        { "left_text": "Sol 2", "right_text": "Sağ 2" },
-        { "left_text": "Sol 3", "right_text": "Sağ 3" }
-      ]
-    }
-  ]
-}
-
-═══════════════════════════════════════
-KULLANICI GİRDİSİ
-═══════════════════════════════════════
-
-Sınıf: $gradeName
-Ders: $lessonName
-Ünite: $unitTitle
-Konu: $topicTitle
-Kazanımlar:
-$outcomesText
-''';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    IconData icon;
-    String label;
-
-    switch (promptType) {
-      case AdminPromptType.content:
-        icon = Icons.copy_rounded;
-        label = 'İçerik Promptu';
-        break;
-      case AdminPromptType.questions:
-        icon = Icons.quiz_outlined;
-        label = 'AI Questions Prompt';
-        break;
-    }
-
-    return OutlinedButton.icon(
-      onPressed: () => _copyToClipboard(context),
-      icon: Icon(icon, size: 18),
-      label: Text(label),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: const Color(0xFF2F6FE4),
-        side: const BorderSide(color: Color(0xFFC8DBFF)),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
-  }
-}
+{learning_outcomes}

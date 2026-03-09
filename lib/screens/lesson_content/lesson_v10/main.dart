@@ -5,6 +5,7 @@ import 'theme.dart';
 import 'lesson_data.dart';
 import 'models.dart';
 import 'screens.dart';
+import 'slide_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,11 +57,10 @@ class _LessonPageState extends State<LessonPage> {
   int _toastAmount = 0;
 
   // ── Müzik ──────────────────────────────────────────────────────────────────
-  // assets/audio/ klasörüne koyduğun mp3 dosyasının adını buraya yaz:
   static const String _musicAsset = 'audio/bg_music.mp3';
 
   final AudioPlayer _audioPlayer = AudioPlayer();
-  bool _musicOn = false; // varsayılan: sessiz
+  bool _musicOn = false;
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class _LessonPageState extends State<LessonPage> {
     await _audioPlayer.setReleaseMode(ReleaseMode.loop);
     await _audioPlayer.setVolume(0.35);
     await _audioPlayer.play(AssetSource(_musicAsset));
-    await _audioPlayer.pause(); // varsayılan durdurulmuş
+    await _audioPlayer.pause();
   }
 
   Future<void> _toggleMusic() async {
@@ -175,6 +175,23 @@ class _LessonPageState extends State<LessonPage> {
       .where((e) => e.isNotEmpty)
       .toList();
 
+  /// JSON'daki content.slides listesini okur.
+  /// Her eleman { "type": "...", "text": "..." } formatında olmalı.
+  List<Map<String, String>> _slidesOf(LessonStep step) {
+    final raw = _contentOf(step)['slides'];
+    if (raw is! List) return [];
+    return raw
+        .whereType<Map<String, dynamic>>()
+        .map(
+          (e) => {
+            'type': (e['type'] ?? 'fact').toString(),
+            'text': (e['text'] ?? '').toString(),
+          },
+        )
+        .where((e) => e['text']!.trim().isNotEmpty)
+        .toList();
+  }
+
   List<String> _miniGameOptions(List<Map<String, dynamic>> items) {
     final explicit = items
         .expand(
@@ -216,6 +233,17 @@ class _LessonPageState extends State<LessonPage> {
           })
           .where((e) => e.title.trim().isNotEmpty)
           .toList();
+
+  /// content.notebook alanından tanım ve maddeleri okur
+  String _notebookDefinition(LessonStep step) {
+    final nb = (_contentOf(step)['notebook'] as Map<String, dynamic>?) ?? {};
+    return (nb['definition'] ?? '').toString().trim();
+  }
+
+  List<String> _notebookItems(LessonStep step) {
+    final nb = (_contentOf(step)['notebook'] as Map<String, dynamic>?) ?? {};
+    return _strList(nb['summary_items']);
+  }
 
   // ── Renk & emoji ───────────────────────────────────────────────────────────
   Color _stepColor(String type) => switch (type) {
@@ -259,18 +287,50 @@ class _LessonPageState extends State<LessonPage> {
     final teacherNotes = _teacherNotesOf(step);
 
     switch (step.type) {
+
+      // ── INTRO ──────────────────────────────────────────────────────────────
       case 'intro':
+        final slides = _slidesOf(step);
+        if (slides.isNotEmpty) {
+          return SlideStepScreen(
+            slides: slides,
+            accentColor: AppTheme.intro,
+            accentColorLt: AppTheme.introLt,
+            stepLabel: 'GİRİŞ',
+            stepEmoji: '🚀',
+            title: (step.data['title'] ?? '').toString(),
+            onComplete: _complete,
+          );
+        }
+        // Slides yoksa eski davranış (geriye dönük uyumluluk)
         return IntroScreen(
           onComplete: _complete,
           title: (step.data['title'] ?? '').toString(),
           content: (content['explanation'] ?? '').toString(),
         );
 
+      // ── CONCEPT CARDS ───────────────────────────────────────────────────────
       case 'concept_cards':
+        final slides = _slidesOf(step);
+        final conceptItems = _conceptItems(step);
+        final nbDef = _notebookDefinition(step);
+        final nbItems = _notebookItems(step);
+        if (slides.isNotEmpty) {
+          return _SlidesThenCardsScreen(
+            slides: slides,
+            items: conceptItems,
+            title: (step.data['title'] ?? '').toString(),
+            onComplete: _complete,
+            notebookDefinition: nbDef,
+            notebookItems: nbItems,
+          );
+        }
         return ConceptCardsScreen(
-          items: _conceptItems(step),
+          items: conceptItems,
           title: (step.data['title'] ?? '').toString(),
           onComplete: _complete,
+          notebookDefinition: nbDef,
+          notebookItems: nbItems,
         );
 
       case 'word_bank':
@@ -403,7 +463,21 @@ class _LessonPageState extends State<LessonPage> {
             .toList();
         return SecurityScoreScreen(onComplete: _complete, questions: questions);
 
+      // ── SUMMARY ─────────────────────────────────────────────────────────────
       case 'summary':
+        final slides = _slidesOf(step);
+        if (slides.isNotEmpty) {
+          return SlideStepScreen(
+            slides: slides,
+            accentColor: AppTheme.primaryGlow,
+            accentColorLt: AppTheme.primaryLt,
+            stepLabel: 'ÖZET',
+            stepEmoji: '📋',
+            title: (step.data['title'] ?? 'Ders Özeti').toString(),
+            onComplete: _complete,
+          );
+        }
+        // Slides yoksa eski davranış (geriye dönük uyumluluk)
         return InfographicScreen(
           onComplete: _complete,
           points: _strList(
@@ -587,7 +661,11 @@ class _LessonPageState extends State<LessonPage> {
                 ),
                 if (lessonSteps.isNotEmpty)
                   FractionallySizedBox(
-                    widthFactor: pct.clamp(0.0, 1.0),
+                    widthFactor: (_stepIdx /
+                            (lessonSteps.length <= 1
+                                ? 1
+                                : lessonSteps.length - 1))
+                        .clamp(0.0, 1.0),
                     child: Container(
                       height: 6,
                       decoration: BoxDecoration(
@@ -653,9 +731,6 @@ class _LessonPageState extends State<LessonPage> {
           );
         }
 
-        final safeCount = lessonSteps.length <= 1 ? 1 : lessonSteps.length - 1;
-        final pct = _stepIdx / safeCount;
-
         final stepType = lessonSteps[_stepIdx].type;
         return Scaffold(
           backgroundColor: tc.bg,
@@ -672,7 +747,13 @@ class _LessonPageState extends State<LessonPage> {
                   ),
                 Column(
                   children: [
-                    _buildHeader(pct),
+                    _buildHeader(
+                      (_stepIdx /
+                              (lessonSteps.length <= 1
+                                  ? 1
+                                  : lessonSteps.length - 1))
+                          .clamp(0.0, 1.0),
+                    ),
                     Expanded(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 320),
@@ -711,6 +792,55 @@ class _LessonPageState extends State<LessonPage> {
           ),
         );
       },
+    );
+  }
+}
+
+// ─── SLIDES → KARTLAR (concept_cards için) ───────────────────────────────────
+// Önce slide'ları gösterir, bittikten sonra kart grid'ine geçer.
+class _SlidesThenCardsScreen extends StatefulWidget {
+  final List<Map<String, String>> slides;
+  final List<ConceptItem> items;
+  final String title;
+  final VoidCallback onComplete;
+  final String notebookDefinition;
+  final List<String> notebookItems;
+
+  const _SlidesThenCardsScreen({
+    required this.slides,
+    required this.items,
+    required this.title,
+    required this.onComplete,
+    this.notebookDefinition = '',
+    this.notebookItems = const [],
+  });
+
+  @override
+  State<_SlidesThenCardsScreen> createState() => _SlidesThenCardsState();
+}
+
+class _SlidesThenCardsState extends State<_SlidesThenCardsScreen> {
+  bool _slidesDone = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_slidesDone) {
+      return SlideStepScreen(
+        slides: widget.slides,
+        accentColor: AppTheme.concept,
+        accentColorLt: AppTheme.conceptLt,
+        stepLabel: 'KAVRAMLAR',
+        stepEmoji: '📚',
+        title: widget.title,
+        onComplete: () => setState(() => _slidesDone = true),
+      );
+    }
+    return ConceptCardsScreen(
+      items: widget.items,
+      title: widget.title,
+      onComplete: widget.onComplete,
+      notebookDefinition: widget.notebookDefinition,
+      notebookItems: widget.notebookItems,
     );
   }
 }
