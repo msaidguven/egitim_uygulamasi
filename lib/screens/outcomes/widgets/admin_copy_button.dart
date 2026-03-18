@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-enum AdminPromptType { content, questions }
+enum AdminPromptType { content, contentV0, questions }
 
 class AdminCopyButton extends StatelessWidget {
   final String gradeName;
@@ -13,6 +13,8 @@ class AdminCopyButton extends StatelessWidget {
 
   static const String _contentPromptAssetPath =
       'assets/prompts/lesson_content_prompt_v1.md';
+  static const String _contentPromptV0AssetPath =
+      'assets/prompts/lesson_content_prompt_v0.md';
   static const String _questionsPromptAssetPath =
       'assets/prompts/lesson_questions_prompt_v1.md';
 
@@ -46,13 +48,17 @@ class AdminCopyButton extends StatelessWidget {
       }
     }
 
-    if (promptType == AdminPromptType.content) {
+    if (promptType == AdminPromptType.content ||
+        promptType == AdminPromptType.contentV0) {
       return _buildContentPrompt(
         gradeName: gradeName,
         lessonName: lessonName,
         unitTitle: unitTitle,
         topicTitle: topicTitle,
         outcomesText: outcomesBuffer.toString(),
+        assetPath: promptType == AdminPromptType.contentV0
+            ? _contentPromptV0AssetPath
+            : _contentPromptAssetPath,
       );
     }
     return _buildQuestionsPrompt(
@@ -89,6 +95,9 @@ class AdminCopyButton extends StatelessWidget {
         switch (promptType) {
           case AdminPromptType.content:
             message = 'İçerik bilgileri kopyalandı';
+            break;
+          case AdminPromptType.contentV0:
+            message = 'İçerik promptu V0 kopyalandı';
             break;
           case AdminPromptType.questions:
             message = 'Soru hazırlama promptu kopyalandı';
@@ -130,8 +139,9 @@ class AdminCopyButton extends StatelessWidget {
     required String unitTitle,
     required String topicTitle,
     required String outcomesText,
+    required String assetPath,
   }) async {
-    final template = await rootBundle.loadString(_contentPromptAssetPath);
+    final template = await rootBundle.loadString(assetPath);
     return template
         .replaceAll('{grade}', gradeName)
         .replaceAll('{subject}', lessonName)
@@ -165,6 +175,10 @@ class AdminCopyButton extends StatelessWidget {
       case AdminPromptType.content:
         icon = Icons.copy_rounded;
         label = 'İçerik Promptu';
+        break;
+      case AdminPromptType.contentV0:
+        icon = Icons.copy_all_rounded;
+        label = 'İçerik Promptu V0';
         break;
       case AdminPromptType.questions:
         icon = Icons.quiz_outlined;

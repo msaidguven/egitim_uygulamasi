@@ -1,0 +1,629 @@
+{
+  "lessonModule": {
+    "id": "module_temel_hak_sorumluluk",
+    "title": "Temel Hak ve Sorumlulukların Toplumsal Düzenin Sürdürülmesindeki Önemi",
+    "description": "Temel haklar, bireysel sorumluluklar ve dijitalleşmenin vatandaşlık üzerindeki etkileri.",
+    "subject": "Sosyal Bilgiler",
+    "gradeLevel": "Ortaokul",
+    "language": "tr",
+    "tags": [
+      "temel hak",
+      "sorumluluk",
+      "dijital vatandaşlık",
+      "e-devlet",
+      "toplumsal düzen"
+    ],
+    "estimatedMinutes": 30,
+    "createdAt": "2026-03-18T10:00:00Z",
+    "updatedAt": "2026-03-18T10:00:00Z",
+    "sections": [
+      {
+        "id": "section_01",
+        "order": 1,
+        "title": "Giriş & Temel Kavramlar",
+        "icon": "🚀",
+        "content": [
+          {
+            "id": "blk_001",
+            "order": 1,
+            "type": "markdown",
+            "content": {
+              "body": "## Neden Kurallara İhtiyacımız Var?\n\nBir toplumda insanların **huzur ve güven** içinde yaşayabilmesi için belirli kuralların olması gerekir.\n\nBu kuralların temelinde iki şey yatar:\n- Bireylerin sahip olduğu **haklar**\n- Bireylerin yerine getirmesi gereken **sorumluluklar**"
+            }
+          },
+          {
+            "id": "blk_002",
+            "order": 2,
+            "type": "markdown",
+            "content": {
+              "body": "## Anahtar Kavramlar\n\n| Kavram | Açıklama |\n|---|---|\n| **Temel Hak** | İnsanların doğuştan sahip olduğu, devletin güvence altına aldığı haklar |\n| **Sorumluluk** | Bireyin kendisine ve topluma karşı yerine getirmesi gereken görevler |\n| **Toplumsal Düzen** | İnsanların bir arada huzurla yaşamasını sağlayan kural bütünü |\n| **Dijital Vatandaşlık** | Teknolojiyi bilinçli ve etik biçimde kullanan vatandaş kimliği |\n| **E-Devlet** | Devlet hizmetlerinin internet ortamında sunulması |"
+            }
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_01_01",
+            "order": 1,
+            "type": "quiz",
+            "content": {
+              "question": "Temel haklar nasıl edinilir?",
+              "questionType": "single_choice",
+              "options": [
+                {
+                  "id": "opt_a",
+                  "label": "A",
+                  "text": "Devlet tarafından sonradan verilir"
+                },
+                {
+                  "id": "opt_b",
+                  "label": "B",
+                  "text": "Doğuştan gelir, hiç kimse bahşetmez"
+                },
+                {
+                  "id": "opt_c",
+                  "label": "C",
+                  "text": "Çalışarak kazanılır"
+                },
+                {
+                  "id": "opt_d",
+                  "label": "D",
+                  "text": "Okul eğitimiyle elde edilir"
+                }
+              ],
+              "correctOptionId": "opt_b",
+              "hint": "Yaşama hakkını ya da düşünce özgürlüğünü biri sana 'verdi' mi?",
+              "explanation": "Temel haklar doğuştan gelir; devlet bunları yaratmaz, yalnızca güvence altına alır."
+            }
+          },
+          {
+            "id": "q_01_02",
+            "order": 2,
+            "type": "quiz",
+            "content": {
+              "question": "Aşağıdaki ifade doğru mu?",
+              "questionType": "true_false",
+              "statement": "Toplumsal düzen, yalnızca devletin koyduğu kanunlardan oluşur; bireylerin sorumluluklarının bu düzenle ilgisi yoktur.",
+              "correctAnswer": false,
+              "hint": "Bireyler olmadan devlet kanunları tek başına toplumsal düzeni sağlayabilir mi?",
+              "explanation": "Toplumsal düzen kanunlar VE bireylerin sorumluluk bilinciyle birlikte sağlanır. Sadece kanunlar yeterli değildir."
+            }
+          },
+          {
+            "id": "q_01_03",
+            "order": 3,
+            "type": "quiz",
+            "content": {
+              "question": "Kavramları doğru tanımlarıyla eşleştir.",
+              "questionType": "matching",
+              "pairs": [
+                {
+                  "id": "p1",
+                  "left": "Temel Hak",
+                  "right": "Doğuştan gelen, devletçe korunan hak"
+                },
+                {
+                  "id": "p2",
+                  "left": "Sorumluluk",
+                  "right": "Topluma karşı yerine getirilmesi gereken görev"
+                },
+                {
+                  "id": "p3",
+                  "left": "E-Devlet",
+                  "right": "Devlet hizmetlerinin internet üzerinden sunulması"
+                }
+              ],
+              "hint": "Her kavramın anahtar kelimesini tanımında ara: 'doğuştan', 'görev', 'internet'.",
+              "explanation": "Bu üç kavram birbirini tamamlar: haklar bizi korur, sorumluluklar toplumu ayakta tutar, e-devlet ise bu ilişkiyi dijital dünyaya taşır."
+            }
+          }
+        ]
+      },
+      {
+        "id": "section_02",
+        "order": 2,
+        "title": "Haklar ve Sorumluluklar",
+        "icon": "📖",
+        "content": [
+          {
+            "id": "blk_004",
+            "order": 1,
+            "type": "markdown",
+            "content": {
+              "body": "## Temel Haklar\n\nİnsanların doğuştan sahip olduğu, devlet tarafından güvence altına alınan haklardır.\n\n**Örnekler:** Yaşama hakkı · Eğitim hakkı · Düşünce özgürlüğü\n\n---\n\n## Sorumluluklar\n\nBireylerin hem kendilerine hem topluma karşı yerine getirmesi gereken görevlerdir.\n\n**Örnekler:** Kurallara uymak · Başkalarının haklarına saygı göstermek · Topluma zarar vermemek\n\n---\n\n## Toplumsal Düzen\n\nİnsanların bir arada **huzur** içinde yaşayabilmesini sağlayan kurallar ve düzenin bütünüdür."
+            }
+          },
+          {
+            "id": "blk_005",
+            "order": 2,
+            "type": "markdown",
+            "content": {
+              "body": "## Teknoloji ile Değişen Vatandaşlık\n\nGünümüzde vatandaşlar devlet hizmetlerine internet üzerinden kolayca ulaşabilmektedir:\n\n- 🖥️ **Online başvuru sistemleri**\n- 📱 **Dijital kimlik uygulamaları**\n- 🏛️ **E-devlet hizmetleri**"
+            }
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_02_01",
+            "order": 1,
+            "type": "quiz",
+            "content": {
+              "question": "Bireysel sorumluluklar arasında yer ALMAYAN hangisidir?",
+              "questionType": "single_choice",
+              "options": [
+                {
+                  "id": "opt_a",
+                  "label": "A",
+                  "text": "Kurallara uymak"
+                },
+                {
+                  "id": "opt_b",
+                  "label": "B",
+                  "text": "Başkalarının haklarına saygı göstermek"
+                },
+                {
+                  "id": "opt_c",
+                  "label": "C",
+                  "text": "Devletten sınırsız hizmet talep etmek"
+                },
+                {
+                  "id": "opt_d",
+                  "label": "D",
+                  "text": "Topluma zarar vermemek"
+                }
+              ],
+              "correctOptionId": "opt_c",
+              "hint": "Hangi seçenek bir 'yükümlülük' değil, tam tersine bir 'talep'tir?",
+              "explanation": "Sorumluluklar bireyin topluma karşı yükümlülüklerini kapsar. Sınırsız talepte bulunmak sorumluluk değil, bilincin yokluğudur."
+            }
+          },
+          {
+            "id": "q_02_02",
+            "order": 2,
+            "type": "quiz",
+            "content": {
+              "question": "Temel hakların özelliklerini doğru sıraya diz.",
+              "questionType": "ordering",
+              "items": [
+                {
+                  "id": "i1",
+                  "text": "Doğuştan kazanılır"
+                },
+                {
+                  "id": "i2",
+                  "text": "Devlet tarafından güvence altına alınır"
+                },
+                {
+                  "id": "i3",
+                  "text": "Başkalarının hakları ile sınırlıdır"
+                },
+                {
+                  "id": "i4",
+                  "text": "Demokratik toplumun temelidir"
+                }
+              ],
+              "correctOrder": [
+                "i1",
+                "i2",
+                "i3",
+                "i4"
+              ],
+              "hint": "Önce hakkın nasıl edinildiğinden başla, sonra nasıl korunduğuna ve son olarak sınırlarına geç.",
+              "explanation": "Temel haklar önce doğuşla kazanılır, devlet güvence altına alır, başkalarının hakları ile sınırlanır ve böylece demokratik düzenin temeli olur."
+            }
+          },
+          {
+            "id": "q_02_03",
+            "order": 3,
+            "type": "quiz",
+            "content": {
+              "question": "Dijital vatandaşlık sorumluluklarından hangisi/hangileri doğrudur?",
+              "questionType": "multiple_choice",
+              "options": [
+                {
+                  "id": "opt_a",
+                  "label": "A",
+                  "text": "İnternette doğru bilgi paylaşmak"
+                },
+                {
+                  "id": "opt_b",
+                  "label": "B",
+                  "text": "Başkalarının haklarına saygı göstermek"
+                },
+                {
+                  "id": "opt_c",
+                  "label": "C",
+                  "text": "Devlet sitelerine yetkisiz erişim sağlamak"
+                },
+                {
+                  "id": "opt_d",
+                  "label": "D",
+                  "text": "Etik kurallara uymak"
+                }
+              ],
+              "correctOptionIds": [
+                "opt_a",
+                "opt_b",
+                "opt_d"
+              ],
+              "hint": "Dijital vatandaşlık; doğruluk, saygı ve etik üzerine kuruludur. Yasadışı olan hangisi?",
+              "explanation": "Dijital vatandaşlık; doğru bilgi paylaşımı, başkalarına saygı ve etik davranışı kapsar. Yetkisiz erişim yasadışıdır."
+            }
+          }
+        ]
+      },
+      {
+        "id": "section_03",
+        "order": 3,
+        "title": "Dijitalleşme ve Vatandaşlık",
+        "icon": "🧩",
+        "content": [
+          {
+            "id": "blk_007",
+            "order": 1,
+            "type": "markdown",
+            "content": {
+              "body": "## Dijitalleşmenin Kolaylaştırdıkları\n\nTeknolojinin gelişmesiyle birlikte vatandaşlık haklarını kullanmak daha kolay hale gelmiştir:\n\n1. Resmi işlemler internet üzerinden yapılabilmektedir\n2. Devlet kurumlarına gitmeden başvurular gerçekleştirilebilmektedir\n3. Bilgiye hızlı ulaşmak ve görüş ifade etmek mümkündür\n\n**Örnek:** Bir öğrenci okul kayıt işlemlerini veya sınav başvurularını internet üzerinden yapabilir."
+            }
+          },
+          {
+            "id": "blk_008",
+            "order": 2,
+            "type": "markdown",
+            "content": {
+              "body": "## Dijital Ortamda Sorumluluklar\n\nDijitalleşme kolaylık sağlarken yeni sorumluluklar da beraberinde getirir:\n\n| Sorumluluk | Açıklama |\n|---|---|\n| Doğru bilgi paylaşmak | Yanlış bilgi güven sorununa yol açar |\n| Haklara saygı | Dijitalde de başkasının hakkını çiğnemek yasaktır |\n| Etik davranış | Dijital ortamda da etik kurallar geçerlidir |"
+            }
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_03_01",
+            "order": 1,
+            "type": "quiz",
+            "content": {
+              "question": "Çevre kirliliğini yetkililere bildirmek için en uygun dijital yol hangisidir?",
+              "questionType": "single_choice",
+              "options": [
+                {
+                  "id": "opt_a",
+                  "label": "A",
+                  "text": "Sosyal medyada anonim şikâyet paylaşmak"
+                },
+                {
+                  "id": "opt_b",
+                  "label": "B",
+                  "text": "İlgili kurumun internet sitesi üzerinden resmi başvuru yapmak"
+                },
+                {
+                  "id": "opt_c",
+                  "label": "C",
+                  "text": "Arkadaşlarına mesaj atmak"
+                },
+                {
+                  "id": "opt_d",
+                  "label": "D",
+                  "text": "Konuyu görmezden gelmek"
+                }
+              ],
+              "correctOptionId": "opt_b",
+              "hint": "Sorunu doğrudan yetkililere ileten resmi bir kanal düşün.",
+              "explanation": "Resmi dijital kanallar sorunu yetkililere iletir ve çözüm sürecini başlatır."
+            }
+          },
+          {
+            "id": "q_03_02",
+            "order": 2,
+            "type": "quiz",
+            "content": {
+              "question": "Dijitalleşme sürecini doğru kronolojik sıraya diz.",
+              "questionType": "ordering",
+              "items": [
+                {
+                  "id": "i1",
+                  "text": "İnternetin yaygınlaşması"
+                },
+                {
+                  "id": "i2",
+                  "text": "Online devlet hizmetlerinin başlaması"
+                },
+                {
+                  "id": "i3",
+                  "text": "Dijital kimlik uygulamaları"
+                },
+                {
+                  "id": "i4",
+                  "text": "Yapay zeka destekli e-devlet"
+                }
+              ],
+              "correctOrder": [
+                "i1",
+                "i2",
+                "i3",
+                "i4"
+              ],
+              "hint": "Önce altyapı (internet), sonra hizmetler, sonra kimlik doğrulama, sonra akıllı sistemler.",
+              "explanation": "Dijitalleşme; önce internet altyapısıyla başladı, ardından devlet hizmetleri online taşındı, sonra güvenli kimlik sistemleri geliştirildi ve şimdi yapay zeka entegrasyonu yaşanıyor."
+            }
+          },
+          {
+            "id": "q_03_03",
+            "order": 3,
+            "type": "quiz",
+            "content": {
+              "question": "Dijital ortamda da gerçek dünyada olduğu gibi etik kurallara uyulması gerekir.",
+              "questionType": "true_false",
+              "statement": "Dijital ortamda da gerçek dünyada olduğu gibi etik kurallara uyulması gerekir.",
+              "correctAnswer": true,
+              "hint": "İnternette yazılanların gerçek dünyada sonuç doğurup doğurmadığını düşün.",
+              "explanation": "Dijital dünya gerçek dünyanın bir uzantısıdır. Burada yapılan eylemler de hukuki ve etik sonuçlar doğurur."
+            }
+          },
+          {
+            "id": "q_03_04",
+            "order": 4,
+            "type": "quiz",
+            "content": {
+              "question": "Dijital vatandaşlık kavramını tanımla.",
+              "questionType": "fill_blank",
+              "question_text": "Teknolojiyi bilinçli ve ________ biçimde kullanan vatandaş kimliğine dijital vatandaşlık denir.",
+              "acceptedAnswers": [
+                "etik",
+                "etik bir",
+                "sorumlu",
+                "bilinçli"
+              ],
+              "hint": "Kanunlara ve ahlak kurallarına uygun davranmayı ifade eden kelimeyi düşün.",
+              "explanation": "Dijital vatandaşlık teknolojiyi 'etik' biçimde kullanmayı gerektirir; bu hem yasalara uymayı hem de başkalarına saygı göstermeyi kapsar."
+            }
+          }
+        ]
+      },
+      {
+        "id": "section_04",
+        "order": 4,
+        "title": "Hak-Sorumluluk Dengesi",
+        "icon": "🔍",
+        "content": [
+          {
+            "id": "blk_010",
+            "order": 1,
+            "type": "markdown",
+            "content": {
+              "body": "## Denge Neden Önemli?\n\nDijitalleşme vatandaşların haklarını kullanmasını kolaylaştırmaktadır. Ancak **teknolojinin doğru ve bilinçli kullanılması** şarttır.\n\n> Hak ve sorumlulukların **dengeli** kullanılması demokratik toplumların güçlü olmasını sağlar.\n\nYanlış bilgi paylaşımı veya dijital hak ihlalleri toplumda **güven sorunlarına** yol açabilir."
+            }
+          },
+          {
+            "id": "blk_misc_01",
+            "order": 2,
+            "type": "misconception",
+            "content": {
+              "wrong": "İnternette istediğim her şeyi paylaşabilirim.",
+              "correct": "Dijital ortamda da başkalarının haklarına saygı göstermek ve doğru bilgi paylaşmak gerekir.",
+              "tip": "İnternette yazdıklarınız gerçek dünyada da sonuç doğurur."
+            }
+          },
+          {
+            "id": "blk_misc_02",
+            "order": 3,
+            "type": "misconception",
+            "content": {
+              "wrong": "Haklar sınırsızdır, istediğimi yaparım.",
+              "correct": "Her hak, başka insanların haklarıyla sınırlıdır.",
+              "tip": "Özgürlüğünüz başkasının özgürlüğünün başladığı yerde biter."
+            }
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_04_01",
+            "order": 1,
+            "type": "quiz",
+            "content": {
+              "question": "Dijital ortamda yanlış bilgi paylaşımının topluma etkisi nedir?",
+              "questionType": "single_choice",
+              "options": [
+                {
+                  "id": "opt_a",
+                  "label": "A",
+                  "text": "Toplumsal güveni artırır"
+                },
+                {
+                  "id": "opt_b",
+                  "label": "B",
+                  "text": "Hiçbir etkisi yoktur"
+                },
+                {
+                  "id": "opt_c",
+                  "label": "C",
+                  "text": "Güven sorunlarına ve toplumsal düzenin bozulmasına yol açabilir"
+                },
+                {
+                  "id": "opt_d",
+                  "label": "D",
+                  "text": "Yalnızca paylaşan kişiyi etkiler"
+                }
+              ],
+              "correctOptionId": "opt_c",
+              "hint": "Yanlış bilgi sosyal medyada hızla yayılır. Bunun toplumun tamamına etkisini düşün.",
+              "explanation": "Yanlış bilgi hızla yayılarak toplumsal güveni zedeler ve düzeni olumsuz etkiler."
+            }
+          },
+          {
+            "id": "q_04_02",
+            "order": 2,
+            "type": "quiz",
+            "content": {
+              "question": "Hak-sorumluluk dengesini oluşturan unsurları eşleştir.",
+              "questionType": "matching",
+              "pairs": [
+                {
+                  "id": "p1",
+                  "left": "Hak",
+                  "right": "Bireyin talep edebildiği güvenceler"
+                },
+                {
+                  "id": "p2",
+                  "left": "Sorumluluk",
+                  "right": "Bireyin topluma karşı yükümlülükleri"
+                },
+                {
+                  "id": "p3",
+                  "left": "Denge",
+                  "right": "Hak ve sorumluluğun bir arada sağlanması"
+                }
+              ],
+              "hint": "Hak → talep, Sorumluluk → yükümlülük, Denge → ikisi birden.",
+              "explanation": "Demokratik toplumda bireyler hem haklarını talep eder hem de sorumluluklarını yerine getirir; bu denge olmadan toplumsal düzen bozulur."
+            }
+          },
+          {
+            "id": "q_04_03",
+            "order": 3,
+            "type": "quiz",
+            "content": {
+              "question": "Dijital ortamda hak ihlali, yalnızca yasadışı içerik paylaşmaktır.",
+              "questionType": "true_false",
+              "statement": "Dijital ortamda hak ihlali, yalnızca yasadışı içerik paylaşmaktır.",
+              "correctAnswer": false,
+              "hint": "Birisini trollemek ya da yanlış bilgi yaymak yasa dışı mı olmalı?",
+              "explanation": "Dijital hak ihlalleri geniş bir yelpazeyi kapsar: yanlış bilgi yaymak, trollemek, kişisel veri paylaşmak ve daha fazlası. Yalnızca yasadışı içerikle sınırlı değildir."
+            }
+          }
+        ]
+      },
+      {
+        "id": "section_05",
+        "order": 5,
+        "title": "Genel Değerlendirme",
+        "icon": "🏆",
+        "content": [
+          {
+            "id": "blk_016",
+            "order": 1,
+            "type": "markdown",
+            "content": {
+              "body": "## 📝 Özet\n\n- **Temel haklar** insanların doğuştan sahip olduğu ve devletçe korunan haklardır\n- **Sorumluluklar** bireylerin topluma karşı yerine getirmesi gereken görevlerdir\n- **Teknoloji** vatandaşlık haklarının kullanımını kolaylaştırmıştır\n- Dijital ortamda da **sorumlu davranmak** ve haklara saygı göstermek gerekir\n- Hak ve sorumlulukların **dengeli kullanımı** toplumsal düzeni korur"
+            }
+          },
+          {
+            "id": "blk_misc_03",
+            "order": 2,
+            "type": "misconception",
+            "content": {
+              "wrong": "Teknoloji sadece eğlence için kullanılır.",
+              "correct": "Teknoloji, vatandaşlık haklarını kullanmak için de önemli bir araçtır.",
+              "tip": "E-devlet hizmetleri, dijital kimlik ve online başvurular teknolojinin vatandaşlık boyutunu gösterir."
+            }
+          }
+        ],
+        "quiz": [
+          {
+            "id": "q_05_01",
+            "order": 1,
+            "type": "quiz",
+            "content": {
+              "question": "Ders boyunca öğrendiklerimizi özetleyen adımları doğru sıraya diz.",
+              "questionType": "ordering",
+              "items": [
+                {
+                  "id": "i1",
+                  "text": "Temel haklar ve sorumluluklar tanımlandı"
+                },
+                {
+                  "id": "i2",
+                  "text": "Toplumsal düzenin önemi kavrandı"
+                },
+                {
+                  "id": "i3",
+                  "text": "Dijitalleşmenin vatandaşlığa etkisi incelendi"
+                },
+                {
+                  "id": "i4",
+                  "text": "Hak-sorumluluk dengesi analiz edildi"
+                }
+              ],
+              "correctOrder": [
+                "i1",
+                "i2",
+                "i3",
+                "i4"
+              ],
+              "hint": "Dersin akışını hatırla: önce kavramlar, sonra düzen, sonra dijital, sonra denge.",
+              "explanation": "Bu ders; haklar → düzen → dijitalleşme → denge sırasıyla ilerledi. Her kavram bir öncekinin üzerine inşa edildi."
+            }
+          },
+          {
+            "id": "q_05_02",
+            "order": 2,
+            "type": "quiz",
+            "content": {
+              "question": "Kavramları açıklamalarıyla eşleştir.",
+              "questionType": "matching",
+              "pairs": [
+                {
+                  "id": "p1",
+                  "left": "Dijital Vatandaşlık",
+                  "right": "Teknolojiyi bilinçli ve etik kullanmak"
+                },
+                {
+                  "id": "p2",
+                  "left": "E-Devlet",
+                  "right": "Devlet hizmetlerinin internete taşınması"
+                },
+                {
+                  "id": "p3",
+                  "left": "Toplumsal Düzen",
+                  "right": "Kurallara dayalı birlikte yaşam"
+                },
+                {
+                  "id": "p4",
+                  "left": "Temel Hak",
+                  "right": "Doğuştan gelen, devletçe güvenceli hak"
+                }
+              ],
+              "hint": "Her kavramın anahtar sözcüğünü bul: 'etik', 'internet', 'kural', 'doğuştan'.",
+              "explanation": "Bu dört kavram birbirini tamamlar ve modern demokratik toplumun temelini oluşturur."
+            }
+          },
+          {
+            "id": "q_05_03",
+            "order": 3,
+            "type": "quiz",
+            "content": {
+              "question": "Son soruyu yanıtla: Bu derste öğrendiğin en önemli kavram hangisidir?",
+              "questionType": "multiple_choice",
+              "options": [
+                {
+                  "id": "opt_a",
+                  "label": "A",
+                  "text": "Hak ve sorumluluk dengesi"
+                },
+                {
+                  "id": "opt_b",
+                  "label": "B",
+                  "text": "Dijital vatandaşlık bilinci"
+                },
+                {
+                  "id": "opt_c",
+                  "label": "C",
+                  "text": "E-devlet hizmetleri"
+                },
+                {
+                  "id": "opt_d",
+                  "label": "D",
+                  "text": "Hepsi eşit önemde"
+                }
+              ],
+              "correctOptionIds": [
+                "opt_a",
+                "opt_b",
+                "opt_d"
+              ],
+              "hint": "E-devlet bir araçtır; asıl önemli olan bunları kullanan vatandaşın bilinç ve dengesidir.",
+              "explanation": "Hak-sorumluluk dengesi, dijital vatandaşlık bilinci ve bunların hepsinin eşit önemi bu dersin özüdür. E-devlet ise bu değerleri hayata geçiren bir araçtır."
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

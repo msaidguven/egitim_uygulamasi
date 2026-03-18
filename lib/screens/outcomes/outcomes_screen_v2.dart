@@ -345,6 +345,8 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   static const String _adminActionAddContent = 'add_content';
   static const String _adminActionUpdateContent = 'update_content';
   static const String _adminActionCopyContentPrompt = 'copy_content_prompt';
+  static const String _adminActionCopyContentPromptV0 =
+      'copy_content_prompt_v0';
   static const String _adminActionCopyQuestionPrompt = 'copy_question_prompt';
   static const String _panelTabContent = 'content';
   static const String _panelTabQuestions = 'questions';
@@ -1759,6 +1761,18 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                         );
                         return;
                       }
+                      if (value == _adminActionCopyContentPromptV0) {
+                        await AdminCopyButton.copyPrompt(
+                          context,
+                          gradeName: widget.gradeName,
+                          lessonName: widget.lessonName,
+                          unitTitle: promptUnitTitle,
+                          topicTitle: promptTopicTitle,
+                          outcomes: promptOutcomes,
+                          promptType: AdminPromptType.contentV0,
+                        );
+                        return;
+                      }
                       if (value == _adminActionCopyQuestionPrompt) {
                         await AdminCopyButton.copyPrompt(
                           context,
@@ -1847,6 +1861,16 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                             Icon(Icons.copy_all_rounded, size: 18),
                             SizedBox(width: 8),
                             Text('İçerik Promptu Kopyala'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<String>(
+                        value: _adminActionCopyContentPromptV0,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.copy_all_rounded, size: 18),
+                            SizedBox(width: 8),
+                            Text('İçerik Promptu V0'),
                           ],
                         ),
                       ),
@@ -2287,7 +2311,7 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
     final activeBg = const Color(0xFF2F6FE4);
     final activeText = Colors.white;
     final activeBorder = const Color(0xFF1E5BB8);
-    
+
     // Pasif durum için hem canlı hem de "tıklanabilir" olduğunu hissettiren renk
     final inactiveBg = const Color(0xFFFFF0E6); // Canlı bir somon/uçuk turuncu
     final inactiveText = const Color(0xFFD97706); // Amber/Turuncu tonu
@@ -2303,8 +2327,8 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
           color: isActive ? activeBg : inactiveBg,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isActive ? activeBorder : inactiveBorder, 
-            width: 2.0
+            color: isActive ? activeBorder : inactiveBorder,
+            width: 2.0,
           ),
           boxShadow: isActive
               ? [
@@ -2312,24 +2336,20 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                     color: activeBg.withOpacity(0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
-                  )
+                  ),
                 ]
               : [
                   BoxShadow(
                     color: inactiveText.withOpacity(0.1),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
-                  )
+                  ),
                 ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 24,
-              color: isActive ? activeText : inactiveText,
-            ),
+            Icon(icon, size: 24, color: isActive ? activeText : inactiveText),
             const SizedBox(width: 10),
             Text(
               label,
