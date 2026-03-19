@@ -91,3 +91,4 @@ flutter:
     - lib/screens/lesson_content/lesson_v11/lesson_module.json
     - assets/prompts/lesson_content_prompt_v1.md
     - assets/prompts/lesson_questions_prompt_v1.md
+    - lib/screens/lesson_content/lesson_v11/lesson_prompt_v2.md

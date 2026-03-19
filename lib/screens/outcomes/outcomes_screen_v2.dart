@@ -347,6 +347,8 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
   static const String _adminActionCopyContentPrompt = 'copy_content_prompt';
   static const String _adminActionCopyContentPromptV0 =
       'copy_content_prompt_v0';
+  static const String _adminActionCopyContentPromptV2 =
+      'copy_content_prompt_v2';
   static const String _adminActionCopyQuestionPrompt = 'copy_question_prompt';
   static const String _panelTabContent = 'content';
   static const String _panelTabQuestions = 'questions';
@@ -1773,6 +1775,18 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                         );
                         return;
                       }
+                      if (value == _adminActionCopyContentPromptV2) {
+                        await AdminCopyButton.copyPrompt(
+                          context,
+                          gradeName: widget.gradeName,
+                          lessonName: widget.lessonName,
+                          unitTitle: promptUnitTitle,
+                          topicTitle: promptTopicTitle,
+                          outcomes: promptOutcomes,
+                          promptType: AdminPromptType.contentV2,
+                        );
+                        return;
+                      }
                       if (value == _adminActionCopyQuestionPrompt) {
                         await AdminCopyButton.copyPrompt(
                           context,
@@ -1871,6 +1885,16 @@ class _WeekContentViewState extends ConsumerState<_WeekContentView>
                             Icon(Icons.copy_all_rounded, size: 18),
                             SizedBox(width: 8),
                             Text('İçerik Promptu V0'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<String>(
+                        value: _adminActionCopyContentPromptV2,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.data_object_rounded, size: 18),
+                            SizedBox(width: 8),
+                            Text('İçerik Promptu V2'),
                           ],
                         ),
                       ),

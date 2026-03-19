@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-enum AdminPromptType { content, contentV0, questions }
+enum AdminPromptType { content, contentV0, contentV2, questions }
 
 class AdminCopyButton extends StatelessWidget {
   final String gradeName;
@@ -15,6 +15,8 @@ class AdminCopyButton extends StatelessWidget {
       'assets/prompts/lesson_content_prompt_v1.md';
   static const String _contentPromptV0AssetPath =
       'assets/prompts/lesson_content_prompt_v0.md';
+  static const String _contentPromptV2AssetPath =
+      'lib/screens/lesson_content/lesson_v11/lesson_prompt_v2.md';
   static const String _questionsPromptAssetPath =
       'assets/prompts/lesson_questions_prompt_v1.md';
 
@@ -49,7 +51,8 @@ class AdminCopyButton extends StatelessWidget {
     }
 
     if (promptType == AdminPromptType.content ||
-        promptType == AdminPromptType.contentV0) {
+        promptType == AdminPromptType.contentV0 ||
+        promptType == AdminPromptType.contentV2) {
       return _buildContentPrompt(
         gradeName: gradeName,
         lessonName: lessonName,
@@ -58,6 +61,8 @@ class AdminCopyButton extends StatelessWidget {
         outcomesText: outcomesBuffer.toString(),
         assetPath: promptType == AdminPromptType.contentV0
             ? _contentPromptV0AssetPath
+            : promptType == AdminPromptType.contentV2
+            ? _contentPromptV2AssetPath
             : _contentPromptAssetPath,
       );
     }
@@ -98,6 +103,9 @@ class AdminCopyButton extends StatelessWidget {
             break;
           case AdminPromptType.contentV0:
             message = 'İçerik promptu V0 kopyalandı';
+            break;
+          case AdminPromptType.contentV2:
+            message = 'İçerik promptu V2 kopyalandı';
             break;
           case AdminPromptType.questions:
             message = 'Soru hazırlama promptu kopyalandı';
@@ -179,6 +187,10 @@ class AdminCopyButton extends StatelessWidget {
       case AdminPromptType.contentV0:
         icon = Icons.copy_all_rounded;
         label = 'İçerik Promptu V0';
+        break;
+      case AdminPromptType.contentV2:
+        icon = Icons.data_object_rounded;
+        label = 'İçerik Promptu V2';
         break;
       case AdminPromptType.questions:
         icon = Icons.quiz_outlined;

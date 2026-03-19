@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,6 +44,11 @@ class LessonModule {
 
   factory LessonModule.fromJson(Map<String, dynamic> json) {
     final m = json['lessonModule'] as Map<String, dynamic>;
+    final sections =
+        (m['sections'] as List? ?? [])
+            .map((s) => LessonSection.fromJson(s))
+            .toList()
+          ..sort((a, b) => a.order.compareTo(b.order));
     return LessonModule(
       id: m['id'],
       title: m['title'],
@@ -50,9 +56,7 @@ class LessonModule {
       subject: m['subject'] ?? '',
       gradeLevel: m['gradeLevel'] ?? '',
       estimatedMinutes: m['estimatedMinutes'] ?? 0,
-      sections: (m['sections'] as List)
-          .map((s) => LessonSection.fromJson(s))
-          .toList(),
+      sections: sections,
     );
   }
 }
@@ -72,18 +76,27 @@ class LessonSection {
     required this.quiz,
   });
 
-  factory LessonSection.fromJson(Map<String, dynamic> json) => LessonSection(
-    id: json['id'],
-    title: json['title'],
-    icon: json['icon'] ?? '📄',
-    order: json['order'],
-    content: (json['content'] as List? ?? [])
-        .map((b) => LessonBlock.fromJson(b))
-        .toList(),
-    quiz: (json['quiz'] as List? ?? [])
-        .map((b) => LessonBlock.fromJson(b))
-        .toList(),
-  );
+  factory LessonSection.fromJson(Map<String, dynamic> json) {
+    final content =
+        (json['content'] as List? ?? [])
+            .map((b) => LessonBlock.fromJson(b))
+            .toList()
+          ..sort((a, b) => a.order.compareTo(b.order));
+    final quiz =
+        (json['quiz'] as List? ?? [])
+            .map((b) => LessonBlock.fromJson(b))
+            .toList()
+          ..sort((a, b) => a.order.compareTo(b.order));
+
+    return LessonSection(
+      id: json['id'],
+      title: json['title'],
+      icon: json['icon'] ?? '📄',
+      order: json['order'],
+      content: content,
+      quiz: quiz,
+    );
+  }
 }
 
 class LessonBlock {
@@ -139,15 +152,50 @@ class LessonPage extends StatefulWidget {
 }
 
 class _LessonPageState extends State<LessonPage> {
+  static const String _musicAsset = 'audio/bg_music.mp3';
   LessonModule? _module;
   bool _loading = true;
+  double _contentTextScale = 1.0;
   final List<_ScreenKey> _history = [const _ScreenKey(0, _ScreenType.content)];
   final Set<String> _completedQuizIds = {};
+  final Set<_ScreenKey> _completedScreens = {};
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  bool _musicOn = false;
 
   @override
   void initState() {
     super.initState();
+    _initMusic();
     _loadLesson();
+  }
+
+  Future<void> _initMusic() async {
+    await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+    await _audioPlayer.setVolume(0.35);
+    await _audioPlayer.play(AssetSource(_musicAsset));
+    await _audioPlayer.pause();
+  }
+
+  Future<void> _toggleMusic() async {
+    if (_musicOn) {
+      await _audioPlayer.pause();
+    } else {
+      await _audioPlayer.resume();
+    }
+    if (!mounted) return;
+    setState(() => _musicOn = !_musicOn);
+  }
+
+  void _increaseContentTextScale() {
+    setState(() {
+      _contentTextScale = (_contentTextScale + 0.2).clamp(0.85, 3.6);
+    });
+  }
+
+  void _decreaseContentTextScale() {
+    setState(() {
+      _contentTextScale = (_contentTextScale - 0.2).clamp(0.85, 3.6);
+    });
   }
 
   Future<void> _loadLesson() async {
@@ -159,6 +207,7 @@ class _LessonPageState extends State<LessonPage> {
     } else {
       throw Exception('jsonString veya assetPath belirtilmeli');
     }
+    if (!mounted) return;
     setState(() {
       _module = LessonModule.fromJson(jsonDecode(raw));
       _loading = false;
@@ -177,6 +226,7 @@ class _LessonPageState extends State<LessonPage> {
   }
 
   void _onContentDone(int sectionIndex) {
+    _completedScreens.add(_ScreenKey(sectionIndex, _ScreenType.content));
     final section = _module!.sections[sectionIndex];
     if (section.quiz.isNotEmpty) {
       _pushScreen(_ScreenKey(sectionIndex, _ScreenType.quiz));
@@ -185,7 +235,10 @@ class _LessonPageState extends State<LessonPage> {
     }
   }
 
-  void _onQuizDone(int sectionIndex) => _goToNextSection(sectionIndex);
+  void _onQuizDone(int sectionIndex) {
+    _completedScreens.add(_ScreenKey(sectionIndex, _ScreenType.quiz));
+    _goToNextSection(sectionIndex);
+  }
 
   void _goToNextSection(int sectionIndex) {
     final sections = _module!.sections;
@@ -198,9 +251,19 @@ class _LessonPageState extends State<LessonPage> {
 
   double get _progress {
     if (_module == null) return 0;
-    final total = _module!.sections.length * 2;
-    final done = _history.length - 1;
+    final total = _module!.sections.fold<int>(
+      0,
+      (sum, section) => sum + 1 + (section.quiz.isNotEmpty ? 1 : 0),
+    );
+    if (total == 0) return 0;
+    final done = _completedScreens.length;
     return (done / total).clamp(0.0, 1.0);
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
   }
 
   @override
@@ -226,6 +289,7 @@ class _LessonPageState extends State<LessonPage> {
               ..clear()
               ..add(const _ScreenKey(0, _ScreenType.content));
             _completedQuizIds.clear();
+            _completedScreens.clear();
           });
         },
       );
@@ -254,41 +318,52 @@ class _LessonPageState extends State<LessonPage> {
                 color: color,
                 canGoBack: _canGoBack,
                 onBack: _goBack,
+                canIncreaseText: _contentTextScale < 3.6,
+                canDecreaseText: _contentTextScale > 0.85,
+                onIncreaseText: _increaseContentTextScale,
+                onDecreaseText: _decreaseContentTextScale,
+                musicOn: _musicOn,
+                onToggleMusic: _toggleMusic,
               ),
               Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 350),
-                  transitionBuilder: (child, anim) => SlideTransition(
-                    position:
-                        Tween<Offset>(
-                          begin: const Offset(1, 0),
-                          end: Offset.zero,
-                        ).animate(
-                          CurvedAnimation(
-                            parent: anim,
-                            curve: Curves.easeOutCubic,
+                child: MediaQuery(
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(textScaler: TextScaler.linear(_contentTextScale)),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 350),
+                    transitionBuilder: (child, anim) => SlideTransition(
+                      position:
+                          Tween<Offset>(
+                            begin: const Offset(1, 0),
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: anim,
+                              curve: Curves.easeOutCubic,
+                            ),
                           ),
-                        ),
-                    child: child,
+                      child: child,
+                    ),
+                    child: current.type == _ScreenType.content
+                        ? _ContentScreen(
+                            key: ValueKey('c_$sectionIndex'),
+                            section: section,
+                            sectionIndex: sectionIndex,
+                            color: color,
+                            onDone: () => _onContentDone(sectionIndex),
+                          )
+                        : _QuizScreen(
+                            key: ValueKey('q_$sectionIndex'),
+                            section: section,
+                            sectionIndex: sectionIndex,
+                            color: color,
+                            completedIds: _completedQuizIds,
+                            onQuizAnswered: (id) =>
+                                setState(() => _completedQuizIds.add(id)),
+                            onDone: () => _onQuizDone(sectionIndex),
+                          ),
                   ),
-                  child: current.type == _ScreenType.content
-                      ? _ContentScreen(
-                          key: ValueKey('c_$sectionIndex'),
-                          section: section,
-                          sectionIndex: sectionIndex,
-                          color: color,
-                          onDone: () => _onContentDone(sectionIndex),
-                        )
-                      : _QuizScreen(
-                          key: ValueKey('q_$sectionIndex'),
-                          section: section,
-                          sectionIndex: sectionIndex,
-                          color: color,
-                          completedIds: _completedQuizIds,
-                          onQuizAnswered: (id) =>
-                              setState(() => _completedQuizIds.add(id)),
-                          onDone: () => _onQuizDone(sectionIndex),
-                        ),
                 ),
               ),
             ],
@@ -309,6 +384,12 @@ class _TopBar extends StatelessWidget {
   final Color color;
   final bool canGoBack;
   final VoidCallback onBack;
+  final bool canIncreaseText;
+  final bool canDecreaseText;
+  final VoidCallback onIncreaseText;
+  final VoidCallback onDecreaseText;
+  final bool musicOn;
+  final Future<void> Function() onToggleMusic;
 
   const _TopBar({
     required this.module,
@@ -316,6 +397,12 @@ class _TopBar extends StatelessWidget {
     required this.color,
     required this.canGoBack,
     required this.onBack,
+    required this.canIncreaseText,
+    required this.canDecreaseText,
+    required this.onIncreaseText,
+    required this.onDecreaseText,
+    required this.musicOn,
+    required this.onToggleMusic,
   });
 
   @override
@@ -385,6 +472,28 @@ class _TopBar extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: 8),
+              _HeaderIconButton(
+                icon: Icons.text_decrease_rounded,
+                color: const Color(0xFFB45309),
+                enabled: canDecreaseText,
+                onTap: onDecreaseText,
+              ),
+              const SizedBox(width: 6),
+              _HeaderIconButton(
+                icon: Icons.text_increase_rounded,
+                color: const Color(0xFF047857),
+                enabled: canIncreaseText,
+                onTap: onIncreaseText,
+              ),
+              const SizedBox(width: 6),
+              _HeaderIconButton(
+                icon: musicOn
+                    ? Icons.volume_off_rounded
+                    : Icons.music_note_rounded,
+                color: const Color(0xFF7C3AED),
+                onTap: onToggleMusic,
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -398,6 +507,45 @@ class _TopBar extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _HeaderIconButton extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+  final bool enabled;
+
+  const _HeaderIconButton({
+    required this.icon,
+    required this.color,
+    required this.onTap,
+    this.enabled = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: enabled ? 1 : 0.45,
+      child: InkWell(
+        onTap: enabled ? onTap : null,
+        borderRadius: BorderRadius.circular(11),
+        child: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(11),
+            border: Border.all(
+              color: color.withValues(alpha: 0.28),
+              width: 1.2,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Icon(icon, size: 18, color: color),
+        ),
       ),
     );
   }
@@ -445,6 +593,10 @@ class _ContentScreenState extends State<_ContentScreen> {
   @override
   Widget build(BuildContext context) {
     final total = widget.section.content.length;
+    if (total == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => widget.onDone());
+      return const SizedBox.shrink();
+    }
     final block = widget.section.content[_cardIndex];
 
     return Column(
@@ -580,7 +732,10 @@ class _ContentScreenState extends State<_ContentScreen> {
       case 'misconception':
         return _MisconceptionCard(content: block.content, color: widget.color);
       default:
-        return const SizedBox.shrink();
+        return _UnsupportedBlockCard(
+          blockType: block.type,
+          color: widget.color,
+        );
     }
   }
 }
@@ -1216,6 +1371,20 @@ class _ChoiceCardState extends State<_ChoiceCard>
     }
   }
 
+  void _handleOptionTap(String id) {
+    if (_submitted) return;
+    setState(() {
+      if (_isMultiple) {
+        _multi.contains(id) ? _multi.remove(id) : _multi.add(id);
+      } else {
+        _selected = id;
+      }
+    });
+    if (!_isMultiple) {
+      _submit();
+    }
+  }
+
   /// Her seçeneğin durumu bağımsız hesaplanır:
   /// - Doğru şık: her zaman yeşil (seçilmiş olsun olmasın)
   /// - Yanlış seçilen: kırmızı
@@ -1233,8 +1402,8 @@ class _ChoiceCardState extends State<_ChoiceCard>
     final sel = _isMultiple ? _multi.contains(id) : _selected == id;
     if (!_submitted) return sel ? widget.color.withOpacity(0.1) : Colors.white;
     final ok = _isOptCorrect(id);
-    if (ok) return const Color(0xFFECFDF5);           // doğru şık → yeşil
-    if (sel && !ok) return const Color(0xFFFFF0F0);   // yanlış seçilen → kırmızı
+    if (_isCorrect && ok) return const Color(0xFFECFDF5);
+    if (sel && !ok) return const Color(0xFFFFF0F0);
     return Colors.white;
   }
 
@@ -1242,7 +1411,7 @@ class _ChoiceCardState extends State<_ChoiceCard>
     final sel = _isMultiple ? _multi.contains(id) : _selected == id;
     if (!_submitted) return sel ? widget.color : const Color(0xFFE5E7EB);
     final ok = _isOptCorrect(id);
-    if (ok) return _C.correct;
+    if (_isCorrect && ok) return _C.correct;
     if (sel && !ok) return _C.wrong;
     return const Color(0xFFE5E7EB);
   }
@@ -1253,7 +1422,6 @@ class _ChoiceCardState extends State<_ChoiceCard>
     final options = (c['options'] as List? ?? []).cast<Map<String, dynamic>>();
     final explanation = c['explanation'] as String? ?? '';
     final hint = c['hint'] as String? ?? '';
-    final canSubmit = !_submitted && (_selected != null || _multi.isNotEmpty);
 
     return AnimatedBuilder(
       animation: _shakeAnim,
@@ -1288,17 +1456,7 @@ class _ChoiceCardState extends State<_ChoiceCard>
             final id = opt['id'] as String;
             final sel = _isMultiple ? _multi.contains(id) : _selected == id;
             return GestureDetector(
-              onTap: _submitted
-                  ? null
-                  : () => setState(() {
-                      if (_isMultiple) {
-                        _multi.contains(id)
-                            ? _multi.remove(id)
-                            : _multi.add(id);
-                      } else {
-                        _selected = id;
-                      }
-                    }),
+              onTap: _submitted ? null : () => _handleOptionTap(id),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 180),
                 margin: const EdgeInsets.only(bottom: 8),
@@ -1318,7 +1476,7 @@ class _ChoiceCardState extends State<_ChoiceCard>
                       height: 28,
                       decoration: BoxDecoration(
                         color: _submitted
-                            ? (_isOptCorrect(id)
+                            ? (_isCorrect && _isOptCorrect(id)
                                   ? _C.correct
                                   : sel
                                   ? _C.wrong
@@ -1331,7 +1489,7 @@ class _ChoiceCardState extends State<_ChoiceCard>
                         ),
                       ),
                       child: Center(
-                        child: _submitted && _isOptCorrect(id)
+                        child: _submitted && _isCorrect && _isOptCorrect(id)
                             ? const Icon(
                                 Icons.check_rounded,
                                 size: 16,
@@ -1362,7 +1520,7 @@ class _ChoiceCardState extends State<_ChoiceCard>
                         style: TextStyle(
                           fontSize: 13.5,
                           color: _submitted
-                              ? (_isOptCorrect(id)
+                              ? (_isCorrect && _isOptCorrect(id)
                                     ? _C.correct
                                     : sel
                                     ? _C.wrong
@@ -1384,12 +1542,12 @@ class _ChoiceCardState extends State<_ChoiceCard>
             hint: hint,
             visible: _showHint && _attempts > 0 && !_isCorrect,
           ),
-          if (!(_submitted && _isCorrect)) ...[
+          if (_isMultiple && !(_submitted && _isCorrect)) ...[
             const SizedBox(height: 8),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: canSubmit ? _submit : null,
+                onPressed: !_submitted && _multi.isNotEmpty ? _submit : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: widget.color,
                   foregroundColor: Colors.white,
@@ -1436,7 +1594,7 @@ class _FillBlankCard extends StatefulWidget {
 }
 
 class _FillBlankCardState extends State<_FillBlankCard> {
-  String? _selected;        // seçilen kelime
+  String? _selected; // seçilen kelime
   bool _submitted = false;
   bool _isCorrect = false;
   int _attempts = 0;
@@ -1450,34 +1608,36 @@ class _FillBlankCardState extends State<_FillBlankCard> {
     if (widget.done) {
       _submitted = true;
       _isCorrect = true;
-      // Doğru cevapların ilkini göster
-      final accepted = (widget.block.content['acceptedAnswers'] as List? ??
-              [widget.block.content['correctAnswer'] ?? ''])
-          .cast<String>();
-      _selected = accepted.first;
+      _selected = _displayAnswer;
     }
   }
 
+  List<String> get _acceptedAnswers {
+    final raw =
+        (widget.block.content['acceptedAnswers'] as List? ??
+                [widget.block.content['correctAnswer'] ?? ''])
+            .cast<String>()
+            .map((answer) => answer.trim())
+            .where((answer) => answer.isNotEmpty)
+            .toList();
+    return raw.isNotEmpty ? raw : [''];
+  }
+
+  String get _displayAnswer => _acceptedAnswers.first;
+
   /// acceptedAnswers + distractors birleştir, karıştır
   List<String> _buildWordOptions() {
-    final accepted = (widget.block.content['acceptedAnswers'] as List? ??
-            [widget.block.content['correctAnswer'] ?? ''])
+    final distractors = (widget.block.content['distractors'] as List? ?? [])
+        .cast<String>()
+        .map((word) => word.trim())
+        .where((word) => word.isNotEmpty)
         .cast<String>();
-    final distractors =
-        (widget.block.content['distractors'] as List? ?? []).cast<String>();
 
-    // Doğrulardan sadece 1 tane göster (ilkini al)
-    final options = <String>{accepted.first};
+    // Alternatif doğru cevaplar kontrol için saklanır; seçeneklerde yalnızca
+    // tek bir kanonik doğru cevap gösterilir. Aksi halde ekrandaki birden fazla
+    // seçenek "doğru" olur.
+    final options = <String>{_displayAnswer};
     options.addAll(distractors);
-
-    // Eğer yeterli seçenek yoksa diğer acceptedAnswers'dan da ekle
-    // (ama fazla doğru koyma — max 2 doğru)
-    if (options.length < 4) {
-      for (final a in accepted.skip(1)) {
-        if (options.length >= 4) break;
-        options.add(a);
-      }
-    }
 
     final list = options.toList()..shuffle();
     return list;
@@ -1485,11 +1645,7 @@ class _FillBlankCardState extends State<_FillBlankCard> {
 
   bool _check(String input) {
     final cleaned = input.trim().toLowerCase();
-    final accepted =
-        (widget.block.content['acceptedAnswers'] as List? ??
-                [widget.block.content['correctAnswer'] ?? ''])
-            .cast<String>();
-    return accepted.any((a) => a.toLowerCase() == cleaned);
+    return _acceptedAnswers.any((a) => a.toLowerCase() == cleaned);
   }
 
   void _pick(String word) {
@@ -1532,6 +1688,7 @@ class _FillBlankCardState extends State<_FillBlankCard> {
         const SizedBox(height: 12),
         // Soru metni — seçilen kelimeyle boşluk dolup dolmadığını göster
         ..._buildQuestion(
+          context,
           c['question_text'] ?? c['question'] ?? '',
           widget.color,
           _selected,
@@ -1623,6 +1780,7 @@ class _FillBlankCardState extends State<_FillBlankCard> {
   }
 
   List<Widget> _buildQuestion(
+    BuildContext context,
     String raw,
     Color color,
     String? selected,
@@ -1652,6 +1810,7 @@ class _FillBlankCardState extends State<_FillBlankCard> {
         return Padding(
           padding: const EdgeInsets.only(bottom: 2),
           child: RichText(
+            textScaler: MediaQuery.textScalerOf(context),
             text: TextSpan(
               style: const TextStyle(
                 fontSize: 15,
@@ -1736,6 +1895,7 @@ class _MatchingCardState extends State<_MatchingCard> {
   final Map<String, String> _confirmed = {};
   // Anlık yanlış flash için: leftId → true (kırmızı göster)
   final Set<String> _wrongFlash = {};
+  final Set<String> _wrongRightFlash = {};
   int _attempts = 0;
   bool _showHint = false;
   bool _allCorrect = false;
@@ -1793,9 +1953,15 @@ class _MatchingCardState extends State<_MatchingCard> {
     } else {
       // Yanlış — kırmızı flash, sonra temizle
       _wrongFlash.add(leftId);
+      _wrongRightFlash.add(rightText);
       _showHint = true;
       Future.delayed(const Duration(milliseconds: 800), () {
-        if (mounted) setState(() => _wrongFlash.remove(leftId));
+        if (mounted) {
+          setState(() {
+            _wrongFlash.remove(leftId);
+            _wrongRightFlash.remove(rightText);
+          });
+        }
       });
     }
   }
@@ -1809,8 +1975,7 @@ class _MatchingCardState extends State<_MatchingCard> {
 
   Color _rightColor(String text) {
     if (_confirmed.values.contains(text)) return _C.correct;
-    // Yanlış flash: sağ taraftaki yanlış seçim de kırmızı yanıp söner
-    // (leftId'ye bakarak çapraz kontrol)
+    if (_wrongRightFlash.contains(text)) return _C.wrong;
     if (_selectedRight == text) return widget.color;
     return const Color(0xFFE5E7EB);
   }
@@ -1948,6 +2113,8 @@ class _MatchingCardState extends State<_MatchingCard> {
                       decoration: BoxDecoration(
                         color: isConfirmedRight
                             ? const Color(0xFFECFDF5)
+                            : _wrongRightFlash.contains(right)
+                            ? const Color(0xFFFFF0F0)
                             : isActive
                             ? widget.color.withOpacity(0.12)
                             : Colors.white,
@@ -1964,6 +2131,8 @@ class _MatchingCardState extends State<_MatchingCard> {
                           fontWeight: FontWeight.w600,
                           color: isConfirmedRight
                               ? _C.correct
+                              : _wrongRightFlash.contains(right)
+                              ? _C.wrong
                               : isActive
                               ? widget.color
                               : const Color(0xFF374151),
@@ -1976,8 +2145,7 @@ class _MatchingCardState extends State<_MatchingCard> {
             ),
           ],
         ),
-        if (hint.isNotEmpty && !_allCorrect)
-          _OrderingHintBox(hint: hint),
+        if (hint.isNotEmpty && !_allCorrect) _OrderingHintBox(hint: hint),
         if (_allCorrect)
           _FeedbackBox(isCorrect: true, explanation: explanation),
       ],
@@ -2132,10 +2300,7 @@ class _OrderingCardState extends State<_OrderingCard> {
               decoration: BoxDecoration(
                 color: itemBg,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: itemColor,
-                  width: 1.5,
-                ),
+                border: Border.all(color: itemColor, width: 1.5),
               ),
               child: Row(
                 children: [
@@ -2297,6 +2462,12 @@ class _TrueFalseCardState extends State<_TrueFalseCard>
     }
   }
 
+  void _handleAnswerTap(bool value) {
+    if (_submitted) return;
+    setState(() => _selected = value);
+    _submit();
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = widget.block.content;
@@ -2355,11 +2526,10 @@ class _TrueFalseCardState extends State<_TrueFalseCard>
                   label: '✅  Doğru',
                   selected: _selected == true,
                   correct: _submitted ? (_correctAnswer == true) : null,
+                  isCorrectAnswer: _isCorrect,
                   submitted: _submitted,
                   color: widget.color,
-                  onTap: _submitted
-                      ? null
-                      : () => setState(() => _selected = true),
+                  onTap: _submitted ? null : () => _handleAnswerTap(true),
                 ),
               ),
               const SizedBox(width: 10),
@@ -2368,11 +2538,10 @@ class _TrueFalseCardState extends State<_TrueFalseCard>
                   label: '❌  Yanlış',
                   selected: _selected == false,
                   correct: _submitted ? (_correctAnswer == false) : null,
+                  isCorrectAnswer: _isCorrect,
                   submitted: _submitted,
                   color: widget.color,
-                  onTap: _submitted
-                      ? null
-                      : () => setState(() => _selected = false),
+                  onTap: _submitted ? null : () => _handleAnswerTap(false),
                 ),
               ),
             ],
@@ -2381,29 +2550,6 @@ class _TrueFalseCardState extends State<_TrueFalseCard>
             hint: hint,
             visible: _showHint && _attempts > 0 && !_isCorrect,
           ),
-          if (!(_submitted && _isCorrect)) ...[
-            const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _selected != null && !_submitted ? _submit : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: widget.color,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  disabledBackgroundColor: const Color(0xFFE5E7EB),
-                  elevation: 0,
-                ),
-                child: const Text(
-                  'Cevabı Kontrol Et',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
-                ),
-              ),
-            ),
-          ],
           if (_submitted)
             _FeedbackBox(isCorrect: _isCorrect, explanation: explanation),
         ],
@@ -2416,6 +2562,7 @@ class _TFButton extends StatelessWidget {
   final String label;
   final bool selected;
   final bool? correct; // null = henüz submit yok
+  final bool isCorrectAnswer;
   final bool submitted;
   final Color color;
   final VoidCallback? onTap;
@@ -2424,6 +2571,7 @@ class _TFButton extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.correct,
+    required this.isCorrectAnswer,
     required this.submitted,
     required this.color,
     required this.onTap,
@@ -2437,7 +2585,7 @@ class _TFButton extends StatelessWidget {
       bg = color.withOpacity(0.1);
       border = color;
     }
-    if (submitted && correct == true) {
+    if (submitted && isCorrectAnswer && correct == true) {
       bg = const Color(0xFFECFDF5);
       border = _C.correct;
     }
@@ -2618,6 +2766,56 @@ class _AllCorrectBanner extends StatelessWidget {
     );
   }
 }
+
+class _UnsupportedBlockCard extends StatelessWidget {
+  final String blockType;
+  final Color color;
+
+  const _UnsupportedBlockCard({required this.blockType, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: _C.hint.withOpacity(0.35), width: 1.5),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('⚠️', style: TextStyle(fontSize: 18)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Desteklenmeyen içerik bloğu',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: color,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '"$blockType" tipi bu görünümde henüz işlenmiyor.',
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    color: Color(0xFF6B7280),
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 // ═══════════════════════════════════════════════════════
 // MARKDOWN KARTI
 // ═══════════════════════════════════════════════════════
@@ -2628,7 +2826,7 @@ class _MarkdownCard extends StatelessWidget {
 
   const _MarkdownCard({required this.body, required this.color});
 
-  List<Widget> _parse(String raw) {
+  List<Widget> _parse(BuildContext context, String raw) {
     final widgets = <Widget>[];
     final lines = raw.split('\n');
     int i = 0;
@@ -2642,7 +2840,7 @@ class _MarkdownCard extends StatelessWidget {
           tableLines.add(lines[i]);
           i++;
         }
-        widgets.add(_table(tableLines));
+        widgets.add(_table(context, tableLines));
         continue;
       }
       if (line.startsWith('## ')) {
@@ -2650,11 +2848,13 @@ class _MarkdownCard extends StatelessWidget {
       } else if (line.startsWith('### ')) {
         widgets.add(_h(line.substring(4), 14));
       } else if (line.startsWith('> ')) {
-        widgets.add(_quote(line.substring(2)));
+        widgets.add(_quote(context, line.substring(2)));
       } else if (line.startsWith('- ') || line.startsWith('* ')) {
-        widgets.add(_bullet(line.substring(2)));
+        widgets.add(_bullet(context, line.substring(2)));
       } else if (RegExp(r'^\d+\. ').hasMatch(line)) {
-        widgets.add(_bullet(line.replaceFirst(RegExp(r'^\d+\. '), '')));
+        widgets.add(
+          _bullet(context, line.replaceFirst(RegExp(r'^\d+\. '), '')),
+        );
       } else if (line.startsWith('---')) {
         widgets.add(
           Divider(height: 20, color: color.withOpacity(0.2), thickness: 1),
@@ -2662,7 +2862,7 @@ class _MarkdownCard extends StatelessWidget {
       } else if (line.trim().isEmpty) {
         widgets.add(const SizedBox(height: 4));
       } else {
-        widgets.add(_rich(line));
+        widgets.add(_rich(context, line));
       }
       i++;
     }
@@ -2681,7 +2881,7 @@ class _MarkdownCard extends StatelessWidget {
     ),
   );
 
-  Widget _quote(String t) => Container(
+  Widget _quote(BuildContext context, String t) => Container(
     margin: const EdgeInsets.symmetric(vertical: 6),
     padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
@@ -2690,6 +2890,7 @@ class _MarkdownCard extends StatelessWidget {
       border: Border(left: BorderSide(color: color, width: 4)),
     ),
     child: _rich(
+      context,
       t,
       style: TextStyle(
         fontSize: 13,
@@ -2700,7 +2901,7 @@ class _MarkdownCard extends StatelessWidget {
     ),
   );
 
-  Widget _bullet(String t) => Padding(
+  Widget _bullet(BuildContext context, String t) => Padding(
     padding: const EdgeInsets.only(left: 4, bottom: 5),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2714,12 +2915,12 @@ class _MarkdownCard extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        Expanded(child: _rich(t)),
+        Expanded(child: _rich(context, t)),
       ],
     ),
   );
 
-  Widget _table(List<String> tableLines) {
+  Widget _table(BuildContext context, List<String> tableLines) {
     final dataLines = tableLines
         .where((l) => !RegExp(r'^\s*\|[\s\-|]+\|\s*$').hasMatch(l))
         .toList();
@@ -2761,6 +2962,7 @@ class _MarkdownCard extends StatelessWidget {
                       vertical: 8,
                     ),
                     child: _rich(
+                      context,
                       cell,
                       style: TextStyle(
                         fontSize: 12,
@@ -2779,7 +2981,7 @@ class _MarkdownCard extends StatelessWidget {
     );
   }
 
-  Widget _rich(String t, {TextStyle? style}) {
+  Widget _rich(BuildContext context, String t, {TextStyle? style}) {
     final base =
         style ??
         const TextStyle(fontSize: 13.5, color: Color(0xFF374151), height: 1.6);
@@ -2812,7 +3014,10 @@ class _MarkdownCard extends StatelessWidget {
     }
     if (last < t.length)
       spans.add(TextSpan(text: t.substring(last), style: base));
-    return RichText(text: TextSpan(children: spans));
+    return RichText(
+      textScaler: MediaQuery.textScalerOf(context),
+      text: TextSpan(children: spans),
+    );
   }
 
   @override
@@ -2832,7 +3037,7 @@ class _MarkdownCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: _parse(body),
+        children: _parse(context, body),
       ),
     );
   }
