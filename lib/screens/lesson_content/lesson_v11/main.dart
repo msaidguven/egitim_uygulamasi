@@ -32,13 +32,19 @@ class LessonApp extends StatelessWidget {
 }
 
 class LessonPage extends StatelessWidget {
-  const LessonPage({super.key});
+  final int? topicId;
+  final bool useAssetFallback;
+
+  const LessonPage({super.key, this.topicId, this.useAssetFallback = true});
 
   static const String _lessonAssetPath =
       'lib/screens/lesson_content/lesson_v11/lesson_module.json';
 
   @override
   Widget build(BuildContext context) {
-    return const viewer.LessonPage(assetPath: _lessonAssetPath);
+    return viewer.LessonPage(
+      topicId: topicId,
+      assetPath: useAssetFallback ? _lessonAssetPath : null,
+    );
   }
 }

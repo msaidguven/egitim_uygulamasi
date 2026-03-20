@@ -1,28 +1,29 @@
 {
   "lessonModule": {
-    "id": "module_maddenin_tanecikli_yapisi_01",
-    "title": "Maddenin Tanecikli Yapısı: Katı, Sıvı ve Gaz",
-    "description": "Maddelerin tanecikli, boşluklu ve hareketli yapısını öğrenerek katı, sıvı ve gaz olarak sınıflandırma.",
-    "subject": "Fen Bilimleri",
+    "id": "module_bt5_yazilim_algoritma_01",
+    "title": "Problem Belirleme ve Algoritma Oluşturma",
+    "description": "Günlük hayattaki problemleri tanımlamayı, girdi-çıktıları belirlemeyi ve çözüm adımlarını algoritma ile akış şeması olarak göstermeyi öğreniyoruz.",
+    "subject": "Bilişim Teknolojileri ve Yazılım",
     "gradeLevel": "5. Sınıf",
     "language": "tr",
     "tags": [
-      "madde",
-      "tanecik",
-      "katı",
-      "sıvı",
-      "gaz",
-      "boşluk",
-      "hareket"
+      "algoritma",
+      "problem belirleme",
+      "akış şeması",
+      "girdi çıktı",
+      "yazılım tasarımı",
+      "programlama",
+      "işlem adımları",
+      "5. sınıf bilişim"
     ],
-    "estimatedMinutes": 35,
+    "estimatedMinutes": 40,
     "createdAt": "2026-01-01T00:00:00Z",
     "updatedAt": "2026-01-01T00:00:00Z",
     "sections": [
       {
         "id": "section_01",
         "order": 1,
-        "title": "Madde Nedir ve Nasıl Yapılıdır?",
+        "title": "Problem Nedir? Hayatımızdaki Problemleri Tanıyalım",
         "icon": "🔍",
         "content": [
           {
@@ -30,7 +31,7 @@
             "order": 1,
             "type": "markdown",
             "content": {
-              "body": "## Madde ve Tanecik\nTüm maddeler gözle göremediğimiz küçük **taneciklerden** oluşur.\n\n- Bu tanecikler sürekli hareket halindedir.\n- Tanecikler arasında boşluk vardır.\n\nÖrnek:\n- Taş → tanecikleri sıkı\n- Su → daha hareketli\n- Hava → çok hareketli"
+              "body": "## Problem Nedir?\n\nHer gün hayatımızda pek çok **problem** ile karşılaşırız. Problem, bir durumu düzeltmek ya da bir hedefe ulaşmak için çözülmesi gereken güçlüktür.\n\n### Günlük Hayattan Problem Örnekleri\n\n- Sabah okula gitmek için erken kalkmayı unutmak\n- Sınav için çalışırken neden başlayacağını bilememek\n- Bilgisayarda bir dosyayı nereye kaydettiğini hatırlayamamak\n- Arkadaşına mesaj atmak isteyip telefon şifreni unutmak\n\n## Bilişimde Problem Neden Önemli?\n\nBilgisayar programları da aslında birer **problemi çözmek** için yazılır. Önce problemi net olarak anlamadan doğru bir program yazmak mümkün değildir.\n\n> Bir problem doğru tanımlanırsa, yarısı çözülmüş demektir."
             }
           },
           {
@@ -38,9 +39,17 @@
             "order": 2,
             "type": "misconception",
             "content": {
-              "wrong": "Maddeler tamamen doludur, içinde boşluk yoktur.",
-              "correct": "Maddelerin tanecikleri arasında boşluklar vardır.",
-              "tip": "Bir sünger gibi düşün: içi boşluklarla doludur."
+              "wrong": "Bilgisayar her şeyi otomatik çözer, bize bir şey kalmaz.",
+              "correct": "Bilgisayar yalnızca ona verilen adımları uygular. Problemi anlayan ve adımları belirleyen yine insandır.",
+              "tip": "Bilgisayar akıllı değil, talimat takipçisidir. Doğru talimatı yazan sen olmalısın."
+            }
+          },
+          {
+            "id": "blk_003",
+            "order": 3,
+            "type": "markdown",
+            "content": {
+              "body": "## Bir Problemi Nasıl Belirleriz?\n\nProblemi belirlemek için şu soruları sormak yardımcı olur:\n\n1. **Ne olmasını istiyorum?** (Hedef)\n2. **Şu an ne oluyor?** (Mevcut durum)\n3. **Aralarındaki fark nedir?** (Problem)\n\n### Örnek\n\n| Soru | Cevap |\n|------|-------|\n| Ne istiyorum? | Sabah 7:00'de kalkmak istiyorum |\n| Şu an ne oluyor? | Her sabah geç uyanıyorum |\n| Problem nedir? | Alarm kurmayı unutuyorum |\n\nProblem net: **Alarm kurulmadığı için geç kalkılıyor.**"
             }
           }
         ],
@@ -50,29 +59,29 @@
             "order": 1,
             "type": "quiz",
             "content": {
-              "question": "Maddeler neyin oluşturduğu yapılardır?",
+              "question": "Aşağıdakilerden hangisi bir problem örneğidir?",
               "questionType": "single_choice",
               "options": [
                 {
-                  "id": "a",
-                  "text": "Hücreler"
+                  "id": "opt_1_01_1",
+                  "text": "Her sabah okula gitmek"
                 },
                 {
-                  "id": "b",
-                  "text": "Tanecikler"
+                  "id": "opt_1_01_2",
+                  "text": "Sınav için hangi konudan başlayacağını bilememek"
                 },
                 {
-                  "id": "c",
-                  "text": "Işınlar"
+                  "id": "opt_1_01_3",
+                  "text": "Kitap okumayı sevmek"
                 },
                 {
-                  "id": "d",
-                  "text": "Enerji"
+                  "id": "opt_1_01_4",
+                  "text": "Arkadaşlarıyla oyun oynamak"
                 }
               ],
-              "correctOptionId": "b",
-              "hint": "Gözle görülmeyen küçük yapı taşlarını düşün.",
-              "explanation": "Maddeler taneciklerden oluşur."
+              "correctOptionId": "opt_1_01_2",
+              "hint": "Problem, bir güçlük ya da çözülmesi gereken bir durumdur.",
+              "explanation": "Sınav için hangi konudan başlayacağını bilememek bir güçlük ve dolayısıyla bir problemdir. Diğerleri sıradan günlük etkinliklerdir."
             }
           },
           {
@@ -80,32 +89,12 @@
             "order": 2,
             "type": "quiz",
             "content": {
-              "question": "Taneciklerle ilgili doğru olanları seçiniz.",
-              "questionType": "multiple_choice",
-              "options": [
-                {
-                  "id": "a",
-                  "text": "Hareketlidir"
-                },
-                {
-                  "id": "b",
-                  "text": "Boşluk içermez"
-                },
-                {
-                  "id": "c",
-                  "text": "Aralarında boşluk vardır"
-                },
-                {
-                  "id": "d",
-                  "text": "Hiç değişmez"
-                }
-              ],
-              "correctOptionIds": [
-                "a",
-                "c"
-              ],
-              "hint": "Taneciklerin özelliklerini düşün.",
-              "explanation": "Tanecikler hareketlidir ve aralarında boşluk vardır."
+              "question": "Aşağıdaki ifade doğru mu?",
+              "questionType": "true_false",
+              "statement": "Bilgisayar programları, belirli problemleri çözmek için yazılır.",
+              "correctAnswer": true,
+              "hint": "Programların neden yazıldığını düşün.",
+              "explanation": "Her bilgisayar programı bir problemi çözmek amacıyla tasarlanır. Örneğin hesap makinesi uygulaması hesaplama problemini çözer."
             }
           },
           {
@@ -113,12 +102,29 @@
             "order": 3,
             "type": "quiz",
             "content": {
-              "question": "Tanecikler arasındaki boşluk ile ilgili ifade doğru mu?",
-              "questionType": "true_false",
-              "statement": "Tanecikler arasında boşluk bulunur.",
-              "correctAnswer": true,
-              "hint": "Sünger örneğini hatırla.",
-              "explanation": "Tanecikler arasında boşluk vardır."
+              "question": "Bir problemi doğru belirlemek için önce ne yapılmalıdır?",
+              "questionType": "single_choice",
+              "options": [
+                {
+                  "id": "opt_1_03_1",
+                  "text": "Hemen bilgisayara geçip kod yazmak"
+                },
+                {
+                  "id": "opt_1_03_2",
+                  "text": "Mevcut durumu ve istenen durumu karşılaştırmak"
+                },
+                {
+                  "id": "opt_1_03_3",
+                  "text": "En güzel programı seçmek"
+                },
+                {
+                  "id": "opt_1_03_4",
+                  "text": "Önce akış şeması çizmek"
+                }
+              ],
+              "correctOptionId": "opt_1_03_2",
+              "hint": "Nerede olduğun ve nereye gitmek istediğin arasındaki farkı düşün.",
+              "explanation": "Mevcut durum ile hedef arasındaki farkı görmek, problemi net olarak belirlemenin ilk adımıdır."
             }
           }
         ]
@@ -126,25 +132,35 @@
       {
         "id": "section_02",
         "order": 2,
-        "title": "Taneciklerin Hareketi",
-        "icon": "⚡",
+        "title": "Girdi ve Çıktı: Probleme Giren ve Çıkan Nedir?",
+        "icon": "↔️",
         "content": [
           {
-            "id": "blk_003",
+            "id": "blk_004",
             "order": 1,
             "type": "markdown",
             "content": {
-              "body": "## Taneciklerin Hareketi\nTanecikler sürekli hareket eder.\n\n- Katılarda: yavaş hareket\n- Sıvılarda: orta hız\n- Gazlarda: hızlı hareket\n\nBu hareket, maddenin halini belirler."
+              "body": "## Girdi (Input) Nedir?\n\n**Girdi**, bir problemi çözmek için başlangıçta elimizde olan veya dışarıdan aldığımız bilgi ya da veridir.\n\n- Klavyeden yazılan sayılar\n- Kullanıcının girdiği isim\n- Bir sensörden gelen sıcaklık değeri\n\n## Çıktı (Output) Nedir?\n\n**Çıktı**, problemi çözdükten sonra elde ettiğimiz sonuçtur.\n\n- Hesaplama sonucu ekranda görünen sayı\n- Yazıcıdan çıkan belge\n- Kullanıcıya gösterilen mesaj\n\n## Süreç (Process) Nedir?\n\n**Süreç**, girdiyi alıp çıktıya dönüştürmek için yapılan işlemlerdir.\n\n```\nGirdi --> [Süreç] --> Çıktı\n```"
             }
           },
           {
-            "id": "blk_004",
+            "id": "blk_005",
             "order": 2,
-            "type": "misconception",
+            "type": "image",
             "content": {
-              "wrong": "Tanecikler sadece ısıtıldığında hareket eder.",
-              "correct": "Tanecikler her zaman hareket halindedir.",
-              "tip": "Soğukta bile hareket devam eder."
+              "svgCode": "<svg viewBox=\"0 0 600 200\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Arial, sans-serif\">\n  <rect x=\"20\" y=\"60\" width=\"140\" height=\"80\" rx=\"10\" fill=\"#4A90D9\" />\n  <text x=\"90\" y=\"95\" text-anchor=\"middle\" fill=\"white\" font-size=\"16\" font-weight=\"bold\">GİRDİ</text>\n  <text x=\"90\" y=\"118\" text-anchor=\"middle\" fill=\"white\" font-size=\"12\">(Sayılar, bilgiler)</text>\n  <polygon points=\"175,100 205,85 205,115\" fill=\"#555\" />\n  <rect x=\"220\" y=\"60\" width=\"160\" height=\"80\" rx=\"10\" fill=\"#E8A020\" />\n  <text x=\"300\" y=\"95\" text-anchor=\"middle\" fill=\"white\" font-size=\"16\" font-weight=\"bold\">SÜREÇ</text>\n  <text x=\"300\" y=\"118\" text-anchor=\"middle\" fill=\"white\" font-size=\"12\">(İşlem adımları)</text>\n  <polygon points=\"395,100 425,85 425,115\" fill=\"#555\" />\n  <rect x=\"440\" y=\"60\" width=\"140\" height=\"80\" rx=\"10\" fill=\"#27AE60\" />\n  <text x=\"510\" y=\"95\" text-anchor=\"middle\" fill=\"white\" font-size=\"16\" font-weight=\"bold\">ÇIKTI</text>\n  <text x=\"510\" y=\"118\" text-anchor=\"middle\" fill=\"white\" font-size=\"12\">(Sonuç, cevap)</text>\n  <text x=\"300\" y=\"30\" text-anchor=\"middle\" fill=\"#333\" font-size=\"18\" font-weight=\"bold\">Girdi - Süreç - Çıktı Modeli</text>\n</svg>",
+              "imageUrl": "",
+              "imagePrompt": "Girdi, süreç ve çıktı aşamalarını gösteren oklu kutu diyagramı, sade ve renkli, eğitsel",
+              "caption": "Girdi, süreç ve çıktı ilişkisi: Her problem bu üç bileşenden oluşur.",
+              "altText": "Girdi kutusundan süreç kutusuna, oradan çıktı kutusuna giden okları gösteren diyagram"
+            }
+          },
+          {
+            "id": "blk_006",
+            "order": 3,
+            "type": "markdown",
+            "content": {
+              "body": "## Gerçek Hayattan Örnek: Hesap Makinesi\n\n**Problem:** İki sayının toplamını bulmak istiyorum.\n\n| Bileşen | Açıklama | Örnek |\n|---------|----------|-------|\n| Girdi | Toplanacak iki sayı | 5 ve 3 |\n| Süreç | Toplama işlemi | 5 + 3 |\n| Çıktı | Toplam sonucu | 8 |\n\n## Bir Daha Deneyelim: Çay Demlemek\n\n- **Girdi:** Su, çay, şeker miktarı\n- **Süreç:** Suyu kaynat, çayı koy, bekle, süz\n- **Çıktı:** Hazır çay bardağı\n\nGördüğün gibi yemek tarifi de bir nevi **algoritma**dır."
             }
           }
         ],
@@ -154,29 +170,29 @@
             "order": 1,
             "type": "quiz",
             "content": {
-              "question": "Hangi maddede tanecikler en hızlı hareket eder?",
+              "question": "Bir hesap makinesine 12 ve 8 sayılarını girip toplama işlemi yapıyoruz. Çıktı nedir?",
               "questionType": "single_choice",
               "options": [
                 {
-                  "id": "a",
-                  "text": "Katı"
+                  "id": "opt_2_01_1",
+                  "text": "12 ve 8 sayıları"
                 },
                 {
-                  "id": "b",
-                  "text": "Sıvı"
+                  "id": "opt_2_01_2",
+                  "text": "Toplama işlemi"
                 },
                 {
-                  "id": "c",
-                  "text": "Gaz"
+                  "id": "opt_2_01_3",
+                  "text": "20 sonucu"
                 },
                 {
-                  "id": "d",
-                  "text": "Hiçbiri"
+                  "id": "opt_2_01_4",
+                  "text": "Hesap makinesi"
                 }
               ],
-              "correctOptionId": "c",
-              "hint": "En serbest olanı düşün.",
-              "explanation": "Gazlarda tanecikler en hızlı hareket eder."
+              "correctOptionId": "opt_2_01_3",
+              "hint": "Çıktı, işlemin sonunda elde edilen şeydir.",
+              "explanation": "12 ve 8 girdilerdir, toplama işlemi süreçtir, elde edilen 20 ise çıktıdır."
             }
           },
           {
@@ -184,12 +200,32 @@
             "order": 2,
             "type": "quiz",
             "content": {
-              "question": "Aşağıdaki sıralama doğru mu?",
-              "questionType": "true_false",
-              "statement": "Katı < Sıvı < Gaz (hareket hızı)",
-              "correctAnswer": true,
-              "hint": "Hareket artıyor mu?",
-              "explanation": "Evet, gazlar en hızlıdır."
+              "question": "Hangileri bir probleme ait girdi örneği olabilir?",
+              "questionType": "multiple_choice",
+              "options": [
+                {
+                  "id": "opt_2_02_1",
+                  "text": "Kullanıcının girdiği isim"
+                },
+                {
+                  "id": "opt_2_02_2",
+                  "text": "Ekranda görünen sonuç mesajı"
+                },
+                {
+                  "id": "opt_2_02_3",
+                  "text": "Klavyeden yazılan sayı"
+                },
+                {
+                  "id": "opt_2_02_4",
+                  "text": "Yazıcıdan çıkan belge"
+                }
+              ],
+              "correctOptionIds": [
+                "opt_2_02_1",
+                "opt_2_02_3"
+              ],
+              "hint": "Girdi, işlem başlamadan önce elimizde olan veya dışarıdan alınan bilgidir.",
+              "explanation": "İsim ve sayı başlangıçta alınan bilgilerdir yani girdilerdir. Ekranda mesaj ve yazıcıdan çıkan belge ise çıktılardır."
             }
           },
           {
@@ -197,34 +233,27 @@
             "order": 3,
             "type": "quiz",
             "content": {
-              "question": "Tanecik hareketlerini sırala.",
-              "questionType": "ordering",
-              "items": [
+              "question": "Kavramları doğru tanımlarıyla eşleştir.",
+              "questionType": "matching",
+              "pairs": [
                 {
-                  "id": "i1",
-                  "text": "Gaz"
+                  "id": "p_2_1",
+                  "left": "Girdi",
+                  "right": "Problemi çözmek için başlangıçta alınan veri"
                 },
                 {
-                  "id": "i2",
-                  "text": "Katı"
+                  "id": "p_2_2",
+                  "left": "Süreç",
+                  "right": "Girdiyi çıktıya dönüştüren işlemler"
                 },
                 {
-                  "id": "i3",
-                  "text": "Sıvı"
-                },
-                {
-                  "id": "i4",
-                  "text": "Plazma değil"
+                  "id": "p_2_3",
+                  "left": "Çıktı",
+                  "right": "İşlem sonunda elde edilen sonuç"
                 }
               ],
-              "correctOrder": [
-                "i2",
-                "i3",
-                "i1",
-                "i4"
-              ],
-              "hint": "En yavaştan hızlıya doğru düşün.",
-              "explanation": "Katı → Sıvı → Gaz şeklinde hız artar."
+              "hint": "Her kavramın sözlük anlamını düşün: giren, işlenen, çıkan.",
+              "explanation": "Girdi başlangıç verisi, süreç yapılan işlemler, çıktı ise elde edilen sonuçtur. Bu üç kavram birlikte bir problemi tanımlar."
             }
           }
         ]
@@ -232,23 +261,33 @@
       {
         "id": "section_03",
         "order": 3,
-        "title": "Maddenin Halleri",
-        "icon": "🧊",
+        "title": "Algoritma: Çözüme Giden Adım Adım Yol",
+        "icon": "📋",
         "content": [
           {
-            "id": "blk_005",
+            "id": "blk_007",
             "order": 1,
             "type": "markdown",
             "content": {
-              "body": "## Maddenin Halleri\n\n| Hal | Özellik |\n|-----|--------|\n| Katı | Şekli sabit |\n| Sıvı | Kabın şeklini alır |\n| Gaz | Her yere yayılır |"
+              "body": "## Algoritma Nedir?\n\n**Algoritma**, bir problemi çözmek için belirli bir sırayla yazılmış, sonlu sayıda işlem adımlarıdır.\n\nBir algoritmanın özellikleri:\n\n- **Belirli bir başlangıcı** vardır\n- **Adımlar sıralıdır** ve net olarak belirtilmiştir\n- **Sonlu adımdan** oluşur, bir yerde biter\n- **Açık ve anlaşılırdır**, farklı kişiler aynı sonuca ulaşabilir\n\n## Günlük Hayattan Algoritma: Okula Hazırlanmak\n\n1. Gözlerini aç ve yataktan kalk\n2. Yüzünü yıka ve dişlerini fırçala\n3. Kıyafetlerini giy\n4. Kahvaltı yap\n5. Çantanı hazırla\n6. Evden çık\n\nBu adımlar bir algoritmadır çünkü **sıralı, belirli ve sonludur**."
             }
           },
           {
-            "id": "blk_006",
+            "id": "blk_008",
             "order": 2,
+            "type": "misconception",
+            "content": {
+              "wrong": "Algoritma sadece bilgisayarlarda ve programlama dersinde kullanılır.",
+              "correct": "Algoritma, her türlü problemi adım adım çözmek için kullanılan bir yöntemdir. Tarif yazmak, yol tarifi vermek, oyun kuralları belirlemek de birer algoritmadır.",
+              "tip": "Adım adım verilen her talimat listesi aslında bir algoritmadır. Bilgisayar yalnızca bunu daha hızlı uygular."
+            }
+          },
+          {
+            "id": "blk_009",
+            "order": 3,
             "type": "markdown",
             "content": {
-              "body": "## Günlük Hayattan Örnekler\n- Buz → Katı\n- Su → Sıvı\n- Hava → Gaz\n\nHer biri farklı tanecik davranışına sahiptir."
+              "body": "## Algoritma Yazarken Dikkat Edilecekler\n\n### Doğru Algoritma Nasıl Yazılır?\n\n- Her adım **tek bir işlem** içermeli\n- Adımlar **mantıklı bir sırada** olmalı\n- Hiçbir adım **atlanmamalı**\n- Her adım **herkesin anlayacağı** şekilde yazılmalı\n\n### Örnek: Çorba Tarifi Algoritması\n\n1. Tencereye su koy\n2. Ocağı yak\n3. Suyu kaynat\n4. Sebzeleri doğra\n5. Sebzeleri kaynar suya ekle\n6. 20 dakika pişir\n7. Tuzu ekle ve servis yap\n\n> Adım 4 yapılmadan adım 5 yapılamaz. Sıra önemlidir!"
             }
           }
         ],
@@ -258,29 +297,29 @@
             "order": 1,
             "type": "quiz",
             "content": {
-              "question": "Aşağıdakilerden hangisi gazdır?",
+              "question": "Aşağıdakilerden hangisi iyi bir algoritmada bulunması gereken özelliklerden biri değildir?",
               "questionType": "single_choice",
               "options": [
                 {
-                  "id": "a",
-                  "text": "Su"
+                  "id": "opt_3_01_1",
+                  "text": "Adımların sıralı olması"
                 },
                 {
-                  "id": "b",
-                  "text": "Taş"
+                  "id": "opt_3_01_2",
+                  "text": "Sonlu sayıda adım içermesi"
                 },
                 {
-                  "id": "c",
-                  "text": "Hava"
+                  "id": "opt_3_01_3",
+                  "text": "Sonsuz döngüde çalışması"
                 },
                 {
-                  "id": "d",
-                  "text": "Buz"
+                  "id": "opt_3_01_4",
+                  "text": "Açık ve anlaşılır olması"
                 }
               ],
-              "correctOptionId": "c",
-              "hint": "Görünmeyeni düşün.",
-              "explanation": "Hava gazdır."
+              "correctOptionId": "opt_3_01_3",
+              "hint": "İyi bir algoritma bir noktada mutlaka biter.",
+              "explanation": "Algoritmalar sonlu adımdan oluşur ve bir noktada biter. Sonsuz döngüde çalışmak bir algoritmanın özelliği değil, hatasıdır."
             }
           },
           {
@@ -288,27 +327,39 @@
             "order": 2,
             "type": "quiz",
             "content": {
-              "question": "Maddeleri eşleştir.",
-              "questionType": "matching",
-              "pairs": [
+              "question": "Okula hazırlanma algoritmasının adımlarını doğru sıraya koy.",
+              "questionType": "ordering",
+              "items": [
                 {
-                  "id": "p1",
-                  "left": "Buz",
-                  "right": "Katı"
+                  "id": "step_3_1",
+                  "text": "Yataktan kalk"
                 },
                 {
-                  "id": "p2",
-                  "left": "Su",
-                  "right": "Sıvı"
+                  "id": "step_3_2",
+                  "text": "Yüzünü yıka ve dişlerini fırçala"
                 },
                 {
-                  "id": "p3",
-                  "left": "Hava",
-                  "right": "Gaz"
+                  "id": "step_3_3",
+                  "text": "Kıyafetlerini giy"
+                },
+                {
+                  "id": "step_3_4",
+                  "text": "Kahvaltı yap"
+                },
+                {
+                  "id": "step_3_5",
+                  "text": "Çantanı hazırla ve evden çık"
                 }
               ],
-              "hint": "Örnekleri hatırla.",
-              "explanation": "Her madde uygun haline karşılık gelir."
+              "correctOrder": [
+                "step_3_1",
+                "step_3_2",
+                "step_3_3",
+                "step_3_4",
+                "step_3_5"
+              ],
+              "hint": "Sabah yaptıklarını sırayla düşün. Ne olmadan ne yapılamaz?",
+              "explanation": "Önce kalkmak, sonra temizlenmek, giyinmek, kahvaltı yapmak ve en son evden çıkmak mantıklı sıradır. Sıra önemlidir."
             }
           },
           {
@@ -316,33 +367,33 @@
             "order": 3,
             "type": "quiz",
             "content": {
-              "question": "Doğru ifadeleri seç.",
-              "questionType": "multiple_choice",
-              "options": [
-                {
-                  "id": "a",
-                  "text": "Katılar şekil değiştirmez"
-                },
-                {
-                  "id": "b",
-                  "text": "Gazlar sıkışabilir"
-                },
-                {
-                  "id": "c",
-                  "text": "Sıvılar şekil değiştirmez"
-                },
-                {
-                  "id": "d",
-                  "text": "Gazlar yayılır"
-                }
+              "question": "Bir algoritma için 'Her adımın tek bir işlem içermesi gerekir' ifadesi doğru mu?",
+              "questionType": "true_false",
+              "statement": "İyi bir algoritmada her adım yalnızca tek bir işlem içermelidir.",
+              "correctAnswer": true,
+              "hint": "Adımları küçük ve net tutmak anlaşılırlık sağlar.",
+              "explanation": "Her adım tek ve net bir işlemi tanımlarsa algoritma hem daha anlaşılır hem de uygulanması kolaylaşır. Birden fazla işlemi tek adımda yazmak karışıklığa yol açar."
+            }
+          },
+          {
+            "id": "q_03_04",
+            "order": 4,
+            "type": "quiz",
+            "content": {
+              "question": "Algoritma ile ilgili boşluğu doğru kelimeyle tamamla.",
+              "questionType": "fill_blank",
+              "question_text": "Bir problemi çözmek için belirli bir sırayla yazılmış, sonlu sayıda işlem adımlarına ________ denir.",
+              "acceptedAnswers": [
+                "algoritma",
+                "Algoritma"
               ],
-              "correctOptionIds": [
-                "a",
-                "b",
-                "d"
+              "distractors": [
+                "akış şeması",
+                "program",
+                "girdi"
               ],
-              "hint": "Gaz ve sıvı özelliklerini düşün.",
-              "explanation": "Katı sabit, gaz sıkışabilir ve yayılır."
+              "hint": "Bu kelime bilgisayar biliminin temel kavramlarından biridir.",
+              "explanation": "Algoritma, belirli bir sırayla yazılmış ve bir problemi çözen sonlu işlem adımları topluluğudur."
             }
           }
         ]
@@ -350,25 +401,45 @@
       {
         "id": "section_04",
         "order": 4,
-        "title": "Karşılaştırma ve Analiz",
-        "icon": "🧠",
+        "title": "Akış Şeması: Algoritmayı Görselleştiriyoruz",
+        "icon": "📊",
         "content": [
           {
-            "id": "blk_007",
+            "id": "blk_010",
             "order": 1,
             "type": "markdown",
             "content": {
-              "body": "## Tanecik Karşılaştırması\n- Katı: sık, az boşluk\n- Sıvı: orta boşluk\n- Gaz: çok boşluk\n\nBu farklar davranışı belirler."
+              "body": "## Akış Şeması Nedir?\n\n**Akış şeması**, bir algoritmanın adımlarını özel şekillerle görsel olarak gösteren bir diyagramdır.\n\nAkış şemaları sayesinde:\n\n- Algoritmayı daha kolay anlayabiliriz\n- Hataları daha çabuk bulabiliriz\n- Başkalarına daha rahat anlatabiliz\n\n## Temel Akış Şeması Sembolleri\n\n| Sembol Şekli | Adı | Kullanım Amacı |\n|---|---|---|\n| Yuvarlak köşeli dikdörtgen | Başlat / Bitir | Başlangıç ve bitiş noktaları |\n| Dikdörtgen | İşlem | Hesaplama veya işlem adımı |\n| Paralelkenar | Girdi / Çıktı | Bilgi alma veya sonuç verme |\n| Elmas / Baklava | Karar | Evet/Hayır sorusu |\n| Ok | Bağlantı | Adımlar arası geçiş |"
             }
           },
           {
-            "id": "blk_008",
+            "id": "blk_011",
             "order": 2,
+            "type": "image",
+            "content": {
+              "svgCode": "<svg viewBox=\"0 0 340 520\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Arial, sans-serif\" font-size=\"13\">\n  <text x=\"170\" y=\"25\" text-anchor=\"middle\" font-size=\"15\" font-weight=\"bold\" fill=\"#222\">Akış Şeması Sembolleri</text>\n  <rect x=\"90\" y=\"40\" width=\"160\" height=\"50\" rx=\"25\" fill=\"#27AE60\" />\n  <text x=\"170\" y=\"70\" text-anchor=\"middle\" fill=\"white\" font-weight=\"bold\">BAŞLAT / BİTİR</text>\n  <line x1=\"170\" y1=\"90\" x2=\"170\" y2=\"120\" stroke=\"#333\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n  <rect x=\"90\" y=\"125\" width=\"160\" height=\"50\" rx=\"5\" fill=\"#4A90D9\" />\n  <text x=\"170\" y=\"155\" text-anchor=\"middle\" fill=\"white\" font-weight=\"bold\">İŞLEM</text>\n  <line x1=\"170\" y1=\"175\" x2=\"170\" y2=\"205\" stroke=\"#333\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n  <polygon points=\"90,230 170,205 250,230 170,255\" fill=\"#E8A020\" />\n  <text x=\"170\" y=\"234\" text-anchor=\"middle\" fill=\"white\" font-weight=\"bold\">KARAR</text>\n  <text x=\"170\" y=\"248\" text-anchor=\"middle\" fill=\"white\" font-size=\"11\">(Evet / Hayır)</text>\n  <line x1=\"170\" y1=\"255\" x2=\"170\" y2=\"285\" stroke=\"#333\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n  <polygon points=\"90,310 110,285 250,285 270,310 250,335 110,335\" fill=\"#9B59B6\" />\n  <text x=\"170\" y=\"315\" text-anchor=\"middle\" fill=\"white\" font-weight=\"bold\">GİRDİ / ÇIKTI</text>\n  <line x1=\"170\" y1=\"335\" x2=\"170\" y2=\"365\" stroke=\"#333\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n  <rect x=\"90\" y=\"370\" width=\"160\" height=\"50\" rx=\"25\" fill=\"#E74C3C\" />\n  <text x=\"170\" y=\"400\" text-anchor=\"middle\" fill=\"white\" font-weight=\"bold\">BAŞLAT / BİTİR</text>\n  <defs>\n    <marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"4\" refY=\"4\" orient=\"auto\">\n      <path d=\"M0,0 L8,4 L0,8 Z\" fill=\"#333\" />\n    </marker>\n  </defs>\n  <text x=\"170\" y=\"460\" text-anchor=\"middle\" font-size=\"11\" fill=\"#666\">Oklar adımlar arasındaki geçişi gösterir</text>\n</svg>",
+              "imageUrl": "",
+              "imagePrompt": "Akış şeması sembollerini gösteren eğitsel diyagram: başlat/bitir, işlem, karar, girdi/çıktı kutuları ve ok bağlantıları, Türkçe etiketlerle",
+              "caption": "Akış şemalarında kullanılan temel semboller ve anlamları",
+              "altText": "Akış şeması sembollerini üst üste gösteren diyagram: yeşil yuvarlak dikdörtgen Başlat/Bitir, mavi dikdörtgen İşlem, turuncu elmas Karar, mor altıgen Girdi/Çıktı"
+            }
+          },
+          {
+            "id": "blk_012",
+            "order": 3,
             "type": "misconception",
             "content": {
-              "wrong": "Gazlar hafif olduğu için tanecik içermez.",
-              "correct": "Gazlar da taneciklerden oluşur.",
-              "tip": "Görünmeyen şeyler de tanecikli olabilir."
+              "wrong": "Akış şeması ve algoritma aynı şeydir, ikisi de kelimelerle yazılır.",
+              "correct": "Algoritma adımları yazıyla ifade ederken, akış şeması bu adımları özel şekillerle görsel olarak gösterir. İkisi aynı problemi farklı yollarla anlatır.",
+              "tip": "Algoritma kelimelerle, akış şeması şekillerle ifade eder. Biri diğerinin görsel halidir."
+            }
+          },
+          {
+            "id": "blk_013",
+            "order": 4,
+            "type": "markdown",
+            "content": {
+              "body": "## Örnek: Çay Demleme Akış Şeması\n\nAşağıdaki adımları bir akış şemasına dönüştürebiliriz:\n\n**Algoritma Adımları:**\n1. Başla\n2. Suyu tencereye koy\n3. Ocağı yak ve suyu ısıt\n4. Su kaynıyor mu? (Karar noktası)\n   - Hayır: Isıtmaya devam et (adım 4'e dön)\n   - Evet: Devam et\n5. Çayı ekle ve demle\n6. Çayı bardağa dök\n7. Bitir\n\n> Karar noktası (elmas şekli) akış şemasına **dallanma** özelliği kazandırır."
             }
           }
         ],
@@ -378,29 +449,29 @@
             "order": 1,
             "type": "quiz",
             "content": {
-              "question": "Boşluk en fazla hangi halde bulunur?",
+              "question": "Akış şemasında 'Karar' adımı hangi şekille gösterilir?",
               "questionType": "single_choice",
               "options": [
                 {
-                  "id": "a",
-                  "text": "Katı"
+                  "id": "opt_4_01_1",
+                  "text": "Dikdörtgen"
                 },
                 {
-                  "id": "b",
-                  "text": "Sıvı"
+                  "id": "opt_4_01_2",
+                  "text": "Yuvarlak köşeli dikdörtgen"
                 },
                 {
-                  "id": "c",
-                  "text": "Gaz"
+                  "id": "opt_4_01_3",
+                  "text": "Elmas (baklava) şekli"
                 },
                 {
-                  "id": "d",
-                  "text": "Hepsi eşit"
+                  "id": "opt_4_01_4",
+                  "text": "Paralelkenar"
                 }
               ],
-              "correctOptionId": "c",
-              "hint": "En serbest hal hangisi?",
-              "explanation": "Gazlarda boşluk en fazladır."
+              "correctOptionId": "opt_4_01_3",
+              "hint": "Evet/Hayır soruları içeren adımlar hangi şekille gösterilir?",
+              "explanation": "Elmas (baklava) şekli, akış şemasında karar noktalarını gösterir. Bu noktalarda genellikle Evet/Hayır soruları bulunur."
             }
           },
           {
@@ -408,34 +479,33 @@
             "order": 2,
             "type": "quiz",
             "content": {
-              "question": "Boşluk miktarına göre sıralayın.",
-              "questionType": "ordering",
-              "items": [
+              "question": "Hangileri akış şeması sembollerinden biridir?",
+              "questionType": "multiple_choice",
+              "options": [
                 {
-                  "id": "i1",
-                  "text": "Gaz"
+                  "id": "opt_4_02_1",
+                  "text": "Elmas (karar)"
                 },
                 {
-                  "id": "i2",
-                  "text": "Katı"
+                  "id": "opt_4_02_2",
+                  "text": "Üçgen (hız)"
                 },
                 {
-                  "id": "i3",
-                  "text": "Sıvı"
+                  "id": "opt_4_02_3",
+                  "text": "Dikdörtgen (işlem)"
                 },
                 {
-                  "id": "i4",
-                  "text": "Boşluk yok"
+                  "id": "opt_4_02_4",
+                  "text": "Yuvarlak köşeli dikdörtgen (başla/bitir)"
                 }
               ],
-              "correctOrder": [
-                "i2",
-                "i3",
-                "i1",
-                "i4"
+              "correctOptionIds": [
+                "opt_4_02_1",
+                "opt_4_02_3",
+                "opt_4_02_4"
               ],
-              "hint": "Azdan çoğa doğru düşün.",
-              "explanation": "Katı → Sıvı → Gaz"
+              "hint": "Akış şeması sembollerini hatırla: başlat, işlem, karar, girdi/çıktı.",
+              "explanation": "Üçgen standart bir akış şeması sembolü değildir. Elmas, dikdörtgen ve yuvarlak köşeli dikdörtgen ise temel akış şeması sembolleridir."
             }
           },
           {
@@ -443,19 +513,32 @@
             "order": 3,
             "type": "quiz",
             "content": {
-              "question": "Taneciklerle ilgili boşluğu doldur.",
-              "questionType": "fill_blank",
-              "question_text": "Maddeler ________ yapıdadır.",
-              "acceptedAnswers": [
-                "tanecikli"
+              "question": "Kavramları doğru açıklamalarıyla eşleştir.",
+              "questionType": "matching",
+              "pairs": [
+                {
+                  "id": "p_4_1",
+                  "left": "Akış Şeması",
+                  "right": "Algoritmanın şekillerle görsel gösterimi"
+                },
+                {
+                  "id": "p_4_2",
+                  "left": "Algoritma",
+                  "right": "Problemi çözen sıralı işlem adımları"
+                },
+                {
+                  "id": "p_4_3",
+                  "left": "Karar Noktası",
+                  "right": "Evet/Hayır sorusunun bulunduğu elmas şekli"
+                },
+                {
+                  "id": "p_4_4",
+                  "left": "Ok",
+                  "right": "Adımlar arasındaki geçişi gösteren bağlantı"
+                }
               ],
-              "distractors": [
-                "sabit",
-                "boşluksuz",
-                "hareketsiz"
-              ],
-              "hint": "Küçük parçacıklar aklına gelsin.",
-              "explanation": "Maddeler taneciklerden oluşur."
+              "hint": "Her sembolün ne anlama geldiğini düşün.",
+              "explanation": "Akış şeması ve algoritma farklı ama ilişkili kavramlardır. Karar noktası dallanmayı, oklar ise akışı temsil eder."
             }
           }
         ]
@@ -463,23 +546,23 @@
       {
         "id": "section_05",
         "order": 5,
-        "title": "Genel Değerlendirme",
-        "icon": "📊",
+        "title": "Genel Değerlendirme ve Pekiştirme",
+        "icon": "🏆",
         "content": [
           {
-            "id": "blk_009",
+            "id": "blk_014",
             "order": 1,
             "type": "markdown",
             "content": {
-              "body": "## Özet\n- Maddeler taneciklidir\n- Tanecikler hareketlidir\n- Aralarında boşluk vardır\n- Katı, sıvı ve gaz olarak sınıflandırılır"
+              "body": "## Öğrendiklerimizi Özetleyelim\n\nBu derste şunları öğrendik:\n\n### 1. Problem Belirleme\n- Problem, mevcut durum ile istenen durum arasındaki farktır\n- Problem net olarak tanımlanmalıdır\n\n### 2. Girdi ve Çıktı\n- **Girdi:** Problemi çözmek için başlangıçta alınan bilgi\n- **Çıktı:** İşlem sonunda elde edilen sonuç\n- **Süreç:** Girdiyi çıktıya dönüştüren adımlar\n\n### 3. Algoritma\n- Problemi çözen sıralı, sonlu işlem adımları\n- Belirli bir başlangıcı ve sonu vardır\n- Net ve anlaşılır olmalıdır\n\n### 4. Akış Şeması\n- Algoritmayı görsel sembollerle gösteren diyagram\n- Özel şekiller kullanılır: başlat/bitir, işlem, karar, girdi/çıktı\n\n> Tüm bu kavramlar bir araya geldiğinde, hayatımızdaki herhangi bir problemi adım adım çözebilir ve bunu bilgisayara öğretebiliriz."
             }
           },
           {
-            "id": "blk_010",
+            "id": "blk_015",
             "order": 2,
             "type": "markdown",
             "content": {
-              "body": "## Hatırlatma\nBu bilgiler günlük hayatta her yerde karşımıza çıkar.\n\nÖrnek: Parfümün yayılması gazların özelliğidir."
+              "body": "## Gerçek Hayat Uygulaması: Tam Bir Problem Analizi\n\n**Problem:** Sınav sonucumu öğrenmek istiyorum.\n\n**Girdi:**\n- Öğrenci numarasım\n- Sınav kodu\n\n**Süreç:**\n1. Sisteme öğrenci numarasını gir\n2. Sınav kodunu seç\n3. Sistemi sorgula\n4. Sonucu getir\n\n**Çıktı:**\n- Notum ekranda görünür\n\n**Algoritma:**\n1. Başla\n2. Öğrenci numarasını al\n3. Sınav kodunu al\n4. Veritabanını sorgula\n5. Not bulundu mu? → Evet: Notu göster → Hayır: Hata mesajı ver\n6. Bitir\n\nBu analizi yapabiliyorsan programcı gibi düşünmeye hazırsın!"
             }
           }
         ],
@@ -489,29 +572,34 @@
             "order": 1,
             "type": "quiz",
             "content": {
-              "question": "Parfüm kokusunun yayılması hangi hal ile ilgilidir?",
-              "questionType": "single_choice",
-              "options": [
+              "question": "Aşağıdaki kavramları doğru sırayla diz: önce problem tanımlanır, sonra ne yapılır?",
+              "questionType": "ordering",
+              "items": [
                 {
-                  "id": "a",
-                  "text": "Katı"
+                  "id": "step_5_1",
+                  "text": "Problemi belirle"
                 },
                 {
-                  "id": "b",
-                  "text": "Sıvı"
+                  "id": "step_5_2",
+                  "text": "Girdi ve çıktıları belirle"
                 },
                 {
-                  "id": "c",
-                  "text": "Gaz"
+                  "id": "step_5_3",
+                  "text": "İşlem adımlarını listele (Algoritma)"
                 },
                 {
-                  "id": "d",
-                  "text": "Hiçbiri"
+                  "id": "step_5_4",
+                  "text": "Akış şemasını çiz"
                 }
               ],
-              "correctOptionId": "c",
-              "hint": "Yayılma özelliğini düşün.",
-              "explanation": "Gazlar her yere yayılır."
+              "correctOrder": [
+                "step_5_1",
+                "step_5_2",
+                "step_5_3",
+                "step_5_4"
+              ],
+              "hint": "Problem çözme süreci bir önceki adıma dayanır. Neyi bilmeden ne yapılabilir?",
+              "explanation": "Önce problemi tanımlamalı, sonra ne gireceğini ve ne çıkacağını belirlemelisiniz. Ardından adımları listeler ve son olarak akış şemasını çizersiniz."
             }
           },
           {
@@ -519,12 +607,20 @@
             "order": 2,
             "type": "quiz",
             "content": {
-              "question": "Doğru mu yanlış mı?",
-              "questionType": "true_false",
-              "statement": "Katıların tanecikleri çok hareketlidir.",
-              "correctAnswer": false,
-              "hint": "Katılar sabittir.",
-              "explanation": "Katılarda hareket sınırlıdır."
+              "question": "Boşluğu doğru kelimeyle tamamla.",
+              "questionType": "fill_blank",
+              "question_text": "Bir algoritmanın adımlarını özel şekillerle görsel olarak gösteren diyagrama ________ denir.",
+              "acceptedAnswers": [
+                "akış şeması",
+                "akış semasi"
+              ],
+              "distractors": [
+                "algoritma",
+                "girdi",
+                "program"
+              ],
+              "hint": "Bu diyagram şekillerle ifade edilir ve görseldir.",
+              "explanation": "Akış şeması, algoritmanın görsel temsilidir. Özel semboller kullanılarak algoritmanın adımları diyagram üzerinde gösterilir."
             }
           },
           {
@@ -532,33 +628,63 @@
             "order": 3,
             "type": "quiz",
             "content": {
-              "question": "Hangi özellikler tüm maddeler için ortaktır?",
+              "question": "Hangisi hem algoritma hem akış şeması için doğru bir ifadedir?",
+              "questionType": "single_choice",
+              "options": [
+                {
+                  "id": "opt_5_03_1",
+                  "text": "İkisi de yalnızca bilgisayarda kullanılır"
+                },
+                {
+                  "id": "opt_5_03_2",
+                  "text": "İkisi de bir problemin çözümünü adım adım gösterir"
+                },
+                {
+                  "id": "opt_5_03_3",
+                  "text": "İkisi de şekillerle ifade edilir"
+                },
+                {
+                  "id": "opt_5_03_4",
+                  "text": "İkisi de yalnızca matematik problemlerini çözer"
+                }
+              ],
+              "correctOptionId": "opt_5_03_2",
+              "hint": "İkisi de bir problemi adım adım çözmek için kullanılır, sadece ifade biçimleri farklıdır.",
+              "explanation": "Hem algoritma hem akış şeması bir problemi adım adım gösterir. Fark şudur: algoritma yazıyla, akış şeması ise sembollerle ifade edilir."
+            }
+          },
+          {
+            "id": "q_05_04",
+            "order": 4,
+            "type": "quiz",
+            "content": {
+              "question": "Hangileri iyi bir algoritmanın özelliğidir?",
               "questionType": "multiple_choice",
               "options": [
                 {
-                  "id": "a",
-                  "text": "Tanecikli yapı"
+                  "id": "opt_5_04_1",
+                  "text": "Adımların sıralı olması"
                 },
                 {
-                  "id": "b",
-                  "text": "Boşluk içerme"
+                  "id": "opt_5_04_2",
+                  "text": "Sonsuz sayıda adım içermesi"
                 },
                 {
-                  "id": "c",
-                  "text": "Hareket"
+                  "id": "opt_5_04_3",
+                  "text": "Net ve anlaşılır olması"
                 },
                 {
-                  "id": "d",
-                  "text": "Aynı şekil"
+                  "id": "opt_5_04_4",
+                  "text": "Belirli bir başlangıç ve bitiş noktasına sahip olması"
                 }
               ],
               "correctOptionIds": [
-                "a",
-                "b",
-                "c"
+                "opt_5_04_1",
+                "opt_5_04_3",
+                "opt_5_04_4"
               ],
-              "hint": "Ortak özellikleri düşün.",
-              "explanation": "Tüm maddeler tanecikli, boşluklu ve hareketlidir."
+              "hint": "Algoritmanın tanımını hatırla: sıralı, sonlu, açık.",
+              "explanation": "İyi bir algoritma sıralıdır, açık-anlaşılırdır ve sonludur (başı ve sonu vardır). Sonsuz adım içermek bir hata ve algoritmanın özelliği değildir."
             }
           }
         ]

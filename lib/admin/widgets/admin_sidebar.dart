@@ -35,6 +35,11 @@ class AdminSidebar extends StatelessWidget {
           label: Text('Lessons'),
         ),
         NavigationRailDestination(
+          icon: Icon(Icons.fact_check_outlined),
+          selectedIcon: Icon(Icons.fact_check),
+          label: Text('V11 Validator'),
+        ),
+        NavigationRailDestination(
           icon: Icon(Icons.view_list_outlined),
           selectedIcon: Icon(Icons.view_list),
           label: Text('Units'),

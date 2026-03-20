@@ -4,7 +4,20 @@
 
 import 'package:egitim_uygulamasi/constants.dart';
 
-const List<String> aylar = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+const List<String> aylar = [
+  'Ocak',
+  'Şubat',
+  'Mart',
+  'Nisan',
+  'Mayıs',
+  'Haziran',
+  'Temmuz',
+  'Ağustos',
+  'Eylül',
+  'Ekim',
+  'Kasım',
+  'Aralık',
+];
 
 class _BreakWeekInfo {
   final DateTime startDate;
@@ -21,18 +34,24 @@ class _BreakWeekInfo {
 }
 
 final List<_BreakWeekInfo> _breakWeeks = academicBreakWeeks
-    .map((b) => _BreakWeekInfo(
-          startDate: DateTime(b.startDate.year, b.startDate.month, b.startDate.day),
-          endDate: DateTime(b.endDate.year, b.endDate.month, b.endDate.day),
-          title: b.title,
-          subtitle: b.subtitle,
-        ))
+    .map(
+      (b) => _BreakWeekInfo(
+        startDate: DateTime(
+          b.startDate.year,
+          b.startDate.month,
+          b.startDate.day,
+        ),
+        endDate: DateTime(b.endDate.year, b.endDate.month, b.endDate.day),
+        title: b.title,
+        subtitle: b.subtitle,
+      ),
+    )
     .toList();
 
 /// Haftanın durumunu tutan model
 class PeriodInfo {
   final int academicWeek; // Veritabanı sorguları için hafta numarası
-  final bool isHoliday;   // Şu an tatil mi?
+  final bool isHoliday; // Şu an tatil mi?
   final String displayTitle; // Ekranda görünecek ana başlık
   final String? displaySubtitle; // Ekranda görünecek alt başlık
 
@@ -46,7 +65,8 @@ class PeriodInfo {
 
 DateTime _dateOnly(DateTime date) => DateTime(date.year, date.month, date.day);
 
-DateTime _endOfWeek(DateTime startDate) => startDate.add(const Duration(days: 6));
+DateTime _endOfWeek(DateTime startDate) =>
+    startDate.add(const Duration(days: 6));
 
 bool _isWithin(DateTime date, DateTime start, DateTime end) {
   return !date.isBefore(start) && !date.isAfter(end);
@@ -158,6 +178,10 @@ PeriodInfo getCurrentPeriodInfo() {
 }
 
 /// Geriye dönük uyumluluk için sadece int döndüren fonksiyon
-int calculateCurrentAcademicWeek() {
-  return getCurrentPeriodInfo().academicWeek;
+int calculateCurrentAcademicWeek({bool advanceOnHoliday = false}) {
+  final info = getCurrentPeriodInfo();
+  if (advanceOnHoliday && info.isHoliday) {
+    return info.academicWeek + 1;
+  }
+  return info.academicWeek;
 }

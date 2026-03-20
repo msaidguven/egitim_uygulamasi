@@ -1,8 +1,13 @@
 import 'dart:convert';
+import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
+import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_update_page.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_copy_button.dart';
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v11/lesson_content_repository.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 // ═══════════════════════════════════════════════════════
 // RENKLER
@@ -145,7 +150,8 @@ class _ScreenKey {
 class LessonPage extends StatefulWidget {
   final String? jsonString;
   final String? assetPath;
-  const LessonPage({super.key, this.jsonString, this.assetPath});
+  final int? topicId;
+  const LessonPage({super.key, this.jsonString, this.assetPath, this.topicId});
 
   @override
   State<LessonPage> createState() => _LessonPageState();
@@ -160,7 +166,12 @@ class _LessonPageState extends State<LessonPage> {
   final Set<String> _completedQuizIds = {};
   final Set<_ScreenKey> _completedScreens = {};
   final AudioPlayer _audioPlayer = AudioPlayer();
+  final LessonV11ContentRepository _repository = LessonV11ContentRepository();
   bool _musicOn = false;
+  String? _errorMessage;
+  bool _isAdmin = false;
+  LessonV11AdminContext? _adminContext;
+  LessonV11ContentRecord? _loadedContent;
 
   @override
   void initState() {
@@ -199,26 +210,166 @@ class _LessonPageState extends State<LessonPage> {
   }
 
   Future<void> _loadLesson() async {
-    String raw;
-    if (widget.jsonString != null) {
-      raw = widget.jsonString!;
-    } else if (widget.assetPath != null) {
-      raw = await rootBundle.loadString(widget.assetPath!);
-    } else {
-      throw Exception('jsonString veya assetPath belirtilmeli');
+    try {
+      String raw;
+      if (widget.jsonString != null) {
+        raw = widget.jsonString!;
+        _loadedContent = null;
+      } else if (widget.topicId != null) {
+        final dbContent = await _repository.fetchLatestPublishedContentForTopic(
+          widget.topicId!,
+        );
+        if (dbContent != null) {
+          _loadedContent = dbContent;
+          raw = dbContent.jsonString;
+        } else if (widget.assetPath != null) {
+          _loadedContent = null;
+          raw = await rootBundle.loadString(widget.assetPath!);
+        } else {
+          throw Exception(
+            'topic_id=${widget.topicId} icin yayinlanmis topic_contents_v11 kaydi bulunamadi.',
+          );
+        }
+      } else if (widget.assetPath != null) {
+        raw = await rootBundle.loadString(widget.assetPath!);
+      } else {
+        throw Exception('jsonString, topicId veya assetPath belirtilmeli');
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _module = LessonModule.fromJson(jsonDecode(raw));
+        _errorMessage = null;
+        _loading = false;
+      });
+      if (widget.topicId != null) {
+        await _loadAdminContext(widget.topicId!);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = e.toString();
+        _loading = false;
+      });
     }
+  }
+
+  Future<void> _loadAdminContext(int topicId) async {
+    try {
+      final isAdmin = await _repository.isCurrentUserAdmin();
+      if (!isAdmin) return;
+      final adminContext = await _repository.fetchAdminContextForTopic(topicId);
+      if (!mounted) return;
+      setState(() {
+        _isAdmin = isAdmin;
+        _adminContext = adminContext;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isAdmin = false;
+        _adminContext = null;
+      });
+    }
+  }
+
+  Future<void> _copyV11Prompt() async {
+    final adminContext = _adminContext;
+    if (adminContext == null) return;
+    await AdminCopyButton.copyPrompt(
+      context,
+      gradeName: adminContext.gradeName,
+      lessonName: adminContext.lessonName,
+      unitTitle: adminContext.unitTitle,
+      topicTitle: adminContext.topicTitle,
+      outcomes: adminContext.outcomes,
+      promptType: AdminPromptType.contentV2,
+    );
+  }
+
+  Future<void> _openSmartContentAddition() async {
+    final adminContext = _adminContext;
+    if (adminContext == null) return;
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SmartContentAdditionPage(
+          initialGradeId: adminContext.gradeId,
+          initialLessonId: adminContext.lessonId,
+          initialUnitId: adminContext.unitId,
+          initialTopicId: adminContext.topicId,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openSmartContentUpdate() async {
+    final adminContext = _adminContext;
+    if (adminContext == null) return;
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SmartContentUpdatePage(
+          initialGradeId: adminContext.gradeId,
+          initialLessonId: adminContext.lessonId,
+          initialUnitId: adminContext.unitId,
+          initialTopicId: adminContext.topicId,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _publishLatestVersion() async {
+    final topicId = widget.topicId;
+    if (topicId == null) return;
+    final published = await _repository.publishLatestVersionForTopic(topicId);
+    if (!mounted) return;
+    if (published == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Yayinlanacak bir V11 surumu bulunamadi.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _loadedContent = published;
+      _module = LessonModule.fromJson(published.payload);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Surum ${published.versionNo} yayina alindi.')),
+    );
+  }
+
+  Future<void> _unpublishCurrentContent() async {
+    final loadedContent = _loadedContent;
+    if (loadedContent == null) return;
+    await _repository.unpublishContent(loadedContent.id);
     if (!mounted) return;
     setState(() {
-      _module = LessonModule.fromJson(jsonDecode(raw));
-      _loading = false;
+      _loadedContent = LessonV11ContentRecord(
+        id: loadedContent.id,
+        topicId: loadedContent.topicId,
+        versionNo: loadedContent.versionNo,
+        isPublished: false,
+        payload: loadedContent.payload,
+      );
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Mevcut V11 icerigi yayindan kaldirildi.')),
+    );
   }
 
   _ScreenKey get _current => _history.last;
   bool get _canGoBack => _history.length > 1;
 
-  void _goBack() {
-    if (_canGoBack) setState(() => _history.removeLast());
+  void _handleBackNavigation() {
+    if (_canGoBack) {
+      setState(() => _history.removeLast());
+      return;
+    }
+    Navigator.maybePop(context);
   }
 
   void _pushScreen(_ScreenKey key) {
@@ -277,6 +428,38 @@ class _LessonPageState extends State<LessonPage> {
       );
     }
 
+    if (_errorMessage != null || _module == null) {
+      return Scaffold(
+        backgroundColor: _C.bg,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.error_outline_rounded,
+                  size: 44,
+                  color: Color(0xFFB91C1C),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Lesson V11 yuklenemedi',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _errorMessage ?? 'Icerik bulunamadi.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Color(0xFF6B7280), height: 1.5),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     final module = _module!;
     final current = _current;
 
@@ -302,7 +485,7 @@ class _LessonPageState extends State<LessonPage> {
     return WillPopScope(
       onWillPop: () async {
         if (_canGoBack) {
-          _goBack();
+          _handleBackNavigation();
           return false;
         }
         return true;
@@ -316,14 +499,26 @@ class _LessonPageState extends State<LessonPage> {
                 module: module,
                 progress: _progress,
                 color: color,
-                canGoBack: _canGoBack,
-                onBack: _goBack,
+                canGoBack: true,
+                onBack: _handleBackNavigation,
                 canIncreaseText: _contentTextScale < 3.6,
                 canDecreaseText: _contentTextScale > 0.85,
                 onIncreaseText: _increaseContentTextScale,
                 onDecreaseText: _decreaseContentTextScale,
                 musicOn: _musicOn,
                 onToggleMusic: _toggleMusic,
+                adminMenu: _isAdmin && _adminContext != null
+                    ? _LessonAdminMenu(
+                        onCopyPrompt: _copyV11Prompt,
+                        onAddContent: _openSmartContentAddition,
+                        onUpdateContent: _openSmartContentUpdate,
+                        onPublishLatest: _publishLatestVersion,
+                        onUnpublishCurrent: _unpublishCurrentContent,
+                        canUnpublishCurrent:
+                            _loadedContent != null &&
+                            _loadedContent!.isPublished,
+                      )
+                    : null,
               ),
               Expanded(
                 child: MediaQuery(
@@ -390,6 +585,7 @@ class _TopBar extends StatelessWidget {
   final VoidCallback onDecreaseText;
   final bool musicOn;
   final Future<void> Function() onToggleMusic;
+  final Widget? adminMenu;
 
   const _TopBar({
     required this.module,
@@ -403,6 +599,7 @@ class _TopBar extends StatelessWidget {
     required this.onDecreaseText,
     required this.musicOn,
     required this.onToggleMusic,
+    this.adminMenu,
   });
 
   @override
@@ -494,6 +691,7 @@ class _TopBar extends StatelessWidget {
                 color: const Color(0xFF7C3AED),
                 onTap: onToggleMusic,
               ),
+              if (adminMenu != null) ...[const SizedBox(width: 6), adminMenu!],
             ],
           ),
           const SizedBox(height: 8),
@@ -507,6 +705,113 @@ class _TopBar extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _LessonAdminMenu extends StatelessWidget {
+  const _LessonAdminMenu({
+    required this.onCopyPrompt,
+    required this.onAddContent,
+    required this.onUpdateContent,
+    required this.onPublishLatest,
+    required this.onUnpublishCurrent,
+    required this.canUnpublishCurrent,
+  });
+
+  final Future<void> Function() onCopyPrompt;
+  final Future<void> Function() onAddContent;
+  final Future<void> Function() onUpdateContent;
+  final Future<void> Function() onPublishLatest;
+  final Future<void> Function() onUnpublishCurrent;
+  final bool canUnpublishCurrent;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      tooltip: 'Yonetici menusu',
+      onSelected: (value) async {
+        if (value == 'copy_prompt') {
+          await onCopyPrompt();
+          return;
+        }
+        if (value == 'add_content') {
+          await onAddContent();
+          return;
+        }
+        if (value == 'update_content') {
+          await onUpdateContent();
+          return;
+        }
+        if (value == 'publish_latest') {
+          await onPublishLatest();
+          return;
+        }
+        if (value == 'unpublish_current') {
+          await onUnpublishCurrent();
+        }
+      },
+      itemBuilder: (context) => [
+        const PopupMenuItem<String>(
+          value: 'copy_prompt',
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.data_object_rounded),
+            title: Text('V11 promptunu kopyala'),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'add_content',
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.auto_awesome_rounded),
+            title: Text('Akilli icerik ekle'),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'update_content',
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.edit_note_rounded),
+            title: Text('Icerigi guncelle'),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'publish_latest',
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.publish_rounded),
+            title: Text('Son surumu yayina al'),
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'unpublish_current',
+          enabled: canUnpublishCurrent,
+          child: const ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.visibility_off_rounded),
+            title: Text('Mevcut yayini kaldir'),
+          ),
+        ),
+      ],
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: const Color(0xFF2563EB).withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(11),
+          border: Border.all(
+            color: const Color(0xFF2563EB).withValues(alpha: 0.28),
+            width: 1.2,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: const Icon(
+          Icons.admin_panel_settings_rounded,
+          size: 18,
+          color: Color(0xFF2563EB),
+        ),
       ),
     );
   }
@@ -729,6 +1034,8 @@ class _ContentScreenState extends State<_ContentScreen> {
           body: block.content['body'] ?? '',
           color: widget.color,
         );
+      case 'image':
+        return _ImageCard(content: block.content, color: widget.color);
       case 'misconception':
         return _MisconceptionCard(content: block.content, color: widget.color);
       default:
@@ -2989,8 +3296,9 @@ class _MarkdownCard extends StatelessWidget {
     final regex = RegExp(r'\*\*(.+?)\*\*|`(.+?)`');
     int last = 0;
     for (final m in regex.allMatches(t)) {
-      if (m.start > last)
+      if (m.start > last) {
         spans.add(TextSpan(text: t.substring(last, m.start), style: base));
+      }
       if (m.group(1) != null) {
         spans.add(
           TextSpan(
@@ -3012,8 +3320,9 @@ class _MarkdownCard extends StatelessWidget {
       }
       last = m.end;
     }
-    if (last < t.length)
+    if (last < t.length) {
       spans.add(TextSpan(text: t.substring(last), style: base));
+    }
     return RichText(
       textScaler: MediaQuery.textScalerOf(context),
       text: TextSpan(children: spans),
@@ -3038,6 +3347,86 @@ class _MarkdownCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: _parse(context, body),
+      ),
+    );
+  }
+}
+
+class _ImageCard extends StatelessWidget {
+  final Map<String, dynamic> content;
+  final Color color;
+
+  const _ImageCard({required this.content, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final svgCode = (content['svgCode'] as String? ?? '').trim();
+    final imageUrl = (content['imageUrl'] as String? ?? '').trim();
+    final caption = (content['caption'] as String? ?? '').trim();
+    final altText = (content['altText'] as String? ?? '').trim();
+    final hasSvg = svgCode.startsWith('<svg');
+    final hasImage =
+        imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
+
+    if (!hasSvg && !hasImage) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: hasSvg
+                  ? SvgPicture.string(svgCode, fit: BoxFit.contain)
+                  : Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const SizedBox.shrink();
+                      },
+                    ),
+            ),
+          ),
+          if (caption.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              caption,
+              style: const TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1F2937),
+                height: 1.45,
+              ),
+            ),
+          ],
+          if (altText.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              altText,
+              style: const TextStyle(
+                fontSize: 12.5,
+                color: Color(0xFF6B7280),
+                height: 1.5,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

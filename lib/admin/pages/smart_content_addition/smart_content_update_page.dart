@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -65,13 +67,18 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
       _topicTitle = (topic?['title'] as String? ?? '').trim();
 
       final contentsRaw = await _client
-          .from('topic_contents')
-          .select('id, topic_id, title, content, order_no, is_published')
+          .from('topic_contents_v11')
+          .select('id, topic_id, title, payload, version_no, is_published')
           .eq('topic_id', topicId)
-          .order('order_no', ascending: true);
-      _contents = (contentsRaw as List)
-          .map((e) => Map<String, dynamic>.from(e as Map))
-          .toList();
+          .order('version_no', ascending: false);
+      _contents = (contentsRaw as List).map((e) {
+        final row = Map<String, dynamic>.from(e as Map);
+        final payload = row['payload'];
+        row['payload_text'] = const JsonEncoder.withIndent('  ').convert(
+          payload is Map ? Map<String, dynamic>.from(payload) : payload,
+        );
+        return row;
+      }).toList();
 
       final outcomesRaw = await _client
           .from('outcomes')
@@ -89,12 +96,12 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
       _selectedOutcomeIdsByContent = {};
       if (contentIds.isNotEmpty) {
         final linksRaw = await _client
-            .from('topic_content_outcomes')
-            .select('topic_content_id, outcome_id')
-            .inFilter('topic_content_id', contentIds);
+            .from('topic_content_outcomes_v11')
+            .select('topic_content_v11_id, outcome_id')
+            .inFilter('topic_content_v11_id', contentIds);
         for (final raw in (linksRaw as List)) {
           final row = Map<String, dynamic>.from(raw as Map);
-          final contentId = row['topic_content_id'] as int?;
+          final contentId = row['topic_content_v11_id'] as int?;
           final outcomeId = row['outcome_id'] as int?;
           if (contentId == null || outcomeId == null) continue;
           _selectedOutcomeIdsByContent.putIfAbsent(contentId, () => <int>{});
@@ -168,64 +175,36 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
 
     setState(() => _isSaving = true);
     try {
+      final decodedPayload = jsonDecode(content);
+      if (decodedPayload is! Map<String, dynamic>) {
+        throw Exception('Lesson V11 JSON nesne formatinda olmali.');
+      }
+
       await _client
-          .from('topic_contents')
+          .from('topic_contents_v11')
           .update({
-            'title': title.trim().isEmpty ? 'İçerik' : title.trim(),
-            'content': content,
+            'title': title.trim().isEmpty ? 'Lesson V11' : title.trim(),
+            'payload': decodedPayload,
             'is_published': isPublished,
           })
           .eq('id', contentId);
 
       await _client
-          .from('topic_content_outcomes')
+          .from('topic_content_outcomes_v11')
           .delete()
-          .eq('topic_content_id', contentId);
+          .eq('topic_content_v11_id', contentId);
       await _client
-          .from('topic_content_outcomes')
+          .from('topic_content_outcomes_v11')
           .insert(
             selectedOutcomeIds
                 .map(
                   (outcomeId) => {
-                    'topic_content_id': contentId,
+                    'topic_content_v11_id': contentId,
                     'outcome_id': outcomeId,
                   },
                 )
                 .toList(),
           );
-
-      await _client
-          .from('topic_content_weeks')
-          .delete()
-          .eq('topic_content_id', contentId);
-      final weekRows = await _client
-          .from('outcome_weeks')
-          .select('start_week, end_week')
-          .inFilter('outcome_id', selectedOutcomeIds.toList());
-      final weekSet = <int>{};
-      for (final raw in (weekRows as List)) {
-        final row = Map<String, dynamic>.from(raw as Map);
-        final start = row['start_week'] as int?;
-        final end = row['end_week'] as int?;
-        if (start == null || end == null) continue;
-        for (var week = start; week <= end; week++) {
-          weekSet.add(week);
-        }
-      }
-      if (weekSet.isNotEmpty) {
-        await _client
-            .from('topic_content_weeks')
-            .insert(
-              weekSet
-                  .map(
-                    (week) => {
-                      'topic_content_id': contentId,
-                      'curriculum_week': week,
-                    },
-                  )
-                  .toList(),
-            );
-      }
 
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -269,7 +248,7 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
 
     setState(() => _isSaving = true);
     try {
-      await _client.from('topic_contents').delete().eq('id', contentId);
+      await _client.from('topic_contents_v11').delete().eq('id', contentId);
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
@@ -292,7 +271,7 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
       text: contentRow['title'] as String? ?? '',
     );
     final contentController = TextEditingController(
-      text: contentRow['content'] as String? ?? '',
+      text: contentRow['payload_text'] as String? ?? '',
     );
     var published = contentRow['is_published'] as bool? ?? true;
     final selected = <int>{
@@ -325,7 +304,7 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
                         minLines: 8,
                         maxLines: 18,
                         decoration: const InputDecoration(
-                          labelText: 'İçerik (HTML)',
+                          labelText: 'İçerik (Lesson V11 JSON)',
                           border: OutlineInputBorder(),
                           alignLabelWithHint: true,
                         ),
@@ -465,7 +444,7 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
                             final contentId = row['id'] as int?;
                             final title = (row['title'] as String? ?? 'İçerik')
                                 .trim();
-                            final orderNo = row['order_no'] as int? ?? 0;
+                            final versionNo = row['version_no'] as int? ?? 0;
                             final published =
                                 row['is_published'] as bool? ?? true;
                             final selectedCount = contentId == null
@@ -480,7 +459,7 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
                                   title.isEmpty ? 'İçerik #$contentId' : title,
                                 ),
                                 subtitle: Text(
-                                  'Sıra: $orderNo • Yayın: ${published ? "Evet" : "Hayır"} • Kazanım: $selectedCount',
+                                  'Versiyon: $versionNo • Yayın: ${published ? "Evet" : "Hayır"} • Kazanım: $selectedCount',
                                 ),
                                 trailing: Wrap(
                                   spacing: 8,

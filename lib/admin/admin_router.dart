@@ -3,6 +3,7 @@
 import 'package:egitim_uygulamasi/admin/pages/admin_layout.dart';
 import 'package:egitim_uygulamasi/admin/pages/curriculum/curriculum_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/lessons/lesson_list_page.dart';
+import 'package:egitim_uygulamasi/admin/pages/lessons/lesson_v11_validator_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/topics/topic_list_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/outcomes/outcome_list_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/units/unit_list_page.dart';
@@ -17,6 +18,7 @@ class AdminRoutes {
   static const String curriculum = '/admin/curriculum';
   static const String lessons = '/admin/lessons';
   static const String units = '/admin/units';
+  static const String lessonV11Validator = '/admin/lesson-v11-validator';
   static const String topics = '/admin/topics';
   static const String outcomes = '/admin/outcomes';
   static const String contentOverview = '/admin/content-overview';
@@ -43,6 +45,10 @@ final adminRoutes = ShellRoute(
     GoRoute(
       path: AdminRoutes.lessons,
       builder: (context, state) => const LessonListPage(),
+    ),
+    GoRoute(
+      path: AdminRoutes.lessonV11Validator,
+      builder: (context, state) => const LessonV11ValidatorPage(),
     ),
     GoRoute(
       path: AdminRoutes.units,

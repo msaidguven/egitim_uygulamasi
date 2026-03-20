@@ -33,27 +33,30 @@ class _AdminLayoutState extends State<AdminLayout> {
         context.go(AdminRoutes.lessons);
         break;
       case 2:
-        context.go(AdminRoutes.units);
+        context.go(AdminRoutes.lessonV11Validator);
         break;
       case 3:
-        context.go(AdminRoutes.topics);
+        context.go(AdminRoutes.units);
         break;
       case 4:
-        context.go(AdminRoutes.outcomes);
+        context.go(AdminRoutes.topics);
         break;
       case 5:
-        context.go(AdminRoutes.contentOverview);
+        context.go(AdminRoutes.outcomes);
         break;
       case 6:
-        context.go(AdminRoutes.bulkDelete);
+        context.go(AdminRoutes.contentOverview);
         break;
       case 7:
+        context.go(AdminRoutes.bulkDelete);
+        break;
+      case 8:
         context.go(AdminRoutes.smartContentAddition);
         break;
-      case 8: // New case for Smart Question Addition
+      case 9:
         context.go(AdminRoutes.smartQuestionAddition);
         break;
-      case 9:
+      case 10:
         context.go(AdminRoutes.specialWeeks);
         break;
     }
@@ -67,23 +70,24 @@ class _AdminLayoutState extends State<AdminLayout> {
       selectedIndex = 0;
     } else if (location.startsWith(AdminRoutes.lessons)) {
       selectedIndex = 1;
-    } else if (location.startsWith(AdminRoutes.units)) {
+    } else if (location.startsWith(AdminRoutes.lessonV11Validator)) {
       selectedIndex = 2;
-    } else if (location.startsWith(AdminRoutes.topics)) {
+    } else if (location.startsWith(AdminRoutes.units)) {
       selectedIndex = 3;
-    } else if (location.startsWith(AdminRoutes.outcomes)) {
+    } else if (location.startsWith(AdminRoutes.topics)) {
       selectedIndex = 4;
-    } else if (location.startsWith(AdminRoutes.contentOverview)) {
+    } else if (location.startsWith(AdminRoutes.outcomes)) {
       selectedIndex = 5;
-    } else if (location.startsWith(AdminRoutes.bulkDelete)) {
+    } else if (location.startsWith(AdminRoutes.contentOverview)) {
       selectedIndex = 6;
-    } else if (location.startsWith(AdminRoutes.smartContentAddition)) {
+    } else if (location.startsWith(AdminRoutes.bulkDelete)) {
       selectedIndex = 7;
-    } else if (location.startsWith(AdminRoutes.smartQuestionAddition)) {
-      // New else if for Smart Question Addition
+    } else if (location.startsWith(AdminRoutes.smartContentAddition)) {
       selectedIndex = 8;
-    } else if (location.startsWith(AdminRoutes.specialWeeks)) {
+    } else if (location.startsWith(AdminRoutes.smartQuestionAddition)) {
       selectedIndex = 9;
+    } else if (location.startsWith(AdminRoutes.specialWeeks)) {
+      selectedIndex = 10;
     }
 
     return Scaffold(
@@ -98,9 +102,7 @@ class _AdminLayoutState extends State<AdminLayout> {
           IconButton(
             tooltip: _isSidebarVisible ? 'Menüyü gizle' : 'Menüyü göster',
             icon: Icon(
-              _isSidebarVisible
-                  ? Icons.menu_open_rounded
-                  : Icons.menu_rounded,
+              _isSidebarVisible ? Icons.menu_open_rounded : Icons.menu_rounded,
             ),
             onPressed: () {
               setState(() {

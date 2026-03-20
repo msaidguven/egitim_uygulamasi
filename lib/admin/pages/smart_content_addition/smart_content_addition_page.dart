@@ -413,6 +413,9 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
       final isQuestionPayload =
           decodedContent is Map<String, dynamic> &&
           decodedContent.containsKey('questions');
+      final isLessonV11Payload =
+          decodedContent is Map<String, dynamic> &&
+          decodedContent.containsKey('lessonModule');
 
       if (isQuestionPayload) {
         if (curriculumWeek == null || curriculumWeek < 1) {
@@ -425,6 +428,11 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         if (_selectedOutcomeIds.isEmpty) {
           throw Exception('İçerik için en az bir kazanım seçin.');
         }
+        if (!isLessonV11Payload) {
+          throw Exception(
+            'Yeni sistemde icerik alani gecerli bir lesson_v11 JSON\'u icermelidir.',
+          );
+        }
       }
 
       if (isQuestionPayload) {
@@ -435,12 +443,10 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
           curriculumWeek!,
         );
       } else {
-        // It's regular HTML content
-        await _insertTopicContent(
+        await _insertTopicContentV11(
           topicId,
           contentTitle,
-          contentText,
-          curriculumWeek: curriculumWeek,
+          decodedContent,
           selectedOutcomeIds: _selectedOutcomeIds.toList(),
         );
       }
@@ -469,31 +475,34 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
     }
   }
 
-  Future<void> _insertTopicContent(
+  Future<void> _insertTopicContentV11(
     int topicId,
     String title,
-    String content, {
-    int? curriculumWeek,
+    Map<String, dynamic> payload, {
     required List<int> selectedOutcomeIds,
   }) async {
     final supabase = Supabase.instance.client;
-    final orderNoRes = await supabase
-        .from('topic_contents')
-        .select('order_no')
+    final versionRes = await supabase
+        .from('topic_contents_v11')
+        .select('version_no')
         .eq('topic_id', topicId)
-        .order('order_no', ascending: false)
+        .order('version_no', ascending: false)
         .limit(1)
         .maybeSingle();
 
-    final nextOrderNo = (orderNoRes?['order_no'] ?? -1) + 1;
+    final nextVersionNo = (versionRes?['version_no'] ?? 0) + 1;
+    final safeTitle = title.trim().isNotEmpty ? title.trim() : 'Lesson V11';
 
     final newContent = await supabase
-        .from('topic_contents')
+        .from('topic_contents_v11')
         .insert({
           'topic_id': topicId,
-          'title': title,
-          'content': content,
-          'order_no': nextOrderNo,
+          'title': safeTitle,
+          'payload': payload,
+          'version_no': nextVersionNo,
+          'is_published': true,
+          'source': 'smart_content_addition',
+          'created_by': supabase.auth.currentUser?.id,
         })
         .select('id')
         .single();
@@ -501,54 +510,17 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
 
     if (selectedOutcomeIds.isNotEmpty) {
       await supabase
-          .from('topic_content_outcomes')
+          .from('topic_content_outcomes_v11')
           .insert(
             selectedOutcomeIds
                 .map(
                   (outcomeId) => {
-                    'topic_content_id': newContentId,
+                    'topic_content_v11_id': newContentId,
                     'outcome_id': outcomeId,
                   },
                 )
                 .toList(),
           );
-
-      final weekRows = await supabase
-          .from('outcome_weeks')
-          .select('start_week, end_week')
-          .inFilter('outcome_id', selectedOutcomeIds);
-      final weekSet = <int>{};
-      for (final raw in (weekRows as List)) {
-        final row = Map<String, dynamic>.from(raw as Map);
-        final start = row['start_week'] as int?;
-        final end = row['end_week'] as int?;
-        if (start == null || end == null) continue;
-        for (var week = start; week <= end; week++) {
-          weekSet.add(week);
-        }
-      }
-      if (weekSet.isNotEmpty) {
-        await supabase
-            .from('topic_content_weeks')
-            .insert(
-              weekSet
-                  .map(
-                    (week) => {
-                      'topic_content_id': newContentId,
-                      'curriculum_week': week,
-                    },
-                  )
-                  .toList(),
-            );
-      }
-      return;
-    }
-
-    if (curriculumWeek != null && curriculumWeek >= 1) {
-      await supabase.from('topic_content_weeks').insert({
-        'topic_content_id': newContentId,
-        'curriculum_week': curriculumWeek,
-      });
     }
   }
 
@@ -676,7 +648,7 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
               _buildSectionTitle('4. Kazanım Eşlemesi'),
               _buildOutcomeSelector(),
               const SizedBox(height: 24),
-              _buildSectionTitle('5. Konu İçeriği'),
+              _buildSectionTitle('5. Lesson V11 İçeriği'),
               _buildContentInput(),
               const SizedBox(height: 24),
               _buildSubmitButton(),
@@ -1048,8 +1020,8 @@ class _SmartContentAdditionPageState extends State<SmartContentAdditionPage> {
         TextFormField(
           controller: _rawTopicContentController,
           decoration: const InputDecoration(
-            labelText: 'Konu İçeriği (HTML veya JSON)',
-            hintText: 'HTML içeriği veya soru JSON\'u buraya girin...',
+            labelText: 'Konu İçeriği (lesson_v11 JSON veya soru JSON)',
+            hintText: 'Lesson V11 JSON\'u veya soru JSON\'u buraya girin...',
             border: OutlineInputBorder(),
             alignLabelWithHint: true,
           ),

@@ -1,6 +1,6 @@
 // lib/screens/units_for_lesson_screen.dart
 
-import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
+import 'package:egitim_uygulamasi/screens/weekly_v11_topics_screen.dart';
 import 'package:egitim_uygulamasi/screens/units_for_lesson_screen.dart'
     as units_screen;
 import 'package:egitim_uygulamasi/models/grade_model.dart';
@@ -534,17 +534,18 @@ class _LessonCard extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              final currentWeek =
-                                  calculateCurrentAcademicWeek();
+                              final currentWeek = calculateCurrentAcademicWeek(
+                                advanceOnHoliday: true,
+                              );
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => OutcomesScreenV2(
+                                  builder: (context) => WeeklyV11TopicsScreen(
                                     gradeId: grade.id,
                                     lessonId: lessonId,
                                     gradeName: grade.name,
                                     lessonName: lessonName,
-                                    initialCurriculumWeek: currentWeek,
+                                    curriculumWeek: currentWeek,
                                   ),
                                 ),
                               );
