@@ -3,9 +3,80 @@ import 'package:flutter/material.dart';
 import 'package:egitim_uygulamasi/main.dart';
 import 'package:egitim_uygulamasi/utils/date_utils.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v11/main.dart'
+    as lesson_v11;
+import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
+import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
+import 'package:egitim_uygulamasi/screens/weekly_v11_topics_screen.dart';
 
 // ========================================
-// DATA MODELS
+// DESIGN TOKENS - Improved with better naming and organization
+// ========================================
+
+class _AppColors {
+  static const navy = Color(0xFF0F1F5C);
+  static const navyMid = Color(0xFF1E3A8A);
+  static const blue = Color(0xFF3B82F6);
+  static const blueLight = Color(0xFF60A5FA);
+  static const blueMid = Color(0xFF2563EB);
+  static const emerald = Color(0xFF10B981);
+  static const emeraldDark = Color(0xFF059669);
+  static const coral = Color(0xFFFF6B6B);
+  static const coralLight = Color(0xFFFF8A8A);
+  static const violet = Color(0xFF7C3AED);
+  static const violetLight = Color(0xFF8B5CF6);
+  static const amber = Color(0xFFF59E0B);
+  static const slate50 = Color(0xFFF8FAFC);
+  static const slate100 = Color(0xFFF1F5F9);
+  static const slate200 = Color(0xFFE2E8F0);
+  static const slate300 = Color(0xFFCBD5E1);
+  static const slate400 = Color(0xFF94A3B8);
+  static const slate500 = Color(0xFF64748B);
+  static const slate600 = Color(0xFF475569);
+  static const slate700 = Color(0xFF334155);
+  static const slate800 = Color(0xFF1E293B);
+  static const slate900 = Color(0xFF0F172A);
+  static const white = Colors.white;
+  
+  // Gradients
+  static const LinearGradient primaryGradient = LinearGradient(
+    colors: [blue, navyMid],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+  
+  static const LinearGradient successGradient = LinearGradient(
+    colors: [emerald, emeraldDark],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+  
+  static const LinearGradient accentGradient = LinearGradient(
+    colors: [violet, violetLight],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+}
+
+class _AppDurations {
+  static const Duration fast = Duration(milliseconds: 150);
+  static const Duration normal = Duration(milliseconds: 250);
+  static const Duration slow = Duration(milliseconds: 350);
+  static const Duration pageTransition = Duration(milliseconds: 400);
+}
+
+class _AppSpacing {
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double md = 12.0;
+  static const double lg = 16.0;
+  static const double xl = 24.0;
+  static const double xxl = 32.0;
+}
+
+// ========================================
+// DATA MODELS (Unchanged - already good)
 // ========================================
 
 class WeekV3 {
@@ -30,22 +101,41 @@ class WeekV3 {
   }
 }
 
+class TopicV3 {
+  final int id;
+  final String title;
+  final List<int> outcomeIds;
+  final bool isCompleted;
+
+  const TopicV3({
+    required this.id,
+    required this.title,
+    required this.outcomeIds,
+    this.isCompleted = false,
+  });
+}
+
 class UnitV3 {
   final int? id;
   final String title;
-  final bool isCompleted;
-  final double progress;
+  final List<TopicV3> topics;
 
   const UnitV3({
     this.id,
     required this.title,
-    this.isCompleted = false,
-    this.progress = 0.0,
+    this.topics = const [],
   });
+
+  bool get isCompleted =>
+      topics.isNotEmpty && topics.every((t) => t.isCompleted);
+  double get progress =>
+      topics.isEmpty
+          ? 0.0
+          : topics.where((t) => t.isCompleted).length / topics.length;
 }
 
 // ========================================
-// SCREEN IMPLEMENTATION
+// SCREEN IMPLEMENTATION - Refactored
 // ========================================
 
 class UnitMapV3Screen extends StatefulWidget {
@@ -64,133 +154,105 @@ class UnitMapV3Screen extends StatefulWidget {
   State<UnitMapV3Screen> createState() => _UnitMapV3ScreenState();
 }
 
-class _UnitMapV3ScreenState extends State<UnitMapV3Screen> {
+class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
+    with SingleTickerProviderStateMixin {
   final List<WeekV3> _weeks = [];
   bool _isLoading = true;
   String? _loadError;
   int _selectedWeekIndex = 0;
   final ScrollController _weekScrollController = ScrollController();
-  double _scrollOffset = 0.0;
+  int _currentWeekIndex = -1;
+  String _gradeName = '';
+  late AnimationController _pulseController;
+  
+  // Constants
+  static const double _kItemHeight = 88.0;
+  static const double _kWeekRailWidth = 100.0;
+  static const int _kSkeletonItemCount = 3;
 
   @override
   void initState() {
     super.initState();
+    _initControllers();
     _loadData();
     _weekScrollController.addListener(_onScroll);
   }
 
+  void _initControllers() {
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+  }
+
   @override
   void dispose() {
+    _pulseController.dispose();
     _weekScrollController.removeListener(_onScroll);
     _weekScrollController.dispose();
     super.dispose();
   }
 
   void _onScroll() {
-    setState(() {
-      _scrollOffset = _weekScrollController.offset;
+    if (_weeks.isEmpty) return;
+    
+    final centerOffset = _weekScrollController.offset +
+        (MediaQuery.of(context).size.height - kToolbarHeight) / 2;
+    final adjustedOffset =
+        centerOffset - (MediaQuery.of(context).size.height / 2 - 44);
+    int newIndex =
+        (adjustedOffset / _kItemHeight).floor().clamp(0, _weeks.length - 1);
+    
+    if (newIndex != _selectedWeekIndex) {
+      setState(() => _selectedWeekIndex = newIndex);
+    }
+  }
+
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollEndNotification && _weeks.isNotEmpty) {
+      final index = (_weekScrollController.offset / _kItemHeight).round();
+      final targetOffset = (index * _kItemHeight).clamp(
+        0.0,
+        _weekScrollController.position.maxScrollExtent,
+      );
       
-      // Calculate which week is closest to the center
-      // Each week node is 100px high. 
-      // The viewport center is roughly (context.size.height / 2)
-      // For now, let's use a simple calculation based on item height
-      final centerOffset = _scrollOffset + (MediaQuery.of(context).size.height - kToolbarHeight) / 2;
-      // Subtract the top padding of the list (which we will add)
-      final adjustedOffset = centerOffset - (MediaQuery.of(context).size.height / 2 - 50);
-      
-      int newIndex = (adjustedOffset / 100).floor().clamp(0, _weeks.length - 1);
-      if (newIndex != _selectedWeekIndex) {
-        _selectedWeekIndex = newIndex;
+      if ((_weekScrollController.offset - targetOffset).abs() > 1) {
+        _weekScrollController.animateTo(
+          targetOffset,
+          duration: _AppDurations.normal,
+          curve: Curves.easeOutCubic,
+        );
       }
-    });
+    }
+    return false;
   }
 
   Future<void> _loadData() async {
+    if (!mounted) return;
+    
     setState(() {
       _isLoading = true;
       _loadError = null;
     });
 
     try {
-      final userId = supabase.auth.currentUser?.id;
-      final currentAcademicWeek = calculateCurrentAcademicWeek();
-
-      // 1. Fetch available weeks
-      final rawWeeks = await supabase.rpc(
-        'get_available_weeks',
-        params: {'p_grade_id': widget.gradeId, 'p_lesson_id': widget.lessonId},
-      );
-
-      final weekNumbers = (rawWeeks as List)
-          .map((item) => item['curriculum_week'] as int?)
-          .whereType<int>()
-          .toSet()
-          .toList()
-        ..sort();
-
-      if (weekNumbers.isEmpty) {
+      await _fetchGradeName();
+      await _fetchWeeks();
+      
+      if (_weeks.isEmpty) {
         if (!mounted) return;
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
         return;
       }
-
-      _weeks.clear();
-
-      // 2. Fetch units for each week
-      for (final weekNum in weekNumbers) {
-        final weeklyData = await supabase.rpc(
-          'get_weekly_curriculum',
-          params: {
-            'p_user_id': userId,
-            'p_grade_id': widget.gradeId,
-            'p_lesson_id': widget.lessonId,
-            'p_curriculum_week': weekNum,
-            'p_is_admin': false,
-          },
-        );
-
-        final rows = (weeklyData as List)
-            .map((e) => Map<String, dynamic>.from(e as Map))
-            .toList();
-
-        final units = rows.map((row) {
-          final solvedQ = (row['solved_questions'] as num? ?? 0).toInt();
-          final totalQ = (row['total_questions'] as num? ?? 1).toInt();
-          final progress = totalQ > 0 ? solvedQ / totalQ : 0.0;
-          
-          return UnitV3(
-            id: row['unit_id'] as int?,
-            title: row['unit_title']?.toString() ?? 'Ünite',
-            isCompleted: progress >= 1.0,
-            progress: progress,
-          );
-        }).toList();
-
-        final isCompleted = weekNum < currentAcademicWeek;
-        final isLocked = weekNum > currentAcademicWeek;
-
-        _weeks.add(
-          WeekV3(
-            curriculumWeek: weekNum,
-            title: '$weekNum. Hafta',
-            isLocked: isLocked,
-            isCompleted: isCompleted,
-            units: units,
-          ),
-        );
-      }
-
-      if (!mounted) return;
       
-      // Set initial selected week to current academic week or first available
-      final currentIdx = _weeks.indexWhere((w) => w.curriculumWeek == currentAcademicWeek);
-      _selectedWeekIndex = currentIdx != -1 ? currentIdx : 0;
-
-      setState(() {
-        _isLoading = false;
-      });
+      _setInitialWeekIndex();
+      
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      
+      _scrollToInitialWeek();
+      await _loadAllWeeksContent();
+      
     } catch (e) {
       debugPrint('UnitMapV3 Error: $e');
       if (!mounted) return;
@@ -200,542 +262,1281 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen> {
       });
     }
   }
+  
+  Future<void> _fetchGradeName() async {
+    try {
+      final gradeData = await supabase
+          .from('grades')
+          .select('name')
+          .eq('id', widget.gradeId)
+          .maybeSingle();
+      if (gradeData != null) {
+        _gradeName = gradeData['name'] as String;
+      }
+    } catch (e) {
+      debugPrint('Error fetching grade name: $e');
+    }
+  }
+  
+  Future<void> _fetchWeeks() async {
+    final rawWeeks = await supabase.rpc(
+      'get_available_weeks',
+      params: {
+        'p_grade_id': widget.gradeId,
+        'p_lesson_id': widget.lessonId,
+      },
+    );
+    
+    final weekNumbers = (rawWeeks as List)
+        .map((item) => item['curriculum_week'] as int?)
+        .whereType<int>()
+        .toSet()
+        .toList()
+      ..sort();
+    
+    final currentAcademicWeek = calculateCurrentAcademicWeek();
+    
+    _weeks.clear();
+    for (final weekNum in weekNumbers) {
+      final isLocked = weekNum > currentAcademicWeek;
+      final isCompleted = weekNum < currentAcademicWeek;
+      _weeks.add(
+        WeekV3(
+          curriculumWeek: weekNum,
+          title: '$weekNum. Hafta',
+          isLocked: isLocked,
+          isCompleted: isCompleted,
+          units: const [],
+        ),
+      );
+    }
+  }
+  
+  void _setInitialWeekIndex() {
+    final currentAcademicWeek = calculateCurrentAcademicWeek();
+    _currentWeekIndex = _weeks.indexWhere(
+      (w) => w.curriculumWeek == currentAcademicWeek,
+    );
+    
+    int initialIndex = _weeks.indexWhere(
+      (w) => w.curriculumWeek == currentAcademicWeek,
+    );
+    
+    if (initialIndex == -1) {
+      initialIndex = _weeks.lastIndexWhere((w) => !w.isLocked);
+      if (initialIndex == -1) initialIndex = 0;
+    }
+    _selectedWeekIndex = initialIndex;
+  }
+  
+  void _scrollToInitialWeek() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_weekScrollController.hasClients) {
+        _weekScrollController.jumpTo(_selectedWeekIndex * _kItemHeight);
+      }
+    });
+  }
+  
+  Future<void> _loadAllWeeksContent() async {
+    await _loadWeekContent(_selectedWeekIndex);
+    
+    // Load surrounding weeks in background
+    for (int i = _selectedWeekIndex - 1; i >= 0; i--) {
+      await _loadWeekContent(i);
+    }
+    for (int i = _selectedWeekIndex + 1; i < _weeks.length; i++) {
+      await _loadWeekContent(i);
+    }
+  }
+
+  Future<void> _loadWeekContent(int index) async {
+    if (!mounted) return;
+    final week = _weeks[index];
+    if (week.isLocked) return;
+
+    try {
+      final userId = supabase.auth.currentUser?.id;
+      final weeklyData = await supabase.rpc(
+        'get_weekly_curriculum',
+        params: {
+          'p_user_id': userId,
+          'p_grade_id': widget.gradeId,
+          'p_lesson_id': widget.lessonId,
+          'p_curriculum_week': week.curriculumWeek,
+          'p_is_admin': false,
+        },
+      );
+
+      final units = _processWeeklyData(weeklyData);
+      
+      if (!mounted) return;
+      setState(() {
+        _weeks[index] = WeekV3(
+          curriculumWeek: week.curriculumWeek,
+          title: week.title,
+          isLocked: week.isLocked,
+          isCompleted: week.isCompleted,
+          units: units,
+        );
+      });
+    } catch (e) {
+      debugPrint('Week load error for week ${week.curriculumWeek}: $e');
+    }
+  }
+  
+  List<UnitV3> _processWeeklyData(dynamic weeklyData) {
+    final rows = (weeklyData as List)
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+
+    final Map<int, Map<String, dynamic>> unitsMap = {};
+    final Map<int, Map<String, dynamic>> topicsMap = {};
+
+    for (final row in rows) {
+      final unitId = row['unit_id'] as int?;
+      final topicId = row['topic_id'] as int?;
+      if (unitId == null) continue;
+
+      if (!unitsMap.containsKey(unitId)) {
+        unitsMap[unitId] = {
+          'id': unitId,
+          'title': row['unit_title']?.toString() ?? 'Ünite',
+          'topic_ids': <int>[],
+        };
+      }
+
+      if (topicId != null) {
+        if (!(unitsMap[unitId]!['topic_ids'] as List<int>).contains(topicId)) {
+          (unitsMap[unitId]!['topic_ids'] as List<int>).add(topicId);
+        }
+
+        if (!topicsMap.containsKey(topicId)) {
+          topicsMap[topicId] = {
+            'id': topicId,
+            'title': row['topic_title']?.toString() ?? 'Konu',
+            'outcome_ids': <int>{},
+            'is_completed':
+                (row['solved_questions'] as num? ?? 0) > 0 &&
+                    (row['solved_questions'] as num? ?? 0) >=
+                        (row['total_questions'] as num? ?? 1),
+          };
+        }
+
+        final outcomeId = row['outcome_id'] as int?;
+        if (outcomeId != null) {
+          (topicsMap[topicId]!['outcome_ids'] as Set<int>).add(outcomeId);
+        }
+      }
+    }
+
+    return unitsMap.values.map((uData) {
+      final topicIds = uData['topic_ids'] as List<int>;
+      final topics = topicIds.map((tid) {
+        final tData = topicsMap[tid]!;
+        return TopicV3(
+          id: tData['id'],
+          title: tData['title'],
+          outcomeIds: (tData['outcome_ids'] as Set<int>).toList(),
+          isCompleted: tData['is_completed'] ?? false,
+        );
+      }).toList();
+
+      return UnitV3(
+        id: uData['id'],
+        title: uData['title'],
+        topics: topics,
+      );
+    }).toList();
+  }
+
+  void _scrollToCurrentWeek() {
+    if (_currentWeekIndex != -1 && _weekScrollController.hasClients) {
+      _weekScrollController.animateTo(
+        _currentWeekIndex * _kItemHeight,
+        duration: _AppDurations.slow,
+        curve: Curves.easeInOutCubic,
+      );
+      setState(() => _selectedWeekIndex = _currentWeekIndex);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: _AppColors.slate50,
       appBar: _buildAppBar(),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _loadError != null
-              ? _buildErrorView()
-              : _weeks.isEmpty
-                  ? _buildEmptyView()
-                  : _buildMainLayout(),
+      body: _buildBody(),
     );
+  }
+
+  Widget _buildBody() {
+    if (_isLoading) return _buildLoadingView();
+    if (_loadError != null) return _buildErrorView();
+    if (_weeks.isEmpty) return _buildEmptyView();
+    return _buildMainLayout();
   }
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.white,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF1E3A8A), size: 20),
+      scrolledUnderElevation: 0,
+      backgroundColor: _AppColors.white,
+      surfaceTintColor: Colors.transparent,
+      leading: _buildBackButton(),
+      title: _buildAppBarTitle(),
+      actions: [_buildRefreshButton()],
+      bottom: _buildAppBarBottom(),
+    );
+  }
+  
+  Widget _buildBackButton() {
+    return Padding(
+      padding: const EdgeInsets.only(left: _AppSpacing.xs),
+      child: IconButton(
+        icon: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: _AppColors.slate100,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: _AppColors.navyMid,
+            size: 16,
+          ),
+        ),
         onPressed: () => Navigator.of(context).pop(),
       ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.lessonName,
-            style: const TextStyle(
-              color: Color(0xFF1E3A8A),
-              fontWeight: FontWeight.w900,
-              fontSize: 18,
-            ),
+    );
+  }
+  
+  Widget _buildAppBarTitle() {
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            gradient: _AppColors.primaryGradient,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: _AppColors.blue.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
-          const Text(
-            'Haftalık Başarı Yolculuğun',
-            style: TextStyle(color: Color(0xFF64748B), fontSize: 11, fontWeight: FontWeight.w600),
+          child: const Icon(Icons.school_rounded,
+              color: Colors.white, size: 20),
+        ),
+        const SizedBox(width: _AppSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.lessonName,
+                style: const TextStyle(
+                  color: _AppColors.navy,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
+                  letterSpacing: -0.4,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const Text(
+                'Haftalık Öğrenme Haritası',
+                style: TextStyle(
+                  color: _AppColors.slate400,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.1,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.refresh_rounded, color: Color(0xFF64748B)),
-          onPressed: _loadData,
         ),
       ],
+    );
+  }
+  
+  Widget _buildRefreshButton() {
+    return IconButton(
+      icon: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: _AppColors.slate100,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Icon(Icons.refresh_rounded,
+            color: _AppColors.slate500, size: 18),
+      ),
+      onPressed: _loadData,
+    );
+  }
+  
+  PreferredSizeWidget _buildAppBarBottom() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(1),
+      child: Container(
+        height: 1,
+        color: _AppColors.slate200.withOpacity(0.7),
+      ),
+    );
+  }
+
+  Widget _buildLoadingView() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              gradient: _AppColors.primaryGradient,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: _AppColors.blue.withOpacity(0.25),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2.5,
+              ),
+            ),
+          ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
+                begin: const Offset(0.95, 0.95),
+                end: const Offset(1.05, 1.05),
+                duration: _AppDurations.slow,
+                curve: Curves.easeInOut,
+              ),
+          const SizedBox(height: _AppSpacing.xl),
+          const Text(
+            'Müfredat yükleniyor...',
+            style: TextStyle(
+              color: _AppColors.slate500,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ).animate().fadeIn(delay: 300.ms),
+        ],
+      ),
     );
   }
 
   Widget _buildErrorView() {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.error_outline_rounded, size: 48, color: Colors.redAccent),
-          const SizedBox(height: 16),
-          Text(_loadError!, style: const TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 16),
-          ElevatedButton(onPressed: _loadData, child: const Text('Tekrar Dene')),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(_AppSpacing.xxl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFEE2E2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Icon(Icons.error_outline_rounded,
+                  size: 36, color: Color(0xFFEF4444)),
+            ),
+            const SizedBox(height: _AppSpacing.xl),
+            Text(
+              _loadError!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                color: _AppColors.slate700,
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(height: _AppSpacing.xl),
+            ElevatedButton.icon(
+              onPressed: _loadData,
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: const Text('Tekrar Dene'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _AppColors.blue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: _AppSpacing.xl, vertical: _AppSpacing.md),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildEmptyView() {
-    return const Center(
-      child: Text('Bu derse ait müfredat bilgisi bulunamadı.'),
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: _AppColors.slate100,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Icon(Icons.inbox_rounded,
+                size: 36, color: _AppColors.slate400),
+          ),
+          const SizedBox(height: _AppSpacing.lg),
+          const Text(
+            'Müfredat bulunamadı',
+            style: TextStyle(
+              color: _AppColors.slate500,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildMainLayout() {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final centerLineY = (screenHeight - kToolbarHeight) / 2;
-
-    return Stack(
+    return Row(
       children: [
-        // Background pattern for the units area
-        Positioned.fill(
-          left: 100,
-          child: Opacity(
-            opacity: 0.03,
-            child: CustomPaint(
-              painter: _GridPainter(),
-            ),
-          ),
-        ),
-
-        // Viewfinder Lines (Background layer of the viewfinder)
-        Positioned(
-          left: 0,
-          right: 0,
-          top: centerLineY - 60,
-          child: Container(
-            height: 120,
-            decoration: BoxDecoration(
-              border: Border.symmetric(
-                horizontal: BorderSide(
-                  color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
-                  width: 2,
-                ),
-              ),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  const Color(0xFF3B82F6).withValues(alpha: 0.02),
-                  const Color(0xFF3B82F6).withValues(alpha: 0.05),
-                  const Color(0xFF3B82F6).withValues(alpha: 0.02),
-                ],
-              ),
-            ),
-          ),
-        ),
-        
-        Row(
-          children: [
-            // Left Column: Week Rail
-            Container(
-              width: 100,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 10,
-                    offset: const Offset(2, 0),
-                  ),
-                ],
-              ),
-              child: _buildWeekRail(),
-            ),
-
-            // Right Column: Units Area
-            Expanded(
-              child: _buildUnitsList(),
-            ),
-          ],
-        ),
-
-        // Viewfinder Decorative Markers (Above everything)
-        Positioned(
-          left: 100 - 10,
-          top: centerLineY - 50,
-          child: _buildViewfinderMarker(isLeft: true),
-        ),
-        Positioned(
-          left: 100 - 10,
-          top: centerLineY + 30,
-          child: _buildViewfinderMarker(isLeft: true),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildViewfinderMarker({required bool isLeft}) {
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        border: Border.all(color: const Color(0xFF3B82F6), width: 3),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF3B82F6).withValues(alpha: 0.2),
-            blurRadius: 8,
-          )
-        ],
-      ),
-      child: Center(
-        child: Container(
-          width: 6,
-          height: 6,
+        // Left: Week Rail
+        Container(
+          width: _kWeekRailWidth,
           decoration: const BoxDecoration(
-            color: Color(0xFF3B82F6),
-            shape: BoxShape.circle,
+            color: _AppColors.white,
+            border: Border(
+              right: BorderSide(color: _AppColors.slate200, width: 1),
+            ),
           ),
+          child: _buildWeekRail(),
         ),
-      ),
+        // Right: Units area
+        Expanded(child: _buildUnitsList()),
+      ],
     );
   }
 
   Widget _buildWeekRail() {
     final screenHeight = MediaQuery.of(context).size.height;
-    // Padding to allow first and last items to reach center
-    final verticalPadding = screenHeight / 2 - 50;
+    final verticalPadding = screenHeight / 2 - 44;
 
-    return SingleChildScrollView(
-      controller: _weekScrollController,
-      padding: EdgeInsets.symmetric(vertical: verticalPadding),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // Path Line Background
-          Positioned(
-            left: 50 - 2,
-            top: 50,
-            bottom: 50,
-            child: CustomPaint(
-              size: Size(4, (_weeks.length - 1) * 100),
-              painter: _VerticalPathPainter(weeks: _weeks),
+    return NotificationListener<ScrollNotification>(
+      onNotification: _onScrollNotification,
+      child: SingleChildScrollView(
+        controller: _weekScrollController,
+        padding: EdgeInsets.symmetric(vertical: verticalPadding),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Connector line
+            Positioned(
+              left: 47,
+              top: _kItemHeight / 2,
+              bottom: _kItemHeight / 2,
+              child: CustomPaint(
+                size: Size(2, (_weeks.length - 1) * _kItemHeight),
+                painter: _ConnectorLinePainter(),
+              ),
             ),
-          ),
-          
-          // Nodes
-          Column(
-            children: List.generate(_weeks.length, (index) {
-              final week = _weeks[index];
-              final isSelected = _selectedWeekIndex == index;
-              
-              return GestureDetector(
-                onTap: () {
-                  _weekScrollController.animateTo(
-                    index * 100.0,
-                    duration: 500.ms,
-                    curve: Curves.easeInOutCubic,
-                  );
-                },
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildWeekNode(week, isSelected),
-                      const SizedBox(height: 6),
-                      AnimatedDefaultTextStyle(
-                        duration: 300.ms,
-                        style: TextStyle(
-                          fontSize: isSelected ? 12 : 10,
-                          fontWeight: isSelected ? FontWeight.w900 : FontWeight.w700,
-                          color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFF94A3B8),
-                        ),
-                        child: Text('Hafta ${week.curriculumWeek}'),
-                      ),
-                    ],
-                  ),
+            // Week nodes
+            Column(
+              children: List.generate(_weeks.length, (index) {
+                final week = _weeks[index];
+                final isSelected = _selectedWeekIndex == index;
+                final isCurrent = index == _currentWeekIndex;
+
+                return _buildWeekItem(week, index, isSelected, isCurrent);
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildWeekItem(WeekV3 week, int index, bool isSelected, bool isCurrent) {
+    return GestureDetector(
+      onTap: () {
+        _weekScrollController.animateTo(
+          index * _kItemHeight,
+          duration: _AppDurations.normal,
+          curve: Curves.easeInOutCubic,
+        );
+      },
+      child: SizedBox(
+        height: _kItemHeight,
+        width: _kWeekRailWidth,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildWeekNode(week, isSelected, isCurrent),
+              const SizedBox(height: _AppSpacing.sm),
+              AnimatedDefaultTextStyle(
+                duration: _AppDurations.normal,
+                style: TextStyle(
+                  fontSize: isSelected ? 10 : 9,
+                  fontWeight: isSelected
+                      ? FontWeight.w700
+                      : FontWeight.w500,
+                  color: isSelected
+                      ? _AppColors.navyMid
+                      : _AppColors.slate400,
+                  letterSpacing: 0.2,
                 ),
-              );
-            }),
+                child: Text('Hafta ${week.curriculumWeek}'),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildWeekNode(WeekV3 week, bool isSelected) {
-    Color nodeColor = Colors.white;
-    Color borderColor = const Color(0xFFCBD5E1);
-    Widget? icon;
+  Widget _buildWeekNode(WeekV3 week, bool isSelected, bool isCurrent) {
+    final double size = isSelected ? 50 : 42;
+
+    Color bgColor;
+    Color borderColor;
+    Color iconColor;
+    Widget icon;
+    List<BoxShadow> shadows = [];
 
     if (week.isCompleted) {
-      nodeColor = const Color(0xFFDCFCE7);
-      borderColor = const Color(0xFF10B981);
-      icon = const Icon(Icons.check_rounded, color: Color(0xFF10B981), size: 22);
+      bgColor = _AppColors.emerald;
+      borderColor = _AppColors.emeraldDark;
+      iconColor = Colors.white;
+      icon = Icon(Icons.check_rounded, color: iconColor, size: 20);
+      shadows = [
+        BoxShadow(
+          color: _AppColors.emerald.withOpacity(0.3),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+      ];
     } else if (!week.isLocked) {
-      nodeColor = isSelected ? const Color(0xFF3B82F6) : Colors.white;
-      borderColor = const Color(0xFF3B82F6);
+      if (isSelected) {
+        bgColor = _AppColors.blue;
+        borderColor = _AppColors.blueMid;
+        iconColor = Colors.white;
+        shadows = [
+          BoxShadow(
+            color: _AppColors.blue.withOpacity(0.4),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ];
+      } else {
+        bgColor = _AppColors.white;
+        borderColor = isCurrent
+            ? _AppColors.blue.withOpacity(0.5)
+            : _AppColors.slate200;
+        iconColor = isCurrent ? _AppColors.blue : _AppColors.slate400;
+      }
       icon = Text(
         '${week.curriculumWeek}',
         style: TextStyle(
-          color: isSelected ? Colors.white : const Color(0xFF3B82F6),
-          fontWeight: FontWeight.w900,
-          fontSize: 16,
+          color: iconColor,
+          fontWeight: FontWeight.w800,
+          fontSize: isSelected ? 18 : 14,
         ),
       );
     } else {
-      icon = Icon(Icons.lock_rounded, color: const Color(0xFF94A3B8), size: 18);
+      bgColor = _AppColors.slate100;
+      borderColor = _AppColors.slate200;
+      iconColor = _AppColors.slate300;
+      icon = Icon(Icons.lock_rounded, color: iconColor, size: 14);
     }
 
     Widget node = AnimatedContainer(
-      duration: 300.ms,
-      width: isSelected ? 56 : 48,
-      height: isSelected ? 56 : 48,
+      duration: _AppDurations.normal,
+      curve: Curves.easeOutCubic,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: nodeColor,
-        border: Border.all(color: borderColor, width: isSelected ? 4 : 3),
-        boxShadow: isSelected ? [
-          BoxShadow(
-            color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
-            blurRadius: 12,
-            spreadRadius: 4,
-          )
-        ] : [],
+        color: bgColor,
+        border: Border.all(
+          color: borderColor,
+          width: isSelected ? 2.5 : 2,
+        ),
+        boxShadow: shadows,
       ),
       child: Center(child: icon),
     );
 
-    if (isSelected && !week.isCompleted) {
-      return node.animate(onPlay: (controller) => controller.repeat(reverse: true))
-          .scale(begin: const Offset(1, 1), end: const Offset(1.1, 1.1), duration: 1000.ms, curve: Curves.easeInOut);
+    // Pulse ring for current active week
+    if (isCurrent && !week.isCompleted && !week.isLocked) {
+      node = AnimatedBuilder(
+        animation: _pulseController,
+        builder: (context, child) {
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: size + 12 + (_pulseController.value * 6),
+                height: size + 12 + (_pulseController.value * 6),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _AppColors.blue.withOpacity(
+                      0.12 * (1 - _pulseController.value)),
+                ),
+              ),
+              child!,
+            ],
+          );
+        },
+        child: node,
+      );
     }
-    
+
     return node;
   }
 
   Widget _buildUnitsList() {
     final selectedWeek = _weeks[_selectedWeekIndex];
-    
+
     return Column(
       children: [
-        // Header for selected week
-        Container(
-          padding: const EdgeInsets.all(20),
-          width: double.infinity,
-          color: Colors.blue.withValues(alpha: 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${selectedWeek.curriculumWeek}. HAFTA',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  color: Color(0xFF3B82F6),
-                  letterSpacing: 1.2,
-                ),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                'Bu haftaki görevlerin hazır!',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF1E3A8A),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        // List of units
+        _buildWeekHeader(selectedWeek),
         Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(20),
-            itemCount: selectedWeek.units.length,
-            itemBuilder: (context, index) {
-              final unit = selectedWeek.units[index];
-              return _buildUnitCard(unit, index);
+          child: AnimatedSwitcher(
+            duration: _AppDurations.normal,
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0.04, 0),
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  )),
+                  child: child,
+                ),
+              );
             },
+            child: _buildWeekContent(selectedWeek),
           ),
         ),
       ],
     );
   }
+  
+  Widget _buildWeekContent(WeekV3 selectedWeek) {
+    if (selectedWeek.isLocked) {
+      return _buildLockedWeekView(selectedWeek);
+    }
+    
+    if (selectedWeek.units.isEmpty) {
+      return _buildLoadingUnitsView();
+    }
+    
+    return ListView.separated(
+      key: ValueKey<int>(selectedWeek.curriculumWeek),
+      padding: const EdgeInsets.fromLTRB(_AppSpacing.lg, _AppSpacing.lg, _AppSpacing.lg, _AppSpacing.xxl),
+      itemCount: selectedWeek.units.length,
+      separatorBuilder: (_, __) => const SizedBox(height: _AppSpacing.md),
+      itemBuilder: (context, index) {
+        final unit = selectedWeek.units[index];
+        return _buildUnitCard(unit, index, selectedWeek.curriculumWeek);
+      },
+    );
+  }
 
-  Widget _buildUnitCard(UnitV3 unit, int index) {
+  Widget _buildWeekHeader(WeekV3 selectedWeek) {
+    final Color accentColor = selectedWeek.isCompleted
+        ? _AppColors.emerald
+        : selectedWeek.isLocked
+            ? _AppColors.slate400
+            : _AppColors.blue;
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.fromLTRB(_AppSpacing.xl, _AppSpacing.lg, _AppSpacing.xl, _AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: _AppColors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: _AppColors.slate200.withOpacity(0.7),
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: _AppSpacing.sm, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: accentColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '${selectedWeek.curriculumWeek}. HAFTA',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: accentColor,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ),
+                    if (selectedWeek.isCompleted) ...[
+                      const SizedBox(width: _AppSpacing.sm),
+                      const Text('🎉', style: TextStyle(fontSize: 14)),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: _AppSpacing.sm),
+                Text(
+                  selectedWeek.isCompleted
+                      ? 'Tamamlandı, harika iş! ✨'
+                      : selectedWeek.isLocked
+                          ? 'Bu hafta henüz açılmadı'
+                          : 'Bu haftanın konuları',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: _AppColors.navy,
+                    letterSpacing: -0.5,
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (!selectedWeek.isLocked && selectedWeek.units.isNotEmpty)
+            _buildCircularProgress(selectedWeek.progress),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCircularProgress(double progress) {
+    return SizedBox(
+      width: 44,
+      height: 44,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CircularProgressIndicator(
+            value: progress,
+            strokeWidth: 4,
+            backgroundColor: _AppColors.slate200,
+            valueColor: const AlwaysStoppedAnimation<Color>(_AppColors.blue),
+            strokeCap: StrokeCap.round,
+          ),
+          Text(
+            '${(progress * 100).round()}%',
+            style: const TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              color: _AppColors.navyMid,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLockedWeekView(WeekV3 week) {
+    return Center(
+      key: ValueKey<int>(week.curriculumWeek),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: _AppColors.slate100,
+              shape: BoxShape.circle,
+              border: Border.all(color: _AppColors.slate200, width: 2),
+            ),
+            child: const Icon(Icons.lock_rounded,
+                size: 32, color: _AppColors.slate300),
+          ),
+          const SizedBox(height: _AppSpacing.lg),
+          const Text(
+            'Bu hafta henüz açılmadı',
+            style: TextStyle(
+              color: _AppColors.slate500,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: _AppSpacing.sm),
+          Text(
+            '${week.curriculumWeek}. hafta aktif olduğunda\niçerik burada görünecek.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: _AppColors.slate400,
+              fontSize: 13,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingUnitsView() {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(_AppSpacing.lg, _AppSpacing.lg, _AppSpacing.lg, _AppSpacing.xxl),
+      itemCount: _kSkeletonItemCount,
+      separatorBuilder: (_, __) => const SizedBox(height: _AppSpacing.md),
+      itemBuilder: (_, index) => _buildSkeletonCard(index),
+    );
+  }
+
+  Widget _buildSkeletonCard(int index) {
+    return Container(
+      height: 140,
+      decoration: BoxDecoration(
+        color: _AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: _AppColors.slate200),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(_AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _skeletonBox(width: 80, height: 18, radius: 6),
+            const SizedBox(height: _AppSpacing.md),
+            _skeletonBox(width: double.infinity, height: 14, radius: 4),
+            const SizedBox(height: _AppSpacing.sm),
+            _skeletonBox(width: 200, height: 14, radius: 4),
+            const SizedBox(height: _AppSpacing.lg),
+            Row(
+              children: [
+                Expanded(child: _skeletonBox(height: 36, radius: 10)),
+                const SizedBox(width: _AppSpacing.sm),
+                Expanded(child: _skeletonBox(height: 36, radius: 10)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    )
+        .animate(onPlay: (c) => c.repeat(reverse: true))
+        .shimmer(
+          duration: 1200.ms,
+          delay: (index * 150).ms,
+          color: _AppColors.slate100,
+        );
+  }
+
+  Widget _skeletonBox(
+      {double? width, required double height, required double radius}) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: _AppColors.slate100,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+    );
+  }
+
+  Widget _buildUnitCard(
+      UnitV3 unit, int index, int curriculumWeek) {
+    final completedCount =
+        unit.topics.where((t) => t.isCompleted).length;
+    final totalCount = unit.topics.length;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: _AppColors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: _AppColors.slate200.withOpacity(0.8)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Left Accent
-              Container(
-                width: 8,
-                color: unit.isCompleted ? const Color(0xFF10B981) : const Color(0xFF3B82F6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Unit header
+          Container(
+            padding: const EdgeInsets.fromLTRB(_AppSpacing.lg, _AppSpacing.lg, _AppSpacing.lg, _AppSpacing.md),
+            decoration: BoxDecoration(
+              color: _AppColors.navyMid.withOpacity(0.03),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
               ),
-              
-              // Content
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
+              border: Border(
+                bottom: BorderSide(
+                    color: _AppColors.slate200.withOpacity(0.5)),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    gradient: _AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${index + 1}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: _AppSpacing.md),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              unit.title,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xFF1E3A8A),
-                              ),
-                            ),
-                          ),
-                          if (unit.isCompleted)
-                            const Icon(Icons.verified_rounded, color: Color(0xFF10B981), size: 20),
-                        ],
+                      const Text(
+                        'ÜNİTE',
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          color: _AppColors.slate400,
+                          letterSpacing: 0.8,
+                        ),
                       ),
-                      const SizedBox(height: 12),
-                      
-                      // Progress Bar
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFE2E8F0).withValues(alpha: 0.5)),
+                      Text(
+                        unit.title,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: _AppColors.slate800,
+                          height: 1.2,
                         ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: LinearProgressIndicator(
-                                  value: unit.progress,
-                                  minHeight: 8,
-                                  backgroundColor: const Color(0xFFE2E8F0),
-                                  color: unit.isCompleted ? const Color(0xFF10B981) : const Color(0xFF3B82F6),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              '%${(unit.progress * 100).toInt()}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w900,
-                                color: unit.isCompleted ? const Color(0xFF10B981) : const Color(0xFF3B82F6),
-                              ),
-                            ),
-                          ],
-                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
+                if (totalCount > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: _AppSpacing.sm, vertical: _AppSpacing.xs),
+                    decoration: BoxDecoration(
+                      color: unit.isCompleted
+                          ? _AppColors.emerald.withOpacity(0.1)
+                          : _AppColors.slate100,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '$completedCount/$totalCount',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: unit.isCompleted
+                            ? _AppColors.emerald
+                            : _AppColors.slate500,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+
+          // Progress bar
+          if (totalCount > 0)
+            LinearProgressIndicator(
+              value: unit.progress,
+              backgroundColor: _AppColors.slate100,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                unit.isCompleted ? _AppColors.emerald : _AppColors.blue,
               ),
-              
-              // Action Button
-              Container(
-                width: 90,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(
-                    left: BorderSide(color: const Color(0xFFE2E8F0).withValues(alpha: 0.5)),
+              minHeight: 3,
+            ),
+
+          // Topics
+          Padding(
+            padding: const EdgeInsets.all(_AppSpacing.lg),
+            child: Column(
+              children: unit.topics
+                  .map((topic) =>
+                      _buildTopicItem(unit, topic, curriculumWeek))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: (index * 60).ms, duration: _AppDurations.normal).slideY(
+          begin: 0.03,
+          end: 0,
+          delay: (index * 60).ms,
+          duration: _AppDurations.normal,
+          curve: Curves.easeOut,
+        );
+  }
+
+  Widget _buildTopicItem(
+      UnitV3 unit, TopicV3 topic, int curriculumWeek) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: _AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Completion dot
+              Padding(
+                padding: const EdgeInsets.only(top: 3),
+                child: AnimatedContainer(
+                  duration: _AppDurations.normal,
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: topic.isCompleted
+                        ? _AppColors.emerald
+                        : _AppColors.slate300,
                   ),
                 ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      // TODO: Navigation to unit detail/questions
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: (unit.isCompleted ? const Color(0xFF10B981) : const Color(0xFF3B82F6)).withValues(alpha: 0.1),
-                          ),
-                          child: Icon(
-                            unit.isCompleted ? Icons.check_circle_rounded : Icons.play_arrow_rounded,
-                            color: unit.isCompleted ? const Color(0xFF10B981) : const Color(0xFF3B82F6),
-                            size: 28,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          unit.isCompleted ? 'TEKRAR' : 'BAŞLA',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w900,
-                            color: unit.isCompleted ? const Color(0xFF10B981) : const Color(0xFF3B82F6),
-                          ),
-                        ),
-                      ],
-                    ),
+              ),
+              const SizedBox(width: _AppSpacing.md),
+              Expanded(
+                child: Text(
+                  topic.title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: topic.isCompleted
+                        ? _AppColors.slate500
+                        : _AppColors.slate800,
+                    height: 1.35,
+                    decoration: topic.isCompleted
+                        ? TextDecoration.lineThrough
+                        : null,
+                    decorationColor: _AppColors.slate400,
                   ),
                 ),
               ),
             ],
           ),
+          const SizedBox(height: _AppSpacing.md),
+          Padding(
+            padding: const EdgeInsets.only(left: 18),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _TopicActionButton(
+                    label: 'Konu Anlatımı',
+                    icon: Icons.auto_stories_rounded,
+                    color: _AppColors.violet,
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => WeeklyV11TopicsScreen(
+                            gradeId: widget.gradeId,
+                            lessonId: widget.lessonId,
+                            gradeName: _gradeName,
+                            lessonName: widget.lessonName,
+                            curriculumWeek: curriculumWeek,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: _AppSpacing.sm),
+                Expanded(
+                  child: _TopicActionButton(
+                    label: 'Testi Başlat',
+                    icon: Icons.quiz_rounded,
+                    color: _AppColors.coral,
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => QuestionsScreen(
+                            unitId: unit.id!,
+                            testMode: TestMode.weekly,
+                            sessionId: null,
+                          ),
+                          settings: RouteSettings(
+                            arguments: {
+                              'curriculum_week': curriculumWeek,
+                              'topic_id': topic.id,
+                              'outcome_ids': topic.outcomeIds,
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (unit.topics.last != topic)
+            Padding(
+              padding: const EdgeInsets.only(top: _AppSpacing.lg, left: 18),
+              child: Divider(
+                  height: 1,
+                  color: _AppColors.slate200.withOpacity(0.6)),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+// ========================================
+// TOPIC ACTION BUTTON - Improved with better animations
+// ========================================
+
+class _TopicActionButton extends StatefulWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final Future<void> Function() onTap;
+
+  const _TopicActionButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  State<_TopicActionButton> createState() => _TopicActionButtonState();
+}
+
+class _TopicActionButtonState extends State<_TopicActionButton> {
+  bool _isLoading = false;
+  bool _isHovered = false;
+
+  Future<void> _handleTap() async {
+    if (_isLoading) return;
+    if (!mounted) return;
+    setState(() => _isLoading = true);
+    try {
+      await Future.delayed(const Duration(milliseconds: 150));
+      await widget.onTap();
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: _handleTap,
+          borderRadius: BorderRadius.circular(10),
+          splashColor: widget.color.withOpacity(0.1),
+          highlightColor: widget.color.withOpacity(0.06),
+          child: AnimatedContainer(
+            duration: _AppDurations.fast,
+            padding: const EdgeInsets.symmetric(vertical: 9),
+            decoration: BoxDecoration(
+              color: widget.color.withOpacity(_isLoading ? 0.12 : (_isHovered ? 0.12 : 0.07)),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: widget.color.withOpacity(_isHovered ? 0.4 : 0.2),
+                width: _isHovered ? 1.5 : 1,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_isLoading)
+                  SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: widget.color,
+                    ),
+                  )
+                else
+                  Icon(widget.icon, size: 15, color: widget.color),
+                const SizedBox(width: 5),
+                Text(
+                  widget.label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: widget.color,
+                    letterSpacing: -0.1,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-    ).animate().fadeIn(delay: (index * 100).ms, duration: 400.ms).slideX(begin: 0.1, end: 0);
+    );
   }
 }
 
-class _VerticalPathPainter extends CustomPainter {
-  final List<WeekV3> weeks;
-  const _VerticalPathPainter({required this.weeks});
+// ========================================
+// PAINTERS - Improved connector line
+// ========================================
 
+class _ConnectorLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    if (weeks.length < 2) return;
-
-    final paint = Paint()
-      ..strokeWidth = 4
-      ..style = PaintingStyle.stroke
+    final dashPaint = Paint()
+      ..color = const Color(0xFFE2E8F0)
+      ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
-    for (int i = 0; i < weeks.length - 1; i++) {
-      final week = weeks[i];
-      paint.color = week.isCompleted ? const Color(0xFF10B981) : const Color(0xFFE2E8F0);
-      
+    const double dashHeight = 6;
+    const double gap = 4;
+    double y = 0;
+    
+    while (y < size.height) {
       canvas.drawLine(
-        Offset(2, i * 100),
-        Offset(2, (i + 1) * 100),
-        paint,
+        const Offset(0, 0),
+        Offset(0, dashHeight),
+        dashPaint,
       );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _VerticalPathPainter oldDelegate) => oldDelegate.weeks != weeks;
-}
-
-class _GridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFF3B82F6)
-      ..strokeWidth = 1;
-
-    for (double i = 0; i < size.width; i += 30) {
-      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
-    }
-    for (double j = 0; j < size.height; j += 30) {
-      canvas.drawLine(Offset(0, j), Offset(size.width, j), paint);
+      y += dashHeight + gap;
     }
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-

@@ -161,7 +161,7 @@ class _LessonPageState extends State<LessonPage> {
   static const String _musicAsset = 'audio/bg_music.mp3';
   LessonModule? _module;
   bool _loading = true;
-  double _contentTextScale = 1.0;
+  double _contentTextScale = 1.15;
   final List<_ScreenKey> _history = [const _ScreenKey(0, _ScreenType.content)];
   final Set<String> _completedQuizIds = {};
   final Set<_ScreenKey> _completedScreens = {};
@@ -284,6 +284,20 @@ class _LessonPageState extends State<LessonPage> {
       topicTitle: adminContext.topicTitle,
       outcomes: adminContext.outcomes,
       promptType: AdminPromptType.contentV2,
+    );
+  }
+
+  Future<void> _copyQuestionsPrompt() async {
+    final adminContext = _adminContext;
+    if (adminContext == null) return;
+    await AdminCopyButton.copyPrompt(
+      context,
+      gradeName: adminContext.gradeName,
+      lessonName: adminContext.lessonName,
+      unitTitle: adminContext.unitTitle,
+      topicTitle: adminContext.topicTitle,
+      outcomes: adminContext.outcomes,
+      promptType: AdminPromptType.questions,
     );
   }
 
@@ -510,6 +524,7 @@ class _LessonPageState extends State<LessonPage> {
                 adminMenu: _isAdmin && _adminContext != null
                     ? _LessonAdminMenu(
                         onCopyPrompt: _copyV11Prompt,
+                        onCopyQuestionsPrompt: _copyQuestionsPrompt,
                         onAddContent: _openSmartContentAddition,
                         onUpdateContent: _openSmartContentUpdate,
                         onPublishLatest: _publishLatestVersion,
@@ -713,6 +728,7 @@ class _TopBar extends StatelessWidget {
 class _LessonAdminMenu extends StatelessWidget {
   const _LessonAdminMenu({
     required this.onCopyPrompt,
+    required this.onCopyQuestionsPrompt,
     required this.onAddContent,
     required this.onUpdateContent,
     required this.onPublishLatest,
@@ -721,6 +737,7 @@ class _LessonAdminMenu extends StatelessWidget {
   });
 
   final Future<void> Function() onCopyPrompt;
+  final Future<void> Function() onCopyQuestionsPrompt;
   final Future<void> Function() onAddContent;
   final Future<void> Function() onUpdateContent;
   final Future<void> Function() onPublishLatest;
@@ -734,6 +751,10 @@ class _LessonAdminMenu extends StatelessWidget {
       onSelected: (value) async {
         if (value == 'copy_prompt') {
           await onCopyPrompt();
+          return;
+        }
+        if (value == 'copy_questions_prompt') {
+          await onCopyQuestionsPrompt();
           return;
         }
         if (value == 'add_content') {
@@ -759,6 +780,14 @@ class _LessonAdminMenu extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             leading: Icon(Icons.data_object_rounded),
             title: Text('V11 promptunu kopyala'),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'copy_questions_prompt',
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.quiz_outlined),
+            title: Text('Soru promptunu kopyala'),
           ),
         ),
         const PopupMenuItem<String>(
@@ -3446,8 +3475,6 @@ class _MisconceptionCard extends StatefulWidget {
 }
 
 class _MisconceptionCardState extends State<_MisconceptionCard> {
-  bool _revealed = false;
-
   @override
   Widget build(BuildContext context) {
     final wrong = widget.content['wrong'] ?? '';
@@ -3493,16 +3520,23 @@ class _MisconceptionCardState extends State<_MisconceptionCard> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('❌', style: TextStyle(fontSize: 14)),
+                const Padding(
+                  padding: EdgeInsets.only(top: 1.0),
+                  child: Text('❌', style: TextStyle(fontSize: 14)),
+                ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    wrong,
+                  child: Text.rich(
+                    TextSpan(children: [
+                      const TextSpan(text: 'Yanlış: ', style: TextStyle(fontWeight: FontWeight.w800)),
+                      TextSpan(text: wrong),
+                    ]),
                     style: const TextStyle(
                       fontSize: 13,
                       color: Color(0xFF991B1B),
-                      decoration: TextDecoration.lineThrough,
+                      height: 1.3,
                     ),
                   ),
                 ),
@@ -3510,47 +3544,38 @@ class _MisconceptionCardState extends State<_MisconceptionCard> {
             ),
           ),
           const SizedBox(height: 8),
-          GestureDetector(
-            onTap: () => setState(() => _revealed = true),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: _revealed
-                    ? const Color(0xFFECFDF5)
-                    : const Color(0xFFEEEEEE),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: _revealed
-                  ? Row(
-                      children: [
-                        const Text('✅', style: TextStyle(fontSize: 14)),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            correct,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF065F46),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : const Center(
-                      child: Text(
-                        '👆  Doğrusunu görmek için dokun',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF6B7280),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFECFDF5),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 1.0),
+                  child: Text('✅', style: TextStyle(fontSize: 14)),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text.rich(
+                    TextSpan(children: [
+                      const TextSpan(text: 'Doğru: ', style: TextStyle(fontWeight: FontWeight.w800)),
+                      TextSpan(text: correct),
+                    ]),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF065F46),
+                      fontWeight: FontWeight.w600,
+                      height: 1.3,
                     ),
+                  ),
+                ),
+              ],
             ),
           ),
-          if (_revealed && tip != null) ...[
+          if (tip != null) ...[
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -3559,16 +3584,24 @@ class _MisconceptionCardState extends State<_MisconceptionCard> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('💡', style: TextStyle(fontSize: 13)),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2.0),
+                    child: Text('💡', style: TextStyle(fontSize: 13)),
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
-                    child: Text(
-                      tip,
+                    child: Text.rich(
+                      TextSpan(children: [
+                        const TextSpan(text: 'Açıklama: ', style: TextStyle(fontWeight: FontWeight.w800)),
+                        TextSpan(text: tip),
+                      ]),
                       style: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF7B5800),
-                        fontStyle: FontStyle.italic,
+                        fontSize: 13.5,
+                        color: Color(0xFF4E342E),
+                        fontWeight: FontWeight.w500,
+                        height: 1.3,
                       ),
                     ),
                   ),

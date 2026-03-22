@@ -4,6 +4,7 @@ import 'package:egitim_uygulamasi/features/test/presentation/views/questions_scr
 import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v11/main.dart'
     as lesson_v11;
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_copy_button.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -34,6 +35,7 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
   bool _loading = true;
   String? _errorMessage;
   List<Map<String, dynamic>> _topics = const [];
+  List<Map<String, dynamic>> _allCurriculumTopics = const [];
   bool _isAdmin = false;
 
   late final AnimationController _animController;
@@ -113,10 +115,30 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
         }
       }
 
+      final allTopics =
+          topicMap.values.map((data) {
+            final outcomes = (data['outcomes'] as Set<String>).toList()..sort();
+            final outcomeIds = (data['outcome_ids'] as Set<int>).toList()
+              ..sort();
+            final map = Map<String, dynamic>.from(data);
+            map['outcomes'] = outcomes;
+            map['outcome_ids'] = outcomeIds;
+            return map;
+          }).toList()
+            ..sort((a, b) {
+              final unitCompare = ((a['unit_title'] as String?) ?? '')
+                  .compareTo((b['unit_title'] as String?) ?? '');
+              if (unitCompare != 0) return unitCompare;
+              return ((a['topic_title'] as String?) ?? '').compareTo(
+                (b['topic_title'] as String?) ?? '',
+              );
+            });
+
       if (topicMap.isEmpty) {
         if (!mounted) return;
         setState(() {
           _topics = const [];
+          _allCurriculumTopics = const [];
           _errorMessage = null;
           _loading = false;
           _isAdmin = isAdmin;
@@ -135,32 +157,14 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
           .whereType<int>()
           .toSet();
 
-      final topics =
-          topicMap.entries
-              .where((entry) => publishedTopicIds.contains(entry.key))
-              .map((entry) {
-                final data = Map<String, dynamic>.from(entry.value);
-                final outcomes = (data['outcomes'] as Set<String>).toList()
-                  ..sort();
-                final outcomeIds = (data['outcome_ids'] as Set<int>).toList()
-                  ..sort();
-                data['outcomes'] = outcomes;
-                data['outcome_ids'] = outcomeIds;
-                return data;
-              })
-              .toList()
-            ..sort((a, b) {
-              final unitCompare = ((a['unit_title'] as String?) ?? '')
-                  .compareTo((b['unit_title'] as String?) ?? '');
-              if (unitCompare != 0) return unitCompare;
-              return ((a['topic_title'] as String?) ?? '').compareTo(
-                (b['topic_title'] as String?) ?? '',
-              );
-            });
+      final topics = allTopics
+          .where((t) => publishedTopicIds.contains(t['topic_id']))
+          .toList();
 
       if (!mounted) return;
       setState(() {
         _topics = topics;
+        _allCurriculumTopics = allTopics;
         _errorMessage = null;
         _loading = false;
         _isAdmin = isAdmin;
@@ -392,6 +396,9 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
                   );
                 },
                 onOpenAdmin: _openAdminContentAddition,
+                gradeName: widget.gradeName,
+                lessonName: widget.lessonName,
+                allCurriculumTopics: _allCurriculumTopics,
               ),
             )
           else ...[
@@ -423,6 +430,9 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
                     onShowContent: () => _openTopic(topic),
                     onStartQuestions: () => _startTopicQuestions(topic),
                     controller: _animController,
+                    gradeName: widget.gradeName,
+                    lessonName: widget.lessonName,
+                    isAdmin: _isAdmin,
                   );
                 },
               ),
@@ -632,6 +642,9 @@ class _EmptyState extends StatelessWidget {
     required this.isAdmin,
     required this.onOpenClassic,
     required this.onOpenAdmin,
+    required this.gradeName,
+    required this.lessonName,
+    required this.allCurriculumTopics,
   });
 
   final ColorScheme colorScheme;
@@ -640,6 +653,9 @@ class _EmptyState extends StatelessWidget {
   final bool isAdmin;
   final VoidCallback onOpenClassic;
   final VoidCallback onOpenAdmin;
+  final String gradeName;
+  final String lessonName;
+  final List<Map<String, dynamic>> allCurriculumTopics;
 
   @override
   Widget build(BuildContext context) {
@@ -717,6 +733,59 @@ class _EmptyState extends StatelessWidget {
           ),
           if (isAdmin) ...[
             const SizedBox(height: 10),
+            if (allCurriculumTopics.isNotEmpty) ...[
+              for (final topic in allCurriculumTopics) ...[
+                if (allCurriculumTopics.length > 1)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6, top: 4),
+                    child: Text(
+                      topic['topic_title'] ?? '',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: AdminCopyButton(
+                        gradeName: gradeName,
+                        lessonName: lessonName,
+                        unitTitle: topic['unit_title'] ?? '',
+                        topicTitle: topic['topic_title'] ?? '',
+                        outcomes:
+                            (topic['outcomes'] as List)
+                                .map((e) => {'description': e})
+                                .toList(),
+                        promptType: AdminPromptType.contentV2,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: AdminCopyButton(
+                        gradeName: gradeName,
+                        lessonName: lessonName,
+                        unitTitle: topic['unit_title'] ?? '',
+                        topicTitle: topic['topic_title'] ?? '',
+                        outcomes:
+                            (topic['outcomes'] as List)
+                                .map((e) => {'description': e})
+                                .toList(),
+                        promptType: AdminPromptType.questions,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+              Divider(
+                height: 24,
+                color: colorScheme.outlineVariant.withOpacity(0.5),
+              ),
+            ],
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
@@ -744,6 +813,9 @@ class _AnimatedTopicCard extends StatelessWidget {
     required this.onShowContent,
     required this.onStartQuestions,
     required this.controller,
+    required this.gradeName,
+    required this.lessonName,
+    required this.isAdmin,
   });
 
   final Map<String, dynamic> topic;
@@ -753,6 +825,9 @@ class _AnimatedTopicCard extends StatelessWidget {
   final VoidCallback onShowContent;
   final VoidCallback onStartQuestions;
   final AnimationController controller;
+  final String gradeName;
+  final String lessonName;
+  final bool isAdmin;
 
   @override
   Widget build(BuildContext context) {
@@ -794,6 +869,9 @@ class _AnimatedTopicCard extends StatelessWidget {
           onShowContent: onShowContent,
           onStartQuestions: onStartQuestions,
           index: index,
+          gradeName: gradeName,
+          lessonName: lessonName,
+          isAdmin: isAdmin,
         ),
       ),
     );
@@ -810,6 +888,9 @@ class _TopicCard extends StatefulWidget {
     required this.onShowContent,
     required this.onStartQuestions,
     required this.index,
+    required this.gradeName,
+    required this.lessonName,
+    required this.isAdmin,
   });
 
   final String unitTitle;
@@ -820,6 +901,9 @@ class _TopicCard extends StatefulWidget {
   final VoidCallback onShowContent;
   final VoidCallback onStartQuestions;
   final int index;
+  final String gradeName;
+  final String lessonName;
+  final bool isAdmin;
 
   @override
   State<_TopicCard> createState() => _TopicCardState();
@@ -972,40 +1056,58 @@ class _TopicCardState extends State<_TopicCard> {
                             ),
                       ],
 
+                      if (widget.isAdmin) ...[
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: AdminCopyButton(
+                            gradeName: widget.gradeName,
+                            lessonName: widget.lessonName,
+                            unitTitle: widget.unitTitle,
+                            topicTitle: widget.topicTitle,
+                            outcomes: widget.outcomes
+                                .map((e) => {'description': e})
+                                .toList(),
+                            promptType: AdminPromptType.contentV2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: AdminCopyButton(
+                            gradeName: widget.gradeName,
+                            lessonName: widget.lessonName,
+                            unitTitle: widget.unitTitle,
+                            topicTitle: widget.topicTitle,
+                            outcomes: widget.outcomes
+                                .map((e) => {'description': e})
+                                .toList(),
+                            promptType: AdminPromptType.questions,
+                          ),
+                        ),
+                      ],
+
                       // Footer CTA
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 16),
                       Row(
                         children: [
                           Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: widget.onShowContent,
-                              icon: const Icon(
-                                Icons.auto_stories_rounded,
-                                size: 16,
-                              ),
-                              label: const Text('Ders içeriğini göster'),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: colorScheme.primary,
-                                side: BorderSide(
-                                  color: colorScheme.primary.withOpacity(0.24),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 11,
-                                ),
-                              ),
+                            child: _GameLikeButton(
+                              label: 'Ders İçeriği',
+                              icon: Icons.menu_book_rounded,
+                              onTap: widget.onShowContent,
+                              gradientColors: const [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                              shadowColor: const Color(0xFF4F46E5),
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 12),
                           Expanded(
-                            child: FilledButton.icon(
-                              onPressed: widget.onStartQuestions,
-                              icon: const Icon(Icons.quiz_rounded, size: 16),
-                              label: const Text('Soruları çözmeye başla'),
-                              style: FilledButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 11,
-                                ),
-                              ),
+                            child: _GameLikeButton(
+                              label: 'Testi Başlat',
+                              icon: Icons.play_arrow_rounded,
+                              onTap: widget.onStartQuestions,
+                              gradientColors: const [Color(0xFFFF8A65), Color(0xFFFF5722)],
+                              shadowColor: const Color(0xFFFF5722),
                             ),
                           ),
                         ],
@@ -1015,6 +1117,67 @@ class _TopicCardState extends State<_TopicCard> {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GameLikeButton extends StatelessWidget {
+  const _GameLikeButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    required this.gradientColors,
+    required this.shadowColor,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+  final List<Color> gradientColors;
+  final Color shadowColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: gradientColors,
+        ),
+        boxShadow: [
+          BoxShadow(color: shadowColor.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
+                child: Icon(icon, color: Colors.white, size: 16),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
           ),
         ),
       ),

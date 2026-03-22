@@ -2744,19 +2744,19 @@ class _WeekStripBarState extends State<_WeekStripBar> {
         );
         return;
       }
-      final initialWeek = !_didGlobalInitialCentering
-          ? (widget.weekNumbers.contains(widget.actualCurrentWeek)
-                ? widget.actualCurrentWeek
-                : (widget.selectedWeek != null &&
-                      widget.weekNumbers.contains(widget.selectedWeek))
-                ? widget.selectedWeek!
-                : widget.weekNumbers.first)
-          : ((widget.selectedWeek != null &&
-                    widget.weekNumbers.contains(widget.selectedWeek))
-                ? widget.selectedWeek!
-                : widget.weekNumbers.contains(widget.actualCurrentWeek)
-                ? widget.actualCurrentWeek
-                : widget.weekNumbers.first);
+      int initialWeek;
+      final hasValidSelectedWeek =
+          widget.selectedWeek != null && widget.weekNumbers.contains(widget.selectedWeek);
+
+      if (hasValidSelectedWeek) {
+        initialWeek = widget.selectedWeek!;
+      } else if (!_didGlobalInitialCentering &&
+          widget.weekNumbers.contains(widget.actualCurrentWeek)) {
+        initialWeek = widget.actualCurrentWeek;
+      } else {
+        initialWeek = widget.weekNumbers.first;
+      }
+
       _didGlobalInitialCentering = true;
       _didInitialCentering = true;
       _centerWeek(initialWeek, duration: const Duration(milliseconds: 0));
