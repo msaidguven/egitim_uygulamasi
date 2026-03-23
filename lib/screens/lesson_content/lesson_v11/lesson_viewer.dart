@@ -505,14 +505,8 @@ class _LessonPageState extends State<LessonPage> {
     final section = module.sections[sectionIndex];
     final color = _C.get(sectionIndex);
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (_canGoBack) {
-          _handleBackNavigation();
-          return false;
-        }
-        return true;
-      },
+    return PopScope(
+      canPop: true,
       child: Scaffold(
         backgroundColor: _C.bg,
         body: SafeArea(
@@ -523,7 +517,7 @@ class _LessonPageState extends State<LessonPage> {
                 progress: _progress,
                 color: color,
                 canGoBack: true,
-                onBack: _handleBackNavigation,
+                onBack: () => Navigator.maybePop(context),
                 canIncreaseText: _contentTextScale < 3.6,
                 canDecreaseText: _contentTextScale > 0.85,
                 onIncreaseText: _increaseContentTextScale,

@@ -1145,7 +1145,6 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
 
   Widget _buildSkeletonCard(int index) {
     return Container(
-      height: 140,
       decoration: BoxDecoration(
         color: _AppColors.white,
         borderRadius: BorderRadius.circular(16),

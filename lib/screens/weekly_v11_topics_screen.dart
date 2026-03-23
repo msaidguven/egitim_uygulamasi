@@ -147,7 +147,7 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
       }
 
       final allOutcomeIds = topicMap.values
-          .expand((t) => t['outcome_ids'] as List<int>)
+          .expand((t) => t['outcome_ids'] as Set<int>)
           .toList();
 
       final publishedRows = await _client
