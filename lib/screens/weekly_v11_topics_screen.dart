@@ -161,13 +161,15 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
         return content?['topic_id'] as int?;
       }).whereType<int>().toSet();
 
-      final topics = allTopics
-          .where((t) => publishedTopicIds.contains(t['topic_id']))
-          .toList();
+      final topicsWithFlags = allTopics.map((t) {
+        final result = Map<String, dynamic>.from(t);
+        result['has_published_content'] = publishedTopicIds.contains(t['topic_id']);
+        return result;
+      }).toList();
 
       if (!mounted) return;
       setState(() {
-        _topics = topics;
+        _topics = topicsWithFlags;
         _allCurriculumTopics = allTopics;
         _errorMessage = null;
         _loading = false;
@@ -183,44 +185,64 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
     }
   }
 
-  Future<void> _openAdminContentAddition() async {
+  void _openClassic() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => OutcomesScreenV2(
+          gradeId: widget.gradeId,
+          lessonId: widget.lessonId,
+          gradeName: widget.gradeName,
+          lessonName: widget.lessonName,
+          initialCurriculumWeek: widget.curriculumWeek,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openAdminContentAddition([Map<String, dynamic>? topic]) async {
     int? initialUnitId;
     int? initialTopicId;
 
-    try {
-      final user = _client.auth.currentUser;
-      final response = await _client.rpc(
-        'get_weekly_curriculum',
-        params: {
-          'p_user_id': user?.id,
-          'p_grade_id': widget.gradeId,
-          'p_lesson_id': widget.lessonId,
-          'p_curriculum_week': widget.curriculumWeek,
-          'p_is_admin': true,
-        },
-      );
+    if (topic != null) {
+      initialUnitId = topic['unit_id'] as int?;
+      initialTopicId = topic['topic_id'] as int?;
+    } else {
+      try {
+        final user = _client.auth.currentUser;
+        final response = await _client.rpc(
+          'get_weekly_curriculum',
+          params: {
+            'p_user_id': user?.id,
+            'p_grade_id': widget.gradeId,
+            'p_lesson_id': widget.lessonId,
+            'p_curriculum_week': widget.curriculumWeek,
+            'p_is_admin': true,
+          },
+        );
 
-      final rows =
-          (response as List? ?? const [])
-              .whereType<Map>()
-              .map((row) => Map<String, dynamic>.from(row))
-              .where((row) => row['unit_id'] is int && row['topic_id'] is int)
-              .toList()
-            ..sort((a, b) {
-              final unitCompare = (a['unit_id'] as int).compareTo(
-                b['unit_id'] as int,
-              );
-              if (unitCompare != 0) return unitCompare;
-              return (a['topic_id'] as int).compareTo(b['topic_id'] as int);
-            });
+        final rows =
+            (response as List? ?? const [])
+                .whereType<Map>()
+                .map((row) => Map<String, dynamic>.from(row))
+                .where((row) => row['unit_id'] is int && row['topic_id'] is int)
+                .toList()
+              ..sort((a, b) {
+                final unitCompare = (a['unit_id'] as int).compareTo(
+                  b['unit_id'] as int,
+                );
+                if (unitCompare != 0) return unitCompare;
+                return (a['topic_id'] as int).compareTo(b['topic_id'] as int);
+              });
 
-      if (rows.isNotEmpty) {
-        initialUnitId = rows.first['unit_id'] as int?;
-        initialTopicId = rows.first['topic_id'] as int?;
+        if (rows.isNotEmpty) {
+          initialUnitId = rows.first['unit_id'] as int?;
+          initialTopicId = rows.first['topic_id'] as int?;
+        }
+      } catch (_) {
+        initialUnitId = null;
+        initialTopicId = null;
       }
-    } catch (_) {
-      initialUnitId = null;
-      initialTopicId = null;
     }
 
     if (!mounted) return;
@@ -390,20 +412,7 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
                 theme: theme,
                 curriculumWeek: widget.curriculumWeek,
                 isAdmin: _isAdmin,
-                onOpenClassic: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => OutcomesScreenV2(
-                        gradeId: widget.gradeId,
-                        lessonId: widget.lessonId,
-                        gradeName: widget.gradeName,
-                        lessonName: widget.lessonName,
-                        initialCurriculumWeek: widget.curriculumWeek,
-                      ),
-                    ),
-                  );
-                },
+                onOpenClassic: _openClassic,
                 onOpenAdmin: _openAdminContentAddition,
                 gradeName: widget.gradeName,
                 lessonName: widget.lessonName,
@@ -442,7 +451,8 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
                     gradeName: widget.gradeName,
                     lessonName: widget.lessonName,
                     isAdmin: _isAdmin,
-                    onOpenAdmin: _openAdminContentAddition,
+                    onOpenAdmin: () => _openAdminContentAddition(topic),
+                    onOpenClassic: _openClassic,
                   );
                 },
               ),
@@ -662,7 +672,7 @@ class _EmptyState extends StatelessWidget {
   final int curriculumWeek;
   final bool isAdmin;
   final VoidCallback onOpenClassic;
-  final VoidCallback onOpenAdmin;
+  final void Function([Map<String, dynamic>?]) onOpenAdmin;
   final String gradeName;
   final String lessonName;
   final List<Map<String, dynamic>> allCurriculumTopics;
@@ -742,66 +752,13 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
           if (isAdmin) ...[
-            const SizedBox(height: 10),
-            if (allCurriculumTopics.isNotEmpty) ...[
-              for (final topic in allCurriculumTopics) ...[
-                if (allCurriculumTopics.length > 1)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 6, top: 4),
-                    child: Text(
-                      topic['topic_title'] ?? '',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AdminCopyButton(
-                        gradeName: gradeName,
-                        lessonName: lessonName,
-                        unitTitle: topic['unit_title'] ?? '',
-                        topicTitle: topic['topic_title'] ?? '',
-                        outcomes:
-                            (topic['outcomes'] as List)
-                                .map((e) => {'description': e})
-                                .toList(),
-                        promptType: AdminPromptType.contentV2,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: AdminCopyButton(
-                        gradeName: gradeName,
-                        lessonName: lessonName,
-                        unitTitle: topic['unit_title'] ?? '',
-                        topicTitle: topic['topic_title'] ?? '',
-                        outcomes:
-                            (topic['outcomes'] as List)
-                                .map((e) => {'description': e})
-                                .toList(),
-                        promptType: AdminPromptType.questions,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-              ],
-              Divider(
-                height: 24,
-                color: colorScheme.outlineVariant.withOpacity(0.5),
-              ),
-            ],
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                onPressed: onOpenAdmin,
+                onPressed: () => onOpenAdmin(null),
                 icon: const Icon(Icons.admin_panel_settings_rounded, size: 18),
-                label: const Text('Yönetici içerik ekle'),
+                label: const Text('Haftaya Yeni İçerik Ekle'),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 13),
                 ),
@@ -827,6 +784,7 @@ class _AnimatedTopicCard extends StatelessWidget {
     required this.lessonName,
     required this.isAdmin,
     required this.onOpenAdmin,
+    required this.onOpenClassic,
   });
 
   final Map<String, dynamic> topic;
@@ -840,6 +798,7 @@ class _AnimatedTopicCard extends StatelessWidget {
   final String lessonName;
   final bool isAdmin;
   final VoidCallback onOpenAdmin;
+  final VoidCallback onOpenClassic;
 
   @override
   Widget build(BuildContext context) {
@@ -873,6 +832,7 @@ class _AnimatedTopicCard extends StatelessWidget {
       child: SlideTransition(
         position: slideAnim,
         child: _TopicCard(
+          topic: topic,
           unitTitle: unitTitle,
           topicTitle: topicTitle,
           outcomes: outcomes,
@@ -885,6 +845,7 @@ class _AnimatedTopicCard extends StatelessWidget {
           lessonName: lessonName,
           isAdmin: isAdmin,
           onOpenAdmin: onOpenAdmin,
+          onOpenClassic: onOpenClassic,
         ),
       ),
     );
@@ -893,6 +854,7 @@ class _AnimatedTopicCard extends StatelessWidget {
 
 class _TopicCard extends StatefulWidget {
   const _TopicCard({
+    required this.topic,
     required this.unitTitle,
     required this.topicTitle,
     required this.outcomes,
@@ -905,8 +867,10 @@ class _TopicCard extends StatefulWidget {
     required this.lessonName,
     required this.isAdmin,
     required this.onOpenAdmin,
+    required this.onOpenClassic,
   });
 
+  final Map<String, dynamic> topic;
   final String unitTitle;
   final String topicTitle;
   final List<String> outcomes;
@@ -919,6 +883,7 @@ class _TopicCard extends StatefulWidget {
   final String lessonName;
   final bool isAdmin;
   final VoidCallback onOpenAdmin;
+  final VoidCallback onOpenClassic;
 
   @override
   State<_TopicCard> createState() => _TopicCardState();
@@ -934,11 +899,17 @@ class _TopicCardState extends State<_TopicCard> {
     // Subtle per-card accent from primary with slight hue rotation feel
     final accentOpacity = widget.index.isEven ? 0.07 : 0.04;
 
+    final bool isPublished = widget.topic['has_published_content'] == true;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) {
         setState(() => _pressed = false);
-        widget.onShowContent();
+        if (isPublished) {
+          widget.onShowContent();
+        } else {
+          widget.onOpenClassic();
+        }
       },
       onTapCancel: () => setState(() => _pressed = false),
       child: AnimatedScale(
@@ -985,6 +956,84 @@ class _TopicCardState extends State<_TopicCard> {
                     ),
                   ),
                 ),
+                // Admin Actions Menu
+                if (widget.isAdmin)
+                  Positioned(
+                    top: 6,
+                    right: 6,
+                    child: PopupMenuButton<String>(
+                      icon: Icon(
+                        Icons.more_vert_rounded,
+                        size: 20,
+                        color: colorScheme.onSurface.withOpacity(0.4),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      onSelected: (value) async {
+                        final outcomes = widget.outcomes
+                            .map((e) => {'description': e})
+                            .toList();
+
+                        if (value == 'promptV2') {
+                          await AdminCopyButton.copyPrompt(
+                            context,
+                            gradeName: widget.gradeName,
+                            lessonName: widget.lessonName,
+                            unitTitle: widget.unitTitle,
+                            topicTitle: widget.topicTitle,
+                            outcomes: outcomes,
+                            promptType: AdminPromptType.contentV2,
+                          );
+                        } else if (value == 'promptQuestions') {
+                          await AdminCopyButton.copyPrompt(
+                            context,
+                            gradeName: widget.gradeName,
+                            lessonName: widget.lessonName,
+                            unitTitle: widget.unitTitle,
+                            topicTitle: widget.topicTitle,
+                            outcomes: outcomes,
+                            promptType: AdminPromptType.questions,
+                          );
+                        } else if (value == 'addContent') {
+                          widget.onOpenAdmin();
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'promptV2',
+                          child: ListTile(
+                            leading: Icon(Icons.data_object_rounded, size: 18),
+                            title: Text('İçerik Promptu V2', style: TextStyle(fontSize: 13)),
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'promptQuestions',
+                          child: ListTile(
+                            leading: Icon(Icons.quiz_outlined, size: 18),
+                            title: Text('Soru Promptu', style: TextStyle(fontSize: 13)),
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        const PopupMenuDivider(),
+                        const PopupMenuItem(
+                          value: 'addContent',
+                          child: ListTile(
+                            leading: Icon(Icons.admin_panel_settings_rounded, size: 18, color: Colors.blue),
+                            title: Text(
+                              'Yönetici İçerik Ekle',
+                              style: TextStyle(fontSize: 13, color: Colors.blue, fontWeight: FontWeight.bold),
+                            ),
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 // Content
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
@@ -1034,7 +1083,6 @@ class _TopicCardState extends State<_TopicCard> {
                       if (widget.outcomes.isNotEmpty) ...[
                         const SizedBox(height: 10),
                         ...widget.outcomes
-                            .take(3)
                             .map(
                               (o) => Padding(
                                 padding: const EdgeInsets.only(bottom: 4),
@@ -1071,74 +1119,71 @@ class _TopicCardState extends State<_TopicCard> {
                             ),
                       ],
 
-                      if (widget.isAdmin) ...[
+
+
+                      // Footer CTA
+                      const SizedBox(height: 16),
+                      if (isPublished) ...[
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _GameLikeButton(
+                                label: 'Ders İçeriği',
+                                icon: Icons.menu_book_rounded,
+                                onTap: widget.onShowContent,
+                                gradientColors: const [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                                shadowColor: const Color(0xFF4F46E5),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _GameLikeButton(
+                                label: 'Testi Başlat',
+                                icon: Icons.play_arrow_rounded,
+                                onTap: widget.onStartQuestions,
+                                gradientColors: const [Color(0xFFFF8A65), Color(0xFFFF5722)],
+                                shadowColor: const Color(0xFFFF5722),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ] else ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.info_outline_rounded, size: 16, color: colorScheme.onSurfaceVariant),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Bu konu için V11 içerikleri henüz eklenmemiş.',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
-                          child: AdminCopyButton(
-                            gradeName: widget.gradeName,
-                            lessonName: widget.lessonName,
-                            unitTitle: widget.unitTitle,
-                            topicTitle: widget.topicTitle,
-                            outcomes: widget.outcomes
-                                .map((e) => {'description': e})
-                                .toList(),
-                            promptType: AdminPromptType.contentV2,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: double.infinity,
-                          child: AdminCopyButton(
-                            gradeName: widget.gradeName,
-                            lessonName: widget.lessonName,
-                            unitTitle: widget.unitTitle,
-                            topicTitle: widget.topicTitle,
-                            outcomes: widget.outcomes
-                                .map((e) => {'description': e})
-                                .toList(),
-                            promptType: AdminPromptType.questions,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton.icon(
-                            onPressed: widget.onOpenAdmin,
-                            icon: const Icon(Icons.admin_panel_settings_rounded, size: 18),
-                            label: const Text('Yönetici içerik ekle'),
-                            style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 13),
+                          child: OutlinedButton.icon(
+                            onPressed: widget.onOpenClassic,
+                            icon: const Icon(Icons.history_rounded, size: 18),
+                            label: const Text('Klasik Versiyonu Aç'),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              side: BorderSide(color: colorScheme.outline.withOpacity(0.5)),
                             ),
                           ),
                         ),
                       ],
-
-                      // Footer CTA
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _GameLikeButton(
-                              label: 'Ders İçeriği',
-                              icon: Icons.menu_book_rounded,
-                              onTap: widget.onShowContent,
-                              gradientColors: const [Color(0xFF6366F1), Color(0xFF4F46E5)],
-                              shadowColor: const Color(0xFF4F46E5),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _GameLikeButton(
-                              label: 'Testi Başlat',
-                              icon: Icons.play_arrow_rounded,
-                              onTap: widget.onStartQuestions,
-                              gradientColors: const [Color(0xFFFF8A65), Color(0xFFFF5722)],
-                              shadowColor: const Color(0xFFFF5722),
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),

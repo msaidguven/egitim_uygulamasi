@@ -7,7 +7,6 @@ import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v11/main.dart'
     as lesson_v11;
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
-import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v12/lesson_viewer.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 import 'package:egitim_uygulamasi/screens/weekly_v11_topics_screen.dart';
 
@@ -485,7 +484,7 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
       surfaceTintColor: Colors.transparent,
       leading: _buildBackButton(),
       title: _buildAppBarTitle(),
-      actions: [_buildRefreshButton(), const SizedBox(width: 8), _buildAvatarMenu(), const SizedBox(width: 8)],
+      actions: [_buildRefreshButton(), const SizedBox(width: 8)],
       bottom: _buildAppBarBottom(),
     );
   }
@@ -581,35 +580,7 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
     );
   }
 
-  Widget _buildAvatarMenu() {
-    return PopupMenuButton<String>(
-      offset: const Offset(0, 45),
-      icon: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: _AppColors.slate100,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: const Icon(Icons.account_circle_rounded,
-            color: _AppColors.slate500, size: 20),
-      ),
-      onSelected: (value) {
-        if (value == 'v12') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const LessonV12Preview()),
-          );
-        }
-      },
-      itemBuilder: (context) => [
-        const PopupMenuItem(
-          value: 'v12',
-          child: Text('Lesson Preview v12'),
-        ),
-      ],
-    );
-  }
+
   
   PreferredSizeWidget _buildAppBarBottom() {
     return PreferredSize(
@@ -942,33 +913,20 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
   }
 
   Widget _buildUnitsList() {
+    if (_weeks.isEmpty) return const SizedBox.shrink();
+    
     final selectedWeek = _weeks[_selectedWeekIndex];
 
-    return Column(
-      children: [
-        _buildWeekHeader(selectedWeek),
-        Expanded(
-          child: AnimatedSwitcher(
-            duration: _AppDurations.normal,
-            transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0.04, 0),
-                    end: Offset.zero,
-                  ).animate(CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutCubic,
-                  )),
-                  child: child,
-                ),
-              );
-            },
-            child: _buildWeekContent(selectedWeek),
-          ),
-        ),
-      ],
+    return AnimatedSwitcher(
+      duration: _AppDurations.normal,
+      child: WeeklyV11TopicsScreen(
+        key: ValueKey<int>(selectedWeek.curriculumWeek),
+        gradeId: widget.gradeId,
+        lessonId: widget.lessonId,
+        gradeName: _gradeName,
+        lessonName: widget.lessonName,
+        curriculumWeek: selectedWeek.curriculumWeek,
+      ),
     );
   }
   
