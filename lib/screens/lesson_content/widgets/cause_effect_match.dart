@@ -22,7 +22,7 @@ class CauseEffectMatchStep extends StatefulWidget {
 }
 
 class _CauseEffectMatchStepState extends State<CauseEffectMatchStep> {
-  final Map<String, String> _assignments = {};
+  final Map<int, String> _assignments = {};
   int _wrongAttempts = 0;
   String? _hint;
 
@@ -40,20 +40,31 @@ class _CauseEffectMatchStepState extends State<CauseEffectMatchStep> {
       _pairs.map((e) => e['effect']?.toString() ?? '').toList();
 
   void _check() {
-    var ok = true;
-    for (final pair in _pairs) {
-      final effect = pair['effect']?.toString() ?? '';
-      final cause = pair['cause']?.toString() ?? '';
-      if (_assignments[effect] != cause) {
+    if (_assignments.length != _pairs.length) {
+      _applyWrong();
+      return;
+    }
+
+    final expectedList = _pairs.map((p) => '${p['effect']?.toString()}|||${p['cause']?.toString()}').toList()..sort();
+    final actualList = _assignments.entries.map((e) => '${_effects[e.key]}|||${e.value}').toList()..sort();
+
+    bool ok = true;
+    for (int i = 0; i < expectedList.length; i++) {
+      if (expectedList[i] != actualList[i]) {
         ok = false;
         break;
       }
     }
+
     if (ok) {
       widget.onSolved(_wrongAttempts);
       return;
     }
 
+    _applyWrong();
+  }
+
+  void _applyWrong() {
     final hints =
         (widget.step['hints'] as List?)?.map((e) => e.toString()).toList() ??
         const <String>[];
@@ -116,19 +127,20 @@ class _CauseEffectMatchStepState extends State<CauseEffectMatchStep> {
           const SizedBox(height: 14),
           const Text('Sonuc alanlari'),
           const SizedBox(height: 8),
-          for (final effect in _effects)
+          for (int i = 0; i < _effects.length; i++)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: DragTarget<String>(
                 onAcceptWithDetails: widget.isActive
                     ? (details) {
                         setState(() {
-                          _assignments[effect] = details.data;
+                          _assignments[i] = details.data;
                         });
                       }
                     : null,
                 builder: (context, candidateData, rejectedData) {
-                  final selected = _assignments[effect];
+                  final effect = _effects[i];
+                  final selected = _assignments[i];
                   return Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),

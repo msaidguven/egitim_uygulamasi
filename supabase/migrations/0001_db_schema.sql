@@ -285,6 +285,14 @@ CREATE TABLE public.topic_content_outcomes (
   CONSTRAINT topic_content_outcomes_topic_content_id_fkey FOREIGN KEY (topic_content_id) REFERENCES public.topic_contents(id),
   CONSTRAINT topic_content_outcomes_outcome_id_fkey FOREIGN KEY (outcome_id) REFERENCES public.outcomes(id)
 );
+CREATE TABLE public.topic_content_outcomes_v11 (
+  topic_content_v11_id bigint NOT NULL,
+  outcome_id bigint NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT topic_content_outcomes_v11_pkey PRIMARY KEY (topic_content_v11_id, outcome_id),
+  CONSTRAINT topic_content_outcomes_v11_topic_content_id_fkey FOREIGN KEY (topic_content_v11_id) REFERENCES public.topic_contents_v11(id),
+  CONSTRAINT topic_content_outcomes_v11_outcome_id_fkey FOREIGN KEY (outcome_id) REFERENCES public.outcomes(id)
+);
 CREATE TABLE public.topic_content_weeks (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   topic_content_id bigint NOT NULL,
@@ -303,6 +311,21 @@ CREATE TABLE public.topic_contents (
   is_published boolean NOT NULL DEFAULT false,
   CONSTRAINT topic_contents_pkey PRIMARY KEY (id),
   CONSTRAINT fk_tc_topic FOREIGN KEY (topic_id) REFERENCES public.topics(id)
+);
+CREATE TABLE public.topic_contents_v11 (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  topic_id bigint NOT NULL,
+  version_no integer NOT NULL DEFAULT 1 CHECK (version_no >= 1),
+  title text,
+  payload jsonb NOT NULL,
+  source text NOT NULL DEFAULT 'lesson_v11_ai'::text,
+  is_published boolean NOT NULL DEFAULT false,
+  created_by uuid,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT topic_contents_v11_pkey PRIMARY KEY (id),
+  CONSTRAINT topic_contents_v11_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES public.topics(id),
+  CONSTRAINT topic_contents_v11_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.profiles(id)
 );
 CREATE TABLE public.topics (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,

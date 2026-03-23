@@ -146,16 +146,20 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
         return;
       }
 
-      final publishedRows = await _client
-          .from('topic_contents_v11')
-          .select('topic_id, version_no')
-          .eq('is_published', true)
-          .inFilter('topic_id', topicMap.keys.toList());
+      final allOutcomeIds = topicMap.values
+          .expand((t) => t['outcome_ids'] as List<int>)
+          .toList();
 
-      final publishedTopicIds = (publishedRows as List)
-          .map((row) => (row as Map<String, dynamic>)['topic_id'] as int?)
-          .whereType<int>()
-          .toSet();
+      final publishedRows = await _client
+          .from('topic_content_outcomes_v11')
+          .select('outcome_id, topic_contents_v11!inner(topic_id, is_published)')
+          .inFilter('outcome_id', allOutcomeIds)
+          .eq('topic_contents_v11.is_published', true);
+
+      final publishedTopicIds = (publishedRows as List).map((row) {
+        final content = row['topic_contents_v11'] as Map<String, dynamic>?;
+        return content?['topic_id'] as int?;
+      }).whereType<int>().toSet();
 
       final topics = allTopics
           .where((t) => publishedTopicIds.contains(t['topic_id']))
@@ -239,12 +243,17 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
     if (topicId == null) {
       return;
     }
+    final outcomeIds = (topic['outcome_ids'] as List?)?.whereType<int>().toList() ?? [];
 
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) =>
-            lesson_v11.LessonPage(topicId: topicId, useAssetFallback: false),
+            lesson_v11.LessonPage(
+              topicId: topicId,
+              outcomeIds: outcomeIds,
+              useAssetFallback: false,
+            ),
       ),
     );
   }
@@ -433,6 +442,7 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
                     gradeName: widget.gradeName,
                     lessonName: widget.lessonName,
                     isAdmin: _isAdmin,
+                    onOpenAdmin: _openAdminContentAddition,
                   );
                 },
               ),
@@ -816,6 +826,7 @@ class _AnimatedTopicCard extends StatelessWidget {
     required this.gradeName,
     required this.lessonName,
     required this.isAdmin,
+    required this.onOpenAdmin,
   });
 
   final Map<String, dynamic> topic;
@@ -828,6 +839,7 @@ class _AnimatedTopicCard extends StatelessWidget {
   final String gradeName;
   final String lessonName;
   final bool isAdmin;
+  final VoidCallback onOpenAdmin;
 
   @override
   Widget build(BuildContext context) {
@@ -872,6 +884,7 @@ class _AnimatedTopicCard extends StatelessWidget {
           gradeName: gradeName,
           lessonName: lessonName,
           isAdmin: isAdmin,
+          onOpenAdmin: onOpenAdmin,
         ),
       ),
     );
@@ -891,6 +904,7 @@ class _TopicCard extends StatefulWidget {
     required this.gradeName,
     required this.lessonName,
     required this.isAdmin,
+    required this.onOpenAdmin,
   });
 
   final String unitTitle;
@@ -904,6 +918,7 @@ class _TopicCard extends StatefulWidget {
   final String gradeName;
   final String lessonName;
   final bool isAdmin;
+  final VoidCallback onOpenAdmin;
 
   @override
   State<_TopicCard> createState() => _TopicCardState();
@@ -1083,6 +1098,18 @@ class _TopicCardState extends State<_TopicCard> {
                                 .map((e) => {'description': e})
                                 .toList(),
                             promptType: AdminPromptType.questions,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: widget.onOpenAdmin,
+                            icon: const Icon(Icons.admin_panel_settings_rounded, size: 18),
+                            label: const Text('Yönetici içerik ekle'),
+                            style: FilledButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 13),
+                            ),
                           ),
                         ),
                       ],

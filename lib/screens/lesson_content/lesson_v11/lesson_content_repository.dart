@@ -51,13 +51,22 @@ class LessonV11ContentRepository {
   final SupabaseClient _client;
 
   Future<LessonV11ContentRecord?> fetchLatestPublishedContentForTopic(
-    int topicId,
-  ) async {
-    final response = await _client
-        .from('topic_contents_v11')
-        .select('id, topic_id, version_no, is_published, payload')
-        .eq('topic_id', topicId)
-        .eq('is_published', true)
+    int topicId, {
+    List<int>? outcomeIds,
+  }) async {
+    var query = _client.from('topic_contents_v11').select(
+      outcomeIds != null && outcomeIds.isNotEmpty
+          ? 'id, topic_id, version_no, is_published, payload, topic_content_outcomes_v11!inner(outcome_id)'
+          : 'id, topic_id, version_no, is_published, payload',
+    );
+
+    query = query.eq('topic_id', topicId).eq('is_published', true);
+
+    if (outcomeIds != null && outcomeIds.isNotEmpty) {
+      query = query.inFilter('topic_content_outcomes_v11.outcome_id', outcomeIds);
+    }
+
+    final response = await query
         .order('version_no', ascending: false)
         .limit(1)
         .maybeSingle();

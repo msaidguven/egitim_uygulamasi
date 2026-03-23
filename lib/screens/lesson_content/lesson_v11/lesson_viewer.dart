@@ -151,7 +151,15 @@ class LessonPage extends StatefulWidget {
   final String? jsonString;
   final String? assetPath;
   final int? topicId;
-  const LessonPage({super.key, this.jsonString, this.assetPath, this.topicId});
+  final List<int>? outcomeIds;
+  
+  const LessonPage({
+    super.key,
+    this.jsonString,
+    this.assetPath,
+    this.topicId,
+    this.outcomeIds,
+  });
 
   @override
   State<LessonPage> createState() => _LessonPageState();
@@ -218,6 +226,7 @@ class _LessonPageState extends State<LessonPage> {
       } else if (widget.topicId != null) {
         final dbContent = await _repository.fetchLatestPublishedContentForTopic(
           widget.topicId!,
+          outcomeIds: widget.outcomeIds,
         );
         if (dbContent != null) {
           _loadedContent = dbContent;
@@ -535,6 +544,15 @@ class _LessonPageState extends State<LessonPage> {
                       )
                     : null,
               ),
+              _StepChipBar(
+                sections: module.sections,
+                current: sectionIndex,
+                onTap: (idx) {
+                  if (idx != sectionIndex) {
+                     setState(() => _history.add(_ScreenKey(idx, _ScreenType.content)));
+                  }
+                },
+              ),
               Expanded(
                 child: MediaQuery(
                   data: MediaQuery.of(
@@ -578,6 +596,15 @@ class _LessonPageState extends State<LessonPage> {
               ),
             ],
           ),
+        ),
+        drawer: _LessonDrawer(
+          module: module,
+          currentSection: sectionIndex,
+          onSelect: (idx) {
+            if (idx != sectionIndex) {
+              setState(() => _history.add(_ScreenKey(idx, _ScreenType.content)));
+            }
+          },
         ),
       ),
     );
@@ -725,6 +752,87 @@ class _TopBar extends StatelessWidget {
   }
 }
 
+class _StepChipBar extends StatelessWidget {
+  final List<LessonSection> sections;
+  final int current;
+  final ValueChanged<int> onTap;
+
+  const _StepChipBar({
+    super.key,
+    required this.sections,
+    required this.current,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 48,
+      color: Colors.white,
+      child: Row(
+        children: [
+          const SizedBox(width: 8),
+          Builder(
+            builder: (ctx) => IconButton(
+              icon: const Icon(Icons.menu_rounded, size: 24),
+              color: const Color(0xFF374151),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+              onPressed: () => Scaffold.of(ctx).openDrawer(),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 8, right: 16, top: 8, bottom: 8),
+              itemCount: sections.length,
+              itemBuilder: (_, i) {
+                final active = i == current;
+          final color = _C.get(i);
+          final section = sections[i];
+          final icon = section.icon.isNotEmpty ? section.icon : '📌';
+          return GestureDetector(
+            onTap: () => onTap(i),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: active ? color : color.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: active ? color : color.withOpacity(0.2),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    icon,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${i + 1}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: active ? FontWeight.bold : FontWeight.w600,
+                      color: active ? Colors.white : color.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _LessonAdminMenu extends StatelessWidget {
   const _LessonAdminMenu({
     required this.onCopyPrompt,
@@ -846,6 +954,94 @@ class _LessonAdminMenu extends StatelessWidget {
   }
 }
 
+class _LessonDrawer extends StatelessWidget {
+  final LessonModule module;
+  final int currentSection;
+  final ValueChanged<int> onSelect;
+
+  const _LessonDrawer({
+    super.key,
+    required this.module,
+    required this.currentSection,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(color: Color(0xFF6C63FF)),
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    module.title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '${module.gradeLevel} · ${module.subject}',
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: module.sections.length,
+              itemBuilder: (_, i) {
+                final s = module.sections[i];
+                final color = _C.get(i);
+                final active = i == currentSection;
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: active ? color : color.withOpacity(0.15),
+                    radius: 16,
+                    child: Text(
+                      s.icon.isNotEmpty ? s.icon : '📌',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  title: Text(
+                    s.title,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: active ? FontWeight.bold : FontWeight.normal,
+                      color: active ? color : const Color(0xFF374151),
+                    ),
+                  ),
+                  selected: active,
+                  selectedTileColor: color.withOpacity(0.05),
+                  onTap: () {
+                    Navigator.pop(context);
+                    onSelect(i);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+ 
 class _HeaderIconButton extends StatelessWidget {
   final IconData icon;
   final Color color;
@@ -2226,12 +2422,12 @@ class _MatchingCardState extends State<_MatchingCard> {
   late List<Map<String, dynamic>> _pairs;
   late List<String> _shuffledRights;
   String? _selectedLeft;
-  String? _selectedRight;
-  // Onaylanmış doğru eşleşmeler: leftId → rightText
-  final Map<String, String> _confirmed = {};
+  int? _selectedRightIdx;
+  // Onaylanmış doğru eşleşmeler: leftId → rightIndex
+  final Map<String, int> _confirmed = {};
   // Anlık yanlış flash için: leftId → true (kırmızı göster)
   final Set<String> _wrongFlash = {};
-  final Set<String> _wrongRightFlash = {};
+  final Set<int> _wrongRightFlash = {};
   int _attempts = 0;
   bool _showHint = false;
   bool _allCorrect = false;
@@ -2245,8 +2441,17 @@ class _MatchingCardState extends State<_MatchingCard> {
       ..shuffle();
     if (widget.done) {
       _allCorrect = true;
+      final usedIndices = <int>{};
       for (final p in _pairs) {
-        _confirmed[p['id']] = p['right'];
+        final id = p['id'] as String;
+        final right = p['right'] as String;
+        for (int i = 0; i < _shuffledRights.length; i++) {
+          if (_shuffledRights[i] == right && !usedIndices.contains(i)) {
+            _confirmed[id] = i;
+            usedIndices.add(i);
+            break;
+          }
+        }
       }
     }
   }
@@ -2255,33 +2460,34 @@ class _MatchingCardState extends State<_MatchingCard> {
     if (_allCorrect || _confirmed.containsKey(pairId)) return;
     setState(() {
       _selectedLeft = _selectedLeft == pairId ? null : pairId;
-      if (_selectedLeft != null && _selectedRight != null) _tryMatch();
+      if (_selectedLeft != null && _selectedRightIdx != null) _tryMatch();
     });
   }
 
-  void _tapRight(String rightText) {
+  void _tapRight(int index) {
     if (_allCorrect) return;
     // Zaten onaylanmış bir sağ değeri tıklanamaz
-    if (_confirmed.values.contains(rightText)) return;
+    if (_confirmed.values.contains(index)) return;
     setState(() {
-      _selectedRight = _selectedRight == rightText ? null : rightText;
-      if (_selectedLeft != null && _selectedRight != null) _tryMatch();
+      _selectedRightIdx = _selectedRightIdx == index ? null : index;
+      if (_selectedLeft != null && _selectedRightIdx != null) _tryMatch();
     });
   }
 
   void _tryMatch() {
     final leftId = _selectedLeft!;
-    final rightText = _selectedRight!;
+    final rightIndex = _selectedRightIdx!;
     _selectedLeft = null;
-    _selectedRight = null;
+    _selectedRightIdx = null;
 
+    final rightText = _shuffledRights[rightIndex];
     final correctRight =
         _pairs.firstWhere((p) => p['id'] == leftId)['right'] as String;
     _attempts++;
 
     if (rightText == correctRight) {
       // Doğru — onayla
-      _confirmed[leftId] = rightText;
+      _confirmed[leftId] = rightIndex;
       if (_confirmed.length == _pairs.length) {
         _allCorrect = true;
         widget.onAnswered();
@@ -2289,13 +2495,13 @@ class _MatchingCardState extends State<_MatchingCard> {
     } else {
       // Yanlış — kırmızı flash, sonra temizle
       _wrongFlash.add(leftId);
-      _wrongRightFlash.add(rightText);
+      _wrongRightFlash.add(rightIndex);
       _showHint = true;
       Future.delayed(const Duration(milliseconds: 800), () {
         if (mounted) {
           setState(() {
             _wrongFlash.remove(leftId);
-            _wrongRightFlash.remove(rightText);
+            _wrongRightFlash.remove(rightIndex);
           });
         }
       });
@@ -2309,10 +2515,10 @@ class _MatchingCardState extends State<_MatchingCard> {
     return const Color(0xFFE5E7EB);
   }
 
-  Color _rightColor(String text) {
-    if (_confirmed.values.contains(text)) return _C.correct;
-    if (_wrongRightFlash.contains(text)) return _C.wrong;
-    if (_selectedRight == text) return widget.color;
+  Color _rightColor(int index) {
+    if (_confirmed.values.contains(index)) return _C.correct;
+    if (_wrongRightFlash.contains(index)) return _C.wrong;
+    if (_selectedRightIdx == index) return widget.color;
     return const Color(0xFFE5E7EB);
   }
 
@@ -2434,11 +2640,13 @@ class _MatchingCardState extends State<_MatchingCard> {
             // Sağ sütun (karıştırılmış)
             Expanded(
               child: Column(
-                children: _shuffledRights.map((right) {
-                  final isConfirmedRight = _confirmed.values.contains(right);
-                  final isActive = _selectedRight == right;
+                children: _shuffledRights.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final right = entry.value;
+                  final isConfirmedRight = _confirmed.values.contains(index);
+                  final isActive = _selectedRightIdx == index;
                   return GestureDetector(
-                    onTap: () => _tapRight(right),
+                    onTap: () => _tapRight(index),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       margin: const EdgeInsets.only(bottom: 8),
@@ -2449,14 +2657,14 @@ class _MatchingCardState extends State<_MatchingCard> {
                       decoration: BoxDecoration(
                         color: isConfirmedRight
                             ? const Color(0xFFECFDF5)
-                            : _wrongRightFlash.contains(right)
+                            : _wrongRightFlash.contains(index)
                             ? const Color(0xFFFFF0F0)
                             : isActive
                             ? widget.color.withOpacity(0.12)
                             : Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: _rightColor(right),
+                          color: _rightColor(index),
                           width: isConfirmedRight ? 2 : 1.5,
                         ),
                       ),
@@ -2467,7 +2675,7 @@ class _MatchingCardState extends State<_MatchingCard> {
                           fontWeight: FontWeight.w600,
                           color: isConfirmedRight
                               ? _C.correct
-                              : _wrongRightFlash.contains(right)
+                              : _wrongRightFlash.contains(index)
                               ? _C.wrong
                               : isActive
                               ? widget.color

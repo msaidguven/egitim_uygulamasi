@@ -7,6 +7,7 @@ import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v11/main.dart'
     as lesson_v11;
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
+import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v12/lesson_viewer.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 import 'package:egitim_uygulamasi/screens/weekly_v11_topics_screen.dart';
 
@@ -484,7 +485,7 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
       surfaceTintColor: Colors.transparent,
       leading: _buildBackButton(),
       title: _buildAppBarTitle(),
-      actions: [_buildRefreshButton()],
+      actions: [_buildRefreshButton(), const SizedBox(width: 8), _buildAvatarMenu(), const SizedBox(width: 8)],
       bottom: _buildAppBarBottom(),
     );
   }
@@ -577,6 +578,36 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
             color: _AppColors.slate500, size: 18),
       ),
       onPressed: _loadData,
+    );
+  }
+
+  Widget _buildAvatarMenu() {
+    return PopupMenuButton<String>(
+      offset: const Offset(0, 45),
+      icon: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: _AppColors.slate100,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Icon(Icons.account_circle_rounded,
+            color: _AppColors.slate500, size: 20),
+      ),
+      onSelected: (value) {
+        if (value == 'v12') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const LessonV12Preview()),
+          );
+        }
+      },
+      itemBuilder: (context) => [
+        const PopupMenuItem(
+          value: 'v12',
+          child: Text('Lesson Preview v12'),
+        ),
+      ],
     );
   }
   
@@ -963,52 +994,48 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
   }
 
   Widget _buildWeekHeader(WeekV3 selectedWeek) {
-    final Color accentColor = selectedWeek.isCompleted
-        ? _AppColors.emerald
-        : selectedWeek.isLocked
-            ? _AppColors.slate400
-            : _AppColors.blue;
+  final Color accentColor = selectedWeek.isCompleted
+      ? _AppColors.emerald
+      : selectedWeek.isLocked
+          ? _AppColors.slate400
+          : _AppColors.blue;
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(_AppSpacing.xl, _AppSpacing.lg, _AppSpacing.xl, _AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: _AppColors.white,
-        border: Border(
-          bottom: BorderSide(
-            color: _AppColors.slate200.withOpacity(0.7),
-          ),
+  return Container(
+    constraints: const BoxConstraints(minHeight: 80), // MIN HEIGHT EKLENDİ
+    padding: const EdgeInsets.fromLTRB(_AppSpacing.xl, _AppSpacing.lg, _AppSpacing.xl, _AppSpacing.lg),
+    decoration: BoxDecoration(
+      color: _AppColors.white,
+      border: Border(
+        bottom: BorderSide(
+          color: _AppColors.slate200.withOpacity(0.7),
         ),
       ),
+    ),
+    child: IntrinsicHeight( // INTRINSIC HEIGHT EKLENDİ
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: _AppSpacing.sm, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: accentColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        '${selectedWeek.curriculumWeek}. HAFTA',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: accentColor,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: _AppSpacing.sm, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: accentColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    '${selectedWeek.curriculumWeek}. HAFTA',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: accentColor,
+                      letterSpacing: 0.8,
                     ),
-                    if (selectedWeek.isCompleted) ...[
-                      const SizedBox(width: _AppSpacing.sm),
-                      const Text('🎉', style: TextStyle(fontSize: 14)),
-                    ],
-                  ],
+                  ),
                 ),
                 const SizedBox(height: _AppSpacing.sm),
                 Text(
@@ -1029,11 +1056,15 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
             ),
           ),
           if (!selectedWeek.isLocked && selectedWeek.units.isNotEmpty)
-            _buildCircularProgress(selectedWeek.progress),
+            Padding(
+              padding: const EdgeInsets.only(left: _AppSpacing.md),
+              child: _buildCircularProgress(selectedWeek.progress),
+            ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildCircularProgress(double progress) {
     return SizedBox(

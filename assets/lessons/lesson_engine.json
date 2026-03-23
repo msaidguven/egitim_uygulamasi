@@ -1,683 +1,1165 @@
 {
-"lesson": {
-"grade": "5. Sınıf",
-"subject": "Fen Bilimleri",
-"unit": "Maddenin Doğası",
-"topic": "FB.5.5.1. Maddenin Tanecikli Yapısı",
-"title": "Maddenin Görünmez Dünyası: Tanecikler",
-"description": "Maddenin en küçük yapı birimlerini, bu birimlerin nasıl hareket ettiğini ve katı, sıvı, gaz hallerindeki düzenlerini keşfedeceğimiz derinlemesine bir yolculuk.",
-"difficulty_level": "orta",
-"learning_objectives": [
-"Maddelerin tanecikli, boşluklu ve hareketli yapısının niteliklerini belirler.",
-"Maddeleri tanecikli, boşluklu ve hareketli yapısına göre ayrıştırır.",
-"Maddeleri tanecikli, boşluklu ve hareketli yapısına göre katı, sıvı ve gaz olarak gruplandırır.",
-"Maddeleri tanecikli, boşluklu ve hareketli yapılarına göre farklı gruplar altında etiketler."
-],
-"keywords": [
-"tanecik",
-"boşluklu yapı",
-"hareketli yapı",
-"titreşim",
-"öteleme",
-"dönme",
-"katı",
-"sıvı",
-"gaz",
-"mikroskobik bakış"
-],
-"steps": [
-{
-"id": "step1",
-"type": "intro",
-"title": "Görünmezin Peşinde",
-"duration_minutes": 10,
-"content": {
-"slides": [
-{
-"type": "hook",
-"text": "Eline aldığın bir taşın veya içtiğin suyun aslında minicik, hareketli toplardan oluştuğunu hiç düşündün mü?"
-},
-{
-"type": "fact",
-"text": "Bütün maddeler, gözle görülemeyecek kadar küçük birimlerden yani taneciklerden (atom/molekül) oluşur."
-},
-{
-"type": "analogy",
-"text": "Bu tıpkı bir kumsalın uzaktan tek parça görünmesi ama yakından binlerce kum tanesinden oluşması gibidir."
-},
-{
-"type": "example",
-"text": "Bir kağıdı ne kadar küçük parçalara bölersen böl, en sonunda kağıt özelliğini taşıyan o en küçük taneciğe ulaşırsın."
-},
-{
-"type": "bridge",
-"text": "Şimdi bu gizemli taneciklerin dünyasına biraz daha yakından bakalım."
-}
-],
-"explanation": "Çevremizdeki tüm maddeler, ister sert bir kaya olsun ister soluduğumuz hava, aslında kesintisiz bir bütün değildir. Maddelerin en küçük yapı taşlarına tanecik adını veriyoruz. Bu tanecikler o kadar küçüktür ki en gelişmiş mikroskoplarla bile onları görmek oldukça zordur. Bu durum tıpkı dijital bir fotoğrafın binlerce küçük pikselden oluşmasına benzer; uzaktan bakınca pürüzsüz bir resim görürüz ama yaklaştıkça kareleri fark ederiz. Maddenin tanecikli yapıda olması, onun sadece parçalı değil, aynı zamanda aralarında boşluklar olan bir yapıda olduğunu da bize anlatır. Bugün bu taneciklerin nasıl davrandığını ve maddenin hallerini nasıl oluşturduğunu birlikte keşfedeceğiz.",
-"key_points": [
-"Tanecikli Yapı: Evrendeki tüm maddeler (katı, sıvı, gaz) bağımsız küçük birimlerden oluşur. (Kazanım a)",
-"Boşluklu Yapı: Tanecikler arasında mutlaka belirli bir miktar boşluk bulunur. (Kazanım a)",
-"Sürekli Hareket: Madde tanecikleri hiçbir zaman durmaz, her zaman bir hareket halindedir. (Kazanım a)",
-"Görünmezlik: Tanecikler o kadar küçüktür ki çıplak gözle fark edilemezler. (Kazanım a)",
-"Madde Kimliği: Her maddenin taneciği kendine özgüdür ve maddenin özelliklerini taşır. (Kazanım b)"
-],
-"examples": [
-"Toz Şeker: Bir kavanoz şekere uzaktan bakınca tek parça görünür ama içine baktığınızda binlerce kristal tanecik görürsünüz.",
-"Parfüm Kokusu: Odanın bir ucunda sıkılan parfümün diğer uca yayılması, gaz taneciklerinin boşluklarda hareket ettiğinin kanıtıdır.",
-"Sünger ve Su: Bir süngerin suyu emmesi, sünger yapısındaki ve suyun içindeki büyük/küçük boşlukların varlığını hissettirir.",
-"Piksel Ekranlar: Bilgisayar ekranındaki her görüntü, binlerce küçük ışık noktasının birleşmesiyle oluşur."
-],
-"real_life_connections": [
-"Önceki Konu Bağlantısı: Maddenin hallerini öğrenmiştik; şimdi bu hallerin iç yapısındaki tanecik sırrını çözüyoruz.",
-"Sonraki Konu Bağlantısı: Bu taneciklerin hareket enerjisi, ileride öğreneceğimiz 'ısı ve sıcaklık' konusunun temelini oluşturur.",
-"Günlük Hayat: Çaya atılan şekerin kaybolması aslında şekerin yok olması değil, su tanecikleri arasındaki boşluklara dağılmasıdır.",
-"Teknoloji: Nanoteknoloji dediğimiz bilim dalı, tam da bu küçük tanecikleri kontrol ederek yeni malzemeler üretir."
-]
-},
-"activities": {
-"discussion_prompts": [
-"Bir bardağı suyla ağzına kadar doldursak, içine bir kaşık şeker eklediğimizde su neden hemen taşmaz?",
-"Neden katıları sıkıştıramıyoruz da gazları kolayca sıkıştırabiliyoruz?",
-"Demir bir çubuk neden akıp gitmezken su akar? Taneciklerin tutunmasıyla ilgisi olabilir mi?"
-]
-},
-"teacher_notes": {
-"teaching_tips": [
-"Sınıfa bir kutu Lego getirin ve büyük bir yapı oluşturun. 'Bu yapı bir madde ise Lego parçaları nedir?' diye sorarak girişi somutlaştırın.",
-"Öğrencilerin 'tanecik' kavramını atom veya hücre ile karıştırmaması için 'maddenin en küçük yapı birimi' vurgusunu yapın.",
-"Sınıfta parfüm veya oda spreyi sıkarak kokunun yayılma süresini gözlemletin, bu süreci 3-4 dakika tartışın."
-],
-"common_misconceptions": [
-"Öğrenciler taneciklerin içinde de başka şeyler (hava gibi) olduğunu sanabilir. Doğrusu: Taneciklerin arası tamamen boşluktur; orada hava bile yoktur.",
-"Maddenin tanecikleri duruyor sanılabilir. Doğrusu: En soğuk maddede bile tanecikler en azından titreşim hareketi yapar."
-],
-"classroom_discussion": [
-"Havayı neden göremiyoruz ama hissedebiliyoruz? (Beklenen: Tanecikler arası boşluk çok fazla ve tanecikler çok küçük olduğu için ışığı engellemiyorlar.)",
-"Maddenin halleri değişince taneciklerin kendisi değişir mi? (Beklenen: Hayır, sadece aralarındaki mesafe ve hareket hızı değişir.)"
-],
-"extension_ideas": [
-"Hızlı bitirenler için: 'Tanecikler arası boşluk olmasaydı dünya nasıl bir yer olurdu?' konulu kısa bir paragraf yazdırın.",
-"Ev deneyi: Bir bardak soğuk ve bir bardak sıcak suya aynı anda mürekkep damlatıp yayılma hızlarını karşılaştırın; hareketli yapıyı gözlemleyin.",
-"Araştırma: 'Gözle görülemeyen bu tanecikleri bilim insanları nasıl keşfetti?' konusunu araştırmalarını isteyin."
-]
-}
-},
-{
-"id": "step2",
-"type": "concept_explanation",
-"title": "Taneciklerin Dansı: Hareket ve Boşluk",
-"duration_minutes": 15,
-"content": {
-"slides": [
-{
-"type": "hook",
-"text": "Madde tanecikleri asla yerinde durmaz! Peki, nasıl hareket ederler?"
-},
-{
-"type": "fact",
-"text": "Tanecikler üç temel hareket yapar: Titreşim (yerinde sallanma), Öteleme (yer değiştirme) ve Dönme."
-},
-{
-"type": "fact",
-"text": "Katılar sadece titreşim yaparken; sıvılar ve gazlar titreşim, öteleme ve dönme hareketlerini bir arada yapar."
-},
-{
-"type": "analogy",
-"text": "Bu tıpkı bir konser alanındaki kalabalık gibidir: Koltukta oturanlar (katı) sadece sallanır, ayaktakiler (sıvı/gaz) birbirine çarparak gezebilir."
-},
-{
-"type": "example",
-"text": "Suya damlatılan boyanın yayılması, su taneciklerinin öteleme hareketi yaparak boyayı her yere taşıması sayesindedir."
-},
-{
-"type": "key",
-"text": "Boşluk azsa hareket kısıtlıdır; boşluk çoksa hareket özgürlüğü artar."
-},
-{
-"type": "bridge",
-"text": "Şimdi defterlerimizi hazırlayalım ve bu hareket türlerini not edelim."
-}
-],
-"explanation": "Maddenin tanecikleri arasındaki boşluk miktarı, o maddenin fiziksel halini ve hareket yeteneğini belirler. Katılarda tanecikler birbirine o kadar yakındır ki birbirlerinin üzerinden kayamazlar; sadece oldukları yerde sağa-sola, yukarı-aşağı 'titreşim' yaparlar. Bu tıpkı yan yana dizilmiş ve el ele tutuşmuş öğrencilerin yerlerinden kımıldamadan sallanmaları gibidir. Sıvılarda ise boşluk biraz daha artar, tanecikler birbirine temas eder ama birbirleri üzerinden kayarak yer değiştirebilirler (öteleme). Gazlarda ise boşluk inanılmaz fazladır; tanecikler bağımsız birer sporcu gibi her yöne hızla koşar, döner ve çarparlar. Bu yüzden gazlar bulundukları kabın her yerine yayılırlar.",
-"key_points": [
-"Titreşim Hareketi: Taneciklerin bulunduğu noktada yaptığı sallanma hareketidir; tüm hallerde görülür. (Kazanım a)",
-"Öteleme Hareketi: Taneciklerin bir noktadan başka bir noktaya kayarak gitmesidir; akışkanlığı sağlar. (Kazanım b)",
-"Dönme Hareketi: Taneciklerin kendi ekseni etrafında dönmesidir; sıvı ve gazlarda görülür. (Kazanım a)",
-"Boşluk ve Sıkışma: Gazlarda boşluk çok olduğu için sıkıştırılabilirler, katılarda boşluk yok denecek kadar azdır. (Kazanım b)"
-],
-"examples": [
-"Sıkıştırılan Hava: Bir şırınganın ağzını kapatıp pistonu ittiğinizde hava tanecikleri arasındaki boşluklar azalır ve hava sıkışır.",
-"Isınan Demir: Demir raylar yazın genleşir çünkü tanecikleri daha hızlı titreşir ve daha fazla alan kaplamak ister.",
-"Akışkan Su: Suyun bir kaptan diğerine dökülmesi, taneciklerin öteleme hareketi yapabildiğini kanıtlar.",
-"Parfümün Yayılması: Gaz taneciklerinin çok hızlı öteleme yapması sayesinde kokuyu kısa sürede alırız."
-],
-"real_life_connections": [
-"Teknoloji: Deodorant kutularına gazın yüksek basınçla doldurulması, gazların boşluklu yapısından faydalanır.",
-"İnşaat: Köprülerdeki genleşme payları, sıcakta hızlanan taneciklerin birbirini itmesini hesaba katar.",
-"Mutfak: Çorbayı karıştırdığımızda tuzun her yere dağılması taneciklerin öteleme hareketinin sonucudur."
-],
-"notebook": {
-"definition": "Tanecik hareketi, maddenin iç yapısındaki birimlerin enerji durumuna göre yaptığı titreşim, öteleme ve dönme eylemleridir.",
-"sections": [
-{
-"title": "Temel Hareket Türleri",
-"items": [
-"Titreşim: Taneciklerin yerinde sallanmasıdır (Katı, Sıvı, Gaz yapar).",
-"Öteleme: Taneciklerin yer değiştirerek akmasıdır (Sıvı ve Gaz yapar).",
-"Dönme: Taneciklerin kendi etrafında tur atmasıdır (Sıvı ve Gaz yapar)."
-],
-"note": "Unutma! Katılar sadece titreşim yapar; akamazlar."
-},
-{
-"title": "Boşluk ve Hal İlişkisi",
-"items": [
-"Katılar: Tanecikler arası boşluk yok denecek kadar azdır.",
-"Sıvılar: Boşluk katılara göre biraz daha fazladır.",
-"Gazlar: Tanecikler arası boşluk çok fazladır; en düzensiz haldir."
-]
-}
-]
-}
-},
-"activities": {
-"cards": [
-{
-"item": "Katı",
-"label": "Sadece Titreşim yapar, en düzenli haldir."
-},
-{
-"item": "Sıvı",
-"label": "Titreşim, Öteleme ve Dönme yapar; akışkandır."
-},
-{
-"item": "Gaz",
-"label": "En hızlı hareket, en fazla boşluk ve en düzensiz yapı."
-},
-{
-"item": "Sıkıştırılma",
-"label": "Sadece gazlarda belirgin olarak görülen özellik."
-}
-]
-},
-"teacher_notes": {
-"teaching_tips": [
-"Öğrencileri ayağa kaldırın. Birbirlerine omuz omuza değerek sadece sallanmalarını (katı), birbirlerine değerek yürümelerini (sıvı) ve serbestçe koşmalarını (gaz) isteyin.",
-"Sıkıştırılma özelliğini göstermek için bir şırınga (iğnesiz) kullanın. İçine önce su, sonra hava çekerek pistonu itmelerini isteyin."
-],
-"common_misconceptions": [
-"Öğrenciler sıvıların sıkıştırılabildiğini düşünebilir. Doğrusu: Sıvılar ve katılar 'sıkıştırılamaz' kabul edilir; boşlukları çok azdır.",
-"Gaz tanecikleri arasında hava olduğu sanılır. Doğrusu: Gaz zaten kendisidir, taneciklerin arası bomboştur."
-],
-"classroom_discussion": [
-"Bir demir parçasını elimizle neden küçültemiyoruz? (Beklenen: Tanecikler arası boşluk yok ve birbirlerini çok güçlü çekiyorlar.)",
-"Neden gazlar bulundukları her yere yayılır? (Beklenen: Tanecikleri bağımsızdır ve her yöne öteleme hareketi yaparlar.)"
-],
-"extension_ideas": [
-"Zeka sorusu: 'Bir bardak kum akıyor, o zaman kum sıvı mıdır?' (Cevap: Hayır, her bir kum tanesi katıdır, sadece küçük oldukları için akıyor gibi görünürler.)",
-"Araştırma: 'Plazma hali'ndeki tanecik hareketi nasıldır?"
-]
-}
-},
-{
-"id": "step3",
-"type": "scenario_activity",
-"title": "Mikroskop Altında Bir Gün",
-"duration_minutes": 8,
-"content": {
-"explanation": "Hayal et ki elinde 'Tanecik Gözlüğü' var. Bu gözlüğü taktığında maddelerin içindeki o minik topları görebiliyorsun. Gözlüğü sırasıyla bir buz küpüne, bir bardak meyve suyuna ve odadaki havaya tutuyorsun. Karşılaştığın manzaraları değerlendirmelisin.",
-"key_points": [
-"Düzenlilik: Katıdan gaza doğru gidildikçe düzen azalır. (Kazanım c)",
-"Hareketlilik: Sıcaklık arttıkça tanecik hızı artar. (Kazanım a)"
-],
-"examples": [
-"Buz: Askerler gibi yan yana dizilmiş, sadece hafifçe titreyen tanecikler.",
-"Meyve Suyu: Birbirine çarpan ama gruptan ayrılmayan, kaykay yapan tanecikler.",
-"Hava: Birbirinden çok uzakta, çılgınca her yöne uçuşan tanecikler."
-]
-},
-"activities": {
-"scenario": "Gözlüğünü taktın ve masanın üzerindeki demir anahtara bakıyorsun. Taneciklerin birbirine çok yakın olduğunu ve sadece titreştiklerini gördün. Sonra bu anahtarı çok sıcak bir fırına attığını ve anahtarın eriyip sıvılaştığını hayal et. Gözlüğünle baktığında gördüğün manzarada ne değişmiş olabilir?",
-"choices": [
-{
-"text": "Tanecikler arası boşluk azaldı ve tanecikler durdu.",
-"correct": false,
-"feedback": "Yanlış. Madde sıvılaştığında boşluk artar ve hareketlilik (öteleme) başlar."
-},
-{
-"text": "Tanecikler birbirinden biraz uzaklaştı ve birbirleri üzerinden kaymaya başladı.",
-"correct": true,
-"feedback": "Harika! Erime sonucunda tanecikler arasındaki bağ zayıflar, boşluk artar ve öteleme hareketi başlar."
-},
-{
-"text": "Taneciklerin sayısı arttı ve her biri devasa boyutlara ulaştı.",
-"correct": false,
-"feedback": "Maalesef. Hal değişimi sırasında taneciklerin sayısı veya büyüklüğü değişmez, sadece düzenleri ve hareketleri değişir."
-}
-]
-},
-"teacher_notes": {
-"teaching_tips": [
-"Bu senaryoyu anlatırken tahtaya üç farklı kap çizip içindeki tanecik modellerini (daireler) öğrencilere çizdirin.",
-"Öğrencilerin 'hal değişimi' ile 'tanecik yapısı' arasındaki bağı kurmasını sağlayın."
-],
-"common_misconceptions": [
-"Öğrenciler madde ısınınca taneciklerin büyüdüğünü sanır. Doğrusu: Tanecik boyutu değişmez, sadece taneciklerin arası açılır."
-],
-"classroom_discussion": [
-"Sıvı bir madde gaz haline geçtiğinde taneciklerin hızı nasıl değişir? (Beklenen: Hız artar çünkü enerji almıştır.)"
-],
-"extension_ideas": [
-"Öğrencilerden bu üç hali temsil eden bir 'tanecik dansı' koreografisi tasarlamalarını isteyin."
-]
-}
-},
-{
-"id": "step4",
-"type": "mini_game",
-"title": "Tanecik Dedektifi: Hangisiyim?",
-"duration_minutes": 10,
-"content": {
-"explanation": "Aşağıda bazı madde taneciklerinin özellikleri verilmiştir. Bu özelliklerin hangi fiziksel hale (Katı, Sıvı, Gaz) ait olduğunu bulabilir misin?",
-"key_points": [
-"Ayırt Edici Özellikler: Her halin kendine has bir 'tanecik kimliği' vardır. (Kazanım ç)"
-]
-},
-"activities": {
-"mini_game": [
-{
-"situation": "Taneciklerim arasında çok büyük boşluklar var ve her yöne çok hızlı hareket ediyorum. Sıkıştırılabilirim!",
-"correct_answer": "Gaz",
-"feedback": "Doğru! Gazlar en boşluklu ve en hareketli haldir."
-},
-{
-"situation": "Taneciklerim birbirine temas eder ama birbirleri üzerinden kayabilir. Belirli bir şeklim yok, kabın şeklini alırım.",
-"correct_answer": "Sıvı",
-"feedback": "Harika! Sıvılar öteleme hareketi sayesinde akışkanlık kazanır."
-},
-{
-"situation": "Çok düzenliyim. Taneciklerim o kadar sıkı ki sadece olduğum yerde sallanabiliyorum (titreşim).",
-"correct_answer": "Katı",
-"feedback": "Kesinlikle! Katılar en düzenli ve istikrarlı tanecik yapısına sahiptir."
-},
-{
-"situation": "Beni bir şırıngaya koyup itersen hacmim küçülmez. Taneciklerim arasında neredeyse hiç boşluk yok.",
-"correct_answer": "Katı veya Sıvı",
-"feedback": "Doğru! Hem katılar hem de sıvılar sıkıştırılamaz kabul edilir."
-},
-{
-"situation": "Odanın bir köşesinden sıkıldığımda diğer köşesine taneciklerim öteleme yaparak hızla ulaşır.",
-"correct_answer": "Gaz",
-"feedback": "Evet! Gazların yayılma hızı taneciklerinin bağımsız hareketinden gelir."
-}
-]
-},
-"teacher_notes": {
-"teaching_tips": [
-"Bu oyunu sınıfta 'Evet/Hayır' kartlarıyla veya ayağa kalkma/oturma şeklinde fiziksel bir aktiviteye dönüştürebilirsiniz.",
-"Yanlış cevaplarda nedenini (boşluk/hareket ilişkisi) mutlaka tekrar edin."
-],
-"common_misconceptions": [],
-"classroom_discussion": [],
-"extension_ideas": []
-}
-},
-{
-"id": "step5",
-"type": "critical_thinking",
-"title": "Derin Düşünce: Boşlukların Gücü",
-"duration_minutes": 12,
-"content": {
-"explanation": "Maddenin tanecikli ve boşluklu yapısını öğrendik. Şimdi bu bilgileri biraz zorlayalım. Eğer dünya üzerindeki tüm boşlukları yok edebilseydik ne olurdu?",
-"key_points": [
-"Analiz: Boşluk miktarının maddenin hacmine etkisi. (Kazanım a)"
-]
-},
-"activities": {
-"discussion_prompts": [
-"Eğer bir insanın vücudundaki tüm atomların arasındaki boşlukları yok etseydik, o insan bir toz tanesi kadar küçülürdü ama ağırlığı aynı kalırdı. Bu durumu nasıl açıklarsınız?",
-"Lastik bir balonu soğuk havaya çıkardığımızda neden büzülür? Taneciklerin hızı ve boşlukla nasıl bir ilgisi olabilir?",
-"Maddenin tanecikleri arasındaki boşluklarda 'hava' olsaydı, o zaman havanın tanecikleri nerede dururdu? Bu mantıklı mı?"
-],
-"evaluation_tasks": [
-"Katı, sıvı ve gaz hallerini 'Tanecik Düzeni', 'Hareket Türü' ve 'Sıkıştırılabilirlik' kriterlerine göre bir tablo halinde karşılaştırın.",
-"Çevrenizden bir madde seçin ve onun taneciklerinin şu an ne yaptığını anlatan 3 cümlelik bir 'tanecik günlüğü' yazın."
-]
-},
-"teacher_notes": {
-"teaching_tips": [
-"Öğrencilerin 'boşluk' kavramını 'hiçlik' olarak algılamasını sağlayın. Boşlukta hava bile yoktur.",
-"Balon örneğini sınıfa bir balon getirerek veya bir video ile destekleyin."
-],
-"common_misconceptions": [
-"Soğuyan maddenin taneciklerinin küçüldüğü sanılır. Doğrusu: Tanecikler küçülmez, sadece birbirine yaklaşır."
-],
-"classroom_discussion": [
-"Sıkıştırılan bir gazın tanecik sayısında değişiklik olur mu? (Beklenen: Hayır, sadece aralarındaki boşluk azalır.)"
-],
-"extension_ideas": [
-"Meraklısı için: 'Kara delikler' maddeyi o kadar sıkıştırır ki atomların arasındaki boşluklar bile yok olur. Bu konuyu araştırmalarını isteyin."
-]
-}
-},
-{
-"id": "step6",
-"type": "word_bank",
-"title": "Kavramları Yerleştirelim",
-"duration_minutes": 7,
-"content": {
-"explanation": "Öğrendiğimiz anahtar kelimeleri cümle içerisindeki uygun boşluklara yerleştirerek bilgilerimizi tazeleyelim.",
-"key_points": [
-"Terminoloji: Tanecik, boşluk ve hareket kavramlarının doğru kullanımı. (Kazanım a, b)"
-]
-},
-"activities": {
-"word_bank": {
-"words": [
-"tanecikli",
-"boşluklu",
-"titreşim",
-"sıkıştırılamaz",
-"gaz",
-"öteleme",
-"sıvı",
-"katı"
-],
-"template": "Bütün maddeler ____, ____ ve hareketli yapıdadır. Maddenin ____ hali sadece ____ hareketi yaparken, ____ ve ____ halindeki tanecikler hem titreşim hem de ____ hareketi yapabilirler. Bu yüzden katılar ve sıvılar ____ kabul edilir.",
-"blanks": [
-{
-"id": "blank1",
-"correct_answer": "tanecikli"
-},
-{
-"id": "blank2",
-"correct_answer": "boşluklu"
-},
-{
-"id": "blank3",
-"correct_answer": "katı"
-},
-{
-"id": "blank4",
-"correct_answer": "titreşim"
-},
-{
-"id": "blank5",
-"correct_answer": "sıvı"
-},
-{
-"id": "blank6",
-"correct_answer": "gaz"
-},
-{
-"id": "blank7",
-"correct_answer": "öteleme"
-},
-{
-"id": "blank8",
-"correct_answer": "sıkıştırılamaz"
-}
-]
-}
-},
-"teacher_notes": {
-"teaching_tips": [
-"Cümlelerin akışını kontrol etmeleri için metni yüksek sesle okutun.",
-"Özellikle 'sıkıştırılamaz' kelimesinin neden hem katı hem sıvı için kullanıldığını vurgulayın."
-],
-"common_misconceptions": [],
-"classroom_discussion": [],
-"extension_ideas": []
-}
-},
-{
-"id": "step7",
-"type": "risk_analysis",
-"title": "Yanlışları Ayıklayalım",
-"duration_minutes": 10,
-"content": {
-"explanation": "Maddenin tanecikli yapısı hakkında bazen yanlış şeyler düşünebiliriz. Bu 'akıl çeldiricileri' birlikte inceleyelim.",
-"key_points": [
-"Kavram Yanılgıları: Hatalı mantık yürütmelerin düzeltilmesi. (Kazanım a)"
-]
-},
-"activities": {
-"cards": [
-{
-"misconception": "Madde ısındığında tanecikleri şişer ve büyür.",
-"risk_level": "yüksek risk",
-"why_it_happens": "Genleşme sırasında maddenin hacmi arttığı için öğrenciler taneciklerin de büyüdüğünü varsayıyor.",
-"truth": "Taneciklerin boyutu asla değişmez. Isınan maddede tanecikler sadece daha hızlı hareket eder ve birbirinden uzaklaşır.",
-"fix_tip": "Öğrencilere 'bir sınıftaki öğrenci sayısı değişmeden öğrencilerin birbirinden uzaklaşması' örneğini verin.",
-"mini_check": "Bir demir ray yazın uzadığında içindeki taneciklerin büyüklüğü değişir mi? (Hayır)"
-},
-{
-"misconception": "Tanecikler arasındaki boşluklarda hava vardır.",
-"risk_level": "orta risk",
-"why_it_happens": "Gözle göremediğimiz her yerin hava ile dolu olduğunu düşünme eğilimindeyiz.",
-"truth": "Hava da bir maddedir ve kendi tanecikleri vardır. Taneciklerin arası ise 'mutlak boşluk'tur (hiçlik).",
-"fix_tip": "Hava taneciklerini de birer top gibi çizip aralarındaki mesafeyi gösterin.",
-"mini_check": "Su tanecikleri arasındaki boşlukta ne vardır? (Hiçbir şey/Boşluk)"
-},
-{
-"misconception": "Sıvılar sıkıştırılabilir.",
-"risk_level": "yüksek risk",
-"why_it_happens": "Sıvıların akışkan olması ve şekil değiştirmesi, onların hacminin de küçülebileceği yanılgısını yaratıyor.",
-"truth": "Sıvı tanecikleri birbirine çok yakındır ve temas halindedir. Bu yüzden üzerlerine baskı uygulandığında boşluklar kapanmaz.",
-"fix_tip": "Şırınga deneyiyle suyun sıkışmadığını gözle göstererek ispatlayın.",
-"mini_check": "Ağzı kapalı su dolu bir şişeye bastırdığımızda suyun hacmi azalır mı? (Hayır)"
-}
-]
-},
-"teacher_notes": {
-"teaching_tips": [
-"Bu bölümü 'Doğru mu Yanlış mı?' tartışması açarak işleyin.",
-"Özellikle genleşme-tanecik boyutu ilişkisi üzerinde durun, sınavların en sevdiği tuzak sorudur."
-],
-"common_misconceptions": [],
-"classroom_discussion": [],
-"extension_ideas": []
-}
-},
-{
-"id": "step8",
-"type": "quiz",
-"title": "Bilgi Kontrolü",
-"duration_minutes": 15,
-"content": {
-"explanation": "Ders boyunca öğrendiklerimizi test etme vakti! Bakalım taneciklerin dünyasına ne kadar hakimsin?",
-"key_points": [
-"Değerlendirme: Tüm alt kazanımların ölçülmesi."
-]
-},
-"activities": {
-"quiz_questions": [
-{
-"question": "Aşağıdaki özelliklerden hangisi maddenin katı, sıvı ve gaz hallerinin tamamı için ortaktır?",
-"options": [
-"Sıkıştırılabilir olma",
-"Öteleme hareketi yapma",
-"Tanecikli yapıda olma",
-"Belirli bir şekle sahip olma"
-],
-"correct_answer": "Tanecikli yapıda olma",
-"solution_text": "Bütün maddeler, halleri ne olursa olsun taneciklerden oluşur. Sıkıştırılma sadece gazlarda, öteleme sıvı ve gazlarda, belirli şekil ise sadece katılarda görülür."
-},
-{
-"question": "Bir deodorant kutusunun içine çok miktarda gazın sığdırılabilmesi, gazların hangi özelliği sayesinde gerçekleşir?",
-"options": [
-"Taneciklerinin çok büyük olması",
-"Tanecikleri arasında çok boşluk olması",
-"Sadece titreşim hareketi yapmaları",
-"Belirli bir kütlelerinin olmaması"
-],
-"correct_answer": "Tanecikleri arasında çok boşluk olması",
-"solution_text": "Gaz tanecikleri arasındaki boşluk çok fazla olduğu için dışarıdan bir basınçla bu boşluklar azaltılabilir ve gaz sıkıştırılabilir."
-},
-{
-"question": "Sıvıların akışkan olmasını sağlayan temel tanecik hareketi aşağıdakilerden hangisidir?",
-"options": [
-"Titreşim",
-"Sıkışma",
-"Öteleme",
-"Donma"
-],
-"correct_answer": "Öteleme",
-"solution_text": "Öteleme hareketi, taneciklerin birbirleri üzerinden kayarak yer değiştirmesidir. Bu hareket sıvı ve gazlara akışkanlık kazandırır."
-},
-{
-"question": "Taneciklerin en düzenli olduğu hal ile en düzensiz olduğu hal aşağıdakilerden hangisinde doğru eşleştirilmiştir?",
-"options": [
-"Katı - Sıvı",
-"Gaz - Katı",
-"Sıvı - Gaz",
-"Katı - Gaz"
-],
-"correct_answer": "Katı - Gaz",
-"solution_text": "Katılarda tanecikler istiflenmiş gibi düzenlidir. Gazlarda ise tanecikler bağımsız ve dağınık olduğundan en düzensiz haldir."
-}
-]
-},
-"assessment": {
-"quiz_questions": [
-{
-"question": "Aşağıdaki özelliklerden hangisi maddenin katı, sıvı ve gaz hallerinin tamamı için ortaktır?",
-"options": [
-"Sıkıştırılabilir olma",
-"Öteleme hareketi yapma",
-"Tanecikli yapıda olma",
-"Belirli bir şekle sahip olma"
-],
-"correct_answer": "Tanecikli yapıda olma",
-"solution_text": "Bütün maddeler, halleri ne olursa olsun taneciklerden oluşur. Sıkıştırılma sadece gazlarda, öteleme sıvı ve gazlarda, belirli şekil ise sadece katılarda görülür."
-},
-{
-"question": "Bir deodorant kutusunun içine çok miktarda gazın sığdırılabilmesi, gazların hangi özelliği sayesinde gerçekleşir?",
-"options": [
-"Taneciklerinin çok büyük olması",
-"Tanecikleri arasında çok boşluk olması",
-"Sadece titreşim hareketi yapmaları",
-"Belirli bir kütlelerinin olmaması"
-],
-"correct_answer": "Tanecikleri arasında çok boşluk olması",
-"solution_text": "Gaz tanecikleri arasındaki boşluk çok fazla olduğu için dışarıdan bir basınçla bu boşluklar azaltılabilir ve gaz sıkıştırılabilir."
-},
-{
-"question": "Sıvıların akışkan olmasını sağlayan temel tanecik hareketi aşağıdakilerden hangisidir?",
-"options": [
-"Titreşim",
-"Sıkışma",
-"Öteleme",
-"Donma"
-],
-"correct_answer": "Öteleme",
-"solution_text": "Öteleme hareketi, taneciklerin birbirleri üzerinden kayarak yer değiştirmesidir. Bu hareket sıvı ve gazlara akışkanlık kazandırır."
-},
-{
-"question": "Taneciklerin en düzenli olduğu hal ile en düzensiz olduğu hal aşağıdakilerden hangisinde doğru eşleştirilmiştir?",
-"options": [
-"Katı - Sıvı",
-"Gaz - Katı",
-"Sıvı - Gaz",
-"Katı - Gaz"
-],
-"correct_answer": "Katı - Gaz",
-"solution_text": "Katılarda tanecikler istiflenmiş gibi düzenlidir. Gazlarda ise tanecikler bağımsız ve dağınık olduğundan en düzensiz haldir."
-}
-]
-},
-"teacher_notes": {
-"teaching_tips": [
-"Soruları çözerken sadece doğru şıkkı söylemeyin, yanlış şıkların neden yanlış olduğunu da açıklayın.",
-"Öğrencilere kendi sorularını hazırlatıp birbirlerine sormalarını isteyebilirsiniz."
-],
-"common_misconceptions": [],
-"classroom_discussion": [],
-"extension_ideas": []
-}
-},
-{
-"id": "step9",
-"type": "summary",
-"title": "Ders Özeti",
-"duration_minutes": 5,
-"content": {
-"slides": [
-{
-"type": "key",
-"text": "Madde bir bütündür ama aslında taneciklerden oluşur (Tanecikli Yapı)."
-},
-{
-"type": "key",
-"text": "Tanecikler arasında türüne göre az veya çok boşluk bulunur (Boşluklu Yapı)."
-},
-{
-"type": "key",
-"text": "Tanecikler her zaman hareket halindedir: Titreşim, öteleme veya dönme yaparlar."
-},
-{
-"type": "key",
-"text": "Katılar en düzenli, gazlar ise en düzensiz ve en boşluklu haldir."
-},
-{
-"type": "bridge",
-"text": "Harikasın! Maddenin görünmez dünyasını başarıyla keşfettin."
-}
-],
-"explanation": "Bugün maddenin en derinlerine, taneciklerin dünyasına indik. Maddelerin kesintisiz bir yapı gibi görünmesine rağmen aslında aralarında boşluklar bulunan minik parçacıklardan oluştuğunu öğrendik. Katıların sadece titreşerek şekillerini koruduğunu, sıvıların öteleme yaparak akabildiğini ve gazların bağımsızca her yere yayılabildiğini kavradık. Ayrıca gazların boşluklu yapısı sayesinde sıkıştırılabildiğini, katı ve sıvıların ise bu konuda daha 'inatçı' olduğunu gördük.",
-"key_points": [
-"Tanecik: Maddenin en küçük yapı birimi.",
-"Hareket: Titreşim (tüm haller), Öteleme/Dönme (sıvı, gaz).",
-"Boşluk: En az katıda, en çok gazda.",
-"Düzen: Katı (Düzenli) > Sıvı > Gaz (Düzensiz).",
-"Sıkışma: Sadece gazlarda belirgindir."
-]
-},
-"activities": {
-"summary_points": [
-"Maddenin tanecikli, boşluklu ve hareketli bir yapısı vardır.",
-"Tanecikler gözle görülemeyecek kadar küçüktür.",
-"Katı tanecikleri sadece titreşim hareketi yapar.",
-"Sıvı ve gaz tanecikleri titreşim, öteleme ve dönme hareketi yapar.",
-"Gazlar tanecikler arası boşluk çok olduğu için sıkıştırılabilir.",
-"Maddenin halleri değiştikçe tanecik boyutu değişmez, aralarındaki boşluk ve hız değişir.",
-"Katıdan gaza doğru gidildikçe tanecikler arası çekim kuvveti azalır."
-]
-},
-"teacher_notes": {
-"teaching_tips": [
-"Öğrencilere 'Bugün eve gittiğinizde ailenize maddenin tanecikli yapısını kanıtlayan bir örnek gösterin' ödevi verin (Örn: Parfüm sıkmak veya şekerli çay).",
-"Summary alanındaki slide'ları yavaşça geçerek her birinin üzerinden son bir kez geçin."
-],
-"common_misconceptions": [],
-"classroom_discussion": [],
-"extension_ideas": []
-}
-},
-{
-"id": "step10",
-"type": "certificate",
-"title": "Tebrikler!",
-"duration_minutes": 2,
-"content": {},
-"activities": {
-"certificate_message": "Tebrikler Ömer Eymen Güven! Maddenin mikro dünyasındaki sırları çözdün ve bir 'Tanecik Uzmanı' oldun. Artık çevrendeki her şeye bakarken o minik dans eden tanecikleri görebilirsin!",
-"earned_badges": [
-"Mikro Kaşif",
-"Tanecik Ustası",
-"Boşluk Analizcisi"
-]
-},
-"teacher_notes": {
-"teaching_tips": [
-"Öğrencileri alkışlatarak dersi bitirin.",
-"Sertifikalarını mobil uygulama üzerinden kontrol etmelerini hatırlatın."
-],
-"common_misconceptions": [],
-"classroom_discussion": [],
-"extension_ideas": []
-}
-}
-]
-}
+    "lesson": {
+        "grade": "5. Sınıf",
+        "subject": "Fen Bilimleri",
+        "unit": "Işığın Dünyası",
+        "topic": "FB.5.4.3.Tam Gölgenin Oluşumu",
+        "title": "Tam Gölge: Işığın Arkasında Ne Var?",
+        "description": "Bu derste tam gölgenin (umbra) ne olduğunu, nasıl oluştuğunu ve hangi değişkenlerin tam gölgeyi etkilediğini keşfedeceğiz. Günlük hayattan örnekler, deneyler ve aktivitelerle ışık ve gölge arasındaki ilişkiyi anlayacaksın.",
+        "difficulty_level": "orta",
+        "learning_objectives": [
+            "Tam gölgenin niteliklerini (sınırları, yoğunluğu, şekli) tanımlar. (Kazanım a)",
+            "Tam gölgeye ait elde ettiği verileri kaydeder. (Kazanım b)",
+            "Tam gölgeyi etkileyen değişkenleri (ışık kaynağının boyutu ve uzaklığı, cismin boyutu ve şekli, ekranın uzaklığı) açıklar. (Kazanım c)"
+        ],
+        "keywords": [
+            "tam gölge",
+            "umbra",
+            "yarı gölge",
+            "penumbra",
+            "opak cisim",
+            "ışık kaynağı",
+            "gölge boyutu",
+            "gölge yoğunluğu",
+            "gölge şekli",
+            "ekran mesafesi",
+            "ışığın doğrusal yayılımı",
+            "nokta ışık kaynağı"
+        ],
+        "steps": [
+            {
+                "id": "step1",
+                "type": "intro",
+                "title": "Işığın Gizemi: Gölgeler Neden Oluşur?",
+                "duration_minutes": 8,
+                "content": {
+                    "slides": [
+                        {
+                            "type": "hook",
+                            "text": "Sabah okula giderken fark ettin mi? Gölgen bazen devasa uzuyor, bazen de neredeyse yok oluyor — neden acaba?"
+                        },
+                        {
+                            "type": "fact",
+                            "text": "Işık düz çizgiler hâlinde yayılır; önüne opak (saydam olmayan) bir cisim çıktığında geçemez ve arkasında karanlık bir alan bırakır — bu alana gölge denir."
+                        },
+                        {
+                            "type": "analogy",
+                            "text": "Bu tıpkı bir kalabalığın ortasından geçmeye çalışan bir su akıntısı gibidir — kalabalık nereye dursa su oraya ulaşamaz ve arkada boş alan kalır."
+                        },
+                        {
+                            "type": "example",
+                            "text": "El fenerinle elini aydınlat: elin gerisindeki duvarda tam siyah bir el şekli belirir. İşte bu, tam gölgedir."
+                        },
+                        {
+                            "type": "bridge",
+                            "text": "Şimdi bu karanlık bölgenin ne olduğunu ve nasıl değiştiğini birlikte inceleyelim."
+                        }
+                    ],
+                    "explanation": "Her gün karşımıza çıkan gölgeler, ışığın doğrusal yayılım özelliğinden kaynaklanır. Işık, engel olmadıkça düz ilerler; ancak önüne taş, tahta veya insan gibi opak bir cisim çıktığında o cismi geçemez ve arkasında karanlık bir bölge bırakır. Bu karanlık bölgenin iki farklı türü vardır: tam gölge ve yarı gölge. Bu ders boyunca özellikle tam gölgeyi — yani hiç ışığın ulaşamadığı bölgeyi — inceleyeceğiz. Bu tıpkı bir binanın tam arkasına geçtiğinde güneşi hiç görememen gibidir — güneş ışınlarının tamamı bina tarafından kesilmiştir ve sen tamamen karanlıktasın.",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "discussion_prompts": [
+                        "Sabah okula giderken gölgen öğleden daha uzun mu, daha kısa mı? Neden böyle olduğunu düşünüyorsun?",
+                        "Bir el feneri ile elini aydınlatsaydın ve elini fenere yaklaştırsaydın, gölgen büyür müydü küçülür müydü?",
+                        "Güneş tutulmasında Ay, Dünya ile Güneş arasına giriyor — bu durumda yeryüzünde ne oluşuyor olabilir?"
+                    ]
+                },
+                "assessment": {},
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Dersin başında sınıfı karartın ve bir el feneri ile tahtaya tutun; 'Bu neden karalık?' diye sorun. Merak oluştuktan sonra giriş slaytlarına geçin — bu ısınma 2–3 dakika alır.",
+                        "Öğrencilere kendi ellerini veya kalemlerini fenere tutturarak kısa bir deneme yaptırın; gölge oluşumunu bizzat hissettirin. Bu somutlaştırma introyu çok daha etkili kılar.",
+                        "Slide 3'teki su akıntısı analogisini tahtaya çizip 'engel' kelimesinin altını çizin; öğrenciler bu görsel bağlantıyı hatırlama eğilimindedir.",
+                        "Güneş tutulması görselini bir ekranda gösterin; 'Bu dersteki kavramlarla güneş tutulmasını açıklayabileceksiniz' diyerek ileriyi işaret edin. Bu motivasyon artırıcıdır."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler gölgenin sadece zeminlerde oluştuğunu sanabilir çünkü günlük hayatta en sık yere düşen gölgeleri görürler. Doğrusu: Gölge herhangi bir yüzeyde — duvar, tavan, başka bir cisim — oluşabilir; önemli olan ışığı durduran cismin ardında bir yüzeyin bulunmasıdır.",
+                        "Öğrenciler gölgenin cisme yapışık olduğunu, yani cisimle birlikte hareket ettiğini sanabilir çünkü gölgeyi cismin bir parçasıymış gibi algılarlar. Doğrusu: Gölge, ışığın geçemediği bir bölgedir; cisim hareket edince ışık-cisim-ekran konumu değişir ve gölge de değişir ama gölge cismin kendisi değildir.",
+                        "Öğrenciler her karanlık bölgenin 'tam gölge' olduğunu sanabilir çünkü henüz tam gölge ile yarı gölge arasındaki farkı öğrenmemişlerdir. Doğrusu: Tam gölge, ışık kaynağından gelen hiçbir ışının ulaşamadığı tamamen karanlık bölgedir; yarı gölge ise kısmen ışık alan, kenarlarda bulanık görünen bölgedir."
+                    ],
+                    "classroom_discussion": [
+                        "Ellerini uzatarak pencereden güneş giren tarafa bakın — parmak aralarından süzülen ışık dar mı geniş mi? Bu durum ışığın nasıl yayıldığını nasıl açıklar? (Beklenen: Işık düz çizgi hâlinde geldiği için parmak araları net sınır oluşturuyor.)",
+                        "Gölge 'karanlık' mı yoksa 'ışıksız bölge' mi? Fark var mı? (Beklenen: Gölge aslında ışığın ulaşamadığı bölge; tam gölge hiç ışık almaz, bu yüzden en koyu görünür.)",
+                        "Gölgesi olmayan bir cisim hayal edebilir misiniz? Ne tür bir cisim olurdu? (Beklenen: Tamamen saydam/şeffaf cisim — cam gibi — ışığı geçirir ve gölge oluşturmaz.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (2–3 dk): Kalemini tahtaya dik tut; ışık kaynağını sola, sağa ve yukarıya taşı. Her pozisyonda gölgenin nereye düştüğünü gözlemle ve sınıfla paylaş.",
+                        "Evde gözlem (malzemeli): Güneşli bir öğle saatinde dışarı çık, bir dal veya sopa tut ve yere düşen gölgeyi çiz. Aynı sopayı 2 saat sonra tekrar tut ve yeni gölgeyi eskisinin yanına çiz. İki gölgeyi karşılaştır; uzunluk ve yön farkını yaz.",
+                        "İleri düzey / meraklı öğrenci için: 'Güneş tutulması sırasında Ay'ın gölgesi neden tüm Dünya'yı kaplamıyor, sadece dar bir şerit üzerinde tam karanlık oluşuyor?' sorusunu araştır. Tam gölge ve yarı gölge kavramlarını bu olayla ilişkilendir."
+                    ]
+                }
+            },
+            {
+                "id": "step2",
+                "type": "concept_explanation",
+                "title": "Tam Gölge Nedir? (Umbra)",
+                "duration_minutes": 15,
+                "content": {
+                    "slides": [
+                        {
+                            "type": "hook",
+                            "text": "El fenerini yaktın, elinle önüne tuttu — duvardaki karanlık bölge parmak parmak net görünüyordu. Bu netliğin bir adı var: tam gölge."
+                        },
+                        {
+                            "type": "fact",
+                            "text": "Tam gölge (umbra), bir ışık kaynağından gelen tüm ışınların opak bir cisim tarafından tamamen engellenmesiyle oluşan tamamen karanlık bölgedir."
+                        },
+                        {
+                            "type": "fact",
+                            "text": "Tam gölgenin sınırları keskin ve belirgindir; bu bölgeye hiç ışık ulaşmaz ve bu yüzden en koyu siyahtır."
+                        },
+                        {
+                            "type": "analogy",
+                            "text": "Bu tıpkı bir binanın tam arkasına geçmek gibidir — binadan sola ya da sağa adım attığında güneşi görürsün, tam arkasındayken hiç göremezsin."
+                        },
+                        {
+                            "type": "example",
+                            "text": "Güneş tutulması sırasında Ay ile Güneş arasına girerseniz, Ay'ın tam gölge bölgesinde kalırsınız ve çevrenizdeki gündüz aniden geceye döner."
+                        },
+                        {
+                            "type": "key",
+                            "text": "Tam gölge = Hiç ışık yok · Net sınır · En koyu bölge · Opak cisim + ışık kaynağı gerekli."
+                        },
+                        {
+                            "type": "bridge",
+                            "text": "Şimdi tam gölgenin özelliklerini kartlarla pekiştirelim ve not defterimize geçirelim."
+                        }
+                    ],
+                    "explanation": "Işık düz çizgiler hâlinde yayıldığından, önüne geçilmez (opak) bir cisim konulduğunda ışınlar o cismin etrafından dolaşamaz. Cismin tam arkasında kalan bölgeye hiç ışın ulaşmaz; bu bölgeye tam gölge ya da Latince adıyla umbra denir. Tam gölgenin en belirgin niteliği, sınırlarının keskin olmasıdır — iyi ayarlanmış bir el fenerine elinizi tuttuğunuzda duvardaki gölgenin kenarlarını parmakla çizebilirsiniz çünkü sınır yeterince nettir. Bu tıpkı bir okulun duvarının tam gölgesi gibidir — duvarın gölgesi içindeyken güneşi hiç göremezsiniz ve çıkar çıkmaz anında aydınlığa kavuşursunuz; sınır ani ve kesindir. Tam gölgeyi yarı gölgeden (penumbra) ayıran en önemli özellik budur: tam gölgede sıfır ışık, net sınır; yarı gölgede ise bir miktar ışık ve bulanık geçiş bölgesi bulunur. Işık kaynağı ne kadar küçük (noktasal) olursa, tam gölge o kadar keskin ve net oluşur; ışık kaynağı büyüdükçe yarı gölge bölgesi genişler ve tam gölgenin netliği azalır.",
+                    "key_points": [
+                        "Tam gölge (umbra) tanımı: Tam gölge, opak bir cismin ışık kaynağından gelen tüm ışınları engellemesiyle oluşan ve hiç ışığın ulaşamadığı tamamen karanlık bölgedir. Bu bölgenin sınırları keskin ve belirlidir. (Kazanım a)",
+                        "Umbra adının kökeni: 'Umbra' Latincede gölge anlamına gelir; astronomide Ay ve Dünya'nın tam gölge bölgelerini tanımlamak için kullanılır. Bu kavramı öğrenmek güneş ve ay tutulmalarını anlamaya doğrudan yardımcı olur. (Kazanım a)",
+                        "Tam gölge ile yarı gölge farkı: Tam gölge (umbra), hiç ışık almayan en koyu bölgedir; yarı gölge (penumbra) ise kısmen ışık alan, kenarları bulanık ve daha açık tonlu bölgedir. Her cismin gölgesinde bu iki bölge birlikte oluşabilir. (Kazanım a)",
+                        "Tam gölgenin sınır keskinliği: Işık kaynağı ne kadar küçük ve noktasal olursa, tam gölgenin sınırları o kadar keskin olur. Büyük ve geniş ışık kaynakları ise daha geniş yarı gölge bölgesi oluşturur ve tam gölgenin keskinliğini azaltır. (Kazanım c)",
+                        "Tam gölge oluşumu için gerekli koşullar: Tam gölge oluşabilmesi için bir ışık kaynağı, bu ışığı tamamen engelleyen bir opak cisim ve cismin arkasında gölgenin düşeceği bir yüzey (ekran) gerekir. Bu üç unsurdan biri eksik olursa tam gölge oluşmaz. (Kazanım a, b)"
+                    ],
+                    "examples": [
+                        "El feneri ve el deneyi: El fenerini bir karanlık odada yaktığınızda ve elinizi önüne tuttuğunuzda, duvarda elinizin tam gölgesi oluşur. Parmakların arasındaki boşluklardan ışık geçebildiği için gölge parmak şeklini tam olarak yansıtır ve sınırlar net görünür.",
+                        "Güneş tutulması sırasında tam gölge: Güneş tutulması sırasında Ay, Güneş ile Dünya arasına tam olarak girerse Ay'ın tam gölgesi (umbra) Dünya yüzeyine düşer. Bu bölgede bulunanlar Güneş'i tamamen göremez ve ortalık bir anda karanlığa büründüğünü hisseder.",
+                        "Yaz öğleninde ağaç gölgesi: Öğlen güneş tepedeyken ağacın altında oluşan gölgenin ortası, tam gölgedir — ağacın yaprakları ışığı tamamen engeller. Öğlen güneşin dikliği nedeniyle bu tam gölge küçük ve yoğundur; akşama doğru ise uzayıp daha az yoğun hâle gelir.",
+                        "Stadyum tribün gölgesi: Büyük bir stadyumun tribünleri, zemine düşen tam gölge bölgesi oluşturur. Oyuncular o bölgeye girdiğinde güneş ışığına maruz kalmaz; bölgeden çıktıklarında ise hemen aydınlığa geçerler — sınır nettir."
+                    ],
+                    "real_life_connections": [
+                        "Önceki konu bağlantısı (Işığın yayılımı): Tam gölge, ışığın düz çizgiler hâlinde yayılması ilkesinin doğrudan bir sonucudur. Işık eğri çizgilerle yayılsaydı engelin etrafından dolaşır ve tam gölge oluşmazdı; bu bağlantı önceki konuyu pekiştirir.",
+                        "Sonraki konu köprüsü (Yarı gölge ve güneş/ay tutulmaları): Tam gölgeyi anlamak, yarı gölgenin (penumbra) ve tutulmaların açıklanması için temel taş niteliğindedir. Güneş tutulmasında farklı bölgelerin neden farklı karanlık gördüğü, tam gölge ve yarı gölge kavramıyla açıklanır.",
+                        "Günlük hayat — fotoğraf çekimi: Fotoğrafçılar 'sert ışık' ve 'yumuşak ışık' kavramlarını kullanır. Sert ışık (küçük ışık kaynağı, örneğin güneş) keskin gölgeler — yani tam gölge bölgesi net olanlar — oluşturur. Yumuşak ışık (büyük ışık kaynağı, örneğin bulutlu gökyüzü) ise bulanık gölgeler oluşturur.",
+                        "Günlük hayat — güneş saati: Antik dönemlerde güneş saatleri, bir çubuğun tam gölgesini kullanarak saati belirliyordu. Güneşin konumuna göre tam gölgenin yönü ve uzunluğu değiştiğinden, bu değişim zaman bilgisi olarak okunuyordu."
+                    ],
+                    "notebook": {
+                        "definition": "Tam gölge (umbra), bir ışık kaynağından gelen tüm ışınların opak bir cisim tarafından tamamen engellenmesiyle oluşan, hiç ışığın ulaşamadığı tamamen karanlık ve net sınırlı bölgedir.",
+                        "summary_items": [
+                            "Tam gölge = hiç ışık yok, sınırlar net.",
+                            "Umbra: Latince 'gölge' anlamına gelir.",
+                            "Opak cisim + ışık kaynağı + ekran gerekir."
+                        ],
+                        "sections": [
+                            {
+                                "title": "Temel Bilgiler",
+                                "items": [
+                                    "Tam gölge (umbra): Opak cisim tüm ışınları engeller → arkası tamamen karanlık olur.",
+                                    "Tam gölgenin sınırları keskin ve belirgindir — kenarlar net görünür.",
+                                    "Tam gölgede hiç ışık yoktur; bu yüzden bu bölge en koyu siyahtır.",
+                                    "Tam gölge oluşumu için: ışık kaynağı + opak cisim + ekran (yüzey) gerekir."
+                                ],
+                                "note": "Bu dört maddeyi öğrencilere sırasıyla yazdırın; her maddeden sonra örnek isteyin."
+                            },
+                            {
+                                "title": "Karşılaştırma: Tam Gölge vs Yarı Gölge",
+                                "items": [
+                                    "Tam gölge (umbra): Hiç ışık yok · En koyu · Sınırlar keskin.",
+                                    "Yarı gölge (penumbra): Kısmen ışık var · Daha açık ton · Sınırlar bulanık.",
+                                    "Noktasal ışık kaynağı → tam gölge daha net; geniş ışık kaynağı → yarı gölge daha geniş."
+                                ]
+                            },
+                            {
+                                "title": "Örnek Notları",
+                                "items": [
+                                    "Güneş tutulması: Ay'ın umbrasına giren bölge → tam karanlık (tam tutulma).",
+                                    "El feneri + el deneyi: Duvarda parmak şekli → tam gölge.",
+                                    "Öğlen ağaç gölgesi: Ortası umbra (koyu) → kenarları penumbra (açık)."
+                                ]
+                            },
+                            {
+                                "title": "Hatırla",
+                                "items": [
+                                    "Tam gölge = SIFIR ışık.",
+                                    "Umbra = Latince 'gölge'.",
+                                    "Net sınır = noktasal ışık kaynağının işareti."
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "activities": {
+                    "cards": [
+                        {
+                            "item": "Tam gölge bölgesine hiç ışık ulaşmaz.",
+                            "label": "Tam Gölgenin Niteliği"
+                        },
+                        {
+                            "item": "Tam gölgenin sınırları keskin ve belirgindir; kenarlar net görünür.",
+                            "label": "Sınır Keskinliği"
+                        },
+                        {
+                            "item": "Umbra Latincede 'gölge' demektir; astronomide Ay ve Dünya'nın tam gölge bölgelerini tanımlar.",
+                            "label": "Terim: Umbra"
+                        },
+                        {
+                            "item": "Tam gölge oluşması için: ışık kaynağı + ışığı tamamen engelleyen opak cisim + arkada bir ekran gerekir.",
+                            "label": "Oluşum Koşulları"
+                        },
+                        {
+                            "item": "Tam gölge (umbra) en koyu bölgedir; yarı gölge (penumbra) ise kısmen ışık alan, daha açık kenarlardır.",
+                            "label": "Tam Gölge vs Yarı Gölge"
+                        },
+                        {
+                            "item": "Güneş tutulması sırasında Ay'ın tam gölgesine giren Dünya bölgesi, güneşi tamamen göremez — ortalık gündüz karanlığa bürünür.",
+                            "label": "Gerçek Hayat Örneği"
+                        }
+                    ]
+                },
+                "assessment": {
+                    "evaluation_tasks": [
+                        "Defterine tam gölge ile yarı gölgeyi karşılaştıran iki sütunlu bir tablo çiz; her sütuna en az 3 özellik yaz.",
+                        "El feneri, bir plastik bardak (opak) ve bir kağıt kullanarak tam gölge oluştur; gölgenin sınırlarını kağıda çiz ve bu çizimin altına tam gölgenin hangi koşullarda oluştuğunu yaz."
+                    ]
+                },
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Explanation metnini okumadan önce sınıfı karartın ve bir el fenerini masanın üzerindeki bir kaleme tutun; 'Kalemin arkasında ne görüyorsunuz, kenarlar net mi bulanık mı?' sorusunu sorun. Öğrencilerin gözlemi sözlü ifade etmesini bekleyin. Bu giriş 2–3 dakika alır ve concept açıklamasını çok daha anlamlı kılar.",
+                        "Notebook bölümünü öğrencilere adım adım yazdırın: önce definition cümlesini, ardından Temel Bilgiler bölümünü, sonra Karşılaştırma bölümünü. Her bölümden sonra 1 dakika bekleyin ve bir öğrenciden okumasını isteyin.",
+                        "Tam gölge ve yarı gölge karşılaştırmasını tahtaya iki sütunlu tablo olarak çizin; öğrencilerden sırayla gelip sütunlara madde yazmasını isteyin. Bu aktif katılım kavramı pekiştirir.",
+                        "Güneş tutulması görselini mutlaka gösterin; 'Ay'ın umbrasının içindesiniz — çevreniz nasıl görünür?' sorusunu sorun. Öğrencilerin hayal gücünü harekete geçirmek concept'i somutlaştırır."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler tam gölge ile yarı gölgeyi ayrı kavramlar olarak değil, sadece 'koyu' ve 'açık' gölge olarak görebilir çünkü henüz umbra/penumbra terminolojisine aşina değillerdir. Doğrusu: Tam gölge (umbra) hiç ışık almayan bölgeyken, yarı gölge (penumbra) kısmen ışık alan bölgedir; fark yalnızca renk tonu değil, ışık miktarıdır. Bunu kağıda iki farklı bölge çizerek gösterin.",
+                        "Öğrenciler tam gölgenin her zaman siyah olması gerektiğini sanabilir çünkü 'karanlık = siyah' düşüncesi hâkimdir. Doğrusu: Tam gölgenin rengi ortamın genel aydınlığına bağlıdır; tam gölge, etrafındaki aydınlık bölgeye kıyasla daha koyu görünür ama mutlaka siyah olmak zorunda değildir.",
+                        "Öğrenciler gölgenin yalnızca güneş ışığıyla oluştuğunu sanabilir çünkü en sık karşılaştıkları gölge deneyimi güneş kaynaklıdır. Doğrusu: Tam gölge herhangi bir ışık kaynağıyla (el feneri, lamba, mum) oluşabilir; önemli olan ışık kaynağının varlığı ve önünde opak bir cismin bulunmasıdır."
+                    ],
+                    "classroom_discussion": [
+                        "Okulun penceresi güneş ışığını içeri alıyor — bir kitabı camın önüne tutarsanız duvarda tam gölge oluşur mu? Bunu denemeden tahmin edin. (Beklenen: Evet oluşur; kitap opak, güneş ışık kaynağı, duvar ekran.)",
+                        "El fenerini yerine büyük bir top lambası koysaydınız, tam gölge daha net mi olurdu yoksa daha bulanık mı? Neden? (Beklenen: Daha bulanık; geniş ışık kaynağı daha geniş yarı gölge, daha az keskin tam gölge oluşturur.)",
+                        "Tam gölge ile tam karanlık aynı şey midir? Bunu açıklayabilir misiniz? (Beklenen: Tam gölge bir ışık kaynağına göre tanımlanır; tam karanlık ise hiç ışık kaynağı olmayan bir ortamdır — farklı kavramlardır.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (2–3 dk): Kağıda opak bir daire çiz; ışık kaynağını farklı pozisyonlara çizerek her pozisyondaki tam gölge bölgesini gölgele. Kaç farklı pozisyon deneyebildiğini say.",
+                        "Evde gözlem (malzemeli): Gece odanda el fenerini yak ve bir fincanı fener ile duvar arasına koy. Önce fincana çok yakın tut, sonra fincana çok uzak tut ve son olarak duvara çok yakın tut. Her durumda tam gölgenin boyutunu ve sınır netliğini not et; üç durumu karşılaştır.",
+                        "İleri düzey / meraklı öğrenci için: NASA'nın güneş tutulması haritalarını araştır; haritada 'umbra band' (tam gölge şeridi) neden bu kadar dar? Dünya yüzeyinin ne kadarı tam gölgede kalıyor? Bu soruyu tam gölge-yarı gölge farkıyla açıkla."
+                    ]
+                }
+            },
+            {
+                "id": "step3",
+                "type": "concept_explanation",
+                "title": "Tam Gölgeyi Etkileyen Değişkenler",
+                "duration_minutes": 18,
+                "content": {
+                    "slides": [
+                        {
+                            "type": "hook",
+                            "text": "Elini el fenerine yaklaştır — gölge büyüyor. Uzaklaştır — küçülüyor. Peki bunu kontrol eden değişkenler tam olarak neler?"
+                        },
+                        {
+                            "type": "fact",
+                            "text": "Tam gölgenin boyutu ve şekli; ışık kaynağının büyüklüğü ve uzaklığı, cismin büyüklüğü ve şekli, cisim ile ekran arasındaki mesafeye bağlı olarak değişir."
+                        },
+                        {
+                            "type": "fact",
+                            "text": "Cisim ışık kaynağına yaklaştıkça tam gölge büyür; cisim ekrana (yüzeye) yaklaştıkça ise tam gölge küçülür ve daha net hâle gelir."
+                        },
+                        {
+                            "type": "analogy",
+                            "text": "Bu tıpkı bir perde ile sinema projektörü gibidir — projektöre yakın duran bir nesne perdeye büyük ve keskin bir gölge düşürür; uzakta duran küçük nesne ise küçük gölge oluşturur."
+                        },
+                        {
+                            "type": "example",
+                            "text": "Sabah güneş alçaktayken gölgen uzun, öğlen tepedeyken kısadır — çünkü güneşin ışınlarının cismine çarpış açısı (ve dolayısıyla etkin mesafe) değişmektedir."
+                        },
+                        {
+                            "type": "key",
+                            "text": "Gölgeyi büyüten: cismi ışığa yaklaştırmak, daha büyük cisim kullanmak, ekranı cisme yaklaştırmak. Gölgeyi küçülten ise bunların tersi."
+                        },
+                        {
+                            "type": "bridge",
+                            "text": "Şimdi bu değişkenleri somut verilerle not defterimize geçirelim."
+                        }
+                    ],
+                    "explanation": "Tam gölgenin boyutu ve netliği sabit değildir; birkaç temel değişken tarafından kontrol edilir. Bunların başında ışık kaynağının boyutu gelir: küçük ve noktasal bir ışık kaynağı (el feneri) keskin sınırlı bir tam gölge oluştururken, güneş gibi büyük bir ışık kaynağı daha geniş yarı gölge bölgesi oluşturur ve tam gölgenin kenarlarını yumuşatır. Cismin ışık kaynağına olan uzaklığı da kritiktir: cisim ışık kaynağına ne kadar yakınsa gölge o kadar büyük ve biraz daha bulanık olur; uzaklaştıkça gölge küçülür ve keskinleşir. Bu tıpkı bir sinema perdesine yakın duran aktörün devasa gölgesinin perdeyi kaplaması gibidir — sahneye yakın durdukça projektörün ışığını daha büyük alanda bloke eder. Son olarak, cisim ile ekran (gölgenin düştüğü yüzey) arasındaki mesafe de belirleyicidir: ekran cisme ne kadar yakınsa gölge o kadar küçük ve net; ekran uzaklaştıkça gölge büyür ama sınırları biraz bulanıklaşmaya başlar. Tüm bu değişkenleri anlamak, tam gölgeyle ilgili deney verilerini doğru yorumlayabilmek için temel öneme sahiptir.",
+                    "key_points": [
+                        "Işık kaynağının büyüklüğü: Küçük ve noktasal ışık kaynağı keskin tam gölge oluştururken, geniş ışık kaynağı yarı gölge bölgesini büyütür ve tam gölgenin sınırlarını yumuşatır. (Kazanım c)",
+                        "Cismin ışığa uzaklığı: Cisim ışık kaynağına yaklaştıkça tam gölge büyür ve hafifçe bulanıklaşır; uzaklaştıkça gölge küçülür ve daha keskin hâle gelir. (Kazanım c)",
+                        "Cismin büyüklüğü ve şekli: Daha büyük bir cisim daha büyük tam gölge oluşturur; cismin şekli de gölgenin şeklini doğrudan belirler — yuvarlak cisim yuvarlak gölge, kare cisim kare gölge oluşturur. (Kazanım a, c)",
+                        "Ekranın cisme uzaklığı: Cisim ile ekran arasındaki mesafe büyüdükçe tam gölge yüzeyde daha büyük görünür; mesafe azaldıkça gölge küçülür ve sınırlar netleşir. (Kazanım c)",
+                        "Veri kayıt önemi: Değişkenlerin etkisini anlayabilmek için deneyde yalnızca bir değişken değiştirilmeli, diğerleri sabit tutulmalı ve her ölçüm sistematik biçimde kaydedilmelidir. (Kazanım b)"
+                    ],
+                    "examples": [
+                        "Cismi ışığa yaklaştırma deneyi: El fenerini sabit tut, elinizi önce fenere yakın, sonra uzak tut. Duvardaki gölge yakında büyük ve hafif bulanık, uzakta küçük ve daha net görünür. Bu gözlem 'cisim ışığa yaklaştıkça gölge büyür' değişkenini doğrular.",
+                        "Ekran mesafesi deneyi: Aynı cismi ve ışık kaynağını sabit tutup kağıdı (ekranı) cisme yaklaştır ve uzaklaştır. Kağıt cisme yaklaştıkça gölge küçülür ve keskinleşir; uzaklaştıkça büyür ve sınırlar hafifçe yumuşar.",
+                        "Cismin şekli ve gölge şekli ilişkisi: Yuvarlak bir taş el fenerine tutulduğunda duvarda yuvarlak gölge oluşur; üçgen bir karton tutulduğunda üçgen gölge oluşur. Cismin şekli, gölgenin şeklini doğrudan belirler.",
+                        "Güneş açısı ve gölge uzunluğu: Sabah ve akşam güneş ufka yakın olduğundan binalar ve ağaçlar uzun gölgeler oluşturur. Öğlen güneş tepedeyken aynı cisimler kısa gölge oluşturur — ışık açısı değiştikçe cismin ekrana 'uzaklığı' değişmiş gibi etki eder."
+                    ],
+                    "real_life_connections": [
+                        "Önceki konu bağlantısı (Işığın doğrusal yayılımı): Gölge büyüklüğünü etkileyen değişkenlerin tamamı, ışığın düz çizgilerle yayılmasından kaynaklanır. Işık eğriler çizseydı bu değişkenler farklı sonuçlar verirdi; bu bağlantı önceki kazanımı güçlendirir.",
+                        "Sonraki konu köprüsü (Güneş ve Ay tutulmaları): Tutulmalarda Ay ile Güneş arasındaki mesafe değişkeninin devreye girmesi, tam gölge büyüklüğünü etkiler. Bu, tam gölge değişkenlerini öğrendikten sonra tutulmaları çok daha anlamlı kılar.",
+                        "Günlük hayat — güneş paneli tasarımı: Mühendisler güneş panellerini tasarlarken gölgenin hangi koşullarda oluşacağını hesaplar. Yakınındaki binaların tam gölgesine düşen panel verim üretemez; bu yüzden gölge analizi mühendislik tasarımının temel parçasıdır.",
+                        "Günlük hayat — tiyatro ve sahne ışıklandırması: Tiyatro ışıkçıları, aktörün sahnedeki konumuna göre gölgenin nereye düşeceğini hesaplar. Işık kaynağı ile aktör arasındaki mesafeyi değiştirerek dramatik gölge efektleri yaratırlar."
+                    ],
+                    "notebook": {
+                        "definition": "Tam gölgeyi etkileyen değişkenler; ışık kaynağının büyüklüğü ve uzaklığı, cismin büyüklüğü ve şekli ile cisim-ekran mesafesidir — bu değişkenler tam gölgenin boyutunu, şeklini ve keskinliğini belirler.",
+                        "summary_items": [
+                            "Işık kaynağı küçükse → gölge keskin.",
+                            "Cisim ışığa yakınsa → gölge büyük.",
+                            "Ekran uzaksa → gölge büyük ama bulanık.",
+                            "Cismin şekli → gölgenin şeklini belirler."
+                        ],
+                        "sections": [
+                            {
+                                "title": "Değişkenler ve Etkileri",
+                                "items": [
+                                    "Işık kaynağının büyüklüğü: Küçük kaynak → keskin gölge; büyük kaynak → bulanık kenar.",
+                                    "Cismin ışığa uzaklığı: Yakın cisim → büyük gölge; uzak cisim → küçük gölge.",
+                                    "Cismin büyüklüğü: Büyük cisim → büyük gölge; küçük cisim → küçük gölge.",
+                                    "Ekranın cisme uzaklığı: Uzak ekran → büyük gölge; yakın ekran → küçük ve net gölge."
+                                ],
+                                "note": "Her değişkeni tek başına değiştirip diğerlerini sabit tutmak, bilimsel deney mantığının temelidir."
+                            },
+                            {
+                                "title": "Veri Kayıt Tablosu",
+                                "items": [
+                                    "Değiştirilen değişken | Gölge boyutu | Gölge netliği",
+                                    "Cisim ışığa yaklaştı → Büyüdü | Hafif bulanıklaştı",
+                                    "Ekran uzaklaştı → Büyüdü | Hafif bulanıklaştı",
+                                    "Işık kaynağı büyütüldü → Aynı kaldı | Bulanıklaştı"
+                                ],
+                                "note": "Bu tablo formatını öğrencilerin defterine çizdir; deney sırasında dolduracaklar."
+                            },
+                            {
+                                "title": "Hatırla",
+                                "items": [
+                                    "Değişken deneyi = Bir seferde yalnızca bir şeyi değiştir.",
+                                    "Gölge hem büyüyebilir hem de keskinliğini kaybedebilir.",
+                                    "Cismin şekli, gölgenin şeklini belirler."
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "activities": {
+                    "cards": [
+                        {
+                            "item": "Cisim ışık kaynağına yaklaştırıldığında tam gölge büyür; uzaklaştırıldığında küçülür.",
+                            "label": "Cisim-Işık Mesafesi"
+                        },
+                        {
+                            "item": "Ekran (yüzey) cisimden uzaklaştırıldığında tam gölge büyür; yaklaştırıldığında küçülür ve netleşir.",
+                            "label": "Ekran Mesafesi"
+                        },
+                        {
+                            "item": "Küçük ve noktasal ışık kaynağı keskin sınırlı tam gölge oluştururken, geniş ışık kaynağı gölgenin kenarlarını yumuşatır.",
+                            "label": "Işık Kaynağının Büyüklüğü"
+                        },
+                        {
+                            "item": "Cismin şekli tam gölgenin şeklini belirler: yuvarlak cisim yuvarlak gölge, üçgen cisim üçgen gölge oluşturur.",
+                            "label": "Cismin Şekli"
+                        },
+                        {
+                            "item": "Deney yaparken yalnızca bir değişkeni değiştir; diğerlerini sabit tut. Bu bilimsel kontrol ilkesidir.",
+                            "label": "Bilimsel Deney İlkesi"
+                        }
+                    ]
+                },
+                "assessment": {
+                    "evaluation_tasks": [
+                        "Aşağıdaki durumda ne olur tahmin et ve açıkla: El fenerini sabit tutarken elini fenerden uzaklaştırıyorsun — duvardaki gölge büyür mü küçülür mü, neden?",
+                        "Defterine bir deney tablosu çiz: Değiştirilen Değişken / Gölge Boyutu / Gölge Netliği — en az 3 satır doldur."
+                    ]
+                },
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Bu step için fiziksel bir deney düzeneği kurun: masa üzerine el feneri, önüne kalem, arkasına beyaz kağıt koyun. Öğrencilerden birer birer gelerek tek bir değişkeni değiştirmelerini isteyin; her değişikliği sınıfın gözlemlemesi için 5–10 saniye bekleyin. Bu deney 8–10 dakika alır ama değişkenler kavramını somutlaştırır.",
+                        "Notebook'un 'Veri Kayıt Tablosu' bölümünü önce boş olarak deftere yazdırın; deney boyunca öğrencilerden gözlemlerini tabloya işlemeleri isteyin. Bu bilimsel veri kayıt alışkanlığı Kazanım b'yi doğrudan karşılar.",
+                        "Cisim şekli-gölge şekli ilişkisini göstermek için farklı şekillerde kesilmiş kartonlar hazırlayın (daire, üçgen, yıldız). Her şekli fenere tutun; öğrencilerden gölgenin şeklini tahmin etmelerini isteyin. Bu görsel aktivite çok etkilidir.",
+                        "Değişkenleri anlatırken tahtaya 3 sütunlu tablo açın: Değiştirilen / Sabit Tutulanlar / Gözlem. Deney yapılırken bu tabloyu canlı olarak doldurun."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler cismi ekrana yaklaştırınca gölgenin büyüyeceğini sanabilir çünkü 'yakınlaştırma = büyütme' sezgisi güçlüdür. Doğrusu: Cisim ekrana yaklaştırıldığında gölge küçülür ve keskinleşir; büyüyen gölge için cismin ışık kaynağına yaklaştırılması ya da ekranın cismeden uzaklaştırılması gerekir. Bunu deneyle mutlaka gösterin.",
+                        "Öğrenciler birden fazla değişkeni aynı anda değiştirirlerse de geçerli sonuç alabileceklerini sanabilir çünkü 'deney = bir şeyler değiştirmek' olarak algılarlar. Doğrusu: Bilimsel deneyde yalnızca bir değişken değiştirilir, diğerleri sabit tutulur; aksi hâlde hangi değişkenin etkili olduğu bilinemez.",
+                        "Öğrenciler büyük cismin her zaman daha büyük gölge oluşturacağını sanabilir çünkü sezgisel olarak büyük cisim = büyük gölge diye düşünürler. Doğrusu: Büyük bir cisim uzakta tutulursa küçük bir cismin yakında oluşturduğu gölgeden daha küçük gölge oluşturabilir; mesafe, büyüklük kadar belirleyicidir."
+                    ],
+                    "classroom_discussion": [
+                        "El fenerini sabit tutarken cismi ışığa yaklaştırıyorsunuz — gölge büyüyor. Ekranı da aynı anda cismeden uzaklaştırırsanız gölge ne olur? (Beklenen: İki etki de gölgeyi büyüttüğünden gölge çok daha hızlı büyür — değişkenler toplanır.)",
+                        "Güneş ışığında kendi gölgenizi düşünün: Sabah veya akşam gölgeniz neden uzun, öğlen neden kısa? Hangi değişken değişiyor? (Beklenen: Güneşin açısı değişiyor; ışığın cisme çarpış açısı değiştiğinden etkin mesafe ve gölge boyutu değişiyor.)",
+                        "Eğer cisim ile ekranı sabitlersek ve yalnızca ışık kaynağını değiştirirsek ne değişir? (Beklenen: Işık kaynağı büyürse gölgenin boyutu çok değişmez ama sınırları bulanıklaşır; küçük kaynak keskin, büyük kaynak yumuşak gölge oluşturur.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (3–5 dk): Kağıda bir ışık kaynağı, cisim ve ekran çiz. Işık kaynağını veya cismi farklı konumlara taşıdığında gölgenin nasıl değişeceğini çizerek göster; en az 3 farklı konum dene.",
+                        "Evde deney (malzemeli): Gece odanda el fenerini sabitle ve önüne bir fincanı koy. Duvara bakan bir kağıda gölgenin boyutunu çiz. Sonra fincana 5 cm yaklaş, 5 cm uzaklaş ve ekranı (kağıdı) cisme yaklaştır-uzaklaştır. Her durumda gölge boyutunu ölç ve tablona kaydet.",
+                        "İleri düzey / meraklı öğrenci için: Güneş tutulması sırasında Ay'ın Dünya'ya olan uzaklığı değişiyor. Ay, Dünya'ya en yakın noktasında tam gölge geniş ve Dünya'ya ulaşabiliyor (tam güneş tutulması). Ay en uzak noktasındayken tam gölge Dünya'ya ulaşamıyor ve halka şeklinde tutulma oluşuyor. Bu durumu tam gölge değişkenleriyle açıkla."
+                    ]
+                }
+            },
+            {
+                "id": "step4",
+                "type": "scenario_activity",
+                "title": "Gölge Dedektifi: Doğru Mu Yanlış Mı?",
+                "duration_minutes": 10,
+                "content": {
+                    "explanation": "",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "scenario": "Defne, bilim fuarı için el feneri ile gölge deneyi yapıyor. Fenerini masaya sabitledi ve önüne tahta bir kutu koydu. Duvara bakan kağıtta oluşan gölgenin boyutunu ölçtü: 15 cm. Sonra kutuyu fenere 5 cm daha yaklaştırdı ve gölgeyi tekrar ölçtü. Gölge bu sefer 22 cm çıktı. Öğretmeni 'Şimdi hem kutuyu fenere yaklaştır hem de ekranı (kağıdı) cismeden uzaklaştır — tahmin et, gölge ne kadar olur?' diye sordu. Defne ne söylemelidir?",
+                    "choices": [
+                        {
+                            "text": "Gölge küçülür çünkü iki değişken birbirini dengeler.",
+                            "correct": false,
+                            "feedback": "Aslında her iki değişken de gölgeyi büyütür: cismi ışığa yaklaştırmak gölgeyi büyütür, ekranı cismeden uzaklaştırmak da gölgeyi büyütür. İki etki birbirini dengeleyen değil, toplayandır. Doğru cevap için değişkenlerin etkilerini ayrı ayrı düşün."
+                        },
+                        {
+                            "text": "Gölge çok daha büyük olur çünkü her iki değişken de gölgeyi büyütür.",
+                            "correct": true,
+                            "feedback": "Harika! Cisim ışık kaynağına yaklaştırıldığında tam gölge büyür; aynı anda ekran da cismeden uzaklaştırıldığında gölge yüzeyde daha büyük görünür. İki büyütücü etki aynı anda uygulandığında sonuç, her birinin tek başına yapacağından daha büyük olur."
+                        },
+                        {
+                            "text": "Gölge değişmez çünkü kutu aynı kutu, ışık da aynı ışık.",
+                            "correct": false,
+                            "feedback": "Cisim ve ışık aynı kalsa da konumları değişti — bu tam gölgeyi etkileyen değişkenler arasında en kritik olanıdır. Tam gölge yalnızca cismin ve ışığın ne olduğuna değil, aralarındaki mesafeye ve ekrana olan uzaklığa da bağlıdır."
+                        }
+                    ]
+                },
+                "assessment": {
+                    "evaluation_tasks": [
+                        "Defne'nin deneyinde yalnızca 'ekran mesafesi' değişkenini değiştirip diğerlerini sabit tutsaydı, bilimsel deney prensibi korunmuş olur muydu? Neden? Yaz."
+                    ]
+                },
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Senaryoyu okurken öğrencilerden tahmini gözlerini kapatıp düşünmelerini, ardından üç seçenek gösterildiğinde ellerini kaldırarak oy vermelerini isteyin. Bu yöntemi kullanmak sınıfın tamamını aktif tutar.",
+                        "Doğru cevabı açıklarken tahtaya iki ok çizin: biri 'cisim ışığa yaklaştı → gölge büyüdü', diğeri 'ekran uzaklaştı → gölge büyüdü'. İki okun aynı yönü gösterdiğini vurgulayın.",
+                        "Yanlış cevap veren öğrencilere hemen 'yanlış' demek yerine 'hangi değişkeni sabit saydın?' diye sorun; bu sorgulama Bloom analiz basamağını harekete geçirir."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler iki değişkenin birbirini dengeleyeceğini sanabilir çünkü 'yaklaştır-uzaklaştır' işlemlerinin zıt yönde olduğunu düşünürler. Doğrusu: Her iki değişken de gölgeyi büyütür; 'yaklaştır' ve 'uzaklaştır' ifadeleri farklı nesnelere uygulanmaktadır (cisim ışığa yaklaşır, ekran cisimden uzaklaşır).",
+                        "Öğrenciler 'cisim aynı, ışık aynı' gerekçesiyle gölgenin değişmeyeceğini sanabilir. Doğrusu: Konumlar değiştiğinde bile tam gölge değişir; değişkenler, ne olduğu değil nerede olduğuyla ilgilidir.",
+                        "Öğrenciler deneyde iki değişkeni aynı anda değiştirmenin sorun olmadığını sanabilir. Doğrusu: Bilimsel deneyde kontrol değişkenleri sabit tutulur; iki değişkeni aynı anda değiştirmek hangi değişkenin etkili olduğunu belirsizleştirir."
+                    ],
+                    "classroom_discussion": [
+                        "Defne deneyde iki değişkeni aynı anda değiştirdi — bu bilimsel bir hata mıdır? Nedenini açıkla. (Beklenen: Evet, hata; bilimsel deneyde tek bir değişken değiştirilmeli, diğerleri sabit tutulmalı.)",
+                        "Eğer Defne yalnızca 'cisim ışığa yaklaştı' değişkenini kullansaydı, gölge yine bu kadar büyük olur muydu? (Beklenen: Hayır, tek değişken etkisi daha az; iki etki birleştiğinde büyüme daha fazla olur.)",
+                        "Bilim fuarında gölgeyi olabildiğince büyük göstermek isteyen Defne hangi değişkenleri nasıl ayarlamalıdır? (Beklenen: Cismi ışığa yaklaştır + ekranı cismeden uzaklaştır + büyük cisim kullan.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (3 dk): Senaryodaki tüm değişkenleri tersine çevir (cismi uzaklaştır + ekranı yaklaştır) — tahminini yaz, ne olur?",
+                        "Evde deney: Aynı fincanı hem ışığa yaklaştır hem de ekranı uzaklaştır; gölge nasıl değişiyor? Tek değişken deneyi ile karşılaştır.",
+                        "İleri düzey: 'Kontrol deneyi' nedir, neden önemlidir? Bilimsel yöntem araştırması yap."
+                    ]
+                }
+            },
+            {
+                "id": "step5",
+                "type": "mini_game",
+                "title": "Gölge Tahmin Oyunu",
+                "duration_minutes": 8,
+                "content": {
+                    "explanation": "",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "mini_game": [
+                        {
+                            "situation": "El fenerini açtın ve önüne yuvarlak bir taş koydun. Duvarda ne şeklinde bir gölge görürsün?",
+                            "correct_answer": "Yuvarlak gölge",
+                            "feedback": "Doğru! Cismin şekli tam gölgenin şeklini belirler. Yuvarlak taş, yuvarlak tam gölge oluşturur."
+                        },
+                        {
+                            "situation": "Fenerini sabit tut, elini fenere çok yaklaştır. Gölge büyür mü küçülür mü?",
+                            "correct_answer": "Büyür",
+                            "feedback": "Evet! Cisim ışık kaynağına yaklaştıkça ışık daha geniş alanda engellenir ve tam gölge büyür."
+                        },
+                        {
+                            "situation": "Gölgenin düştüğü kağıdı (ekranı) cisimden uzaklaştırıyorsun. Gölge ne olur?",
+                            "correct_answer": "Büyür",
+                            "feedback": "Kesinlikle! Ekran cismeden uzaklaştıkça gölge yüzeyde daha büyük görünür; ışın açılarının yayılımı nedeniyle alan büyür."
+                        },
+                        {
+                            "situation": "Küçük bir el feneri yerine büyük bir masa lambası kullandın. Tam gölgenin kenarları ne olur?",
+                            "correct_answer": "Bulanıklaşır",
+                            "feedback": "Doğru! Büyük ışık kaynağı daha geniş yarı gölge bölgesi oluşturur ve tam gölgenin sınırları keskinliğini yitirir."
+                        },
+                        {
+                            "situation": "Güneş tutulması sırasında Ay'ın tam gölgesinin (umbrasının) içine girdin. Güneşi görebilir misin?",
+                            "correct_answer": "Hayır, göremezsin",
+                            "feedback": "Tam gölge (umbra), hiç ışığın ulaşamadığı bölgedir. Umbra içindeyken Güneş tamamen Ay tarafından örtülmüştür — bu tam güneş tutulmasıdır."
+                        },
+                        {
+                            "situation": "Opak bir kare karton el fenerine tutulduğunda tam gölge hangi şekilde oluşur?",
+                            "correct_answer": "Kare gölge",
+                            "feedback": "Evet! Cismin şekli gölgenin şeklini doğrudan belirler. Kare karton, kare tam gölge oluşturur."
+                        },
+                        {
+                            "situation": "Tam gölge mi yoksa yarı gölge mi: hiç ışık ulaşmayan, keskin sınırlı, en koyu bölge?",
+                            "correct_answer": "Tam gölge (umbra)",
+                            "feedback": "Harika! Tam gölge (umbra), ışık kaynağından gelen tüm ışınların engellendiği, hiç ışık almayan ve keskin sınırlı karanlık bölgedir."
+                        }
+                    ]
+                },
+                "assessment": {
+                    "evaluation_tasks": [
+                        "Mini oyundaki 7 durumdan en az 5 tanesini doğru yanıtla ve her birinde neden o cevabı verdiğini bir cümle ile açıkla."
+                    ]
+                },
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Mini oyunu sınıf yarışması formatında yapın: öğrencileri iki gruba ayırın, her gruba sırayla durum okuyun. Doğru cevap veren grup puan kazanır. Bu format enerjiyi yüksek tutar ve 8 dakikada tamamlanır.",
+                        "Her doğru cevaptan sonra feedback'i yüksek sesle okuyun ve kısaca pekiştirin; özellikle 5 ve 6. durumların feedback'i daha uzundur, bunları yavaş ve vurgulu okuyun.",
+                        "Yanlış cevap veren gruba ipucu olarak 'hangi değişken bu durumda değişiyor?' diye sorun; doğrudan cevabı vermeyin."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler 7. soruya 'yarı gölge' yanıtı verebilir çünkü 'yarı' kelimesi 'daha az' anlamı taşıdığından daha hafif bir gölge gibi algılanır. Doğrusu: Yarı gölge kısmen ışık alan bölgedir, tam gölge ise hiç ışık almaz — 'tam' ifadesi yoğunluğu değil bütünlüğü ifade eder.",
+                        "Öğrenciler güneş tutulması sorusunda 'kısmen görünür' diyebilir çünkü tutulma görsellerinde hep Güneş'in bir kısmı görünür şekilde resmedilir. Doğrusu: Tam gölge bölgesi (umbra) içinden Güneş tamamen görünmez; kısmi görüntü yarı gölge bölgesiyle ilgilidir."
+                    ],
+                    "classroom_discussion": [
+                        "Mini oyundaki hangi soru en zoruydu? Neden? (Beklenen: Işık kaynağının büyüklüğüyle ilgili soru — yarı gölge etkisi sezgisel değil.)",
+                        "Tam gölge ve yarı gölgeyi bir cümleyle özetleyebilir misin? (Beklenen: Tam gölge hiç ışık almaz ve keskin sınırlıdır; yarı gölge kısmen ışık alır ve kenarları bulanıktır.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (2 dk): Kendi kendin için 2 yeni 'durum' yaz; sınıf arkadaşına sor.",
+                        "Evde: Mini oyun formatında aile üyelerine 3 soru sor; doğru cevap verebiliyorlar mı?",
+                        "İleri düzey: Yedi durumun hepsini 'değişkene göre' sınıflandır: hangileri cisim-ışık mesafesiyle, hangileri ekran mesafesiyle, hangileri ışık kaynağı büyüklüğüyle ilgili?"
+                    ]
+                }
+            },
+            {
+                "id": "step6",
+                "type": "critical_thinking",
+                "title": "Tam Gölgeyi Düşün: Analiz ve Yorum",
+                "duration_minutes": 12,
+                "content": {
+                    "explanation": "",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "discussion_prompts": [
+                        "Güneş tutulması sırasında bazı bölgelerde tam karanlık yaşanırken bazı bölgelerde yalnızca kısmi karanlık yaşanıyor. Tam gölge ve yarı gölge kavramlarını kullanarak bu farkı açıkla. Bunu sadece 'daha yakın veya uzak olduğu için' diyerek geçiştirme — Ay'ın tam gölge bölgesi (umbra) ve yarı gölge bölgesi (penumbra) arasındaki farkı tam olarak kullan.",
+                        "Bir mum ışığının önüne elin tutulduğunda duvarda hem koyu hem de bulanık kenarlı bir gölge oluşuyor. Mum ışığı tek bir noktadan gelmiyor — alev geniş. Bu durumu ışık kaynağının büyüklüğü değişkeniyle açıkla: tam gölge ve yarı gölge bölgelerini diyagramda gösterebilir misin?",
+                        "Eğer ışık kaynakları düz değil eğri çizgilerle yayılsaydı (yani bükülebilseydi), tam gölge hâlâ oluşur muydu? Neden ya da neden olmazdı? Düşünceni gerekçelendir."
+                    ],
+                    "evaluation_tasks": [
+                        "Aşağıdaki durumu analiz et: Tam gölgenin boyutunu maksimuma çıkarmak istiyorsun ve elimde üç değişken var — cisim konumu, ekran konumu, ışık kaynağı büyüklüğü. Her değişkeni nasıl ayarlarsın? Gerekçeni yaz.",
+                        "İki farklı deney sonucu var: Deney 1'de cisim ışığa çok yakın ve ekran uzak — gölge çok büyük. Deney 2'de cisim ışıktan uzak ve ekran yakın — gölge küçük. Her iki deneyde de aynı cisim kullanılmış. Bu iki deneyin sonuçlarını karşılaştır ve 'gölge boyutunu en çok hangi değişken etkiler?' sorusunu yanıtla."
+                    ]
+                },
+                "assessment": {
+                    "evaluation_tasks": [
+                        "Deney 1 ile Deney 2'yi karşılaştır ve 'gölge boyutunu en çok hangi değişken etkiler?' sorusunu 3–5 cümle ile yanıtla.",
+                        "Tam gölgeyi maksimuma çıkarmak için gereken üç değişken ayarını listele ve her ayarın neden gölgeyi büyüttüğünü açıkla."
+                    ]
+                },
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Birinci soruyu sınıfta sesli tartışma olarak yapın: Bir öğrenciden 'tam gölge bölgesini' açıklamasını, başka bir öğrenciden 'yarı gölge bölgesini' açıklamasını isteyin; sonra beraber güneş tutulması görseliyle eşleştirin.",
+                        "İkinci soru için öğrencilerden kağıda kaba bir diyagram çizmelerini isteyin: bir alev, önünde el, arkada duvarda hem koyu hem bulanık kenarlı gölge. Çizim yapma süreci kavramı somutlaştırır.",
+                        "Üçüncü soru hipotetik ve açık uçludur; sınıfta iki farklı görüş oluşmasına izin verin. Doğru/yanlış yok — gerekçe önemli. Bu Bloom analiz basamağının en üst noktasıdır."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler güneş tutulmasını 'Ay güneşi tamamen kapatıyor' olarak basitleştirebilir. Doğrusu: Ay yalnızca dar bir umbra bölgesinde güneşi tamamen örter; bu bölgenin dışında kalan bölgeler farklı düzeyde ışık alır ve bunu yarı gölge kavramıyla açıklamak gerekir.",
+                        "Öğrenciler 'ışık eğri gitseydi gölge oluşmaz mıydı?' sorusuna 'gölge hiç oluşmaz' diyebilir. Doğrusu: Işık eğri gidebilseydi engelin etrafından dolaşabilirdi — bu durumda tam gölge çok küçülür ya da hiç oluşmayabilirdi ama bu varsayımsal bir durumdur; gerçekte ışık düz ilerler.",
+                        "Öğrenciler değerlendirme görevinde 'hangi değişken en çok etkiler?' sorusuna kolay bir yanıt arayabilir. Doğrusu: Bağlama göre farklı değişkenler baskın çıkabilir; önemli olan öğrencinin kendi gerekçesini tutarlı biçimde sunmasıdır."
+                    ],
+                    "classroom_discussion": [
+                        "Tam gölgenin sınırları keskin, yarı gölgenin bulanık — bu ne anlama geliyor? Gerçek hayatta bunu nerede görürsün? (Beklenen: Öğlen güneş ışığında ağaç gölgesinin ortası keskin, kenarları bulanık.)",
+                        "Eğer ışık her yöne eşit şekilde yayılmasaydı (yani yalnızca bir yönde yayılsaydı), tam gölge oluşur muydu? (Beklenen: Oluşurdu çünkü engel o yöndeki ışığı bloke ederdi; ama gölgenin şekli çok farklı olurdu.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (3–5 dk): Kağıda 'mum + el + duvar' diyagramı çiz; hem tam gölge hem yarı gölge bölgesini gölgele ve etiketle.",
+                        "Evde araştırma: 'Halka şeklinde güneş tutulması' nedir? Neden tam güneş tutulmasından farklıdır? Tam gölge değişkenleriyle bağlantısını açıkla.",
+                        "İleri düzey: 'Güneş tutulmasında umbra neden Dünya yüzeyinde yalnızca küçük bir noktaya sığıyor?' sorusunu Ay-Güneş-Dünya arasındaki mesafe değişkenleriyle araştır ve bir paragraf yaz."
+                    ]
+                }
+            },
+            {
+                "id": "step7",
+                "type": "word_bank",
+                "title": "Kelime Bankası: Tam Gölge Kavramları",
+                "duration_minutes": 7,
+                "content": {
+                    "explanation": "",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "word_bank": {
+                        "words": [
+                            "umbra",
+                            "penumbra",
+                            "opak",
+                            "ekrana",
+                            "ışık kaynağına",
+                            "keskin",
+                            "büyür",
+                            "küçülür",
+                            "saydam",
+                            "yarı gölge",
+                            "şeklini"
+                        ],
+                        "template": "Tam gölgeye Latincede ____ denir. Tam gölgenin sınırları ____ ve belirgindir. Işığı tamamen engelleyen cisimlere ____ cisim denir. Cisim ____ yaklaştırıldığında tam gölge ____. Ekran cismeden uzaklaştırıldığında tam gölge ____. Cismin şekli, tam gölgenin ____ belirler.",
+                        "blanks": [
+                            {
+                                "id": "blank1",
+                                "correct_answer": "umbra"
+                            },
+                            {
+                                "id": "blank2",
+                                "correct_answer": "keskin"
+                            },
+                            {
+                                "id": "blank3",
+                                "correct_answer": "opak"
+                            },
+                            {
+                                "id": "blank4",
+                                "correct_answer": "ışık kaynağına"
+                            },
+                            {
+                                "id": "blank5",
+                                "correct_answer": "büyür"
+                            },
+                            {
+                                "id": "blank6",
+                                "correct_answer": "büyür"
+                            },
+                            {
+                                "id": "blank7",
+                                "correct_answer": "şeklini"
+                            }
+                        ]
+                    }
+                },
+                "assessment": {
+                    "evaluation_tasks": [
+                        "Kelime bankasındaki tüm boşlukları doğru doldur. Ardından 'penumbra' ve 'saydam' kelimelerini kullanarak iki ayrı cümle yaz."
+                    ]
+                },
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Kelime bankasını bireysel değil çift çalışması olarak yapın: iki öğrenci birlikte boşlukları doldurmaya çalışır, ardından çiftler sınıfla paylaşır. Bu sosyal öğrenme hem motivasyonu artırır hem de eksiklikleri ortaya çıkarır.",
+                        "Yanıltıcı kelimelerden 'penumbra' ve 'saydam'ı özellikle vurgulayın: öğrencilerin neden bu kelimeleri seçmediğini açıklamalarını isteyin — bu negatif örnek sorgulaması kavramı güçlendirir.",
+                        "Boşluk 4 ve 5'in her ikisinin de 'büyür' olduğunu öğrenciler fark ettiğinde 'aynı mı?' diye sorgulayacaklar — bu aslında iki farklı değişkenin (cisim konumu ve ekran konumu) farklı sebeplerle aynı sonucu vermesi; bu noktayı vurgulayın."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler boşluk 5'e 'küçülür' yazabilir çünkü 'uzaklaştırma' eylemini 'küçülme' ile eşleştiriyor olabilirler. Doğrusu: Ekran cismeden uzaklaştığında ışın açılarının yayılımı nedeniyle gölge yüzeyde daha büyük görünür.",
+                        "Öğrenciler 'saydam' kelimesini 'opak' ile karıştırabilir çünkü her ikisi de ışıkla ilişkili kavramlardır. Doğrusu: Saydam cisimler ışığı geçirir (cam gibi) ve tam gölge oluşturmaz; opak cisimler ışığı tamamen engeller ve tam gölge oluşturur.",
+                        "Öğrenciler 'penumbra' kelimesini boşluk 1'e yerleştirebilir çünkü hem umbra hem penumbra Latince kökenlidir ve gölgeyle ilgilidir. Doğrusu: Umbra tam gölge, penumbra ise yarı gölge için kullanılan terimdir."
+                    ],
+                    "classroom_discussion": [
+                        "Listede hem 'büyür' hem 'küçülür' var — hangi durum için hangisini kullandınız ve neden? (Beklenen: Cisim ışığa yaklaştığında ve ekran uzaklaştığında büyür; tersine küçülür.)",
+                        "'Saydam' kelimesi neden tam gölge cümlesinde kullanılamaz? (Beklenen: Saydam cisimler ışığı geçirir, tam gölge oluşturmaz; opak cisimler ışığı engeller.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (2 dk): Kelime bankasındaki tüm kelimeleri kullanarak kısa bir hikâye yaz.",
+                        "Evde: Bu dersin anahtar kelimelerinden 6 tanesini seç ve her biri için bir cümle yaz; ertesi gün getir.",
+                        "İleri düzey: 'Umbra' ve 'penumbra' kelimelerinin Latince köklerini araştır; 'umbra'nın başka hangi İngilizce kelimelerde yaşadığını bul (örn. umbrella)."
+                    ]
+                }
+            },
+            {
+                "id": "step8",
+                "type": "word_bank",
+                "title": "Kelime Bankası: Değişkenler ve Veri",
+                "duration_minutes": 6,
+                "content": {
+                    "explanation": "",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "word_bank": {
+                        "words": [
+                            "değişken",
+                            "sabit",
+                            "büyüdüğünde",
+                            "küçüldüğünde",
+                            "kaydedilmeli",
+                            "bilimsel",
+                            "noktasal",
+                            "bulanıklaşır"
+                        ],
+                        "template": "Deneyde yalnızca bir ____ değiştirilmeli, diğerleri ____ tutulmalıdır. Işık kaynağı ____ (küçüldükçe) gölgenin sınırları keskinleşir. Işık kaynağı büyüdükçe tam gölgenin kenarları ____. Deney sırasında elde edilen veriler sistematik biçimde ____. Bu, ____ deney yapmanın temelidir.",
+                        "blanks": [
+                            {
+                                "id": "blank1",
+                                "correct_answer": "değişken"
+                            },
+                            {
+                                "id": "blank2",
+                                "correct_answer": "sabit"
+                            },
+                            {
+                                "id": "blank3",
+                                "correct_answer": "küçüldüğünde"
+                            },
+                            {
+                                "id": "blank4",
+                                "correct_answer": "bulanıklaşır"
+                            },
+                            {
+                                "id": "blank5",
+                                "correct_answer": "kaydedilmeli"
+                            },
+                            {
+                                "id": "blank6",
+                                "correct_answer": "bilimsel"
+                            }
+                        ]
+                    }
+                },
+                "assessment": {
+                    "evaluation_tasks": [
+                        "Kelime bankasının tüm boşluklarını doldur. Ardından kendi cümlelerinle 'kontrol değişkeni nedir?' sorusunu bir paragrafta açıkla."
+                    ]
+                },
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Bu kelime bankasını özellikle Kazanım b (veri kayıt) ile ilişkilendirin; öğrencilere 'deney yaparken veri kaydetmek neden önemli?' diye sorun.",
+                        "Boşluk 3'teki 'küçüldüğünde' yanıtı öğrencilerin kafasını karıştırabilir — 'ışık kaynağı ne zaman küçülür?' diye sorgulayabilirler. El feneri ile güneş karşılaştırmasını tekrar edin.",
+                        "'Noktasal' kelimesi yanıltıcı olarak eklenmiştir; öğrenciler bunu 3. boşluğa koyabilir. Noktasal ışık kaynağının keskin gölge oluşturduğunu hatırlatın ama 'küçüldüğünde' ile aynı anlama gelmediğini vurgulayın."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler 'sabit' yerine 'değişken' yazabilir çünkü her iki kelime de deneyle ilişkilidir. Doğrusu: Deneyde değiştirilen tek şey bağımsız değişkendir; diğer tüm koşullar sabit tutulmalıdır.",
+                        "Öğrenciler veri kaydetmenin önemini küçümseyebilir çünkü 'hatırlarım' diye düşünürler. Doğrusu: Bilimsel deneylerde gözlemler anında ve sistematik biçimde kaydedilmelidir; bellek yanıltıcı olabilir ve karşılaştırmak için yazılı veri şarttır."
+                    ],
+                    "classroom_discussion": [
+                        "Deneyde iki değişkeni aynı anda değiştirmenin ne sakıncası var? (Beklenen: Hangi değişkenin gölgeyi etkilediğini bilemeyiz.)",
+                        "Veri kaydetmek için hangi yöntemleri kullanabilirsiniz — yazı dışında? (Beklenen: Fotoğraf, çizim, video, tablo.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (2 dk): Kendi yaptığın bir deneyi düşün (mutfakta, bahçede) ve kaç değişkeni aynı anda değiştirdiğini say.",
+                        "Evde: Bir tarife göre yemek yapılırken 'değişken' ve 'sabit' olan unsurları belirle.",
+                        "İleri düzey: 'Bağımsız değişken', 'bağımlı değişken' ve 'kontrol değişkeni' kavramlarını araştır; tam gölge deneyindeki karşılıklarını bul."
+                    ]
+                }
+            },
+            {
+                "id": "step9",
+                "type": "risk_analysis",
+                "title": "Yanılgı Analizi: Tam Gölge Hakkında Yaygın Yanlış Düşünceler",
+                "duration_minutes": 10,
+                "content": {
+                    "explanation": "",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "cards": [
+                        {
+                            "misconception": "Gölge sadece güneş ışığıyla oluşur.",
+                            "risk_level": "orta risk",
+                            "why_it_happens": "Öğrenciler gölgeyi en çok güneşli ortamda deneyimledikleri için gölge ile güneşi özdeşleştirirler.",
+                            "truth": "Tam gölge herhangi bir ışık kaynağıyla oluşabilir: el feneri, masa lambası, mum veya güneş. Önemli olan bir ışık kaynağının ve ışığı tamamen engelleyen opak bir cismin bulunmasıdır.",
+                            "fix_tip": "Sınıfta el feneriyle tam gölge oluşturun ve 'Bu gölge güneş ışığından mı oluştu?' diye sorun — bu somut deneyim yanılgıyı anında çözer.",
+                            "mini_check": "Gece odanda el fenerini yakıp elinle önüne tutsan tam gölge oluşur mu?"
+                        },
+                        {
+                            "misconception": "Cismi ekrana yaklaştırınca gölge büyür.",
+                            "risk_level": "yüksek risk",
+                            "why_it_happens": "Öğrenciler 'yakınlaştırmak = büyütmek' sezgisini kullanırlar; cismin ekrana değil ışık kaynağına yaklaştırılması gerektiğini henüz içselleştirememişlerdir.",
+                            "truth": "Cismi ekrana yaklaştırınca tam gölge küçülür ve keskinleşir. Gölgeyi büyütmek için cismi ışık kaynağına yaklaştırmak veya ekranı cismeden uzaklaştırmak gerekir.",
+                            "fix_tip": "El feneri deneyinde öğrenciden önce cisme, sonra ekrana dokunmasını isteyin ve her birinin ne yaptığını ayrı ayrı gözlemlemesini sağlayın.",
+                            "mini_check": "Fenerini sabit tut, kağıdı (ekranı) eline dokundur — gölge büyür mü küçülür mü?"
+                        },
+                        {
+                            "misconception": "Tam gölge ile tam karanlık aynı şeydir.",
+                            "risk_level": "orta risk",
+                            "why_it_happens": "Her iki kavram da 'karanlık' sözcüğü etrafında döner ve öğrenciler aralarındaki ince farkı göremez.",
+                            "truth": "Tam gölge, belirli bir ışık kaynağına göre tanımlanır — o kaynaktan hiç ışın gelmeyen bölgedir ama başka ışık kaynakları olabilir. Tam karanlık ise hiç ışık kaynağı olmayan ortamdır. Tam gölge, başka ışık kaynaklarının bulunduğu bir ortamda bile oluşabilir.",
+                            "fix_tip": "Bir odada hem tavan lambası hem el fenerini açın; el fenerinin önüne el tutunca duvarda oluşan gölgenin içi hiç karanlık mı sorusu üzerinden tartışın.",
+                            "mini_check": "Hem tavan lambası hem el feneri açık bir odada el fenerine elinle tutsan — tam gölge bölgesinde hiç ışık olmaz mı?"
+                        },
+                        {
+                            "misconception": "Büyük cisimler her zaman daha büyük gölge oluşturur.",
+                            "risk_level": "yüksek risk",
+                            "why_it_happens": "Öğrenciler 'cisim büyük = gölge büyük' sezgisini kullanırlar; mesafenin etkisini göz ardı ederler.",
+                            "truth": "Büyük bir cisim uzakta tutulursa küçük bir cismin yakında oluşturduğu gölgeden daha küçük gölge oluşturabilir. Gölge boyutunu yalnızca cismin büyüklüğü değil, cismin ışık kaynağına olan uzaklığı da belirler.",
+                            "fix_tip": "Büyük bir karton ve küçük bir plastik kapağı aynı fenere tutun — önce her ikisini de aynı mesafede, sonra büyük kartonu uzakta tutun. Sonuçları karşılaştırın.",
+                            "mini_check": "Büyük karton uzakta, küçük plastik kapak yakında — hangisinin gölgesi daha büyük olur?"
+                        },
+                        {
+                            "misconception": "Tam gölge sadece güneş tutulmalarında oluşur; günlük hayatta oluşmaz.",
+                            "risk_level": "düşük risk",
+                            "why_it_happens": "Öğretim materyallerinde tutulma örnekleri yoğun olduğundan öğrenciler tam gölgeyi özellikle astronomik bir olayla özdeşleştirirler.",
+                            "truth": "Tam gölge, el feneri, mum, masa lambası gibi herhangi bir noktasal ışık kaynağının önüne opak bir cisim konulduğunda günlük hayatta sürekli oluşur. Kalemini el fenerine tuttuğunda oluşan keskin gölge bir tam gölgedir.",
+                            "fix_tip": "Öğrencilere 'bugün kaç kez tam gölge oluşturduğunuzu düşünün' diye sorun; okulda, evde, dışarıda karşılaştıkları örnekleri listeleyin.",
+                            "mini_check": "Masana el fenerini yaktın ve üzerine kalemi koydun — oluşan gölge tam gölge mi?"
+                        }
+                    ]
+                },
+                "assessment": {
+                    "evaluation_tasks": [
+                        "Risk analizindeki 5 yanılgıdan 2 tanesini seç ve her biri için 'Doğrusu nedir?' sorusunu kendi cümlelerinle yaz.",
+                        "Arkadaşına 'cismi ekrana yaklaştırınca gölge büyür' dese ne söylersin? Yanıtını 2–3 cümle olarak yaz."
+                    ]
+                },
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Yanılgı kartlarını sınıfa 'Doğru mu Yanlış mı?' formatında sunun: her yanılgıyı okuyun ve öğrencilerden ellerini kaldırarak 'doğru' veya 'yanlış' demeleri isteyin. Ardından doğruyu açıklayın — bu format katılımı yüksek tutar.",
+                        "Yüksek risk yanılgılarını (2. ve 4.) mutlaka deneyle gösterin; sözel açıklama yalnız başına bu yanılgıları çözmek için yeterli olmayabilir.",
+                        "Yanılgı 3 (tam gölge = tam karanlık) tartışma yoluyla ele alınmalıdır; öğrencilerin kendi örneklerini üretmesi yanılgıyı daha kalıcı biçimde çözer."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler yanılgı kartlarındaki 'doğrusu' bölümlerini okuyup 'tamam anladım' diyebilir ama kavramı henüz içselleştirmemiş olabilirler. Doğrusu: Her yanılgıyı mutlaka somut bir aktivite veya gözlemle destekleyin; bilgi sadece sözel yoldan kalıcı olmaz.",
+                        "Öğrenciler 5. yanılgıdaki 'günlük hayatta tam gölge' kavramını abartarak her karanlık bölgenin tam gölge olduğunu sanabilirler. Doğrusu: Her karanlık bölge tam gölge değildir — opak cisim ve ışık kaynağı şartları birlikte sağlanmalıdır."
+                    ],
+                    "classroom_discussion": [
+                        "Yanılgılardan hangisi sizi en çok şaşırttı? Neden? (Beklenen: Farklı öğrencilerden farklı yanıtlar; önemli olan gerekçeyi dinlemek.)",
+                        "Günlük hayatta farkında olmadan tam gölge oluştururken hiç düşündünüz mü? Bunu şimdi bilerek nasıl test edersiniz? (Beklenen: El feneri deneyi, pencere-kitap deneyi gibi somut öneriler.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (3 dk): Listede olmayan 6. bir yanılgı düşün ve sınıfla paylaş.",
+                        "Evde: Ailenizden birine bu beş yanılgıyı anlat; hangi yanılgı onların da kafasını karıştırdı?",
+                        "İleri düzey: Bu yanılgıların hangisi internet veya popüler kaynaklarda da yaygın? Bir kaynak araştır ve yanlışla."
+                    ]
+                }
+            },
+            {
+                "id": "step10",
+                "type": "quiz",
+                "title": "Tam Gölge: Ölçme ve Değerlendirme",
+                "duration_minutes": 15,
+                "content": {
+                    "explanation": "",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "quiz_questions": [
+                        {
+                            "question": "Tam gölge (umbra) hangi özellikle en iyi tanımlanır?",
+                            "options": [
+                                "Kısmen ışık alan ve kenarları bulanık olan bölge",
+                                "Tüm ışınların opak bir cisim tarafından tamamen engellenmesiyle oluşan, hiç ışık almayan karanlık bölge",
+                                "Saydam cismin arkasında oluşan açık renkli alan",
+                                "Yalnızca güneş tutulmalarında ortaya çıkan astronomi olayı"
+                            ],
+                            "correct_answer": "Tüm ışınların opak bir cisim tarafından tamamen engellenmesiyle oluşan, hiç ışık almayan karanlık bölge",
+                            "solution_text": "Tam gölge (umbra), ışık kaynağından gelen hiçbir ışının ulaşamadığı, tamamen karanlık ve keskin sınırlı bölgedir. Kısmen ışık alan bölge yarı gölgedir (penumbra)."
+                        },
+                        {
+                            "question": "Tam gölgenin sınırları neden keskin ve belirgindir?",
+                            "options": [
+                                "Cisim saydam olduğu için ışık düzgün geçer",
+                                "Işık kaynağı küçük ve noktasal olduğunda, ışınlar engelden düz çizgilerle geçemez ve net bir karanlık bölge oluşturur",
+                                "Yarı gölge bölgesi çok büyük olduğundan tam gölge küçük kalır",
+                                "Ekran, cisme çok yakın tutulduğu için sınırlar belirginleşir"
+                            ],
+                            "correct_answer": "Işık kaynağı küçük ve noktasal olduğunda, ışınlar engelden düz çizgilerle geçemez ve net bir karanlık bölge oluşturur",
+                            "solution_text": "Işığın düz yayılımı nedeniyle opak cismin tam arkasına hiç ışın ulaşmaz; küçük ve noktasal bir ışık kaynağı bu keskin sınırı daha net ortaya çıkarır."
+                        },
+                        {
+                            "question": "Bir öğrenci el feneri deneyinde cismi ışık kaynağına yaklaştırıyor. Tam gölge nasıl değişir?",
+                            "options": [
+                                "Küçülür ve keskinleşir",
+                                "Değişmez çünkü cisim aynı",
+                                "Büyür",
+                                "Tamamen kaybolur"
+                            ],
+                            "correct_answer": "Büyür",
+                            "solution_text": "Cisim ışık kaynağına yaklaştıkça daha geniş bir ışın alanını engeller ve tam gölge büyür. Gölge ayrıca hafifçe bulanıklaşabilir."
+                        },
+                        {
+                            "question": "Aşağıdakilerden hangisi tam gölgeyi etkileyen değişkenler arasında YER ALMAZ?",
+                            "options": [
+                                "Cismin ışık kaynağına olan uzaklığı",
+                                "Cismin rengi",
+                                "Ekranın cisme olan uzaklığı",
+                                "Işık kaynağının büyüklüğü"
+                            ],
+                            "correct_answer": "Cismin rengi",
+                            "solution_text": "Tam gölge, ışığın engellenmesiyle oluşur; cismin rengi ışığı geçirip geçirmediğini değil, nasıl yansıtıldığını etkiler. Renk, tam gölgenin boyutunu veya netliğini değiştirmez."
+                        },
+                        {
+                            "question": "Ekran (gölgenin düştüğü yüzey) cismeden uzaklaştırıldığında tam gölge ne olur?",
+                            "options": [
+                                "Küçülür ve keskinleşir",
+                                "Değişmez",
+                                "Büyür",
+                                "Rengi açılır"
+                            ],
+                            "correct_answer": "Büyür",
+                            "solution_text": "Ekran cismeden uzaklaştıkça, ışın açılarının yayılımı nedeniyle gölge yüzeyde daha büyük alan kaplar. Aynı zamanda sınırlar hafifçe bulanıklaşmaya başlar."
+                        },
+                        {
+                            "question": "Bilim fuarı deneyi yapan Mert, tam gölgeyi inceliyor. Deneyde yalnızca cismin ışığa uzaklığını değiştirmek istiyor. Diğer tüm koşulları sabit tutması neden önemlidir?",
+                            "options": [
+                                "Daha hızlı deney yapmak için",
+                                "Yalnızca o değişkenin etkisini doğru ölçebilmek için",
+                                "Ekranın rengi değişmesin diye",
+                                "Işık kaynağının pili bitmesin diye"
+                            ],
+                            "correct_answer": "Yalnızca o değişkenin etkisini doğru ölçebilmek için",
+                            "solution_text": "Bilimsel deneyde tek bir değişken değiştirilir, diğerleri sabit tutulur. Böylece gözlemlenen sonucun hangi değişkenden kaynaklandığı kesin olarak bilinir."
+                        },
+                        {
+                            "question": "Tam gölge ile yarı gölgenin en temel farkı nedir?",
+                            "options": [
+                                "Tam gölge daha büyük, yarı gölge daha küçüktür",
+                                "Tam gölge hiç ışık almaz ve sınırları keskindir; yarı gölge kısmen ışık alır ve sınırları bulanıktır",
+                                "Tam gölge yalnızca güneş ışığıyla oluşur",
+                                "Yarı gölge tamamen karanlıktır, tam gölge kısmen aydınlıktır"
+                            ],
+                            "correct_answer": "Tam gölge hiç ışık almaz ve sınırları keskindir; yarı gölge kısmen ışık alır ve sınırları bulanıktır",
+                            "solution_text": "Temel fark ışık miktarıdır: tam gölge (umbra) sıfır ışık, keskin sınır; yarı gölge (penumbra) kısmi ışık, bulanık sınır."
+                        },
+                        {
+                            "question": "Güneş tutulması sırasında Ay'ın tam gölge bölgesinde (umbrasında) kalan insan ne görür?",
+                            "options": [
+                                "Güneşin yarısını görür",
+                                "Güneş tamamen örtülmüş olduğundan ortam karanlığa bürünür",
+                                "Ay'ı daha büyük görür",
+                                "Hiçbir değişiklik olmaz"
+                            ],
+                            "correct_answer": "Güneş tamamen örtülmüş olduğundan ortam karanlığa bürünür",
+                            "solution_text": "Tam gölge bölgesine (umbra) hiç ışın ulaşmaz. Güneş tutulmasında bu bölge içindeki gözlemci güneşi tamamen göremez ve gündüz saatlerinde gece karanlığı yaşar."
+                        }
+                    ]
+                },
+                "assessment": {
+                    "quiz_questions": [
+                        {
+                            "question": "Tam gölge (umbra) hangi özellikle en iyi tanımlanır?",
+                            "options": [
+                                "Kısmen ışık alan ve kenarları bulanık olan bölge",
+                                "Tüm ışınların opak bir cisim tarafından tamamen engellenmesiyle oluşan, hiç ışık almayan karanlık bölge",
+                                "Saydam cismin arkasında oluşan açık renkli alan",
+                                "Yalnızca güneş tutulmalarında ortaya çıkan astronomi olayı"
+                            ],
+                            "correct_answer": "Tüm ışınların opak bir cisim tarafından tamamen engellenmesiyle oluşan, hiç ışık almayan karanlık bölge",
+                            "solution_text": "Tam gölge (umbra), ışık kaynağından gelen hiçbir ışının ulaşamadığı, tamamen karanlık ve keskin sınırlı bölgedir. Kısmen ışık alan bölge yarı gölgedir (penumbra)."
+                        },
+                        {
+                            "question": "Tam gölgenin sınırları neden keskin ve belirgindir?",
+                            "options": [
+                                "Cisim saydam olduğu için ışık düzgün geçer",
+                                "Işık kaynağı küçük ve noktasal olduğunda, ışınlar engelden düz çizgilerle geçemez ve net bir karanlık bölge oluşturur",
+                                "Yarı gölge bölgesi çok büyük olduğundan tam gölge küçük kalır",
+                                "Ekran, cisme çok yakın tutulduğu için sınırlar belirginleşir"
+                            ],
+                            "correct_answer": "Işık kaynağı küçük ve noktasal olduğunda, ışınlar engelden düz çizgilerle geçemez ve net bir karanlık bölge oluşturur",
+                            "solution_text": "Işığın düz yayılımı nedeniyle opak cismin tam arkasına hiç ışın ulaşmaz; küçük ve noktasal bir ışık kaynağı bu keskin sınırı daha net ortaya çıkarır."
+                        },
+                        {
+                            "question": "Bir öğrenci el feneri deneyinde cismi ışık kaynağına yaklaştırıyor. Tam gölge nasıl değişir?",
+                            "options": [
+                                "Küçülür ve keskinleşir",
+                                "Değişmez çünkü cisim aynı",
+                                "Büyür",
+                                "Tamamen kaybolur"
+                            ],
+                            "correct_answer": "Büyür",
+                            "solution_text": "Cisim ışık kaynağına yaklaştıkça daha geniş bir ışın alanını engeller ve tam gölge büyür. Gölge ayrıca hafifçe bulanıklaşabilir."
+                        },
+                        {
+                            "question": "Aşağıdakilerden hangisi tam gölgeyi etkileyen değişkenler arasında YER ALMAZ?",
+                            "options": [
+                                "Cismin ışık kaynağına olan uzaklığı",
+                                "Cismin rengi",
+                                "Ekranın cisme olan uzaklığı",
+                                "Işık kaynağının büyüklüğü"
+                            ],
+                            "correct_answer": "Cismin rengi",
+                            "solution_text": "Tam gölge, ışığın engellenmesiyle oluşur; cismin rengi ışığı geçirip geçirmediğini değil, nasıl yansıtıldığını etkiler. Renk, tam gölgenin boyutunu veya netliğini değiştirmez."
+                        },
+                        {
+                            "question": "Ekran (gölgenin düştüğü yüzey) cismeden uzaklaştırıldığında tam gölge ne olur?",
+                            "options": [
+                                "Küçülür ve keskinleşir",
+                                "Değişmez",
+                                "Büyür",
+                                "Rengi açılır"
+                            ],
+                            "correct_answer": "Büyür",
+                            "solution_text": "Ekran cismeden uzaklaştıkça, ışın açılarının yayılımı nedeniyle gölge yüzeyde daha büyük alan kaplar. Aynı zamanda sınırlar hafifçe bulanıklaşmaya başlar."
+                        },
+                        {
+                            "question": "Bilim fuarı deneyi yapan Mert, tam gölgeyi inceliyor. Deneyde yalnızca cismin ışığa uzaklığını değiştirmek istiyor. Diğer tüm koşulları sabit tutması neden önemlidir?",
+                            "options": [
+                                "Daha hızlı deney yapmak için",
+                                "Yalnızca o değişkenin etkisini doğru ölçebilmek için",
+                                "Ekranın rengi değişmesin diye",
+                                "Işık kaynağının pili bitmesin diye"
+                            ],
+                            "correct_answer": "Yalnızca o değişkenin etkisini doğru ölçebilmek için",
+                            "solution_text": "Bilimsel deneyde tek bir değişken değiştirilir, diğerleri sabit tutulur. Böylece gözlemlenen sonucun hangi değişkenden kaynaklandığı kesin olarak bilinir."
+                        },
+                        {
+                            "question": "Tam gölge ile yarı gölgenin en temel farkı nedir?",
+                            "options": [
+                                "Tam gölge daha büyük, yarı gölge daha küçüktür",
+                                "Tam gölge hiç ışık almaz ve sınırları keskindir; yarı gölge kısmen ışık alır ve sınırları bulanıktır",
+                                "Tam gölge yalnızca güneş ışığıyla oluşur",
+                                "Yarı gölge tamamen karanlıktır, tam gölge kısmen aydınlıktır"
+                            ],
+                            "correct_answer": "Tam gölge hiç ışık almaz ve sınırları keskindir; yarı gölge kısmen ışık alır ve sınırları bulanıktır",
+                            "solution_text": "Temel fark ışık miktarıdır: tam gölge (umbra) sıfır ışık, keskin sınır; yarı gölge (penumbra) kısmi ışık, bulanık sınır."
+                        },
+                        {
+                            "question": "Güneş tutulması sırasında Ay'ın tam gölge bölgesinde (umbrasında) kalan insan ne görür?",
+                            "options": [
+                                "Güneşin yarısını görür",
+                                "Güneş tamamen örtülmüş olduğundan ortam karanlığa bürünür",
+                                "Ay'ı daha büyük görür",
+                                "Hiçbir değişiklik olmaz"
+                            ],
+                            "correct_answer": "Güneş tamamen örtülmüş olduğundan ortam karanlığa bürünür",
+                            "solution_text": "Tam gölge bölgesine (umbra) hiç ışın ulaşmaz. Güneş tutulmasında bu bölge içindeki gözlemci güneşi tamamen göremez ve gündüz saatlerinde gece karanlığı yaşar."
+                        }
+                    ]
+                },
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Quizi bireysel olarak 10–12 dakikada yaptırın; ardından 2–3 dakikada cevapları sınıfça açıklayın. Tüm sorulara cevap okumak yerine en çok hata yapılan 2–3 soruya odaklanın.",
+                        "Soru 4 (renk değişkeni) öğrencilerin kafasını karıştırabilir; bu soruyu açıklarken 'opak olmak rengiyle değil, ışığı geçirip geçirmemesiyle ilgilidir' vurgusunu yapın.",
+                        "Soru 6 (bilimsel deney) sadece fen değil, genel bilimsel düşünme becerisini ölçer; bu soruyu bağımsız bir değerlendirme konuşmasına dönüştürün."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler soru 7'de 'tam gölge daha büyük, yarı gölge daha küçük' cevabını seçebilir çünkü 'tam' sözcüğünü 'büyük' olarak yorumlarlar. Doğrusu: Tam ve yarı gölge büyüklükle değil, ışık alım miktarıyla tanımlanır.",
+                        "Öğrenciler soru 8'de güneş tutulmasında 'güneşin yarısını görür' seçeneğini işaretleyebilir çünkü kısmi tutulma görsellerini tam tutulmayla karıştırırlar. Doğrusu: Tam gölge (umbra) içinde güneş tamamen görünmez; kısmi görüntü yarı gölge bölgesiyle ilgilidir.",
+                        "Öğrenciler soru 3'te 'değişmez' cevabını verebilir çünkü 'cisim aynı kalıyor' mantığını kullanırlar. Doğrusu: Cisim aynı olsa da konumu değiştiğinde tam gölge boyutu değişir."
+                    ],
+                    "classroom_discussion": [
+                        "Quiz sonunda: Hangi soru en zordu? Nedenini açıklar mısın? (Beklenen: Farklı öğrencilerden farklı yanıtlar; bu değerlendirme süreci öğretmene eksiklikleri gösterir.)",
+                        "Soru 4'te rengi neden etkisiz buldunuz? Daha büyük toplu cisimler arasında rengin etkisi olabilir mi? (Beklenen: Renk yansıma/soğurma etkiler ama ışığı tamamen engelleme opakl ile ilgilidir.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (3 dk): Quiz sorularından herhangi birini seç, yanlış cevabın neden yanlış olduğunu açıkla.",
+                        "Evde: Quiz sorularından 3 tanesini kendi sözlerinle yeniden yaz ve ailenize sor.",
+                        "İleri düzey: Quiz sorusu 8'deki güneş tutulması durumunu 'yarı gölge bölgesindeki' gözlemci için de yaz — o bölgede ne görülür?"
+                    ]
+                }
+            },
+            {
+                "id": "step11",
+                "type": "summary",
+                "title": "Dersi Tamamladın: Tam Gölgenin Özeti",
+                "duration_minutes": 8,
+                "content": {
+                    "slides": [
+                        {
+                            "type": "key",
+                            "text": "Tam gölge (umbra): Tüm ışınların opak bir cisim tarafından tamamen engellenmesiyle oluşan, hiç ışık almayan ve sınırları keskin olan karanlık bölgedir."
+                        },
+                        {
+                            "type": "key",
+                            "text": "Tam gölgenin nitelikleri: Hiç ışık yoktur · Sınırlar keskin ve belirgindir · En koyu bölgedir · Umbra adıyla da bilinir."
+                        },
+                        {
+                            "type": "key",
+                            "text": "Tam gölgeyi etkileyen değişkenler: Işık kaynağının büyüklüğü · Cismin ışığa uzaklığı · Cismin büyüklüğü ve şekli · Ekranın cisme uzaklığı."
+                        },
+                        {
+                            "type": "key",
+                            "text": "Veri kayıt ilkesi: Tam gölgeyi incelerken deneyde yalnızca bir değişken değiştirilmeli, diğerleri sabit tutulmalı ve gözlemler sistematik kaydedilmelidir."
+                        },
+                        {
+                            "type": "bridge",
+                            "text": "Tebrikler! Bu derste tam gölgenin ne olduğunu, niteliklerini ve hangi değişkenlerin gölgeyi etkilediğini öğrendin — bir sonraki adım güneş ve ay tutulmalarını bu temel üzerine inşa etmek!"
+                        }
+                    ],
+                    "explanation": "",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "summary_points": [
+                        "Tam gölge (umbra), ışık kaynağından gelen tüm ışınların opak bir cisim tarafından tamamen engellenmesiyle oluşan, hiç ışık almayan ve keskin sınırlı karanlık bölgedir. (Kazanım a)",
+                        "Tam gölgenin sınırları belirgin ve keskindir; bu bölgeye hiç ışın ulaşmaz ve bu nedenle en koyu bölgedir. (Kazanım a)",
+                        "Tam gölge ile yarı gölge (penumbra) arasındaki temel fark ışık miktarıdır: tam gölgede sıfır ışık ve keskin sınır; yarı gölgede kısmi ışık ve bulanık sınır. (Kazanım a)",
+                        "Tam gölgenin boyutu ve netliği; ışık kaynağının büyüklüğü, cismin ışığa uzaklığı, cismin büyüklüğü ve şekli ile ekranın cisme uzaklığı tarafından belirlenir. (Kazanım c)",
+                        "Cisim ışık kaynağına yaklaştıkça tam gölge büyür; ekran cismeden uzaklaştıkça da gölge yüzeyde büyük görünür. (Kazanım c)",
+                        "Küçük ve noktasal ışık kaynağı keskin sınırlı tam gölge oluştururken, geniş ışık kaynağı yarı gölge bölgesini genişletir ve tam gölgenin sınırlarını yumuşatır. (Kazanım c)",
+                        "Cismin şekli tam gölgenin şeklini doğrudan belirler: yuvarlak cisim yuvarlak, kare cisim kare gölge oluşturur. (Kazanım a, c)",
+                        "Tam gölgeye ait veriler deney sırasında sistematik biçimde kaydedilmelidir; deneyde tek bir değişken değiştirilmeli, diğerleri sabit tutulmalıdır. (Kazanım b)",
+                        "Güneş tutulmasında Ay'ın umbrasına giren Dünya bölgesi tam güneş tutulması yaşar — bu, doğadaki en büyük tam gölge örneğidir. (Kazanım a, c)"
+                    ]
+                },
+                "assessment": {},
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Özet slaytlarını öğrencilere okutun — her slayt için bir öğrenci sesli okusun; bu son pekiştirme hem dikkatli dinlemeyi hem de kısa bir tekrar sağlar.",
+                        "Summary_points listesini öğrencilerin defterindeki notebook bölümleriyle karşılaştırmalarını isteyin: 'Hangi maddeyi zaten yazmıştınız? Hangi madde yeni?' Bu meta-bilişsel sorgulama öğrenmeyi güçlendirir.",
+                        "Son olarak sınıfa şu soruyu sorun: 'Bu derste öğrendiklerinizden hangisini daha önce hiç düşünmemiştiniz?' — kapanış için 2 dakikalık bir tur yeterlidir."
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler özet maddelerini not defterlerine geçirmeden 'zaten biliyorum' diyebilirler. Doğrusu: Özet maddelerini yazmak, kavramları uzun süreli belleğe aktarmanın en etkili yollarından biridir; 'bilmek' ile 'yazabilmek' farklı düzeylerdedir.",
+                        "Öğrenciler 'tam gölge' kavramını hatırlasa da değişkenler listesini karıştırabilir. Doğrusu: Özet aşamasında değişkenler listesini tahtaya dört madde hâlinde çizin ve öğrencilerden her maddeye bir örnek vermesini isteyin."
+                    ],
+                    "classroom_discussion": [
+                        "Bu derste kaç farklı değişkenin tam gölgeyi etkilediğini öğrendiniz? Hepsini sayabilir misiniz? (Beklenen: 4 ana değişken — ışık büyüklüğü, cisim-ışık mesafesi, cisim büyüklüğü/şekli, ekran mesafesi.)",
+                        "Güneş saatinin nasıl çalıştığını şimdi açıklayabilir misiniz? (Beklenen: Çubuğun tam gölgesi gün içinde ışık açısına bağlı değişir; bu değişim zaman bilgisi verir.)",
+                        "Bir sonraki derste güneş ve ay tutulmalarını işleyeceğiz — bu derste öğrendiklerinizden hangisini orada kullanacağınızı düşünüyorsunuz? (Beklenen: Umbra, penumbra, değişkenler, veri kaydı.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (2–3 dk): Dersin tüm anahtar kelimelerini kullanarak 5–7 cümlelik bir özet paragrafı yaz.",
+                        "Evde: Bu derste öğrendiklerini küçük bir kardeşine veya aile üyene anlat; anlatırken hangi örneği kullandığını not et.",
+                        "İleri düzey: Bu derste işlenen 9 özet maddesini 3 ana başlık altında yeniden düzenle ve her başlığa örnekler ekle."
+                    ]
+                }
+            },
+            {
+                "id": "step12",
+                "type": "certificate",
+                "title": "Tebrikler! Tam Gölge Uzmanısın!",
+                "duration_minutes": 2,
+                "content": {
+                    "explanation": "",
+                    "key_points": [],
+                    "examples": [],
+                    "real_life_connections": []
+                },
+                "activities": {
+                    "certificate_message": "Tebrikler! Işığın sırlarını çözdün! Bu derste tam gölgenin (umbra) ne olduğunu, sınırlarının neden keskin olduğunu ve tam gölgeyi etkileyen dört temel değişkeni öğrendin. Deney verilerini kaydetmeyi, tek değişken ilkesini uygulamayı ve tam gölgeyi güneş tutulmalarıyla ilişkilendirmeyi başardın. Artık gölgene her baktığında bunun arkasındaki bilimi biliyorsun!",
+                    "earned_badges": [
+                        "🔦 Gölge Dedektifi — Tam gölgenin tüm niteliklerini tanımladı",
+                        "🔬 Deney Bilimcisi — Değişkenleri kontrol ederek veri kaydetti",
+                        "🌑 Umbra Ustası — Tam gölgeyi güneş tutulmasıyla ilişkilendirdi",
+                        "📐 Değişken Avcısı — Tam gölgeyi etkileyen dört değişkeni açıkladı"
+                    ]
+                },
+                "assessment": {},
+                "teacher_notes": {
+                    "teaching_tips": [
+                        "Sertifika adımını kısa ve coşkulu tutun: rozet isimlerini sınıfa sesli okuyun ve her rozetin hangi başarıyı temsil ettiğini bir cümleyle hatırlatın.",
+                        "Öğrencilere rozetleri defterlerine çizebileceklerini söyleyin; bu küçük kişiselleştirme kapanışı daha anlamlı kılar.",
+                        "Kapanışta bir sonraki ders için merak kıvılcımı bırakın: 'Tam gölgeyi artık biliyorsunuz — peki yarı gölge nasıl oluşuyor ve güneş tutulmasında tam olarak ne oluyor? Bunu bir sonraki derste keşfedeceğiz.'"
+                    ],
+                    "common_misconceptions": [
+                        "Öğrenciler sertifika adımını 'ders bitti' olarak algılayıp dikkatlerini dağıtabilirler. Doğrusu: Kapanış adımını sonraki derse köprü olarak kullanın — bu hem ilgiyi canlı tutar hem de öğrenme sürekliliğini sağlar.",
+                        "Öğrenciler rozetleri önemsemeyebilir. Doğrusu: Her rozeti hangi beceri veya kazanımla ilişkili olduğunu açıklayın; rozetler anlamsız bir sembol değil, kazanım kanıtıdır."
+                    ],
+                    "classroom_discussion": [
+                        "Hangi rozeti en çok hak ettiğinizi düşünüyorsunuz ve neden? (Beklenen: Farklı yanıtlar; bu öz değerlendirme sorusudur.)",
+                        "Bir sonraki derste güneş tutulmasını işleyeceğiz — Ay'ın hem umbra hem penumbra bölgesi olacak. Bu bölgeler için ne tahmin ediyorsunuz? (Beklenen: Umbra tam karanlık, penumbra kısmi karanlık — bir sonraki derse sağlam bir beklenti kuruluyor.)"
+                    ],
+                    "extension_ideas": [
+                        "Hızlı bitenler için (2 dk): Kazandığın rozetleri defterine çiz ve her rozet için bir cümle açıklama yaz.",
+                        "Evde: Bu dersteki en ilginç bulduğun 3 şeyi bir aile üyenle paylaş.",
+                        "İleri düzey: Kendin için 5. bir rozet tasarla — tam gölge konusunda hangi ek başarıyı temsil ederdi?"
+                    ]
+                }
+            }
+        ]
+    }
 }
