@@ -1,4 +1,5 @@
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
+import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v11/main.dart'
@@ -257,24 +258,6 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
       debugPrint('$stackTrace');
       return [];
     }
-  }
-
-  int? get _defaultUnitId {
-    if (_topics.isEmpty) return null;
-    return _topics.first['unit_id'] as int?;
-  }
-
-  int? get _defaultTopicId {
-    if (_topics.isEmpty) return null;
-    return _topics.first['topic_id'] as int?;
-  }
-
-  List<int> get _defaultOutcomeIds {
-    if (_topics.isEmpty) return const [];
-    return (_topics.first['outcome_ids'] as List?)
-            ?.whereType<int>()
-            .toList() ??
-        const <int>[];
   }
 
   void _openClassic() {
