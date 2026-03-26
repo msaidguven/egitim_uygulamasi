@@ -2,7 +2,7 @@
 
 import 'package:egitim_uygulamasi/screens/home/models/home_models.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/common_widgets.dart';
-import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
+import 'package:egitim_uygulamasi/screens/weekly_v11_topics_screen.dart';
 import 'lesson_card.dart';
 import 'package:flutter/material.dart';
 
@@ -99,7 +99,7 @@ class StudentContentView extends StatelessWidget {
             unsolvedCount: item['unsolved_count'] as int?,
             onTap: () {
               onLessonCardTap?.call(item);
-              _navigateToOutcomes(context, item);
+              _navigateToTopics(context, item);
             },
           ),
         );
@@ -139,7 +139,7 @@ class StudentContentView extends StatelessWidget {
               unsolvedCount: item['unsolved_count'] as int?,
               onTap: () {
                 onLessonCardTap?.call(item);
-                _navigateToOutcomes(context, item);
+              _navigateToTopics(context, item);
               },
               isNextStep: true,
             ),
@@ -194,7 +194,7 @@ class StudentContentView extends StatelessWidget {
     );
   }
 
-  Future<void> _navigateToOutcomes(
+  Future<void> _navigateToTopics(
     BuildContext context,
     Map<String, dynamic> data,
   ) async {
@@ -202,7 +202,7 @@ class StudentContentView extends StatelessWidget {
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            OutcomesScreenV2(
+            WeeklyV11TopicsScreen(
               lessonId: data['lesson_id'],
               gradeId: data['grade_id'],
               lessonName: data['lesson_name'],

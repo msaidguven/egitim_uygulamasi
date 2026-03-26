@@ -1,6 +1,6 @@
 // lib/screens/units_for_lesson_screen.dart
 
-import 'package:egitim_uygulamasi/screens/weekly_v11_topics_screen.dart';
+import 'package:egitim_uygulamasi/screens/home/unit_map_v3_screen.dart';
 import 'package:egitim_uygulamasi/screens/units_for_lesson_screen.dart'
     as units_screen;
 import 'package:egitim_uygulamasi/models/grade_model.dart';
@@ -530,28 +530,23 @@ class _LessonCard extends StatelessWidget {
                     children: [
                       SizedBox(
                         height: 36,
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              final currentWeek = calculateCurrentAcademicWeek(
-                                advanceOnHoliday: true,
-                              );
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => WeeklyV11TopicsScreen(
-                                    gradeId: grade.id,
-                                    lessonId: lessonId,
-                                    gradeName: grade.name,
-                                    lessonName: lessonName,
-                                    curriculumWeek: currentWeek,
-                                  ),
-                                ),
-                              );
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Padding(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UnitMapV3Screen(
+                                          lessonId: lessonId,
+                                          lessonName: lessonName,
+                                          gradeId: grade.id,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 6,

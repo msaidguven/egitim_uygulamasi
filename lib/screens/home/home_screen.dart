@@ -11,7 +11,7 @@ import 'package:egitim_uygulamasi/screens/home/widgets/guest_content_view.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/home_header.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/srs_alert_widget.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/streak_card_widget.dart';
-import 'package:egitim_uygulamasi/screens/home/widgets/student_content_view.dart';
+import 'package:egitim_uygulamasi/screens/home/map/lesson_map.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/teacher_content_view.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/unfinished_tests_section.dart';
 import 'package:egitim_uygulamasi/screens/home/widgets/weekly_agenda_overview_card.dart';
@@ -517,34 +517,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildStudentContent() {
-    if (widget.agendaData == null) {
-      return const SliverPadding(
-        padding: EdgeInsets.all(24.0),
-        sliver: SliverToBoxAdapter(child: LoadingShimmer()),
-      );
-    }
-
-    return SliverPadding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-      sliver: SliverToBoxAdapter(
-        child: StudentContentView(
-          agendaData: widget.agendaData,
-          nextStepsData: widget.nextStepsData,
-          currentCurriculumWeek: widget.currentCurriculumWeek,
-          nextStepsState: widget.nextStepsState,
-          onToggleNextSteps: widget.onToggleNextSteps,
-          onExpandNextSteps: widget.onExpandNextSteps,
-          onRefresh: widget.onRefresh,
-          onLessonCardTap: (item) {
-            _trackEvent('lesson_card_clicked', {
-              'lesson_id': item['lesson_id'],
-              'grade_id': item['grade_id'],
-              'curriculum_week':
-                  item['curriculum_week'] ?? widget.currentCurriculumWeek,
-            });
-          },
-        ),
-      ),
+    return SliverFillRemaining(
+      child: LessonMapWidget(profile: widget.profile),
     );
   }
 

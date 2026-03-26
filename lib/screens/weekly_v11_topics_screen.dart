@@ -1,10 +1,12 @@
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
-import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
+import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v11/main.dart'
     as lesson_v11;
 import 'package:egitim_uygulamasi/screens/outcomes/outcomes_screen_v2.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_copy_button.dart';
+import 'package:egitim_uygulamasi/screens/outcomes/widgets/weekly_test_view.dart';
+import 'package:egitim_uygulamasi/viewmodels/outcomes_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -31,6 +33,7 @@ class WeeklyV11TopicsScreen extends StatefulWidget {
 class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
     with SingleTickerProviderStateMixin {
   final SupabaseClient _client = Supabase.instance.client;
+  late final OutcomesViewModelArgs _weeklyTestArgs;
 
   bool _loading = true;
   String? _errorMessage;
@@ -48,6 +51,17 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
       duration: const Duration(milliseconds: 600),
     );
     _loadTopics();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _weeklyTestArgs = OutcomesViewModelArgs(
+      lessonId: widget.lessonId,
+      gradeId: widget.gradeId,
+      initialCurriculumWeek: widget.curriculumWeek,
+      instanceKey: UniqueKey().toString(),
+    );
   }
 
   @override
@@ -185,6 +199,84 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
     }
   }
 
+  int? get _defaultUnitId {
+    if (_topics.isEmpty) return null;
+    return _topics.first['unit_id'] as int?;
+  }
+
+  int? get _defaultTopicId {
+    if (_topics.isEmpty) return null;
+    return _topics.first['topic_id'] as int?;
+  }
+
+  List<int> get _defaultOutcomeIds {
+    if (_topics.isEmpty) return const [];
+    return (_topics.first['outcome_ids'] as List?)
+            ?.whereType<int>()
+            .toList() ??
+        const <int>[];
+  }
+
+  Future<List<Question>> _fetchGuestWeeklyQuestions() async {
+    final unitId = _defaultUnitId;
+    if (unitId == null) return [];
+
+    final topicId = _defaultTopicId;
+    final outcomeIds = _defaultOutcomeIds;
+    final hasOutcomeFilter = topicId != null && outcomeIds.isNotEmpty;
+
+    final rpcName = hasOutcomeFilter
+        ? 'start_guest_test_by_outcomes'
+        : 'start_guest_test';
+
+    final params = hasOutcomeFilter
+        ? {
+            'p_unit_id': unitId,
+            'p_topic_id': topicId,
+            'p_curriculum_week': widget.curriculumWeek,
+            'p_outcome_ids': outcomeIds,
+            'p_limit': 30,
+          }
+        : {
+            'p_unit_id': unitId,
+            'p_type': 'weekly',
+            'p_curriculum_week': widget.curriculumWeek,
+          };
+
+    try {
+      final response = await _client.rpc(rpcName, params: params);
+      final rows = (response as List?) ?? const [];
+      final questionMaps = rows
+          .whereType<Map<String, dynamic>>()
+          .toList();
+      return questionMaps
+          .map((row) => Question.fromMap(row))
+          .toList();
+    } catch (e, stackTrace) {
+      debugPrint('Guest weekly questions fetch failed: $e');
+      debugPrint('$stackTrace');
+      return [];
+    }
+  }
+
+  int? get _defaultUnitId {
+    if (_topics.isEmpty) return null;
+    return _topics.first['unit_id'] as int?;
+  }
+
+  int? get _defaultTopicId {
+    if (_topics.isEmpty) return null;
+    return _topics.first['topic_id'] as int?;
+  }
+
+  List<int> get _defaultOutcomeIds {
+    if (_topics.isEmpty) return const [];
+    return (_topics.first['outcome_ids'] as List?)
+            ?.whereType<int>()
+            .toList() ??
+        const <int>[];
+  }
+
   void _openClassic() {
     Navigator.push(
       context,
@@ -314,6 +406,7 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isGuest = _client.auth.currentUser == null;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -420,6 +513,21 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
               ),
             )
           else ...[
+            if (_defaultUnitId != null)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                sliver: SliverToBoxAdapter(
+                child: WeeklyTestView(
+                  unitId: _defaultUnitId!,
+                  curriculumWeek: widget.curriculumWeek,
+                  topicId: _defaultTopicId,
+                  selectedOutcomeIds: _defaultOutcomeIds,
+                  args: _weeklyTestArgs,
+                  isGuest: isGuest,
+                  guestQuestionLoader: _fetchGuestWeeklyQuestions,
+                ),
+              ),
+            ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
               sliver: SliverToBoxAdapter(

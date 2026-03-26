@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
+import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
+import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/viewmodels/outcomes_viewmodel.dart';
 
 class WeeklyTestView extends ConsumerWidget {
@@ -11,6 +12,7 @@ class WeeklyTestView extends ConsumerWidget {
   final List<int> selectedOutcomeIds;
   final OutcomesViewModelArgs args;
   final bool isGuest;
+  final Future<List<Question>> Function()? guestQuestionLoader;
 
   const WeeklyTestView({
     Key? key,
@@ -20,6 +22,7 @@ class WeeklyTestView extends ConsumerWidget {
     this.selectedOutcomeIds = const [],
     required this.args,
     this.isGuest = false,
+    this.guestQuestionLoader,
   }) : super(key: key);
 
   Widget _buildCompletionCard(BuildContext context, double successRate) {
@@ -102,24 +105,7 @@ class WeeklyTestView extends ConsumerWidget {
       buttonIcon = Icons.visibility_rounded;
       buttonColor = Colors.grey.shade600;
       onPressedAction = () {
-        final routeArgs = topicId != null && selectedOutcomeIds.isNotEmpty
-            ? {
-                'curriculum_week': curriculumWeek,
-                'topic_id': topicId,
-                'outcome_ids': selectedOutcomeIds,
-              }
-            : curriculumWeek;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QuestionsScreen(
-              unitId: unitId,
-              testMode: TestMode.weekly,
-              sessionId: null,
-            ),
-            settings: RouteSettings(arguments: routeArgs),
-          ),
-        );
+        _startGuestTest(context);
       };
     } else if (activeSession != null) {
       final answered = activeSession['answered_questions'] ?? 0;
@@ -279,6 +265,45 @@ class WeeklyTestView extends ConsumerWidget {
                 ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> _startGuestTest(BuildContext context) async {
+    final loader = guestQuestionLoader;
+    List<Question>? preloaded;
+    if (loader != null) {
+      preloaded = await loader();
+      if (preloaded.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Misafir testi için soru alınamadı. Lütfen tekrar deneyin.'),
+          ),
+        );
+        return;
+      }
+    }
+
+    final Map<String, dynamic> routeArgs = {
+      'curriculum_week': curriculumWeek,
+    };
+    if (topicId != null) routeArgs['topic_id'] = topicId;
+    if (selectedOutcomeIds.isNotEmpty) {
+      routeArgs['outcome_ids'] = selectedOutcomeIds;
+    }
+    if (preloaded != null) {
+      routeArgs['preloaded_questions'] = preloaded;
+    }
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuestionsScreen(
+          unitId: unitId,
+          testMode: TestMode.weekly,
+          sessionId: null,
+        ),
+        settings: RouteSettings(arguments: routeArgs),
       ),
     );
   }
