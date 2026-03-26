@@ -20,8 +20,23 @@ class QuestionText extends StatelessWidget {
     this.useBaselineFractionLayout = false,
   });
 
-  static final RegExp _fractionRegex =
-  RegExp(r'\b\d{1,3}\/\d{1,3}\b');
+  static final RegExp _fractionRegex = RegExp(
+    r'\b(?!7\/24\b)\d{1,3}\/\d{1,3}\b',
+  );
+
+  String _decodeHtmlEntities(String input) {
+    var output = input;
+    for (var i = 0; i < 2; i++) {
+      output = output
+          .replaceAll('&amp;', '&')
+          .replaceAll('&gt;', '>')
+          .replaceAll('&lt;', '<')
+          .replaceAll('&quot;', '"')
+          .replaceAll('&#39;', "'")
+          .replaceAll('&nbsp;', ' ');
+    }
+    return output;
+  }
 
   Widget _fractionLegacy(String value) {
     final parts = value.split('/');
@@ -85,11 +100,13 @@ class QuestionText extends StatelessWidget {
     final maxDigits = numerator.length > denominator.length
         ? numerator.length
         : denominator.length;
-    final fractionWidth = fontSize * (0.72 + (maxDigits * 0.34));
-    final numDenSize = fontSize * 0.62;
-    final lineThickness = (fontSize * 0.06).clamp(1.2, 2.2);
-    final baselineY = fontSize * 0.78;
-    final totalHeight = fontSize * 1.42;
+    final fractionWidth = fontSize * (0.76 + (maxDigits * 0.34));
+    final numDenSize = fontSize * 0.66;
+    final lineThickness = (fontSize * 0.055).clamp(1.1, 2.1);
+    final baselineY = fontSize * 1.00;
+    final totalHeight = fontSize * 1.32;
+    final lineY = fontSize * 0.52;
+    final textGap = fontSize * 0.02;
 
     return Baseline(
       baseline: baselineY,
@@ -103,7 +120,7 @@ class QuestionText extends StatelessWidget {
             Positioned(
               left: 0,
               right: 0,
-              bottom: totalHeight - baselineY + 2,
+              bottom: totalHeight - lineY + textGap,
               child: Text(
                 numerator,
                 textAlign: TextAlign.center,
@@ -113,7 +130,7 @@ class QuestionText extends StatelessWidget {
                 style: TextStyle(
                   fontSize: numDenSize,
                   color: fractionColor,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   height: 1,
                 ),
               ),
@@ -121,7 +138,7 @@ class QuestionText extends StatelessWidget {
             Positioned(
               left: 0,
               right: 0,
-              top: baselineY - (lineThickness / 2),
+              top: lineY - (lineThickness / 2),
               child: Container(
                 height: lineThickness,
                 color: fractionColor.withValues(alpha: 0.9),
@@ -130,7 +147,7 @@ class QuestionText extends StatelessWidget {
             Positioned(
               left: 0,
               right: 0,
-              top: baselineY + 2,
+              top: lineY + textGap,
               child: Text(
                 denominator,
                 textAlign: TextAlign.center,
@@ -140,7 +157,7 @@ class QuestionText extends StatelessWidget {
                 style: TextStyle(
                   fontSize: numDenSize,
                   color: fractionColor,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   height: 1,
                 ),
               ),
@@ -152,20 +169,23 @@ class QuestionText extends StatelessWidget {
   }
 
   List<InlineSpan> _parse(String input) {
+    final normalizedInput = _decodeHtmlEntities(input);
     if (!enableFractions) {
-      return [TextSpan(text: input)];
+      return [TextSpan(text: normalizedInput)];
     }
 
-    final matches = _fractionRegex.allMatches(input);
+    final matches = _fractionRegex.allMatches(normalizedInput);
     int last = 0;
     final spans = <InlineSpan>[];
 
     for (final m in matches) {
       if (m.start > last) {
-        spans.add(TextSpan(
-          text: input.substring(last, m.start),
-          style: TextStyle(color: textColor),
-        ));
+        spans.add(
+          TextSpan(
+            text: normalizedInput.substring(last, m.start),
+            style: TextStyle(color: textColor),
+          ),
+        );
       }
 
       spans.add(
@@ -183,11 +203,13 @@ class QuestionText extends StatelessWidget {
       last = m.end;
     }
 
-    if (last < input.length) {
-      spans.add(TextSpan(
-        text: input.substring(last),
-        style: TextStyle(color: textColor),
-      ));
+    if (last < normalizedInput.length) {
+      spans.add(
+        TextSpan(
+          text: normalizedInput.substring(last),
+          style: TextStyle(color: textColor),
+        ),
+      );
     }
 
     return spans;

@@ -1,17 +1,14 @@
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
 
-final RegExp _fractionRegex = RegExp(r'\b(\d{1,3}\/\d{1,3})\b');
+final RegExp _fractionRegex = RegExp(r'\b((?!7\/24\b)\d{1,3}\/\d{1,3})\b');
 
 String wrapFractionsForHtml(String html) {
   if (html.trim().isEmpty) return html;
 
   // Clean previously injected/escaped fraction tags if they exist in stored content.
   final sanitized = html
-      .replaceAll(
-        RegExp(r'<\s*/?\s*fraction\s*>', caseSensitive: false),
-        '',
-      )
+      .replaceAll(RegExp(r'<\s*/?\s*fraction\s*>', caseSensitive: false), '')
       .replaceAll(
         RegExp(r'&lt;\s*/?\s*fraction\s*&gt;', caseSensitive: false),
         '',
@@ -30,7 +27,10 @@ String wrapFractionsForHtml(String html) {
       if (child is dom.Element) {
         final tag = child.localName?.toLowerCase();
         // Do not transform code-like blocks.
-        if (tag == 'pre' || tag == 'code' || tag == 'script' || tag == 'style') {
+        if (tag == 'pre' ||
+            tag == 'code' ||
+            tag == 'script' ||
+            tag == 'style') {
           continue;
         }
       }

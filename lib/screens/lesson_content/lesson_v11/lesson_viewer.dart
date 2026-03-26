@@ -3,6 +3,8 @@ import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_conte
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_update_page.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_copy_button.dart';
 import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v11/lesson_content_repository.dart';
+import 'package:egitim_uygulamasi/widgets/question_text.dart';
+import 'package:egitim_uygulamasi/utils/html_fraction_utils.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,27 @@ class _C {
   static const correct = Color(0xFF43A047);
   static const wrong = Color(0xFFE53935);
   static const hint = Color(0xFFFF9800);
+}
+
+String _normalizeFractionMarkup(String value) {
+  final mathNormalized = value
+      .replaceAllMapped(
+        RegExp(r'\$\$\s*\\frac\{([^{}]+)\}\{([^{}]+)\}\s*\$\$'),
+        (m) => '${m.group(1)}/${m.group(2)}',
+      )
+      .replaceAllMapped(
+        RegExp(r'\\frac\{([^{}]+)\}\{([^{}]+)\}'),
+        (m) => '${m.group(1)}/${m.group(2)}',
+      )
+      .replaceAllMapped(
+        RegExp(r'\$\$\s*([^$]+?)\s*\$\$'),
+        (m) => m.group(1)!.trim(),
+      );
+  final wrapped = wrapFractionsForHtml(mathNormalized);
+  return wrapped.replaceAll(
+    RegExp(r'<\s*/?\s*fraction\s*>', caseSensitive: false),
+    '',
+  );
 }
 
 // ═══════════════════════════════════════════════════════
@@ -152,7 +175,7 @@ class LessonPage extends StatefulWidget {
   final String? assetPath;
   final int? topicId;
   final List<int>? outcomeIds;
-  
+
   const LessonPage({
     super.key,
     this.jsonString,
@@ -543,7 +566,9 @@ class _LessonPageState extends State<LessonPage> {
                 current: sectionIndex,
                 onTap: (idx) {
                   if (idx != sectionIndex) {
-                     setState(() => _history.add(_ScreenKey(idx, _ScreenType.content)));
+                    setState(
+                      () => _history.add(_ScreenKey(idx, _ScreenType.content)),
+                    );
                   }
                 },
               ),
@@ -596,7 +621,9 @@ class _LessonPageState extends State<LessonPage> {
           currentSection: sectionIndex,
           onSelect: (idx) {
             if (idx != sectionIndex) {
-              setState(() => _history.add(_ScreenKey(idx, _ScreenType.content)));
+              setState(
+                () => _history.add(_ScreenKey(idx, _ScreenType.content)),
+              );
             }
           },
         ),
@@ -778,48 +805,57 @@ class _StepChipBar extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 8, right: 16, top: 8, bottom: 8),
+              padding: const EdgeInsets.only(
+                left: 8,
+                right: 16,
+                top: 8,
+                bottom: 8,
+              ),
               itemCount: sections.length,
               itemBuilder: (_, i) {
                 final active = i == current;
-          final color = _C.get(i);
-          final section = sections[i];
-          final icon = section.icon.isNotEmpty ? section.icon : '📌';
-          return GestureDetector(
-            onTap: () => onTap(i),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: active ? color : color.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: active ? color : color.withOpacity(0.2),
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    icon,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    '${i + 1}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: active ? FontWeight.bold : FontWeight.w600,
-                      color: active ? Colors.white : color.withOpacity(0.8),
+                final color = _C.get(i);
+                final section = sections[i];
+                final icon = section.icon.isNotEmpty ? section.icon : '📌';
+                return GestureDetector(
+                  onTap: () => onTap(i),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    margin: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: active ? color : color.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: active ? color : color.withOpacity(0.2),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(icon, style: const TextStyle(fontSize: 14)),
+                        const SizedBox(width: 6),
+                        Text(
+                          '${i + 1}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: active
+                                ? FontWeight.bold
+                                : FontWeight.w600,
+                            color: active
+                                ? Colors.white
+                                : color.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
           ),
         ],
       ),
@@ -986,10 +1022,7 @@ class _LessonDrawer extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     '${module.gradeLevel} · ${module.subject}',
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                 ],
               ),
@@ -1035,7 +1068,7 @@ class _LessonDrawer extends StatelessWidget {
     );
   }
 }
- 
+
 class _HeaderIconButton extends StatelessWidget {
   final IconData icon;
   final Color color;
@@ -1968,14 +2001,12 @@ class _ChoiceCardState extends State<_ChoiceCard>
         isCorrect: _isCorrect,
         children: [
           const SizedBox(height: 12),
-          Text(
-            c['question'] ?? '',
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF1F2937),
-              height: 1.45,
-            ),
+          QuestionText(
+            text: _normalizeFractionMarkup(c['question'] ?? ''),
+            fontSize: 15,
+            textColor: const Color(0xFF1F2937),
+            fractionColor: const Color(0xFF1F2937),
+            useBaselineFractionLayout: true,
           ),
           const SizedBox(height: 14),
           ...options.map((opt) {
@@ -2041,22 +2072,24 @@ class _ChoiceCardState extends State<_ChoiceCard>
                     ),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Text(
-                        opt['text'] ?? '',
-                        style: TextStyle(
-                          fontSize: 13.5,
-                          color: _submitted
-                              ? (_isCorrect && _isOptCorrect(id)
-                                    ? _C.correct
-                                    : sel
-                                    ? _C.wrong
-                                    : const Color(0xFF374151))
-                              : const Color(0xFF374151),
-                          fontWeight: _submitted && _isOptCorrect(id)
-                              ? FontWeight.w700
-                              : FontWeight.w400,
-                          height: 1.4,
-                        ),
+                      child: QuestionText(
+                        text: _normalizeFractionMarkup(opt['text'] ?? ''),
+                        fontSize: 13.5,
+                        textColor: _submitted
+                            ? (_isCorrect && _isOptCorrect(id)
+                                  ? _C.correct
+                                  : sel
+                                  ? _C.wrong
+                                  : const Color(0xFF374151))
+                            : const Color(0xFF374151),
+                        fractionColor: _submitted
+                            ? (_isCorrect && _isOptCorrect(id)
+                                  ? _C.correct
+                                  : sel
+                                  ? _C.wrong
+                                  : const Color(0xFF374151))
+                            : const Color(0xFF374151),
+                        useBaselineFractionLayout: true,
                       ),
                     ),
                   ],
@@ -2313,7 +2346,7 @@ class _FillBlankCardState extends State<_FillBlankCard> {
     bool submitted,
     bool isCorrect,
   ) {
-    final lines = raw.split('\n');
+    final lines = _normalizeFractionMarkup(raw).split('\n');
     return lines.map((line) {
       if (line.trim().isEmpty) return const SizedBox(height: 4);
       if (line.contains('________')) {
@@ -2345,7 +2378,16 @@ class _FillBlankCardState extends State<_FillBlankCard> {
                 height: 1.6,
               ),
               children: [
-                TextSpan(text: parts[0]),
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: QuestionText(
+                    text: parts[0],
+                    fontSize: 15,
+                    textColor: const Color(0xFF1F2937),
+                    fractionColor: const Color(0xFF1F2937),
+                    useBaselineFractionLayout: true,
+                  ),
+                ),
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: AnimatedContainer(
@@ -2370,7 +2412,17 @@ class _FillBlankCardState extends State<_FillBlankCard> {
                     ),
                   ),
                 ),
-                if (parts.length > 1) TextSpan(text: parts[1]),
+                if (parts.length > 1)
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: QuestionText(
+                      text: parts[1],
+                      fontSize: 15,
+                      textColor: const Color(0xFF1F2937),
+                      fractionColor: const Color(0xFF1F2937),
+                      useBaselineFractionLayout: true,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -2378,14 +2430,12 @@ class _FillBlankCardState extends State<_FillBlankCard> {
       }
       return Padding(
         padding: const EdgeInsets.only(bottom: 2),
-        child: Text(
-          line,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF1F2937),
-            height: 1.6,
-          ),
+        child: QuestionText(
+          text: line,
+          fontSize: 15,
+          textColor: const Color(0xFF1F2937),
+          fractionColor: const Color(0xFF1F2937),
+          useBaselineFractionLayout: true,
         ),
       );
     }).toList();
@@ -2530,14 +2580,12 @@ class _MatchingCardState extends State<_MatchingCard> {
       isCorrect: _allCorrect,
       children: [
         const SizedBox(height: 12),
-        Text(
-          c['question'] ?? '',
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF1F2937),
-            height: 1.45,
-          ),
+        QuestionText(
+          text: _normalizeFractionMarkup(c['question'] ?? ''),
+          fontSize: 15,
+          textColor: const Color(0xFF1F2937),
+          fractionColor: const Color(0xFF1F2937),
+          useBaselineFractionLayout: true,
         ),
         const SizedBox(height: 14),
         // Talimat
@@ -2589,19 +2637,24 @@ class _MatchingCardState extends State<_MatchingCard> {
                           width: isConfirmed || isWrong ? 2 : 1.5,
                         ),
                       ),
-                      child: Text(
-                        left,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: isConfirmed
-                              ? _C.correct
-                              : isWrong
-                              ? _C.wrong
-                              : isActive
-                              ? widget.color
-                              : const Color(0xFF374151),
-                        ),
+                      child: QuestionText(
+                        text: _normalizeFractionMarkup(left),
+                        fontSize: 13,
+                        textColor: isConfirmed
+                            ? _C.correct
+                            : isWrong
+                            ? _C.wrong
+                            : isActive
+                            ? widget.color
+                            : const Color(0xFF374151),
+                        fractionColor: isConfirmed
+                            ? _C.correct
+                            : isWrong
+                            ? _C.wrong
+                            : isActive
+                            ? widget.color
+                            : const Color(0xFF374151),
+                        useBaselineFractionLayout: true,
                       ),
                     ),
                   );
@@ -2662,19 +2715,24 @@ class _MatchingCardState extends State<_MatchingCard> {
                           width: isConfirmedRight ? 2 : 1.5,
                         ),
                       ),
-                      child: Text(
-                        right,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: isConfirmedRight
-                              ? _C.correct
-                              : _wrongRightFlash.contains(index)
-                              ? _C.wrong
-                              : isActive
-                              ? widget.color
-                              : const Color(0xFF374151),
-                        ),
+                      child: QuestionText(
+                        text: _normalizeFractionMarkup(right),
+                        fontSize: 13,
+                        textColor: isConfirmedRight
+                            ? _C.correct
+                            : _wrongRightFlash.contains(index)
+                            ? _C.wrong
+                            : isActive
+                            ? widget.color
+                            : const Color(0xFF374151),
+                        fractionColor: isConfirmedRight
+                            ? _C.correct
+                            : _wrongRightFlash.contains(index)
+                            ? _C.wrong
+                            : isActive
+                            ? widget.color
+                            : const Color(0xFF374151),
+                        useBaselineFractionLayout: true,
                       ),
                     ),
                   );
@@ -2787,14 +2845,12 @@ class _OrderingCardState extends State<_OrderingCard> {
       isCorrect: _isCorrect,
       children: [
         const SizedBox(height: 12),
-        Text(
-          c['question'] ?? '',
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF1F2937),
-            height: 1.45,
-          ),
+        QuestionText(
+          text: _normalizeFractionMarkup(c['question'] ?? ''),
+          fontSize: 15,
+          textColor: const Color(0xFF1F2937),
+          fractionColor: const Color(0xFF1F2937),
+          useBaselineFractionLayout: true,
         ),
         const SizedBox(height: 6),
         if (!(_submitted && _isCorrect))
@@ -2864,13 +2920,12 @@ class _OrderingCardState extends State<_OrderingCard> {
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Text(
-                      item['text'] ?? '',
-                      style: const TextStyle(
-                        fontSize: 13.5,
-                        color: Color(0xFF374151),
-                        height: 1.4,
-                      ),
+                    child: QuestionText(
+                      text: _normalizeFractionMarkup(item['text'] ?? ''),
+                      fontSize: 13.5,
+                      textColor: const Color(0xFF374151),
+                      fractionColor: const Color(0xFF374151),
+                      useBaselineFractionLayout: true,
                     ),
                   ),
                   if (!(_submitted && _isCorrect))
@@ -3045,14 +3100,12 @@ class _TrueFalseCardState extends State<_TrueFalseCard>
                 width: 1.5,
               ),
             ),
-            child: Text(
-              statement,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1F2937),
-                height: 1.5,
-              ),
+            child: QuestionText(
+              text: _normalizeFractionMarkup(statement),
+              fontSize: 15,
+              textColor: const Color(0xFF1F2937),
+              fractionColor: const Color(0xFF1F2937),
+              useBaselineFractionLayout: true,
             ),
           ),
           const SizedBox(height: 16),
@@ -3361,15 +3414,35 @@ class _UnsupportedBlockCard extends StatelessWidget {
 class _MarkdownCard extends StatelessWidget {
   final String body;
   final Color color;
+  static final RegExp _fractionRegex = RegExp(
+    r'\b(?!7\/24\b)\d{1,3}\/\d{1,3}\b',
+  );
 
   const _MarkdownCard({required this.body, required this.color});
+
+  String _normalizeMathNotation(String input) {
+    var value = input;
+    value = value.replaceAllMapped(
+      RegExp(r'\$\$\s*\\frac\{([^{}]+)\}\{([^{}]+)\}\s*\$\$'),
+      (m) => '${m.group(1)}/${m.group(2)}',
+    );
+    value = value.replaceAllMapped(
+      RegExp(r'\\frac\{([^{}]+)\}\{([^{}]+)\}'),
+      (m) => '${m.group(1)}/${m.group(2)}',
+    );
+    value = value.replaceAllMapped(
+      RegExp(r'\$\$\s*([^$]+?)\s*\$\$'),
+      (m) => m.group(1)!.trim(),
+    );
+    return value;
+  }
 
   List<Widget> _parse(BuildContext context, String raw) {
     final widgets = <Widget>[];
     final lines = raw.split('\n');
     int i = 0;
     while (i < lines.length) {
-      final line = lines[i];
+      final line = _normalizeMathNotation(lines[i]);
       if (line.contains('|') && line.trim().startsWith('|')) {
         final tableLines = <String>[];
         while (i < lines.length &&
@@ -3520,43 +3593,76 @@ class _MarkdownCard extends StatelessWidget {
   }
 
   Widget _rich(BuildContext context, String t, {TextStyle? style}) {
+    final normalized = _normalizeMathNotation(t);
     final base =
         style ??
         const TextStyle(fontSize: 13.5, color: Color(0xFF374151), height: 1.6);
-    final spans = <TextSpan>[];
     final regex = RegExp(r'\*\*(.+?)\*\*|`(.+?)`');
-    int last = 0;
-    for (final m in regex.allMatches(t)) {
-      if (m.start > last) {
-        spans.add(TextSpan(text: t.substring(last, m.start), style: base));
+
+    final spans = <InlineSpan>[];
+    void appendWithFractions(String input, TextStyle textStyle) {
+      final matches = _fractionRegex.allMatches(input).toList();
+      if (matches.isEmpty) {
+        spans.add(TextSpan(text: input, style: textStyle));
+        return;
       }
-      if (m.group(1) != null) {
+
+      var last = 0;
+      for (final m in matches) {
+        if (m.start > last) {
+          spans.add(
+            TextSpan(text: input.substring(last, m.start), style: textStyle),
+          );
+        }
         spans.add(
-          TextSpan(
-            text: m.group(1),
-            style: base.copyWith(fontWeight: FontWeight.w800),
+          WidgetSpan(
+            alignment: PlaceholderAlignment.baseline,
+            baseline: TextBaseline.alphabetic,
+            child: QuestionText(
+              text: m.group(0)!,
+              fontSize: textStyle.fontSize ?? 13.5,
+              textColor: textStyle.color ?? const Color(0xFF374151),
+              fractionColor: textStyle.color ?? const Color(0xFF374151),
+              useBaselineFractionLayout: true,
+            ),
           ),
         );
+        last = m.end;
+      }
+
+      if (last < input.length) {
+        spans.add(TextSpan(text: input.substring(last), style: textStyle));
+      }
+    }
+
+    int last = 0;
+    for (final m in regex.allMatches(normalized)) {
+      if (m.start > last) {
+        appendWithFractions(normalized.substring(last, m.start), base);
+      }
+      if (m.group(1) != null) {
+        appendWithFractions(
+          m.group(1)!,
+          base.copyWith(fontWeight: FontWeight.w800),
+        );
       } else if (m.group(2) != null) {
-        spans.add(
-          TextSpan(
-            text: m.group(2),
-            style: base.copyWith(
-              fontFamily: 'monospace',
-              backgroundColor: const Color(0xFFF3F4F6),
-              color: const Color(0xFFDC2626),
-            ),
+        appendWithFractions(
+          m.group(2)!,
+          base.copyWith(
+            fontFamily: 'monospace',
+            backgroundColor: const Color(0xFFF3F4F6),
+            color: const Color(0xFFDC2626),
           ),
         );
       }
       last = m.end;
     }
-    if (last < t.length) {
-      spans.add(TextSpan(text: t.substring(last), style: base));
+    if (last < normalized.length) {
+      appendWithFractions(normalized.substring(last), base);
     }
     return RichText(
       textScaler: MediaQuery.textScalerOf(context),
-      text: TextSpan(children: spans),
+      text: TextSpan(style: base, children: spans),
     );
   }
 
@@ -3636,25 +3742,22 @@ class _ImageCard extends StatelessWidget {
           ),
           if (caption.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Text(
-              caption,
-              style: const TextStyle(
-                fontSize: 13.5,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1F2937),
-                height: 1.45,
-              ),
+            QuestionText(
+              text: _normalizeFractionMarkup(caption),
+              fontSize: 13.5,
+              textColor: const Color(0xFF1F2937),
+              fractionColor: const Color(0xFF1F2937),
+              useBaselineFractionLayout: true,
             ),
           ],
           if (altText.isNotEmpty) ...[
             const SizedBox(height: 8),
-            Text(
-              altText,
-              style: const TextStyle(
-                fontSize: 12.5,
-                color: Color(0xFF6B7280),
-                height: 1.5,
-              ),
+            QuestionText(
+              text: _normalizeFractionMarkup(altText),
+              fontSize: 12.5,
+              textColor: const Color(0xFF6B7280),
+              fractionColor: const Color(0xFF6B7280),
+              useBaselineFractionLayout: true,
             ),
           ],
         ],
@@ -3730,16 +3833,12 @@ class _MisconceptionCardState extends State<_MisconceptionCard> {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text.rich(
-                    TextSpan(children: [
-                      const TextSpan(text: 'Yanlış: ', style: TextStyle(fontWeight: FontWeight.w800)),
-                      TextSpan(text: wrong),
-                    ]),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Color(0xFF991B1B),
-                      height: 1.3,
-                    ),
+                  child: QuestionText(
+                    text: _normalizeFractionMarkup('Yanlış: $wrong'),
+                    fontSize: 13,
+                    textColor: const Color(0xFF991B1B),
+                    fractionColor: const Color(0xFF991B1B),
+                    useBaselineFractionLayout: true,
                   ),
                 ),
               ],
@@ -3761,17 +3860,12 @@ class _MisconceptionCardState extends State<_MisconceptionCard> {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text.rich(
-                    TextSpan(children: [
-                      const TextSpan(text: 'Doğru: ', style: TextStyle(fontWeight: FontWeight.w800)),
-                      TextSpan(text: correct),
-                    ]),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Color(0xFF065F46),
-                      fontWeight: FontWeight.w600,
-                      height: 1.3,
-                    ),
+                  child: QuestionText(
+                    text: _normalizeFractionMarkup('Doğru: $correct'),
+                    fontSize: 13,
+                    textColor: const Color(0xFF065F46),
+                    fractionColor: const Color(0xFF065F46),
+                    useBaselineFractionLayout: true,
                   ),
                 ),
               ],
@@ -3794,17 +3888,12 @@ class _MisconceptionCardState extends State<_MisconceptionCard> {
                   ),
                   const SizedBox(width: 6),
                   Expanded(
-                    child: Text.rich(
-                      TextSpan(children: [
-                        const TextSpan(text: 'Açıklama: ', style: TextStyle(fontWeight: FontWeight.w800)),
-                        TextSpan(text: tip),
-                      ]),
-                      style: const TextStyle(
-                        fontSize: 13.5,
-                        color: Color(0xFF4E342E),
-                        fontWeight: FontWeight.w500,
-                        height: 1.3,
-                      ),
+                    child: QuestionText(
+                      text: _normalizeFractionMarkup('Açıklama: $tip'),
+                      fontSize: 13.5,
+                      textColor: const Color(0xFF4E342E),
+                      fractionColor: const Color(0xFF4E342E),
+                      useBaselineFractionLayout: true,
                     ),
                   ),
                 ],
