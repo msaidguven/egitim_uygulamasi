@@ -27,8 +27,8 @@ final selectedTopicIdsProvider = StateProvider<Set<int>>((_) => {});
 
 final writtenSessionProvider =
     StateNotifierProvider<WrittenSessionNotifier, WrittenSession?>(
-      (_) => WrittenSessionNotifier(),
-    );
+  (_) => WrittenSessionNotifier(),
+);
 
 class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
   WrittenSessionNotifier() : super(null);
@@ -71,7 +71,36 @@ class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
     if (!attempt.isComplete) return;
 
     final isCorrect = attempt.checkAnswer();
-    attempt.status = isCorrect ? AnswerStatus.correct : AnswerStatus.incorrect;
+    attempt.status =
+        isCorrect ? AnswerStatus.correct : AnswerStatus.incorrect;
+    state = _copySession(session);
+  }
+
+  // Reveal one more hint word
+  void useHint() {
+    final session = state;
+    if (session == null) return;
+    final attempt = session.current;
+    if (attempt.status != AnswerStatus.unanswered) return;
+    if (attempt.allHintsRevealed) return;
+
+    attempt.revealedHintCount++;
+    state = _copySession(session);
+  }
+
+  // Reorder a placed word via drag & drop (fromIndex → toIndex)
+  void reorderWord(int fromIndex, int toIndex) {
+    final session = state;
+    if (session == null) return;
+    final attempt = session.current;
+    if (attempt.status != AnswerStatus.unanswered) return;
+
+    final updated = [...attempt.placedWords];
+    final word = updated.removeAt(fromIndex);
+    final insertAt = (toIndex > fromIndex ? toIndex - 1 : toIndex)
+        .clamp(0, updated.length);
+    updated.insert(insertAt, word);
+    attempt.placedWords = updated;
     state = _copySession(session);
   }
 
@@ -86,6 +115,8 @@ class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
   void reset() => state = null;
 
   // Force Riverpod to detect change (WrittenSession is mutable)
-  WrittenSession _copySession(WrittenSession s) =>
-      WrittenSession(attempts: s.attempts, currentIndex: s.currentIndex);
+  WrittenSession _copySession(WrittenSession s) => WrittenSession(
+        attempts: s.attempts,
+        currentIndex: s.currentIndex,
+      );
 }

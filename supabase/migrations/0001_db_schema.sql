@@ -36,21 +36,6 @@ CREATE TABLE public.grades (
   slug text UNIQUE,
   CONSTRAINT grades_pkey PRIMARY KEY (id)
 );
-CREATE TABLE public.lesson_contents (
-  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-  lesson_id bigint NOT NULL,
-  version_no integer NOT NULL DEFAULT 1 CHECK (version_no >= 1),
-  title text,
-  payload jsonb NOT NULL,
-  source text NOT NULL DEFAULT 'json_import'::text,
-  is_published boolean NOT NULL DEFAULT false,
-  created_by uuid,
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  updated_at timestamp with time zone NOT NULL DEFAULT now(),
-  CONSTRAINT lesson_contents_pkey PRIMARY KEY (id),
-  CONSTRAINT lesson_contents_lesson_id_fkey FOREIGN KEY (lesson_id) REFERENCES public.lessons(id),
-  CONSTRAINT lesson_contents_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.profiles(id)
-);
 CREATE TABLE public.lesson_grades (
   lesson_id bigint NOT NULL,
   grade_id bigint NOT NULL,
@@ -165,6 +150,7 @@ CREATE TABLE public.question_choices (
 CREATE TABLE public.question_classical (
   question_id bigint NOT NULL,
   model_answer text,
+  answer_words ARRAY NOT NULL DEFAULT '{}'::text[],
   CONSTRAINT question_classical_pkey PRIMARY KEY (question_id),
   CONSTRAINT question_classical_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id)
 );

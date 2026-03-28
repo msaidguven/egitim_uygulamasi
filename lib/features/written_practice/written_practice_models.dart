@@ -124,15 +124,22 @@ class QuestionAttempt {
   final List<String> shuffledWords;
   List<String> placedWords;
   AnswerStatus status;
+  int revealedHintCount; // kaç kelime ipucu olarak açıldı
 
   QuestionAttempt({
     required this.question,
     required this.shuffledWords,
     this.placedWords = const [],
     this.status = AnswerStatus.unanswered,
+    this.revealedHintCount = 0,
   });
 
   bool get isComplete => placedWords.length == shuffledWords.length;
+  bool get hasHint => revealedHintCount > 0;
+  bool get allHintsRevealed {
+    final total = question.classical?.answerWords.length ?? 0;
+    return revealedHintCount >= total;
+  }
 
   // Checks placed order against model answer words
   bool checkAnswer() {
