@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' show Platform;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'written_practice_models.dart';
 import 'written_practice_providers.dart';
+
+/// Masaüstü ve web'de normal Draggable (mouse),
+/// mobilde LongPressDraggable kullanır.
+bool get _isDesktopOrWeb {
+  if (kIsWeb) return true;
+  try {
+    return Platform.isLinux || Platform.isMacOS || Platform.isWindows;
+  } catch (_) {
+    return false;
+  }
+}
 
 class WordOrderWidget extends ConsumerWidget {
   final QuestionAttempt attempt;
@@ -403,62 +416,85 @@ class _DraggableWrapWordListState extends State<_DraggableWrapWordList> {
             widget.onReorder(details.data, i > details.data ? i + 1 : i);
           },
           builder: (context, candidateData, rejectedData) {
-            return LongPressDraggable<int>(
-              data: i,
-              delay: const Duration(milliseconds: 200),
-              onDragStarted: () => setState(() => _draggingIndex = i),
-              onDragEnd: (_) => setState(() {
-                _draggingIndex = null;
-                _hoverIndex = null;
-              }),
-              onDraggableCanceled: (_, __) => setState(() {
-                _draggingIndex = null;
-                _hoverIndex = null;
-              }),
-              feedback: Material(
-                color: Colors.transparent,
-                child: Transform.scale(
-                  scale: 1.08,
-                  child: _PlacedWordChip(
-                    word: word,
-                    index: i,
-                    isAnswered: false,
-                    status: widget.status,
-                    onRemove: (_) {},
-                    isDragging: true,
-                  ),
-                ),
-              ),
-              childWhenDragging: AnimatedOpacity(
-                duration: const Duration(milliseconds: 150),
-                opacity: 0.25,
+            final feedback = Material(
+              color: Colors.transparent,
+              child: Transform.scale(
+                scale: 1.08,
                 child: _PlacedWordChip(
                   word: word,
                   index: i,
                   isAnswered: false,
                   status: widget.status,
                   onRemove: (_) {},
+                  isDragging: true,
                 ),
               ),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                decoration: isHover
-                    ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: theme.colorScheme.primary,
-                          width: 2,
-                        ),
-                      )
-                    : null,
-                child: _PlacedWordChip(
-                  word: word,
-                  index: i,
-                  isAnswered: false,
-                  status: widget.status,
-                  onRemove: onRemove,
-                ),
+            );
+
+            final childWhenDragging = AnimatedOpacity(
+              duration: const Duration(milliseconds: 150),
+              opacity: 0.25,
+              child: _PlacedWordChip(
+                word: word,
+                index: i,
+                isAnswered: false,
+                status: widget.status,
+                onRemove: (_) {},
               ),
+            );
+
+            final innerChild = AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              decoration: isHover
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: theme.colorScheme.primary,
+                        width: 2,
+                      ),
+                    )
+                  : null,
+              child: _PlacedWordChip(
+                word: word,
+                index: i,
+                isAnswered: false,
+                status: widget.status,
+                onRemove: onRemove,
+              ),
+            );
+
+            void onDragStarted() => setState(() => _draggingIndex = i);
+            void onDragEnd(DraggableDetails _) => setState(() {
+                  _draggingIndex = null;
+                  _hoverIndex = null;
+                });
+            void onDraggableCanceled(Velocity _, Offset __) => setState(() {
+                  _draggingIndex = null;
+                  _hoverIndex = null;
+                });
+
+            // Masaüstü/web: normal mouse sürükleme
+            // Mobil: uzun basarak sürükleme
+            if (_isDesktopOrWeb) {
+              return Draggable<int>(
+                data: i,
+                feedback: feedback,
+                childWhenDragging: childWhenDragging,
+                onDragStarted: onDragStarted,
+                onDragEnd: onDragEnd,
+                onDraggableCanceled: onDraggableCanceled,
+                child: innerChild,
+              );
+            }
+            return LongPressDraggable<int>(
+              data: i,
+              delay: const Duration(milliseconds: 200),
+              feedback: feedback,
+              childWhenDragging: childWhenDragging,
+              onDragStarted: onDragStarted,
+              onDragEnd: onDragEnd,
+              onDraggableCanceled: onDraggableCanceled,
+              child: innerChild,
             );
           },
         );
