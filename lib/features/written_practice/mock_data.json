@@ -1,0 +1,99 @@
+{
+  "subjects": [
+    { "id": 1, "title": "Fen Bilimleri", "slug": "fen-bilimleri" },
+    { "id": 2, "title": "Türkçe", "slug": "turkce" }
+  ],
+  "units": [
+    { "id": 1, "subject_id": 1, "title": "Hücre ve Organizmalar", "slug": "hucre-ve-organizmalar", "order_no": 1 },
+    { "id": 2, "subject_id": 1, "title": "Kuvvet ve Hareket", "slug": "kuvvet-ve-hareket", "order_no": 2 },
+    { "id": 3, "subject_id": 2, "title": "Sözcükte Anlam", "slug": "sozcukte-anlam", "order_no": 1 }
+  ],
+  "topics": [
+    { "id": 1, "unit_id": 1, "title": "Hücrenin Yapısı", "slug": "hucrenin-yapisi", "order_no": 1, "is_active": true },
+    { "id": 2, "unit_id": 1, "title": "Fotosentez", "slug": "fotosentez", "order_no": 2, "is_active": true },
+    { "id": 3, "unit_id": 2, "title": "Newton'un Hareket Yasaları", "slug": "newtonun-hareket-yasalari", "order_no": 1, "is_active": true },
+    { "id": 4, "unit_id": 3, "title": "Eş Anlamlı Sözcükler", "slug": "es-anlamli-sozcukler", "order_no": 1, "is_active": true }
+  ],
+  "question_types": [
+    { "id": 1, "code": "classical" },
+    { "id": 2, "code": "multiple_choice" }
+  ],
+  "questions": [
+    {
+      "id": 1, "question_type_id": 1,
+      "question_text": "Hücrenin kontrol merkezi olarak görev yapan organeli nedir?",
+      "difficulty": 1, "score": 2,
+      "solution_text": "Çekirdek, hücrenin tüm faaliyetlerini yöneten ve genetik bilgiyi taşıyan organeldir."
+    },
+    {
+      "id": 2, "question_type_id": 1,
+      "question_text": "Kloroplast organelinin görevi nedir?",
+      "difficulty": 2, "score": 3,
+      "solution_text": null
+    },
+    {
+      "id": 3, "question_type_id": 1,
+      "question_text": "Fotosentez tepkimesi sonucunda hangi maddeler üretilir?",
+      "difficulty": 2, "score": 3,
+      "solution_text": "Fotosentez sonucunda glikoz ve oksijen üretilir."
+    },
+    {
+      "id": 4, "question_type_id": 1,
+      "question_text": "Işık enerjisini kimyasal enerjiye dönüştüren olayın adı nedir?",
+      "difficulty": 1, "score": 2,
+      "solution_text": null
+    },
+    {
+      "id": 5, "question_type_id": 1,
+      "question_text": "Newton'un birinci hareket yasasını açıklayınız.",
+      "difficulty": 3, "score": 4,
+      "solution_text": "Bir cisim üzerine net kuvvet etki etmediği sürece duruyorsa durmaya, hareket ediyorsa sabit hızla hareket etmeye devam eder."
+    },
+    {
+      "id": 6, "question_type_id": 1,
+      "question_text": "Eş anlamlı sözcük ne demektir? Örnek veriniz.",
+      "difficulty": 1, "score": 2,
+      "solution_text": null
+    }
+  ],
+  "question_classical": [
+    {
+      "question_id": 1,
+      "model_answer": "Çekirdek hücrenin kontrol merkezi olarak görev yapar ve genetik bilgiyi taşır.",
+      "answer_words": ["Çekirdek", "hücrenin", "kontrol", "merkezi", "olarak", "görev", "yapar", "ve", "genetik", "bilgiyi", "taşır"]
+    },
+    {
+      "question_id": 2,
+      "model_answer": "Kloroplast fotosentez yaparak güneş ışığını besin enerjisine dönüştürür.",
+      "answer_words": ["Kloroplast", "fotosentez", "yaparak", "güneş", "ışığını", "besin", "enerjisine", "dönüştürür"]
+    },
+    {
+      "question_id": 3,
+      "model_answer": "Fotosentez sonucunda glikoz ve oksijen üretilir.",
+      "answer_words": ["Fotosentez", "sonucunda", "glikoz", "ve", "oksijen", "üretilir"]
+    },
+    {
+      "question_id": 4,
+      "model_answer": "Işık enerjisini kimyasal enerjiye dönüştüren olayın adı fotosentezdir.",
+      "answer_words": ["Işık", "enerjisini", "kimyasal", "enerjiye", "dönüştüren", "olayın", "adı", "fotosentezdir"]
+    },
+    {
+      "question_id": 5,
+      "model_answer": "Bir cisim üzerine net kuvvet etki etmediği sürece hareketi değişmez.",
+      "answer_words": ["Bir", "cisim", "üzerine", "net", "kuvvet", "etki", "etmediği", "sürece", "hareketi", "değişmez"]
+    },
+    {
+      "question_id": 6,
+      "model_answer": "Eş anlamlı sözcükler yazılışları farklı anlamları aynı olan sözcüklerdir.",
+      "answer_words": ["Eş", "anlamlı", "sözcükler", "yazılışları", "farklı", "anlamları", "aynı", "olan", "sözcüklerdir"]
+    }
+  ],
+  "question_usages": [
+    { "id": 1, "question_id": 1, "topic_id": 1, "usage_type": "topic_end", "order_no": 1 },
+    { "id": 2, "question_id": 2, "topic_id": 2, "usage_type": "topic_end", "order_no": 1 },
+    { "id": 3, "question_id": 3, "topic_id": 2, "usage_type": "topic_end", "order_no": 2 },
+    { "id": 4, "question_id": 4, "topic_id": 2, "usage_type": "weekly", "order_no": 1, "curriculum_week": 3 },
+    { "id": 5, "question_id": 5, "topic_id": 3, "usage_type": "topic_end", "order_no": 1 },
+    { "id": 6, "question_id": 6, "topic_id": 4, "usage_type": "topic_end", "order_no": 1 }
+  ]
+}

@@ -3,6 +3,7 @@
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_session.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
+import 'package:egitim_uygulamasi/features/written_practice/written_practice_home_screen.dart';
 import 'package:egitim_uygulamasi/models/profile_model.dart';
 import 'package:egitim_uygulamasi/providers.dart';
 import 'package:egitim_uygulamasi/screens/home/models/home_models.dart';
@@ -449,6 +450,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
 
+                if (isStudent)
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverToBoxAdapter(
+                      child: _WrittenPracticeEntryCard(
+                        onTap: () {
+                          Navigator.of(
+                            context,
+                          ).pushNamed(WrittenPracticeHomeScreen.routeName);
+                        },
+                      ),
+                    ),
+                  ),
+
                 // 5. Week Scroll Widget (Herkes) - GECICI OLARAK KAPATILDI
                 // SliverToBoxAdapter(
                 //   child: WeekScrollWidget(
@@ -517,9 +532,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildStudentContent() {
-    return SliverFillRemaining(
-      child: LessonMapWidget(profile: widget.profile),
-    );
+    return SliverFillRemaining(child: LessonMapWidget(profile: widget.profile));
   }
 
   Widget _buildTeacherContent() {
@@ -537,6 +550,86 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           (item) => (item['progress_percentage'] ?? 0.0).toDouble() >= 100.0,
         )
         .length;
+  }
+}
+
+class _WrittenPracticeEntryCard extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _WrittenPracticeEntryCard({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 6),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF0EA5E9), Color(0xFF2563EB)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x332563EB),
+            blurRadius: 12,
+            offset: Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.edit_note_rounded,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Yazılıya Çalış',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Konu seç, kelime sıralama sorularını çöz.',
+                        style: TextStyle(
+                          color: Color(0xFFE0E7FF),
+                          fontSize: 12.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                const Icon(Icons.arrow_forward_rounded, color: Colors.white),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

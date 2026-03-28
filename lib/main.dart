@@ -7,6 +7,7 @@ import 'package:egitim_uygulamasi/ads/ad_service.dart';
 import 'package:egitim_uygulamasi/screens/login_screen.dart';
 import 'package:egitim_uygulamasi/screens/signup_screen.dart';
 import 'package:egitim_uygulamasi/constants.dart';
+import 'package:egitim_uygulamasi/features/written_practice/written_practice_home_screen.dart';
 import 'package:egitim_uygulamasi/screens/auth_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,13 +55,13 @@ class _EgitimUygulamasiState extends State<EgitimUygulamasi> {
   @override
   void initState() {
     super.initState();
-    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen(
-      (data) {
-        if (data.event == AuthChangeEvent.passwordRecovery) {
-          navigatorKey.currentState?.pushNamed('/reset-password');
-        }
-      },
-    );
+    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((
+      data,
+    ) {
+      if (data.event == AuthChangeEvent.passwordRecovery) {
+        navigatorKey.currentState?.pushNamed('/reset-password');
+      }
+    });
   }
 
   @override
@@ -85,6 +86,8 @@ class _EgitimUygulamasiState extends State<EgitimUygulamasi> {
         '/reset-password': (context) => const ResetPasswordScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const SignUpScreen(),
+        WrittenPracticeHomeScreen.routeName: (context) =>
+            const WrittenPracticeHomeScreen(),
       },
     );
   }

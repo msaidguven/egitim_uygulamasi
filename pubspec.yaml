@@ -93,3 +93,4 @@ flutter:
     - assets/prompts/lesson_content_prompt_v1.md
     - assets/prompts/lesson_questions_prompt_v1.md
     - lib/screens/lesson_content/lesson_v11/lesson_prompt_v2.md
+    - lib/features/written_practice/mock_data.json

@@ -103,8 +103,8 @@ class QuestionText extends StatelessWidget {
     final fractionWidth = fontSize * (0.76 + (maxDigits * 0.34));
     final numDenSize = fontSize * 0.66;
     final lineThickness = (fontSize * 0.055).clamp(1.1, 2.1);
-    final baselineY = fontSize * 1.00;
-    final totalHeight = fontSize * 1.32;
+    final baselineY = fontSize * 1.08;
+    final totalHeight = fontSize * 1.30;
     final lineY = fontSize * 0.52;
     final textGap = fontSize * 0.02;
 
