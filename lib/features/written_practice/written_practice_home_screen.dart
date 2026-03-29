@@ -6,8 +6,16 @@ import 'written_session_screen.dart';
 
 class WrittenPracticeHomeScreen extends ConsumerStatefulWidget {
   static const routeName = '/written-practice';
+  final int? initialLessonId;
+  final int? initialGradeId;
+  final String? initialLessonName;
 
-  const WrittenPracticeHomeScreen({super.key});
+  const WrittenPracticeHomeScreen({
+    super.key,
+    this.initialLessonId,
+    this.initialGradeId,
+    this.initialLessonName,
+  });
 
   @override
   ConsumerState<WrittenPracticeHomeScreen> createState() =>
@@ -16,63 +24,74 @@ class WrittenPracticeHomeScreen extends ConsumerStatefulWidget {
 
 class _WrittenPracticeHomeScreenState
     extends ConsumerState<WrittenPracticeHomeScreen> {
-  int? _expandedUnitId;
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(selectedLessonIdProvider.notifier).state =
+          widget.initialLessonId;
+      ref.read(selectedGradeIdProvider.notifier).state = widget.initialGradeId;
+      ref.read(selectedTopicIdsProvider.notifier).state = {};
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final subjects = ref.watch(subjectsProvider);
-    final selectedSubject = ref.watch(selectedSubjectProvider);
+    final unitsAsync = ref.watch(lessonUnitsProvider);
+    final selectedLessonId = ref.watch(selectedLessonIdProvider);
     final selectedTopicIds = ref.watch(selectedTopicIdsProvider);
+    final lessonTitle = (widget.initialLessonName ?? '').trim();
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
-        title: const Text('Yazılıya Çalış'),
+        title: Text(
+          lessonTitle.isEmpty
+              ? 'Yazılıya Çalış'
+              : 'Yazılıya Çalış • $lessonTitle',
+        ),
         centerTitle: false,
         elevation: 0,
         backgroundColor: theme.colorScheme.surface,
       ),
       body: Column(
         children: [
-          // ── Subject selector ──────────────────────────────────────────
-          subjects.when(
-            loading: () => const LinearProgressIndicator(),
-            error: (e, _) => Text('Hata: $e'),
-            data: (list) => _SubjectChips(
-              subjects: list,
-              selected: selectedSubject,
-              onSelect: (s) {
-                ref.read(selectedSubjectProvider.notifier).state = s;
-                ref.read(selectedTopicIdsProvider.notifier).state = {};
-                setState(() => _expandedUnitId = null);
-              },
-            ),
-          ),
-
-          // ── Unit > Topic tree ─────────────────────────────────────────
           Expanded(
-            child: selectedSubject == null
+            child: selectedLessonId == null
                 ? _EmptyHint(
                     icon: Icons.school_outlined,
-                    text: 'Önce bir ders seç',
+                    text:
+                        'Ders bilgisi gelmedi. Bu ekrana haftalık ders içinden geçin.',
                   )
-                : _UnitTopicTree(
-                    subject: selectedSubject,
-                    selectedTopicIds: selectedTopicIds,
-                    expandedUnitId: _expandedUnitId,
-                    onExpandUnit: (id) => setState(() => _expandedUnitId = id),
-                    onToggleTopic: (topicId) {
-                      final current = ref.read(selectedTopicIdsProvider);
-                      final updated = {...current};
-                      if (updated.contains(topicId)) {
-                        updated.remove(topicId);
-                      } else {
-                        updated.add(topicId);
-                      }
-                      ref.read(selectedTopicIdsProvider.notifier).state =
-                          updated;
-                    },
+                : unitsAsync.when(
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (e, _) => Center(child: Text('Hata: $e')),
+                    data: (units) => units.isEmpty
+                        ? const _EmptyHint(
+                            icon: Icons.list_alt_rounded,
+                            text: 'Bu ders için ünite bulunamadı.',
+                          )
+                        : _UnitTopicTree(
+                            units: units,
+                            selectedTopicIds: selectedTopicIds,
+                            onToggleTopic: (topicId) {
+                              final current = ref.read(
+                                selectedTopicIdsProvider,
+                              );
+                              final updated = {...current};
+                              if (updated.contains(topicId)) {
+                                updated.remove(topicId);
+                              } else {
+                                updated.add(topicId);
+                              }
+                              ref
+                                      .read(selectedTopicIdsProvider.notifier)
+                                      .state =
+                                  updated;
+                            },
+                          ),
                   ),
           ),
         ],
@@ -123,77 +142,28 @@ class _WrittenPracticeHomeScreenState
   }
 }
 
-// ── Subject chips ────────────────────────────────────────────────────────────
-
-class _SubjectChips extends StatelessWidget {
-  final List<Subject> subjects;
-  final Subject? selected;
-  final void Function(Subject) onSelect;
-
-  const _SubjectChips({
-    required this.subjects,
-    required this.selected,
-    required this.onSelect,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 56,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        itemCount: subjects.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemBuilder: (_, i) {
-          final s = subjects[i];
-          final isSelected = selected?.id == s.id;
-          return ChoiceChip(
-            label: Text(s.title),
-            selected: isSelected,
-            onSelected: (_) => onSelect(s),
-          );
-        },
-      ),
-    );
-  }
-}
-
 // ── Unit > Topic tree ────────────────────────────────────────────────────────
 
 class _UnitTopicTree extends ConsumerWidget {
-  final Subject subject;
+  final List<Unit> units;
   final Set<int> selectedTopicIds;
-  final int? expandedUnitId;
-  final void Function(int?) onExpandUnit;
   final void Function(int) onToggleTopic;
 
   const _UnitTopicTree({
-    required this.subject,
+    required this.units,
     required this.selectedTopicIds,
-    required this.expandedUnitId,
-    required this.onExpandUnit,
     required this.onToggleTopic,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final unitsAsync = ref.watch(unitsProvider(subject.id));
-
-    return unitsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Hata: $e')),
-      data: (units) => ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-        itemCount: units.length,
-        itemBuilder: (_, i) => _UnitTile(
-          unit: units[i],
-          isExpanded: expandedUnitId == units[i].id,
-          selectedTopicIds: selectedTopicIds,
-          onExpand: () =>
-              onExpandUnit(expandedUnitId == units[i].id ? null : units[i].id),
-          onToggleTopic: onToggleTopic,
-        ),
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+      itemCount: units.length,
+      itemBuilder: (_, i) => _UnitTile(
+        unit: units[i],
+        selectedTopicIds: selectedTopicIds,
+        onToggleTopic: onToggleTopic,
       ),
     );
   }
@@ -201,16 +171,12 @@ class _UnitTopicTree extends ConsumerWidget {
 
 class _UnitTile extends ConsumerWidget {
   final Unit unit;
-  final bool isExpanded;
   final Set<int> selectedTopicIds;
-  final VoidCallback onExpand;
   final void Function(int) onToggleTopic;
 
   const _UnitTile({
     required this.unit,
-    required this.isExpanded,
     required this.selectedTopicIds,
-    required this.onExpand,
     required this.onToggleTopic,
   });
 
@@ -228,49 +194,44 @@ class _UnitTile extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          // Unit header
-          ListTile(
-            title: Text(
-              unit.title,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                unit.title,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
             ),
-            trailing: Icon(
-              isExpanded
-                  ? Icons.keyboard_arrow_up_rounded
-                  : Icons.keyboard_arrow_down_rounded,
-            ),
-            onTap: onExpand,
           ),
 
-          // Topics
-          if (isExpanded)
-            topicsAsync.when(
-              loading: () => const Padding(
-                padding: EdgeInsets.all(16),
-                child: LinearProgressIndicator(),
-              ),
-              error: (e, _) => Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text('Hata: $e'),
-              ),
-              data: (topics) => topics.isEmpty
-                  ? const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text('Bu ünitede konu yok.'),
-                    )
-                  : Column(
-                      children: [
-                        const Divider(height: 1),
-                        ...topics.map(
-                          (t) => _TopicCheckTile(
-                            topic: t,
-                            isSelected: selectedTopicIds.contains(t.id),
-                            onToggle: () => onToggleTopic(t.id),
-                          ),
-                        ),
-                      ],
-                    ),
+          topicsAsync.when(
+            loading: () => const Padding(
+              padding: EdgeInsets.all(16),
+              child: LinearProgressIndicator(),
             ),
+            error: (e, _) => Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text('Hata: $e'),
+            ),
+            data: (topics) => topics.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text('Bu ünitede konu yok.'),
+                  )
+                : Column(
+                    children: [
+                      const Divider(height: 1),
+                      ...topics.map(
+                        (t) => _TopicCheckTile(
+                          topic: t,
+                          isSelected: selectedTopicIds.contains(t.id),
+                          onToggle: () => onToggleTopic(t.id),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
         ],
       ),
     );

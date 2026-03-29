@@ -1,4 +1,5 @@
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
+import 'package:egitim_uygulamasi/features/written_practice/written_practice_home_screen.dart';
 import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/questions_screen.dart';
 import 'package:egitim_uygulamasi/screens/lesson_content/lesson_v11/main.dart'
@@ -202,6 +203,18 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
           gradeName: widget.gradeName,
           lessonName: widget.lessonName,
           initialCurriculumWeek: widget.curriculumWeek,
+        ),
+      ),
+    );
+  }
+
+  void _openWrittenPractice() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => WrittenPracticeHomeScreen(
+          initialLessonId: widget.lessonId,
+          initialGradeId: widget.gradeId,
+          initialLessonName: widget.lessonName,
         ),
       ),
     );
@@ -460,6 +473,7 @@ class _WeeklyV11TopicsScreenState extends State<WeeklyV11TopicsScreen>
                     isAdmin: _isAdmin,
                     onOpenAdmin: () => _openAdminContentAddition(topic),
                     onOpenClassic: _openClassic,
+                    onOpenWritten: _openWrittenPractice,
                   );
                 },
               ),
@@ -792,6 +806,7 @@ class _AnimatedTopicCard extends StatelessWidget {
     required this.isAdmin,
     required this.onOpenAdmin,
     required this.onOpenClassic,
+    required this.onOpenWritten,
   });
 
   final Map<String, dynamic> topic;
@@ -806,6 +821,7 @@ class _AnimatedTopicCard extends StatelessWidget {
   final bool isAdmin;
   final VoidCallback onOpenAdmin;
   final VoidCallback onOpenClassic;
+  final VoidCallback onOpenWritten;
 
   @override
   Widget build(BuildContext context) {
@@ -853,6 +869,7 @@ class _AnimatedTopicCard extends StatelessWidget {
           isAdmin: isAdmin,
           onOpenAdmin: onOpenAdmin,
           onOpenClassic: onOpenClassic,
+          onOpenWritten: onOpenWritten,
         ),
       ),
     );
@@ -875,6 +892,7 @@ class _TopicCard extends StatefulWidget {
     required this.isAdmin,
     required this.onOpenAdmin,
     required this.onOpenClassic,
+    required this.onOpenWritten,
   });
 
   final Map<String, dynamic> topic;
@@ -891,6 +909,7 @@ class _TopicCard extends StatefulWidget {
   final bool isAdmin;
   final VoidCallback onOpenAdmin;
   final VoidCallback onOpenClassic;
+  final VoidCallback onOpenWritten;
 
   @override
   State<_TopicCard> createState() => _TopicCardState();
@@ -1200,6 +1219,20 @@ class _TopicCardState extends State<_TopicCard> {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: _GameLikeButton(
+                        label: 'Yazılıya Çalış',
+                        icon: Icons.edit_note_rounded,
+                        onTap: widget.onOpenWritten,
+                        gradientColors: const [
+                          Color(0xFF0EA5E9),
+                          Color(0xFF2563EB),
+                        ],
+                        shadowColor: const Color(0xFF2563EB),
+                      ),
                     ),
                   ] else ...[
                     Container(

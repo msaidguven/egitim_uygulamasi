@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
+import 'dart:math';
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_addition_page.dart';
 import 'package:egitim_uygulamasi/admin/pages/smart_content_addition/smart_content_update_page.dart';
 import 'package:egitim_uygulamasi/screens/outcomes/widgets/admin_copy_button.dart';
@@ -72,11 +74,32 @@ class LessonModule {
 
   factory LessonModule.fromJson(Map<String, dynamic> json) {
     final m = json['lessonModule'] as Map<String, dynamic>;
+
+    // 1. Tüm section'ları parse et
     final sections =
         (m['sections'] as List? ?? [])
             .map((s) => LessonSection.fromJson(s))
             .toList()
           ..sort((a, b) => a.order.compareTo(b.order));
+
+    // 2. Tüm quiz bloklarını id → LessonBlock olarak indexle
+    final Map<String, LessonBlock> allQuizById = {};
+    for (final section in sections) {
+      for (final quiz in section.quiz) {
+        allQuizById[quiz.id] = quiz;
+      }
+    }
+
+    // 3. quiz_refs içeren section'ların quiz listesini doldur
+    final resolvedSections = sections.map((section) {
+      if (section.quizRefs.isEmpty) return section;
+      final resolvedQuiz = section.quizRefs
+          .map((ref) => allQuizById[ref])
+          .whereType<LessonBlock>()
+          .toList();
+      return section.copyWith(quiz: resolvedQuiz);
+    }).toList();
+
     return LessonModule(
       id: m['id'],
       title: m['title'],
@@ -84,7 +107,7 @@ class LessonModule {
       subject: m['subject'] ?? '',
       gradeLevel: m['gradeLevel'] ?? '',
       estimatedMinutes: m['estimatedMinutes'] ?? 0,
-      sections: sections,
+      sections: resolvedSections,
     );
   }
 }
@@ -94,6 +117,7 @@ class LessonSection {
   final int order;
   final List<LessonBlock> content;
   final List<LessonBlock> quiz;
+  final List<String> quizRefs; // YENİ: review_section için ref listesi
 
   LessonSection({
     required this.id,
@@ -102,6 +126,7 @@ class LessonSection {
     required this.order,
     required this.content,
     required this.quiz,
+    this.quizRefs = const [],
   });
 
   factory LessonSection.fromJson(Map<String, dynamic> json) {
@@ -110,11 +135,15 @@ class LessonSection {
             .map((b) => LessonBlock.fromJson(b))
             .toList()
           ..sort((a, b) => a.order.compareTo(b.order));
+
     final quiz =
         (json['quiz'] as List? ?? [])
             .map((b) => LessonBlock.fromJson(b))
             .toList()
           ..sort((a, b) => a.order.compareTo(b.order));
+
+    final quizRefs =
+        (json['quiz_refs'] as List? ?? []).cast<String>();
 
     return LessonSection(
       id: json['id'],
@@ -123,6 +152,20 @@ class LessonSection {
       order: json['order'],
       content: content,
       quiz: quiz,
+      quizRefs: quizRefs,
+    );
+  }
+
+  /// quiz_refs çözümlendikten sonra yeni quiz listesiyle kopyasını oluşturur
+  LessonSection copyWith({List<LessonBlock>? quiz}) {
+    return LessonSection(
+      id: id,
+      title: title,
+      icon: icon,
+      order: order,
+      content: content,
+      quiz: quiz ?? this.quiz,
+      quizRefs: quizRefs,
     );
   }
 }
@@ -1326,7 +1369,7 @@ class _QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<_QuizScreen> {
-  int _idx = 0; // aktif soru indeksi
+  int _idx = 0;
 
   List<LessonBlock> get _quiz => widget.section.quiz;
   bool get _allDone => _quiz.every((q) => widget.completedIds.contains(q.id));
@@ -1365,7 +1408,6 @@ class _QuizScreenState extends State<_QuizScreen> {
                 isQuiz: true,
               ),
               const SizedBox(height: 10),
-              // Soru ilerleme göstergesi
               if (quiz.length > 1) ...[
                 Row(
                   children: List.generate(quiz.length, (i) {
@@ -1406,7 +1448,6 @@ class _QuizScreenState extends State<_QuizScreen> {
                 ),
                 const SizedBox(height: 8),
               ],
-              // Aktif soru kartı — animasyonlu geçiş
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 transitionBuilder: (child, anim) => SlideTransition(
@@ -1427,7 +1468,6 @@ class _QuizScreenState extends State<_QuizScreen> {
                   child: _buildQuizCard(block),
                 ),
               ),
-              // Tüm sorular bitti → tebrik + devam
               if (_allDone) ...[
                 const SizedBox(height: 16),
                 _AllCorrectBanner(color: widget.color),
@@ -1435,13 +1475,11 @@ class _QuizScreenState extends State<_QuizScreen> {
             ],
           ),
         ),
-        // Alt navigasyon (geri / ileri veya sonraki bölüm)
         Container(
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
           color: const Color(0xFFF0F4FF),
           child: Row(
             children: [
-              // Geri
               AnimatedOpacity(
                 opacity: _idx > 0 ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
@@ -1468,7 +1506,6 @@ class _QuizScreenState extends State<_QuizScreen> {
                 ),
               ),
               const SizedBox(width: 10),
-              // İleri / Sonraki Bölüm
               Expanded(
                 child: SizedBox(
                   height: 52,
@@ -1557,7 +1594,14 @@ class _QuizScreenState extends State<_QuizScreen> {
           onAnswered: () => widget.onQuizAnswered(block.id),
           done: widget.completedIds.contains(block.id),
         );
-      default: // single_choice, multiple_choice
+      case 'classical_order':
+        return _ClassicalOrderCard(
+          block: block,
+          color: widget.color,
+          onAnswered: () => widget.onQuizAnswered(block.id),
+          done: widget.completedIds.contains(block.id),
+        );
+      default:
         return _ChoiceCard(
           block: block,
           color: widget.color,
@@ -1641,11 +1685,6 @@ class _HintBoxState extends State<_HintBox> {
     );
   }
 }
-
-// ═══════════════════════════════════════════════════════
-// SIRALAMA SORULARI — BELİRGİN İPUCU KUTUSU
-// Her zaman görünür, baştan açık, öğrenmeyi destekler
-// ═══════════════════════════════════════════════════════
 
 class _OrderingHintBox extends StatefulWidget {
   final String hint;
@@ -1917,7 +1956,6 @@ class _ChoiceCardState extends State<_ChoiceCard>
       widget.onAnswered();
     } else {
       _shake.forward(from: 0);
-      // Yanlışta seçimler temizlenmiyor — kullanıcı neyin yanlış olduğunu görüp düzeltsin
       Future.delayed(const Duration(milliseconds: 1200), () {
         if (mounted) {
           setState(() {
@@ -1944,10 +1982,6 @@ class _ChoiceCardState extends State<_ChoiceCard>
     }
   }
 
-  /// Her seçeneğin durumu bağımsız hesaplanır:
-  /// - Doğru şık: her zaman yeşil (seçilmiş olsun olmasın)
-  /// - Yanlış seçilen: kırmızı
-  /// - Diğerleri: normal
   bool _isOptCorrect(String id) {
     if (_isMultiple) {
       return Set<String>.from(
@@ -2153,12 +2187,12 @@ class _FillBlankCard extends StatefulWidget {
 }
 
 class _FillBlankCardState extends State<_FillBlankCard> {
-  String? _selected; // seçilen kelime
+  String? _selected;
   bool _submitted = false;
   bool _isCorrect = false;
   int _attempts = 0;
   bool _showHint = false;
-  late List<String> _wordOptions; // karıştırılmış seçenekler
+  late List<String> _wordOptions;
 
   @override
   void initState() {
@@ -2184,7 +2218,6 @@ class _FillBlankCardState extends State<_FillBlankCard> {
 
   String get _displayAnswer => _acceptedAnswers.first;
 
-  /// acceptedAnswers + distractors birleştir, karıştır
   List<String> _buildWordOptions() {
     final distractors = (widget.block.content['distractors'] as List? ?? [])
         .cast<String>()
@@ -2192,9 +2225,6 @@ class _FillBlankCardState extends State<_FillBlankCard> {
         .where((word) => word.isNotEmpty)
         .cast<String>();
 
-    // Alternatif doğru cevaplar kontrol için saklanır; seçeneklerde yalnızca
-    // tek bir kanonik doğru cevap gösterilir. Aksi halde ekrandaki birden fazla
-    // seçenek "doğru" olur.
     final options = <String>{_displayAnswer};
     options.addAll(distractors);
 
@@ -2245,7 +2275,6 @@ class _FillBlankCardState extends State<_FillBlankCard> {
       isCorrect: _isCorrect,
       children: [
         const SizedBox(height: 12),
-        // Soru metni — seçilen kelimeyle boşluk dolup dolmadığını göster
         ..._buildQuestion(
           context,
           c['question_text'] ?? c['question'] ?? '',
@@ -2255,7 +2284,6 @@ class _FillBlankCardState extends State<_FillBlankCard> {
           _isCorrect,
         ),
         const SizedBox(height: 16),
-        // Talimat
         if (!(_submitted && _isCorrect))
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
@@ -2268,7 +2296,6 @@ class _FillBlankCardState extends State<_FillBlankCard> {
               ),
             ),
           ),
-        // Kelime seçenekleri
         if (!(_submitted && _isCorrect))
           Wrap(
             spacing: 8,
@@ -2351,7 +2378,6 @@ class _FillBlankCardState extends State<_FillBlankCard> {
       if (line.trim().isEmpty) return const SizedBox(height: 4);
       if (line.contains('________')) {
         final parts = line.split('________');
-        // Boşlukta gösterilecek içerik
         final filledText = selected ?? '  ?  ';
         final fillColor = submitted && isCorrect
             ? _C.correct
@@ -2467,9 +2493,7 @@ class _MatchingCardState extends State<_MatchingCard> {
   late List<String> _shuffledRights;
   String? _selectedLeft;
   int? _selectedRightIdx;
-  // Onaylanmış doğru eşleşmeler: leftId → rightIndex
   final Map<String, int> _confirmed = {};
-  // Anlık yanlış flash için: leftId → true (kırmızı göster)
   final Set<String> _wrongFlash = {};
   final Set<int> _wrongRightFlash = {};
   int _attempts = 0;
@@ -2510,7 +2534,6 @@ class _MatchingCardState extends State<_MatchingCard> {
 
   void _tapRight(int index) {
     if (_allCorrect) return;
-    // Zaten onaylanmış bir sağ değeri tıklanamaz
     if (_confirmed.values.contains(index)) return;
     setState(() {
       _selectedRightIdx = _selectedRightIdx == index ? null : index;
@@ -2530,14 +2553,12 @@ class _MatchingCardState extends State<_MatchingCard> {
     _attempts++;
 
     if (rightText == correctRight) {
-      // Doğru — onayla
       _confirmed[leftId] = rightIndex;
       if (_confirmed.length == _pairs.length) {
         _allCorrect = true;
         widget.onAnswered();
       }
     } else {
-      // Yanlış — kırmızı flash, sonra temizle
       _wrongFlash.add(leftId);
       _wrongRightFlash.add(rightIndex);
       _showHint = true;
@@ -2588,7 +2609,6 @@ class _MatchingCardState extends State<_MatchingCard> {
           useBaselineFractionLayout: true,
         ),
         const SizedBox(height: 14),
-        // Talimat
         if (!_allCorrect)
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
@@ -2601,11 +2621,9 @@ class _MatchingCardState extends State<_MatchingCard> {
               ),
             ),
           ),
-        // Sol — Sağ tablo
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Sol sütun
             Expanded(
               child: Column(
                 children: _pairs.map((p) {
@@ -2661,7 +2679,6 @@ class _MatchingCardState extends State<_MatchingCard> {
                 }).toList(),
               ),
             ),
-            // Ok simgesi
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Column(
@@ -2684,7 +2701,6 @@ class _MatchingCardState extends State<_MatchingCard> {
                     .toList(),
               ),
             ),
-            // Sağ sütun (karıştırılmış)
             Expanded(
               child: Column(
                 children: _shuffledRights.asMap().entries.map((entry) {
@@ -2801,7 +2817,6 @@ class _OrderingCardState extends State<_OrderingCard> {
     return true;
   }
 
-  // Her item'ın doğru pozisyonda olup olmadığını döndürür
   bool _isItemCorrect(int idx) {
     if (!_submitted) return false;
     final itemId = _items[idx]['id'] as String;
@@ -2814,17 +2829,15 @@ class _OrderingCardState extends State<_OrderingCard> {
       _submitted = true;
       _isCorrect = correct;
       _attempts++;
-      _showHint = !correct; // yanlışta hemen ipucunu göster
+      _showHint = !correct;
     });
     if (correct) {
       widget.onAnswered();
     } else {
-      // Kırmızı/yeşil göster, shuffle YOK — kullanıcı kendi düzeltsin
       Future.delayed(const Duration(milliseconds: 1200), () {
         if (mounted) {
           setState(() {
             _submitted = false;
-            // _items karıştırılmıyor, sıralama yerinde kalıyor
           });
         }
       });
@@ -2939,7 +2952,6 @@ class _OrderingCardState extends State<_OrderingCard> {
             );
           }).toList(),
         ),
-        // İpucu ordering'de her zaman görünür (baştan açık, belirgin)
         if (hint.isNotEmpty && !(_submitted && _isCorrect))
           _OrderingHintBox(hint: hint),
         if (!(_submitted && _isCorrect)) ...[
@@ -2973,7 +2985,7 @@ class _OrderingCardState extends State<_OrderingCard> {
 }
 
 // ═══════════════════════════════════════════════════════
-// DOĞRU / YANLIŞ KARTI (true_false)
+// DOĞRU / YANLIŞ KARTI
 // ═══════════════════════════════════════════════════════
 
 class _TrueFalseCard extends StatefulWidget {
@@ -3088,7 +3100,6 @@ class _TrueFalseCardState extends State<_TrueFalseCard>
         isCorrect: _isCorrect,
         children: [
           const SizedBox(height: 12),
-          // İfade kutusu
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(14),
@@ -3109,7 +3120,6 @@ class _TrueFalseCardState extends State<_TrueFalseCard>
             ),
           ),
           const SizedBox(height: 16),
-          // Doğru / Yanlış butonları
           Row(
             children: [
               Expanded(
@@ -3152,7 +3162,7 @@ class _TrueFalseCardState extends State<_TrueFalseCard>
 class _TFButton extends StatelessWidget {
   final String label;
   final bool selected;
-  final bool? correct; // null = henüz submit yok
+  final bool? correct;
   final bool isCorrectAnswer;
   final bool submitted;
   final Color color;
@@ -3407,6 +3417,7 @@ class _UnsupportedBlockCard extends StatelessWidget {
     );
   }
 }
+
 // ═══════════════════════════════════════════════════════
 // MARKDOWN KARTI
 // ═══════════════════════════════════════════════════════
@@ -3956,6 +3967,802 @@ class _FinishScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// PLATFORM HELPER
+// ═══════════════════════════════════════════════════════
+
+bool get _isDesktopOrWeb {
+  if (kIsWeb) return true;
+  try {
+    return Platform.isLinux || Platform.isMacOS || Platform.isWindows;
+  } catch (_) {
+    return false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// KLASİK KELİME SIRALAMA KARTI
+// ═══════════════════════════════════════════════════════
+
+class _ClassicalOrderCard extends StatefulWidget {
+  final LessonBlock block;
+  final Color color;
+  final VoidCallback onAnswered;
+  final bool done;
+
+  const _ClassicalOrderCard({
+    super.key,
+    required this.block,
+    required this.color,
+    required this.onAnswered,
+    required this.done,
+  });
+
+  @override
+  State<_ClassicalOrderCard> createState() => _ClassicalOrderCardState();
+}
+
+class _ClassicalOrderCardState extends State<_ClassicalOrderCard> {
+  late List<String> _shuffledWords;
+  late List<String> _placedWords;
+  bool _submitted = false;
+  bool _isCorrect = false;
+  int _attempts = 0;
+  bool _showHint = false;
+
+  List<String> get _answerWords =>
+      (widget.block.content['answer_words'] as List? ?? []).cast<String>();
+  String get _modelAnswer =>
+      widget.block.content['model_answer'] as String? ?? '';
+  String get _hint => widget.block.content['hint'] as String? ?? '';
+  String get _explanation =>
+      widget.block.content['explanation'] as String? ?? '';
+  String get _question => widget.block.content['question'] as String? ?? '';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.done) {
+      _placedWords = List<String>.from(_answerWords);
+      _shuffledWords = [];
+      _submitted = true;
+      _isCorrect = true;
+    } else {
+      _placedWords = [];
+      _shuffledWords = List<String>.from(_answerWords)..shuffle(Random());
+    }
+  }
+
+  List<String> get _bankWords {
+    final pool = [..._shuffledWords];
+    for (final w in _placedWords) {
+      pool.remove(w);
+    }
+    return pool;
+  }
+
+  bool get _isComplete => _placedWords.length == _answerWords.length;
+
+  bool _checkAnswer() {
+    if (_placedWords.length != _answerWords.length) return false;
+    for (int i = 0; i < _answerWords.length; i++) {
+      if (_placedWords[i] != _answerWords[i]) return false;
+    }
+    return true;
+  }
+
+  void _placeWord(String word) {
+    if (_submitted) return;
+    setState(() => _placedWords = [..._placedWords, word]);
+  }
+
+  void _removeWord(int index) {
+    if (_submitted) return;
+    final updated = [..._placedWords];
+    updated.removeAt(index);
+    setState(() => _placedWords = updated);
+  }
+
+  void _reorderWord(int from, int to) {
+    if (_submitted) return;
+    final updated = [..._placedWords];
+    final word = updated.removeAt(from);
+    final insertAt = (to > from ? to - 1 : to).clamp(0, updated.length);
+    updated.insert(insertAt, word);
+    setState(() => _placedWords = updated);
+  }
+
+  void _confirmAnswer() {
+    if (!_isComplete || _submitted) return;
+    final correct = _checkAnswer();
+    setState(() {
+      _submitted = true;
+      _isCorrect = correct;
+      _attempts++;
+      if (!correct) _showHint = true;
+    });
+    if (correct) {
+      widget.onAnswered();
+    } else {
+      Future.delayed(const Duration(milliseconds: 3600), () {
+        if (mounted) {
+          setState(() {
+            _submitted = false;
+            _placedWords = [];
+            _shuffledWords = List<String>.from(_answerWords)..shuffle(Random());
+          });
+        }
+      });
+    }
+  }
+
+  void _useHint() {
+    if (_submitted || _isCorrect) return;
+    final revealedCount = _placedWords.length;
+    if (revealedCount >= _answerWords.length) return;
+    final nextWord = _answerWords[revealedCount];
+    setState(() {
+      _placedWords = [..._placedWords, nextWord];
+      final poolIdx = _shuffledWords.indexOf(nextWord);
+      if (poolIdx >= 0) {
+        final updated = [..._shuffledWords];
+        updated.removeAt(poolIdx);
+        _shuffledWords = updated;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final bankWords = _bankWords;
+
+    return _quizShell(
+      color: widget.color,
+      typeLabel: '✍️  Yazılı Soru',
+      attempts: _attempts,
+      submitted: _submitted,
+      isCorrect: _isCorrect,
+      children: [
+        const SizedBox(height: 12),
+        QuestionText(
+          text: _normalizeFractionMarkup(_question),
+          fontSize: 15,
+          textColor: const Color(0xFF1F2937),
+          fractionColor: const Color(0xFF1F2937),
+          useBaselineFractionLayout: true,
+        ),
+        const SizedBox(height: 16),
+        if (!(_submitted && _isCorrect))
+          _ClassicalHintButton(
+            revealedCount: _placedWords.length,
+            totalCount: _answerWords.length,
+            isAnswered: _submitted && _isCorrect,
+            onTap: _useHint,
+            hint: _hint,
+            showHint: _showHint,
+            color: widget.color,
+          ),
+        const SizedBox(height: 16),
+        Text(
+          'Cevabını oluştur:',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: const Color(0xFF6B7280),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 6),
+        _ClassicalAnswerArea(
+          placedWords: _placedWords,
+          isCorrect: _isCorrect,
+          submitted: _submitted,
+          onRemove: _removeWord,
+          onReorder: _reorderWord,
+          color: widget.color,
+        ),
+        const SizedBox(height: 16),
+        if (!(_submitted && _isCorrect)) ...[
+          Text(
+            'Kelimeler:',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: const Color(0xFF6B7280),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 6),
+          _ClassicalWordBank(
+            words: bankWords,
+            isAnswered: _submitted && _isCorrect,
+            color: widget.color,
+            onTap: _placeWord,
+          ),
+          const SizedBox(height: 16),
+        ],
+        if (!(_submitted && _isCorrect))
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _isComplete && !_submitted ? _confirmAnswer : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: widget.color,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                disabledBackgroundColor: const Color(0xFFE5E7EB),
+                elevation: 0,
+              ),
+              child: const Text(
+                'Cevabı Kontrol Et',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+              ),
+            ),
+          ),
+        if (_submitted)
+          _ClassicalFeedback(
+            isCorrect: _isCorrect,
+            modelAnswer: _modelAnswer,
+            explanation: _explanation,
+          ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// İPUCU BUTONU
+// ─────────────────────────────────────────────────────────
+
+class _ClassicalHintButton extends StatefulWidget {
+  final int revealedCount;
+  final int totalCount;
+  final bool isAnswered;
+  final VoidCallback onTap;
+  final String hint;
+  final bool showHint;
+  final Color color;
+
+  const _ClassicalHintButton({
+    required this.revealedCount,
+    required this.totalCount,
+    required this.isAnswered,
+    required this.onTap,
+    required this.hint,
+    required this.showHint,
+    required this.color,
+  });
+
+  @override
+  State<_ClassicalHintButton> createState() => _ClassicalHintButtonState();
+}
+
+class _ClassicalHintButtonState extends State<_ClassicalHintButton> {
+  bool _open = false;
+
+  @override
+  void didUpdateWidget(_ClassicalHintButton old) {
+    super.didUpdateWidget(old);
+    if (!old.showHint && widget.showHint) setState(() => _open = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final allRevealed = widget.revealedCount >= widget.totalCount;
+    return GestureDetector(
+      onTap: () {
+        if (!widget.isAnswered && !allRevealed) widget.onTap();
+        if (widget.hint.isNotEmpty) setState(() => _open = !_open);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF8E1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFFFB300), width: 1.5),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Text('💡', style: TextStyle(fontSize: 16)),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    widget.revealedCount == 0
+                        ? 'İpucuna bak'
+                        : allRevealed
+                        ? 'Tüm ipuçları açıldı'
+                        : 'Sonraki kelimeyi gör  (${widget.revealedCount} / ${widget.totalCount})',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF7B5800),
+                    ),
+                  ),
+                ),
+                if (!widget.isAnswered && !allRevealed)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFE082),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      'Tıkla',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF7B5800),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            if (_open && widget.hint.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                widget.hint,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFF5C3D00),
+                  fontWeight: FontWeight.w600,
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// CEVAP ALANI
+// ─────────────────────────────────────────────────────────
+
+class _ClassicalAnswerArea extends StatefulWidget {
+  final List<String> placedWords;
+  final bool isCorrect;
+  final bool submitted;
+  final void Function(int) onRemove;
+  final void Function(int, int) onReorder;
+  final Color color;
+
+  const _ClassicalAnswerArea({
+    required this.placedWords,
+    required this.isCorrect,
+    required this.submitted,
+    required this.onRemove,
+    required this.onReorder,
+    required this.color,
+  });
+
+  @override
+  State<_ClassicalAnswerArea> createState() => _ClassicalAnswerAreaState();
+}
+
+class _ClassicalAnswerAreaState extends State<_ClassicalAnswerArea> {
+  int? _draggingIndex;
+  int? _hoverIndex;
+
+  Color get _borderColor {
+    if (!widget.submitted) return const Color(0xFFD1D5DB);
+    return widget.isCorrect ? _C.correct : _C.wrong;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 64),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: widget.submitted
+            ? (widget.isCorrect
+                  ? const Color(0xFFECFDF5)
+                  : const Color(0xFFFFF0F0))
+            : const Color(0xFFFAFAFA),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _borderColor, width: 1.8),
+      ),
+      child: widget.placedWords.isEmpty
+          ? const Center(
+              child: Text(
+                'Aşağıdan kelimelere dokun',
+                style: TextStyle(color: Color(0xFF9CA3AF), fontSize: 13),
+              ),
+            )
+          : widget.submitted
+          ? Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (int i = 0; i < widget.placedWords.length; i++)
+                  _ClassicalWordChip(
+                    word: widget.placedWords[i],
+                    index: i,
+                    submitted: true,
+                    isCorrect: widget.isCorrect,
+                    color: widget.color,
+                    onRemove: (_) {},
+                  ),
+              ],
+            )
+          : _buildDraggableWrap(),
+    );
+  }
+
+  Widget _buildDraggableWrap() {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: List.generate(widget.placedWords.length, (i) {
+        final word = widget.placedWords[i];
+        final isHover = _hoverIndex == i && _draggingIndex != i;
+
+        final feedback = Material(
+          color: Colors.transparent,
+          child: Transform.scale(
+            scale: 1.06,
+            child: _ClassicalWordChip(
+              word: word,
+              index: i,
+              submitted: false,
+              isCorrect: false,
+              color: widget.color,
+              onRemove: (_) {},
+              isDragging: true,
+            ),
+          ),
+        );
+
+        final childWhenDragging = Opacity(
+          opacity: 0.25,
+          child: _ClassicalWordChip(
+            word: word,
+            index: i,
+            submitted: false,
+            isCorrect: false,
+            color: widget.color,
+            onRemove: (_) {},
+          ),
+        );
+
+        final innerChild = AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          decoration: isHover
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: widget.color, width: 2),
+                )
+              : null,
+          child: _ClassicalWordChip(
+            word: word,
+            index: i,
+            submitted: false,
+            isCorrect: false,
+            color: widget.color,
+            onRemove: widget.onRemove,
+          ),
+        );
+
+        void onDragStarted() => setState(() => _draggingIndex = i);
+        void onDragEnd(DraggableDetails _) => setState(() {
+          _draggingIndex = null;
+          _hoverIndex = null;
+        });
+        void onDraggableCanceled(Velocity _, Offset __) => setState(() {
+          _draggingIndex = null;
+          _hoverIndex = null;
+        });
+
+        return DragTarget<int>(
+          onWillAcceptWithDetails: (d) {
+            if (d.data != i) setState(() => _hoverIndex = i);
+            return d.data != i;
+          },
+          onLeave: (_) => setState(() => _hoverIndex = null),
+          onAcceptWithDetails: (d) {
+            setState(() {
+              _hoverIndex = null;
+              _draggingIndex = null;
+            });
+            widget.onReorder(d.data, i > d.data ? i + 1 : i);
+          },
+          builder: (ctx, _, __) {
+            if (_isDesktopOrWeb) {
+              return Draggable<int>(
+                data: i,
+                feedback: feedback,
+                childWhenDragging: childWhenDragging,
+                onDragStarted: onDragStarted,
+                onDragEnd: onDragEnd,
+                onDraggableCanceled: onDraggableCanceled,
+                child: innerChild,
+              );
+            }
+            return LongPressDraggable<int>(
+              data: i,
+              delay: const Duration(milliseconds: 200),
+              feedback: feedback,
+              childWhenDragging: childWhenDragging,
+              onDragStarted: onDragStarted,
+              onDragEnd: onDragEnd,
+              onDraggableCanceled: onDraggableCanceled,
+              child: innerChild,
+            );
+          },
+        );
+      }),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// KELİME CHİP
+// ─────────────────────────────────────────────────────────
+
+class _ClassicalWordChip extends StatelessWidget {
+  final String word;
+  final int index;
+  final bool submitted;
+  final bool isCorrect;
+  final Color color;
+  final void Function(int) onRemove;
+  final bool isDragging;
+
+  const _ClassicalWordChip({
+    required this.word,
+    required this.index,
+    required this.submitted,
+    required this.isCorrect,
+    required this.color,
+    required this.onRemove,
+    this.isDragging = false,
+  });
+
+  Color get _bg {
+    if (isDragging) return color.withOpacity(0.15);
+    if (!submitted) return color.withOpacity(0.1);
+    return isCorrect ? const Color(0xFFECFDF5) : const Color(0xFFFFF0F0);
+  }
+
+  Color get _border {
+    if (isDragging) return color;
+    if (!submitted) return color.withOpacity(0.5);
+    return isCorrect ? _C.correct : _C.wrong;
+  }
+
+  Color get _textColor {
+    if (isDragging) return color;
+    if (!submitted) return color;
+    return isCorrect ? _C.correct : _C.wrong;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: submitted ? null : () => onRemove(index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: _bg,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: _border, width: 1.5),
+          boxShadow: isDragging
+              ? [
+                  BoxShadow(
+                    color: color.withOpacity(0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!submitted && !isDragging)
+              Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: Icon(
+                  Icons.drag_indicator_rounded,
+                  size: 13,
+                  color: _textColor.withOpacity(0.5),
+                ),
+              ),
+            Text(
+              word,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: _textColor,
+              ),
+            ),
+            if (!submitted && !isDragging) ...[
+              const SizedBox(width: 5),
+              Icon(
+                Icons.close_rounded,
+                size: 13,
+                color: _textColor.withOpacity(0.6),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// KELİME BANKASI
+// ─────────────────────────────────────────────────────────
+
+class _ClassicalWordBank extends StatelessWidget {
+  final List<String> words;
+  final bool isAnswered;
+  final Color color;
+  final void Function(String) onTap;
+
+  const _ClassicalWordBank({
+    required this.words,
+    required this.isAnswered,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (words.isEmpty && !isAnswered) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Text(
+          'Tüm kelimeler yerleştirildi ✓',
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+          ),
+        ),
+      );
+    }
+    return Wrap(
+      spacing: 7,
+      runSpacing: 7,
+      children: words
+          .map(
+            (w) => GestureDetector(
+              onTap: isAnswered ? null : () => onTap(w),
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: isAnswered ? 0.3 : 1.0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 9,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF3F4F6),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: const Color(0xFFD1D5DB),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Text(
+                    w,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF374151),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// GERİ BİLDİRİM
+// ─────────────────────────────────────────────────────────
+
+class _ClassicalFeedback extends StatelessWidget {
+  final bool isCorrect;
+  final String modelAnswer;
+  final String explanation;
+
+  const _ClassicalFeedback({
+    required this.isCorrect,
+    required this.modelAnswer,
+    required this.explanation,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isCorrect ? const Color(0xFFECFDF5) : const Color(0xFFFFF0F0),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isCorrect
+              ? _C.correct.withOpacity(0.4)
+              : _C.wrong.withOpacity(0.4),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                isCorrect ? '🎉' : '🔄',
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                isCorrect ? 'Harika! Doğru cevap!' : 'Tekrar dene!',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 13,
+                  color: isCorrect ? _C.correct : _C.wrong,
+                ),
+              ),
+            ],
+          ),
+          if (!isCorrect && modelAnswer.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text(
+              'Model cevap:',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: _C.wrong.withOpacity(0.8),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              modelAnswer,
+              style: const TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF7F1D1D),
+                height: 1.5,
+              ),
+            ),
+          ],
+          if (isCorrect && explanation.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              explanation,
+              style: const TextStyle(
+                fontSize: 12.5,
+                color: Color(0xFF065F46),
+                height: 1.5,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

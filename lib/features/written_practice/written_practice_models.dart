@@ -13,26 +13,26 @@ class Subject {
 
 class Unit {
   final int id;
-  final int subjectId;
+  final int lessonId;
   final String title;
   final String slug;
   final int orderNo;
 
   const Unit({
     required this.id,
-    required this.subjectId,
+    required this.lessonId,
     required this.title,
     required this.slug,
     required this.orderNo,
   });
 
   factory Unit.fromJson(Map<String, dynamic> j) => Unit(
-        id: j['id'],
-        subjectId: j['subject_id'],
-        title: j['title'],
-        slug: j['slug'],
-        orderNo: j['order_no'],
-      );
+    id: j['id'],
+    lessonId: j['lesson_id'] ?? j['subject_id'],
+    title: j['title'],
+    slug: (j['slug'] ?? '').toString(),
+    orderNo: j['order_no'] ?? 0,
+  );
 }
 
 class Topic {
@@ -53,13 +53,13 @@ class Topic {
   });
 
   factory Topic.fromJson(Map<String, dynamic> j) => Topic(
-        id: j['id'],
-        unitId: j['unit_id'],
-        title: j['title'],
-        slug: j['slug'],
-        orderNo: j['order_no'],
-        isActive: j['is_active'] ?? true,
-      );
+    id: j['id'],
+    unitId: j['unit_id'],
+    title: j['title'],
+    slug: j['slug'],
+    orderNo: j['order_no'],
+    isActive: j['is_active'] ?? true,
+  );
 }
 
 class QuestionClassical {
@@ -103,16 +103,15 @@ class Question {
   factory Question.fromJson(
     Map<String, dynamic> j,
     QuestionClassical? classical,
-  ) =>
-      Question(
-        id: j['id'],
-        questionTypeId: j['question_type_id'],
-        questionText: j['question_text'],
-        difficulty: j['difficulty'] ?? 1,
-        score: j['score'] ?? 1,
-        solutionText: j['solution_text'],
-        classical: classical,
-      );
+  ) => Question(
+    id: j['id'],
+    questionTypeId: j['question_type_id'],
+    questionText: j['question_text'],
+    difficulty: j['difficulty'] ?? 1,
+    score: j['score'] ?? 1,
+    solutionText: j['solution_text'],
+    classical: classical,
+  );
 }
 
 // ─── SESSION STATE ─────────────────────────────────────────────────────────

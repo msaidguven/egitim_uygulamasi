@@ -6,29 +6,29 @@ final _repo = WrittenPracticeRepository.instance;
 
 // ── Data providers ─────────────────────────────────────────────────────────
 
-final subjectsProvider = FutureProvider<List<Subject>>(
-  (_) => _repo.getSubjects(),
-);
+final selectedLessonIdProvider = StateProvider<int?>((_) => null);
+final selectedGradeIdProvider = StateProvider<int?>((_) => null);
 
-final unitsProvider = FutureProvider.family<List<Unit>, int>(
-  (_, subjectId) => _repo.getUnits(subjectId),
-);
+final lessonUnitsProvider = FutureProvider<List<Unit>>((ref) async {
+  final lessonId = ref.watch(selectedLessonIdProvider);
+  final gradeId = ref.watch(selectedGradeIdProvider);
+  if (lessonId == null) return const [];
+  return _repo.getUnitsForLesson(lessonId, gradeId: gradeId);
+});
 
 final topicsProvider = FutureProvider.family<List<Topic>, int>(
   (_, unitId) => _repo.getTopics(unitId),
 );
 
 // ── Selection state ────────────────────────────────────────────────────────
-
-final selectedSubjectProvider = StateProvider<Subject?>((_) => null);
 final selectedTopicIdsProvider = StateProvider<Set<int>>((_) => {});
 
 // ── Session provider ───────────────────────────────────────────────────────
 
 final writtenSessionProvider =
     StateNotifierProvider<WrittenSessionNotifier, WrittenSession?>(
-  (_) => WrittenSessionNotifier(),
-);
+      (_) => WrittenSessionNotifier(),
+    );
 
 class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
   WrittenSessionNotifier() : super(null);
@@ -71,8 +71,7 @@ class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
     if (!attempt.isComplete) return;
 
     final isCorrect = attempt.checkAnswer();
-    attempt.status =
-        isCorrect ? AnswerStatus.correct : AnswerStatus.incorrect;
+    attempt.status = isCorrect ? AnswerStatus.correct : AnswerStatus.incorrect;
     state = _copySession(session);
   }
 
@@ -97,8 +96,10 @@ class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
 
     final updated = [...attempt.placedWords];
     final word = updated.removeAt(fromIndex);
-    final insertAt = (toIndex > fromIndex ? toIndex - 1 : toIndex)
-        .clamp(0, updated.length);
+    final insertAt = (toIndex > fromIndex ? toIndex - 1 : toIndex).clamp(
+      0,
+      updated.length,
+    );
     updated.insert(insertAt, word);
     attempt.placedWords = updated;
     state = _copySession(session);
@@ -115,8 +116,6 @@ class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
   void reset() => state = null;
 
   // Force Riverpod to detect change (WrittenSession is mutable)
-  WrittenSession _copySession(WrittenSession s) => WrittenSession(
-        attempts: s.attempts,
-        currentIndex: s.currentIndex,
-      );
+  WrittenSession _copySession(WrittenSession s) =>
+      WrittenSession(attempts: s.attempts, currentIndex: s.currentIndex);
 }

@@ -1,6 +1,5 @@
-import 'dart:convert';
 import 'dart:math';
-import 'package:flutter/services.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'written_practice_models.dart';
 
 class WrittenPracticeRepository {
@@ -9,79 +8,122 @@ class WrittenPracticeRepository {
   static final WrittenPracticeRepository instance =
       WrittenPracticeRepository._();
 
-  Map<String, dynamic>? _cache;
-
-  Future<Map<String, dynamic>> _data() async {
-    _cache ??= jsonDecode(
-      await rootBundle.loadString(
-        'lib/features/written_practice/mock_data.json',
-      ),
-    );
-    return _cache!;
-  }
+  final _client = Supabase.instance.client;
 
   // ── Subjects ───────────────────────────────────────────────────────────
   Future<List<Subject>> getSubjects() async {
-    final d = await _data();
-    return (d['subjects'] as List).map((e) => Subject.fromJson(e)).toList();
+    final rows = await _client.from('lessons').select('id, name, slug');
+    return (rows as List)
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .map(
+          (j) => Subject(
+            id: j['id'] as int,
+            title: (j['name'] as String? ?? '').trim(),
+            slug: (j['slug'] as String? ?? '').trim(),
+          ),
+        )
+        .toList();
   }
 
-  // ── Units by subject ───────────────────────────────────────────────────
-  Future<List<Unit>> getUnits(int subjectId) async {
-    final d = await _data();
-    return (d['units'] as List)
-        .map((e) => Unit.fromJson(e))
-        .where((u) => u.subjectId == subjectId)
-        .toList()
-      ..sort((a, b) => a.orderNo.compareTo(b.orderNo));
+  // ── Units by lesson (optionally grade) ────────────────────────────────
+  Future<List<Unit>> getUnitsForLesson(int lessonId, {int? gradeId}) async {
+    final base = _client
+        .from('units')
+        .select('id, lesson_id, title, slug, order_no')
+        .eq('lesson_id', lessonId);
+    final rows = gradeId == null
+        ? await base.order('order_no', ascending: true)
+        : await base.eq('grade_id', gradeId).order('order_no', ascending: true);
+    return (rows as List)
+        .map((e) => Unit.fromJson(Map<String, dynamic>.from(e as Map)))
+        .toList();
   }
 
   // ── Topics by unit ─────────────────────────────────────────────────────
   Future<List<Topic>> getTopics(int unitId) async {
-    final d = await _data();
-    return (d['topics'] as List)
-        .map((e) => Topic.fromJson(e))
-        .where((t) => t.unitId == unitId && t.isActive)
-        .toList()
-      ..sort((a, b) => a.orderNo.compareTo(b.orderNo));
+    final rows = await _client
+        .from('topics')
+        .select('id, unit_id, title, slug, order_no, is_active')
+        .eq('unit_id', unitId)
+        .eq('is_active', true)
+        .order('order_no', ascending: true);
+    return (rows as List)
+        .map((e) => Topic.fromJson(Map<String, dynamic>.from(e as Map)))
+        .toList();
   }
 
   // ── Questions for selected topic ids ──────────────────────────────────
-  // Supabase equivalent:
-  //   select questions.*, question_classical.*, question_usages.topic_id
-  //   from question_usages
-  //   join questions on questions.id = question_usages.question_id
-  //   join question_classical on question_classical.question_id = questions.id
-  //   where question_usages.topic_id in (:topicIds)
-  //     and questions.question_type_id = 1  -- classical only
-  //   order by question_usages.topic_id, question_usages.order_no
+  // DB: only classical (question_type_id = 4)
   Future<List<Question>> getQuestionsForTopics(List<int> topicIds) async {
-    final d = await _data();
+    if (topicIds.isEmpty) return const [];
 
-    // Build classical lookup
-    final classicalMap = <int, QuestionClassical>{};
-    for (final c in d['question_classical'] as List) {
-      final qc = QuestionClassical.fromJson(c);
-      classicalMap[qc.questionId] = qc;
+    final rows = await _client
+        .from('question_usages')
+        .select('''
+question_id,
+topic_id,
+order_no,
+questions!inner(
+  id,
+  question_type_id,
+  question_text,
+  difficulty,
+  score,
+  solution_text,
+  question_classical(question_id, model_answer, answer_words)
+)
+''')
+        .inFilter('topic_id', topicIds)
+        .eq('questions.question_type_id', 4)
+        .order('topic_id', ascending: true)
+        .order('order_no', ascending: true);
+
+    final result = <Question>[];
+    final seen = <int>{};
+    for (final raw in (rows as List)) {
+      final row = Map<String, dynamic>.from(raw as Map);
+      final questionMapRaw = row['questions'];
+      if (questionMapRaw is! Map) continue;
+      final questionMap = Map<String, dynamic>.from(questionMapRaw);
+      final questionId = questionMap['id'] as int?;
+      if (questionId == null || seen.contains(questionId)) continue;
+
+      final classicalRaw = questionMap['question_classical'];
+      Map<String, dynamic>? classicalMap;
+      if (classicalRaw is Map) {
+        classicalMap = Map<String, dynamic>.from(classicalRaw);
+      } else if (classicalRaw is List && classicalRaw.isNotEmpty) {
+        final first = classicalRaw.first;
+        if (first is Map) {
+          classicalMap = Map<String, dynamic>.from(first);
+        }
+      }
+      if (classicalMap == null) continue;
+      var answerWords = (classicalMap['answer_words'] as List? ?? const [])
+          .whereType<String>()
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+      final modelAnswer = (classicalMap['model_answer'] as String? ?? '')
+          .trim();
+      if (answerWords.isEmpty && modelAnswer.isNotEmpty) {
+        answerWords = modelAnswer
+            .split(RegExp(r'\s+'))
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
+      if (answerWords.isEmpty) continue;
+
+      final classical = QuestionClassical(
+        questionId: questionId,
+        modelAnswer: modelAnswer,
+        answerWords: answerWords,
+      );
+      result.add(Question.fromJson(questionMap, classical));
+      seen.add(questionId);
     }
-
-    // Find question ids via usages
-    final usages = (d['question_usages'] as List)
-        .where((u) => topicIds.contains(u['topic_id']))
-        .toList();
-
-    final questionIds = usages.map((u) => u['question_id'] as int).toSet();
-
-    // Filter questions: classical type only (type_id == 1)
-    final questions = (d['questions'] as List)
-        .where(
-          (q) => questionIds.contains(q['id']) && q['question_type_id'] == 1,
-        )
-        .map((q) => Question.fromJson(q, classicalMap[q['id']]))
-        .where((q) => q.classical != null) // must have classical data
-        .toList();
-
-    return questions;
+    return result;
   }
 
   // ── Build session from questions ───────────────────────────────────────

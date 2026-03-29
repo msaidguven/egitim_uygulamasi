@@ -36,6 +36,12 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
   Map<int, List<Map<String, int>>> _weekRangesByOutcomeId = {};
   bool _onlySelectedWeek = false;
 
+  static const _questionTypeSingleChoice = 1;
+  static const _questionTypeTrueFalse = 2;
+  static const _questionTypeFillBlank = 3;
+  static const _questionTypeClassical = 4;
+  static const _questionTypeMatching = 5;
+
   @override
   void initState() {
     super.initState();
@@ -175,6 +181,9 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
 
     setState(() => _isSaving = true);
     try {
+      debugPrint(
+        '[SmartContentUpdate] Update started: contentId=$contentId, selectedOutcomeCount=${selectedOutcomeIds.length}, isPublished=$isPublished',
+      );
       final decodedPayload = jsonDecode(content);
       if (decodedPayload is! Map<String, dynamic>) {
         throw Exception('Lesson V11 JSON nesne formatinda olmali.');
@@ -206,12 +215,33 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
                 .toList(),
           );
 
+      final syncResult = await _syncQuizRefsToQuestionBank(
+        contentId: contentId,
+        topicId: widget.initialTopicId,
+        payload: decodedPayload,
+        selectedOutcomeIds: selectedOutcomeIds,
+      );
+      debugPrint(
+        '[SmartContentUpdate] Sync completed: hasRefs=${syncResult.hasRefs}, inserted=${syncResult.insertedCount}, deleted=${syncResult.deletedCount}',
+      );
+
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('İçerik güncellendi.')));
+      final snackText = syncResult.hasRefs
+          ? 'İçerik güncellendi. Soru bankası: +${syncResult.insertedCount}, '
+                'silinen(eski linkli): ${syncResult.deletedCount}.'
+          : syncResult.deletedCount > 0
+          ? 'İçerik güncellendi. quiz_refs yok, eski linkli ${syncResult.deletedCount} soru temizlendi.'
+          : 'İçerik güncellendi. quiz_refs bulunmadığı için soru bankasına yeni kayıt eklenmedi.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackText),
+          backgroundColor: syncResult.hasRefs ? Colors.green : Colors.orange,
+        ),
+      );
       await _load();
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('[SmartContentUpdate] Update failed: $e');
+      debugPrint('[SmartContentUpdate] Stack trace:\n$st');
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
@@ -221,6 +251,413 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
         setState(() => _isSaving = false);
       }
     }
+  }
+
+  Future<_QuizSyncResult> _syncQuizRefsToQuestionBank({
+    required int contentId,
+    required int? topicId,
+    required Map<String, dynamic> payload,
+    required Set<int> selectedOutcomeIds,
+  }) async {
+    debugPrint(
+      '[SmartContentUpdate] Sync started: contentId=$contentId, topicId=$topicId, outcomeCount=${selectedOutcomeIds.length}',
+    );
+    if (topicId == null) {
+      return const _QuizSyncResult(
+        hasRefs: false,
+        insertedCount: 0,
+        deletedCount: 0,
+      );
+    }
+
+    final deletedCount = await _deleteGeneratedQuestionsForContent(contentId);
+    debugPrint(
+      '[SmartContentUpdate] Previously generated questions deleted: $deletedCount',
+    );
+
+    final refs = _extractQuizRefQuestionBlocks(payload);
+    debugPrint('[SmartContentUpdate] quiz_refs resolved: ${refs.length}');
+    if (refs.isEmpty) {
+      return _QuizSyncResult(
+        hasRefs: false,
+        insertedCount: 0,
+        deletedCount: deletedCount,
+      );
+    }
+
+    final parsed = refs
+        .map(
+          (block) => _QuizRefQuestion(
+            quizRef: block['id']?.toString() ?? '',
+            payload: _convertLessonV11QuizToQuestionPayload(block),
+          ),
+        )
+        .where((e) => e.quizRef.isNotEmpty && e.payload != null)
+        .toList();
+    debugPrint(
+      '[SmartContentUpdate] quiz_refs parsed to payloads: ${parsed.length}',
+    );
+    final converted = parsed.map((e) => e.payload!).toList();
+    if (converted.isEmpty) {
+      return _QuizSyncResult(
+        hasRefs: true,
+        insertedCount: 0,
+        deletedCount: deletedCount,
+      );
+    }
+
+    final resolvedWeek = _resolveDefaultWeekFromOutcomeSet(selectedOutcomeIds);
+    final usageType = (resolvedWeek != null && resolvedWeek > 0)
+        ? 'weekly'
+        : 'topic_end';
+
+    dynamic rpcResult;
+    try {
+      debugPrint(
+        '[SmartContentUpdate] Calling bulk_create_questions: usageType=$usageType, week=$resolvedWeek, questionCount=${converted.length}',
+      );
+      rpcResult = await _client.rpc(
+        'bulk_create_questions',
+        params: {
+          'p_topic_id': topicId,
+          'p_usage_type': usageType,
+          'p_curriculum_week': usageType == 'weekly' ? resolvedWeek : null,
+          'p_start_week': null,
+          'p_end_week': null,
+          'p_questions_json': {'questions': converted},
+          'p_outcome_ids': selectedOutcomeIds.toList(),
+        },
+      );
+    } on PostgrestException catch (e) {
+      final message = e.message.toLowerCase();
+      final signatureMismatch =
+          e.code == 'PGRST202' && message.contains('p_outcome_ids');
+      debugPrint(
+        '[SmartContentUpdate] RPC primary call failed: code=${e.code}, message=${e.message}, details=${e.details}, hint=${e.hint}',
+      );
+      if (!signatureMismatch) rethrow;
+
+      debugPrint(
+        '[SmartContentUpdate] Retrying bulk_create_questions without p_outcome_ids due to signature mismatch.',
+      );
+      rpcResult = await _client.rpc(
+        'bulk_create_questions',
+        params: {
+          'p_topic_id': topicId,
+          'p_usage_type': usageType,
+          'p_curriculum_week': usageType == 'weekly' ? resolvedWeek : null,
+          'p_start_week': null,
+          'p_end_week': null,
+          'p_questions_json': {'questions': converted},
+        },
+      );
+    }
+
+    final result = rpcResult is Map<String, dynamic>
+        ? rpcResult
+        : (rpcResult is Map
+              ? Map<String, dynamic>.from(rpcResult)
+              : <String, dynamic>{});
+    final insertedCount = (result['inserted_count'] as num?)?.toInt() ?? 0;
+    final insertedIds = (result['inserted_question_ids'] as List? ?? const [])
+        .whereType<num>()
+        .map((e) => e.toInt())
+        .toList();
+    final errors = (result['errors'] as List?) ?? const [];
+    debugPrint(
+      '[SmartContentUpdate] RPC result: inserted=$insertedCount, insertedIds=${insertedIds.length}, errors=${errors.length}',
+    );
+    if (errors.isNotEmpty) {
+      debugPrint('[SmartContentUpdate] First RPC error: ${errors.first}');
+      throw Exception(errors.first.toString());
+    }
+    if (insertedIds.length == parsed.length) {
+      final linkRows = <Map<String, dynamic>>[];
+      for (var i = 0; i < parsed.length; i++) {
+        linkRows.add({
+          'topic_content_v11_id': contentId,
+          'question_id': insertedIds[i],
+          'quiz_ref': parsed[i].quizRef,
+        });
+      }
+      if (linkRows.isNotEmpty) {
+        await _client
+            .from('topic_content_generated_questions')
+            .insert(linkRows);
+        debugPrint(
+          '[SmartContentUpdate] Generated question links inserted: ${linkRows.length}',
+        );
+      }
+    } else {
+      debugPrint(
+        '[SmartContentUpdate] Link insert skipped due to length mismatch: insertedIds=${insertedIds.length}, parsed=${parsed.length}',
+      );
+    }
+
+    return _QuizSyncResult(
+      hasRefs: true,
+      insertedCount: insertedCount,
+      deletedCount: deletedCount,
+    );
+  }
+
+  Future<int> _deleteGeneratedQuestionsForContent(int contentId) async {
+    final rows = await _client
+        .from('topic_content_generated_questions')
+        .select('question_id')
+        .eq('topic_content_v11_id', contentId);
+    final questionIds = (rows as List)
+        .map((e) => Map<String, dynamic>.from(e as Map)['question_id'])
+        .whereType<int>()
+        .toSet()
+        .toList();
+    if (questionIds.isEmpty) return 0;
+    debugPrint(
+      '[SmartContentUpdate] Deleting generated question IDs: $questionIds',
+    );
+
+    // Prefer root delete: dependent rows should be handled by ON DELETE CASCADE.
+    await _deleteInChunks('questions', 'id', questionIds);
+
+    // Defensive cleanup in case DB FK/cascade differs across environments.
+    await _deleteInChunks(
+      'topic_content_generated_questions',
+      'question_id',
+      questionIds,
+      extraEq: {'topic_content_v11_id': contentId},
+    );
+    return questionIds.length;
+  }
+
+  Future<void> _deleteInChunks(
+    String table,
+    String column,
+    List<int> ids, {
+    Map<String, dynamic>? extraEq,
+  }) async {
+    const chunkSize = 500;
+    for (var i = 0; i < ids.length; i += chunkSize) {
+      final end = (i + chunkSize < ids.length) ? i + chunkSize : ids.length;
+      final chunk = ids.sublist(i, end);
+      var q = _client.from(table).delete().inFilter(column, chunk);
+      if (extraEq != null) {
+        for (final entry in extraEq.entries) {
+          q = q.eq(entry.key, entry.value);
+        }
+      }
+      await q;
+    }
+  }
+
+  int? _resolveDefaultWeekFromOutcomeSet(Set<int> outcomeIds) {
+    if (outcomeIds.isEmpty) return null;
+    int? minWeek;
+    for (final outcomeId in outcomeIds) {
+      final ranges = _weekRangesByOutcomeId[outcomeId] ?? const [];
+      for (final range in ranges) {
+        final start = range['start_week'];
+        if (start == null) continue;
+        if (minWeek == null || start < minWeek) {
+          minWeek = start;
+        }
+      }
+    }
+    return minWeek;
+  }
+
+  List<Map<String, dynamic>> _extractQuizRefQuestionBlocks(
+    Map<String, dynamic> payload,
+  ) {
+    final module = payload['lessonModule'];
+    if (module is! Map) return const [];
+    final sectionsRaw = module['sections'];
+    if (sectionsRaw is! List) return const [];
+
+    final allQuizById = <String, Map<String, dynamic>>{};
+    for (final sectionRaw in sectionsRaw) {
+      if (sectionRaw is! Map) continue;
+      final section = Map<String, dynamic>.from(sectionRaw);
+      final quizRaw = section['quiz'];
+      if (quizRaw is! List) continue;
+      for (final blockRaw in quizRaw) {
+        if (blockRaw is! Map) continue;
+        final block = Map<String, dynamic>.from(blockRaw);
+        final id = block['id']?.toString();
+        if (id == null || id.isEmpty) continue;
+        allQuizById[id] = block;
+      }
+    }
+
+    final picked = <Map<String, dynamic>>[];
+    final seenIds = <String>{};
+    for (final sectionRaw in sectionsRaw) {
+      if (sectionRaw is! Map) continue;
+      final section = Map<String, dynamic>.from(sectionRaw);
+      final refsRaw = section['quiz_refs'];
+      if (refsRaw is! List) continue;
+      for (final ref in refsRaw) {
+        final refId = ref?.toString();
+        if (refId == null || refId.isEmpty || seenIds.contains(refId)) {
+          continue;
+        }
+        final quiz = allQuizById[refId];
+        if (quiz != null) {
+          picked.add(quiz);
+          seenIds.add(refId);
+        }
+      }
+    }
+    return picked;
+  }
+
+  Map<String, dynamic>? _convertLessonV11QuizToQuestionPayload(
+    Map<String, dynamic> quizBlock,
+  ) {
+    final contentRaw = quizBlock['content'];
+    if (contentRaw is! Map) return null;
+    final content = Map<String, dynamic>.from(contentRaw);
+
+    final questionType = (content['questionType'] as String? ?? '')
+        .trim()
+        .toLowerCase();
+    if (questionType.isEmpty) return null;
+
+    final questionText =
+        (content['question_text'] as String?)?.trim().isNotEmpty == true
+        ? (content['question_text'] as String).trim()
+        : (content['question'] as String?)?.trim() ?? '';
+    if (questionText.isEmpty) return null;
+
+    final solutionText = (content['explanation'] as String?)?.trim();
+    final base = <String, dynamic>{
+      'question_text': questionText,
+      'difficulty': 1,
+      'score': 1,
+      if (solutionText != null && solutionText.isNotEmpty)
+        'solution_text': solutionText,
+    };
+
+    switch (questionType) {
+      case 'single_choice':
+      case 'multiple_choice':
+        final optionsRaw = content['options'] as List? ?? const [];
+        final correctOne = content['correctOptionId']?.toString();
+        final correctMany = (content['correctOptionIds'] as List? ?? const [])
+            .map((e) => e.toString())
+            .toSet();
+        final choices = <Map<String, dynamic>>[];
+        for (final optionRaw in optionsRaw) {
+          if (optionRaw is! Map) continue;
+          final option = Map<String, dynamic>.from(optionRaw);
+          final optionText = (option['text'] as String?)?.trim();
+          if (optionText == null || optionText.isEmpty) continue;
+          final optionId = option['id']?.toString();
+          final isCorrect =
+              (correctOne != null && optionId == correctOne) ||
+              (optionId != null && correctMany.contains(optionId));
+          choices.add({'text': optionText, 'is_correct': isCorrect});
+        }
+        if (choices.isEmpty) return null;
+        return {
+          ...base,
+          'question_type_id': _questionTypeSingleChoice,
+          'choices': choices,
+        };
+
+      case 'true_false':
+        final raw = content['correctAnswer'];
+        bool? correct;
+        if (raw is bool) {
+          correct = raw;
+        } else if (raw is String) {
+          final lowered = raw.toLowerCase();
+          if (lowered == 'true') correct = true;
+          if (lowered == 'false') correct = false;
+        }
+        if (correct == null) return null;
+        return {
+          ...base,
+          'question_type_id': _questionTypeTrueFalse,
+          'correct_answer': correct,
+        };
+
+      case 'fill_blank':
+        final accepted = (content['acceptedAnswers'] as List? ?? const [])
+            .whereType<String>()
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+        final distractors = (content['distractors'] as List? ?? const [])
+            .whereType<String>()
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+        final seen = <String>{};
+        final options = <Map<String, dynamic>>[];
+        for (final answer in accepted) {
+          if (seen.add(answer.toLowerCase())) {
+            options.add({'text': answer, 'is_correct': true});
+          }
+        }
+        for (final distractor in distractors) {
+          if (seen.add(distractor.toLowerCase())) {
+            options.add({'text': distractor, 'is_correct': false});
+          }
+        }
+        if (options.isEmpty) return null;
+        return {
+          ...base,
+          'question_type_id': _questionTypeFillBlank,
+          'blank': {'options': options},
+        };
+
+      case 'matching':
+        final pairsRaw = content['pairs'] as List? ?? const [];
+        final pairs = <Map<String, dynamic>>[];
+        for (final pairRaw in pairsRaw) {
+          if (pairRaw is! Map) continue;
+          final pair = Map<String, dynamic>.from(pairRaw);
+          final left =
+              (pair['left_text'] as String?)?.trim() ??
+              (pair['left'] as String?)?.trim() ??
+              '';
+          final right =
+              (pair['right_text'] as String?)?.trim() ??
+              (pair['right'] as String?)?.trim() ??
+              '';
+          if (left.isEmpty || right.isEmpty) continue;
+          pairs.add({'left_text': left, 'right_text': right});
+        }
+        if (pairs.isEmpty) return null;
+        return {
+          ...base,
+          'question_type_id': _questionTypeMatching,
+          'pairs': pairs,
+        };
+
+      case 'ordering':
+      case 'classical_order':
+        final words = (content['answer_words'] as List? ?? const [])
+            .whereType<String>()
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+        String? modelAnswer = (content['model_answer'] as String?)?.trim();
+        if (modelAnswer == null || modelAnswer.isEmpty) {
+          if (words.isNotEmpty) {
+            modelAnswer = words.join(' -> ');
+          }
+        }
+        if (modelAnswer == null || modelAnswer.isEmpty) return null;
+        return {
+          ...base,
+          'question_type_id': _questionTypeClassical,
+          'model_answer': modelAnswer,
+          if (words.isNotEmpty) 'answer_words': words,
+        };
+    }
+
+    return null;
   }
 
   Future<void> _deleteContent(int contentId) async {
@@ -492,4 +929,23 @@ class _SmartContentUpdatePageState extends State<SmartContentUpdatePage> {
             ),
     );
   }
+}
+
+class _QuizSyncResult {
+  final bool hasRefs;
+  final int insertedCount;
+  final int deletedCount;
+
+  const _QuizSyncResult({
+    required this.hasRefs,
+    required this.insertedCount,
+    required this.deletedCount,
+  });
+}
+
+class _QuizRefQuestion {
+  final String quizRef;
+  final Map<String, dynamic>? payload;
+
+  const _QuizRefQuestion({required this.quizRef, required this.payload});
 }
