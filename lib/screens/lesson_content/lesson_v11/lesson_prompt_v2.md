@@ -247,6 +247,89 @@ Kurallar:
   - Tek basina render edilebilir, gecerli XML olmali
   - `viewBox` tanimli olmali
   - Sade, az renkli ve okunakli olmali
+
+KRITIK — SVG BOYUTLANDIRMA KURALI:
+SVG icindeki hicbir text, sekil veya eleman viewBox sinirinin disina tasmamali.
+Tasman icerigi render sirasinda kesilir veya gorunmez olur.
+
+viewBox hesaplama kurallari:
+- Once icerigi planla: kac satir metin var, kac kutu var, baslik ve aciklama var mi?
+- Sonra viewBox yuksekligini buna gore ayarla. Dar tutma, biraz bosluk birak.
+- Genel kilavuz:
+  - Baslik icin en az 40px yukari bosluk birak
+  - Her metin satiri icin yaklasik 20-24px hesapla
+  - Her kutu icin icerigi + padding hesapla
+  - Alt aciklama satirlari icin en az 30-40px bosluk birak
+  - Kutunun alt kenariyla viewBox alt siniri arasinda en az 20px bosluk olmali
+
+HATALI ornek (icerik disa tasiyor):
+<svg viewBox="0 0 600 150">
+  <text x="300" y="20" ...>Baslik</text>
+  <rect x="50" y="40" height="80" .../>
+  <text x="300" y="145" ...>Alt aciklama</text>  <!-- 145 ~ 150, cok dar! -->
+</svg>
+
+DOGRU ornek (yeterli alan var):
+<svg viewBox="0 0 600 220">
+  <text x="300" y="30" ...>Baslik</text>           <!-- ust bosluk var -->
+  <rect x="50" y="50" height="80" .../>
+  <text x="300" y="170" ...>Alt aciklama</text>    <!-- kutunun 40px altinda -->
+  <!-- viewBox alti 220, son eleman 170, 50px bosluk var -->
+</svg>
+
+Baslik konumlama kurali:
+- Baslik text elementi daima y="25" ile y="35" arasinda olmali.
+- y="10" veya y="5" gibi cok yukari konumlandirma YAPMA; ust kismi kesilir.
+
+Alt aciklama konumlama kurali:
+- Alt aciklamalar (caption benzeri textler) daima viewBox yuksekliginin en az 25px yukarisinda olmali.
+- Ornek: viewBox yuksekligi 200 ise, alt aciklamalar y="175"i gecmemeli.
+
+Cok satirli icerik kurali:
+- Bir kutu icine 3'ten fazla satir metin siginmiyorsa kutuyu buyut ya da icerigi azalt.
+- Metin satirlarini ust uste bindirme; satirlar arasi en az 18px bosluk birak.
+- font-size="11" veya daha kucuk kullanmak zorunda kaliyorsan buyuk ihtimalle viewBox dar; once viewBox'i geniset.
+
+KRITIK — SVG OK YONU KURALI:
+Soldan saga akan diyagramlarda oklar SOLA degil SAGA donuk olmali.
+polygon ile ok cizmek yerine asagidaki hazir, test edilmis ok kalibini kullan:
+
+Saga giden ok (soldan saga akis icin — en yaygin kullanim):
+<defs>
+  <marker id="ok" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+  </marker>
+</defs>
+<line x1="BASLANGIC_X" y1="MERKEZ_Y" x2="BITIS_X" y2="MERKEZ_Y" stroke="#555" stroke-width="2" marker-end="url(#ok)"/>
+
+Asagi giden ok (yukari-asagi akis icin):
+<marker id="ok_asagi" markerWidth="7" markerHeight="10" refX="3.5" refY="9" orient="auto">
+  <polygon points="0 0, 7 0, 3.5 10" fill="#555"/>
+</marker>
+
+KRITIK — RENK KONTRAST KURALI:
+Metin rengi ile arka plan rengi arasinda yeterli kontrast olmali. Asagidaki kurallara MUTLAKA uy:
+- Koyu arka plan (koyu mavi, koyu yesil, turuncu, kirmizi, mor vb.) uzerine: fill="white" veya fill="#ffffff" kullan.
+- Açik arka plan (beyaz, acik gri, acik mavi, acik sari vb.) uzerine: fill="#1a1a1a" veya fill="#333333" kullan.
+- HIC bir zaman acik arka plan + beyaz yazi kombinasyonu yapma.
+- HIC bir zaman koyu arka plan + koyu yazi kombinasyonu yapma.
+
+Guvenli renk kombinasyonlari:
+- fill="#2563eb" (koyu mavi) + text fill="white"       DOGRU
+- fill="#16a34a" (koyu yesil) + text fill="white"      DOGRU
+- fill="#ea580c" (turuncu) + text fill="white"         DOGRU
+- fill="#e2e8f0" (acik gri) + text fill="#1e293b"      DOGRU
+- fill="#dbeafe" (acik mavi) + text fill="#1e3a8a"     DOGRU
+- fill="white" + text fill="#374151"                   DOGRU
+- fill="#bfdbfe" (acik mavi) + text fill="white"       YANLIS — kontrast yetersiz
+- fill="#f0fdf4" (acik yesil) + text fill="white"      YANLIS — kontrast yetersiz
+
+SVG uretmeden once zihninde su kontrolleri yap:
+1. Her kutunun arka plan rengi koyu mu acik mi?
+2. Uzerine yazilan metnin rengi buna gore mi secildi?
+3. Oklar dogru yone mi bakiyor? (soldan saga -> saga donuk olmali)
+4. Tum text elementleri viewBox sinirlarinin icinde mi?
+5. Marker id degerleri benzersiz mi? (ayni SVG icinde iki farkli ok varsa farkli id kullan: "ok1", "ok2")
 - Eger uygun SVG uretemiyorsan, ikinci secenek olarak `imageUrl` ver.
 - Eger dogrudan kullanilabilecek, guvenilir, acik erisilebilir ve egitsel baglama uygun bir gorsel URL'si biliyorsan `imageUrl` alanina tam URL yaz.
 - Eger yeterince emin degilsen uydurma link yazma; `imageUrl` alanini bos string `""` olarak birak.
@@ -662,6 +745,16 @@ Image kontrolu:
 - `svgCode` varsa gecerli SVG gibi gorunuyor mu?
 - `svgCode` yoksa `imageUrl` varsa tam URL mi?
 - `svgCode` ve `imageUrl` ikisi de bos ise `image` blogu tamamen kaldirildi mi?
+- SVG icindeki oklarin yonu dogru mu? Soldan saga akan diyagramda oklar saga donuk olmali.
+- SVG icinde acik arka plan uzerine beyaz yazi var mi? Varsa KALDIR, koyu renk kullan.
+- SVG icinde koyu arka plan uzerine koyu yazi var mi? Varsa KALDIR, beyaz renk kullan.
+- SVG icindeki tum text elementleri viewBox siniri icinde mi?
+- Baslik text elementi y="25" ile y="35" arasinda mi? Daha yukari ise kesilir.
+- Alt aciklama text elementi viewBox yuksekliginin en az 25px yukarisinda mi?
+- Satir araligI en az 18px mi? Ustuste binen metin var mi?
+- En kucuk font-size 11px mi? Daha kucukse viewBox'i buyut.
+- Kutunun alt kenariyla viewBox alt siniri arasinda en az 20px bosluk var mi?
+- Birden fazla marker kullanildiysa id'leri benzersiz mi?
 
 Quiz turu kontrolu:
 - `single_choice`: `options` 4 adet nesne mi; `correctOptionId` bu nesnelerden birinin `id` degeri mi?

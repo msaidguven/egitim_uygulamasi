@@ -460,6 +460,23 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
     }
   }
 
+  String _formatWeekDateRange(int curriculumWeek, {bool compact = false}) {
+    final (startDate, endDate) = getWeekDateRangeForAcademicWeek(curriculumWeek);
+    if (compact) {
+      return '${startDate.day}.${startDate.month} - ${endDate.day}.${endDate.month}';
+    }
+    return '${startDate.day} ${aylar[startDate.month - 1]} - '
+        '${endDate.day} ${aylar[endDate.month - 1]} ${endDate.year}';
+  }
+
+  String _buildSelectedWeekSubtitle() {
+    if (_weeks.isEmpty) return 'Haftalık Öğrenme Haritası';
+    final safeIndex = _selectedWeekIndex.clamp(0, _weeks.length - 1);
+    final selectedWeek = _weeks[safeIndex];
+    return '${selectedWeek.curriculumWeek}. Hafta • '
+        '${_formatWeekDateRange(selectedWeek.curriculumWeek)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -548,14 +565,16 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const Text(
-                'Haftalık Öğrenme Haritası',
-                style: TextStyle(
+              Text(
+                _buildSelectedWeekSubtitle(),
+                style: const TextStyle(
                   color: _AppColors.slate400,
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.1,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

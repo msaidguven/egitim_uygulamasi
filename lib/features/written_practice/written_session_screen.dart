@@ -19,27 +19,54 @@ class WrittenSessionScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
+      drawer: const _TopicFilterDrawer(),
       appBar: AppBar(
         title: Text(
-          '${session.currentIndex + 1} / ${session.totalQuestions}',
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          'Yazılı Pratiği', // More descriptive
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: theme.colorScheme.surface,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => _confirmExit(context, ref),
+        scrolledUnderElevation: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu_rounded),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close_rounded),
+            onPressed: () => _confirmExit(context, ref),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Center(
+              child: Text(
+                '${session.currentIndex + 1} / ${session.totalQuestions}',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
           // ── Progress bar ──────────────────────────────────────────────
-          LinearProgressIndicator(
-            value: (session.currentIndex + 1) / session.totalQuestions,
-            backgroundColor:
-                theme.colorScheme.surfaceContainerHighest,
-            minHeight: 4,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: LinearProgressIndicator(
+                value: (session.currentIndex + 1) / session.totalQuestions,
+                backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                minHeight: 8,
+              ),
+            ),
           ),
 
           // ── Question + word order ─────────────────────────────────────
@@ -49,28 +76,58 @@ class WrittenSessionScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Difficulty & score badge
-                  _MetaBadges(attempt: attempt),
-                  const SizedBox(height: 16),
-
-                  // Question text
+                  // ── Question Card ───────────────────────────────────────
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer
-                          .withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      attempt.question.questionText,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        height: 1.5,
-                        fontWeight: FontWeight.w500,
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: theme.colorScheme.primary.withOpacity(0.1),
+                        width: 1.5,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.colorScheme.primary.withOpacity(0.05),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Card Header: Badges & Hint Button
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 12, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _MetaBadges(attempt: attempt),
+                              _HintToggleButton(attempt: attempt),
+                            ],
+                          ),
+                        ),
+                        // Question Text
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+                          child: Text(
+                            attempt.question.questionText,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              height: 1.4,
+                              fontWeight: FontWeight.w800,
+                              color: theme.colorScheme.onSurface,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                        ),
+                        // Revealed Hints (Subtle)
+                        if (attempt.revealedHintCount > 0)
+                          _RevealedHintsList(attempt: attempt),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 24),
 
                   // Word order widget
                   WordOrderWidget(attempt: attempt),
@@ -148,6 +205,285 @@ class WrittenSessionScreen extends ConsumerWidget {
   }
 }
 
+class _TopicFilterDrawer extends ConsumerWidget {
+  const _TopicFilterDrawer();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final unitsAsync = ref.watch(lessonUnitsProvider);
+    final selectedTopicIds = ref.watch(selectedTopicIdsProvider);
+
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Row(
+                children: [
+                  Icon(Icons.tune_rounded, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Ünite ve Konular',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '${selectedTopicIds.length} konu seçili',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: unitsAsync.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Center(child: Text('Hata: $e')),
+                data: (units) => units.isEmpty
+                    ? const Center(child: Text('Ünite bulunamadı.'))
+                    : ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                        itemCount: units.length,
+                        itemBuilder: (_, i) {
+                          return _DrawerUnitTile(
+                            unit: units[i],
+                            selectedTopicIds: selectedTopicIds,
+                          );
+                        },
+                      ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: FilledButton.icon(
+                onPressed: selectedTopicIds.isEmpty
+                    ? null
+                    : () => _restartSession(context, ref, selectedTopicIds),
+                icon: const Icon(Icons.refresh_rounded),
+                label: const Text('Seçili konularla yeniden başlat'),
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _restartSession(
+    BuildContext context,
+    WidgetRef ref,
+    Set<int> selectedTopicIds,
+  ) async {
+    Navigator.of(context).pop();
+    await ref
+        .read(writtenSessionProvider.notifier)
+        .startSession(selectedTopicIds.toList());
+
+    if (!context.mounted) return;
+    final session = ref.read(writtenSessionProvider);
+    if (session == null || session.totalQuestions == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Seçilen konularda soru bulunamadı.')),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Oturum yeniden başlatıldı.')),
+    );
+  }
+}
+
+class _DrawerUnitTile extends ConsumerWidget {
+  final Unit unit;
+  final Set<int> selectedTopicIds;
+
+  const _DrawerUnitTile({
+    required this.unit,
+    required this.selectedTopicIds,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final topicsAsync = ref.watch(topicsProvider(unit.id));
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ExpansionTile(
+        title: Text(unit.title),
+        tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+        childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+        children: [
+          topicsAsync.when(
+            loading: () => const Padding(
+              padding: EdgeInsets.all(12),
+              child: LinearProgressIndicator(),
+            ),
+            error: (e, _) => Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text('Hata: $e'),
+            ),
+            data: (topics) => topics.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text('Bu ünitede konu yok.'),
+                  )
+                : Column(
+                    children: topics
+                        .map(
+                          (topic) => _DrawerTopicTile(
+                            topic: topic,
+                            isSelected: selectedTopicIds.contains(topic.id),
+                          ),
+                        )
+                        .toList(),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DrawerTopicTile extends ConsumerWidget {
+  final Topic topic;
+  final bool isSelected;
+
+  const _DrawerTopicTile({required this.topic, required this.isSelected});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CheckboxListTile(
+      dense: true,
+      value: isSelected,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      title: Text(
+        topic.title,
+        style: const TextStyle(fontSize: 14),
+      ),
+      onChanged: (_) {
+        final current = ref.read(selectedTopicIdsProvider);
+        final updated = {...current};
+        if (updated.contains(topic.id)) {
+          updated.remove(topic.id);
+        } else {
+          updated.add(topic.id);
+        }
+        ref.read(selectedTopicIdsProvider.notifier).state = updated;
+      },
+    );
+  }
+}
+
+// ── Hint Display Widgets ──────────────────────────────────────────────
+
+class _HintToggleButton extends ConsumerWidget {
+  final QuestionAttempt attempt;
+  const _HintToggleButton({required this.attempt});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final notifier = ref.read(writtenSessionProvider.notifier);
+    final isAnswered = attempt.status != AnswerStatus.unanswered;
+    final allRevealed = attempt.allHintsRevealed;
+
+    if (isAnswered) return const SizedBox.shrink();
+
+    return TextButton.icon(
+      onPressed: allRevealed ? null : notifier.useHint,
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.amber.shade800,
+        backgroundColor: Colors.amber.shade50,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      icon: Icon(
+        allRevealed ? Icons.lightbulb_outline_rounded : Icons.lightbulb_rounded,
+        size: 18,
+      ),
+      label: Text(
+        allRevealed ? 'İpuçları Açık' : 'İpucu Gör',
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+      ),
+    );
+  }
+}
+
+class _RevealedHintsList extends StatelessWidget {
+  final QuestionAttempt attempt;
+  const _RevealedHintsList({required this.attempt});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final answerWords = attempt.question.classical?.answerWords ?? [];
+    final revealed = attempt.revealedHintCount;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Divider(height: 24),
+          Row(
+            children: [
+              Text(
+                'İpucu: ',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: Colors.amber.shade900,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: List.generate(revealed, (i) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.amber.shade300, width: 0.5),
+                      ),
+                      child: Text(
+                        answerWords[i],
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.amber.shade900,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ── Meta badges (difficulty + score) ────────────────────────────────────────
 
 class _MetaBadges extends StatelessWidget {
@@ -158,6 +494,7 @@ class _MetaBadges extends StatelessWidget {
   Widget build(BuildContext context) {
     final q = attempt.question;
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         _Badge(
           icon: Icons.signal_cellular_alt_rounded,
@@ -166,9 +503,9 @@ class _MetaBadges extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         _Badge(
-          icon: Icons.star_rounded,
-          label: '${q.score} puan',
-          color: Colors.amber.shade700,
+          icon: Icons.stars_rounded,
+          label: '${q.score} p',
+          color: Colors.blue.shade600, // Changed from amber to distinguish from hints
         ),
       ],
     );
@@ -179,14 +516,14 @@ class _MetaBadges extends StatelessWidget {
         2 => 'Orta',
         3 => 'Zor',
         4 => 'Çok Zor',
-        _ => 'Uzmanlık',
+        _ => 'Uzman',
       };
 
   Color _difficultyColor(int d) => switch (d) {
-        1 => Colors.green.shade600,
+        1 => Colors.teal.shade600,
         2 => Colors.orange.shade600,
-        3 => Colors.red.shade500,
-        _ => Colors.purple.shade600,
+        3 => Colors.pink.shade500,
+        _ => Colors.deepPurple.shade600,
       };
 }
 
@@ -201,20 +538,20 @@ class _Badge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.4)),
+        color: color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withOpacity(0.2), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: color),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Text(label,
               style: TextStyle(
-                  fontSize: 12, color: color, fontWeight: FontWeight.w600)),
+                  fontSize: 11, color: color, fontWeight: FontWeight.w800, letterSpacing: 0.5)),
         ],
       ),
     );

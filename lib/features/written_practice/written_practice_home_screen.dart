@@ -24,23 +24,18 @@ class WrittenPracticeHomeScreen extends ConsumerStatefulWidget {
 
 class _WrittenPracticeHomeScreenState
     extends ConsumerState<WrittenPracticeHomeScreen> {
+  bool _isBootstrapping = true;
+  String? _bootstrapError;
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(selectedLessonIdProvider.notifier).state =
-          widget.initialLessonId;
-      ref.read(selectedGradeIdProvider.notifier).state = widget.initialGradeId;
-      ref.read(selectedTopicIdsProvider.notifier).state = {};
-    });
+    Future.microtask(_bootstrapAndStartSession);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final unitsAsync = ref.watch(lessonUnitsProvider);
-    final selectedLessonId = ref.watch(selectedLessonIdProvider);
-    final selectedTopicIds = ref.watch(selectedTopicIdsProvider);
     final lessonTitle = (widget.initialLessonName ?? '').trim();
 
     return Scaffold(
@@ -50,79 +45,78 @@ class _WrittenPracticeHomeScreenState
           lessonTitle.isEmpty
               ? 'Yazılıya Çalış'
               : 'Yazılıya Çalış • $lessonTitle',
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
         ),
         centerTitle: false,
         elevation: 0,
+        scrolledUnderElevation: 2,
         backgroundColor: theme.colorScheme.surface,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: selectedLessonId == null
-                ? _EmptyHint(
-                    icon: Icons.school_outlined,
-                    text:
-                        'Ders bilgisi gelmedi. Bu ekrana haftalık ders içinden geçin.',
-                  )
-                : unitsAsync.when(
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text('Hata: $e')),
-                    data: (units) => units.isEmpty
-                        ? const _EmptyHint(
-                            icon: Icons.list_alt_rounded,
-                            text: 'Bu ders için ünite bulunamadı.',
-                          )
-                        : _UnitTopicTree(
-                            units: units,
-                            selectedTopicIds: selectedTopicIds,
-                            onToggleTopic: (topicId) {
-                              final current = ref.read(
-                                selectedTopicIdsProvider,
-                              );
-                              final updated = {...current};
-                              if (updated.contains(topicId)) {
-                                updated.remove(topicId);
-                              } else {
-                                updated.add(topicId);
-                              }
-                              ref
-                                      .read(selectedTopicIdsProvider.notifier)
-                                      .state =
-                                  updated;
-                            },
-                          ),
-                  ),
-          ),
-        ],
-      ),
-
-      // ── Start button ────────────────────────────────────────────────
-      bottomNavigationBar: selectedTopicIds.isEmpty
-          ? null
-          : SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                child: FilledButton.icon(
-                  onPressed: () => _startSession(context, selectedTopicIds),
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  label: Text(
-                    '${selectedTopicIds.length} konu ile başla',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(52),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
+      body: _isBootstrapping
+          ? const Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 12),
+                  Text('Sorular hazırlanıyor...'),
+                ],
               ),
+            )
+          : _EmptyHint(
+              icon: Icons.warning_amber_rounded,
+              text: _bootstrapError ?? 'Oturum başlatılamadı.',
             ),
     );
   }
 
-  Future<void> _startSession(BuildContext context, Set<int> topicIds) async {
+  Future<void> _bootstrapAndStartSession() async {
+    ref.read(selectedLessonIdProvider.notifier).state = widget.initialLessonId;
+    ref.read(selectedGradeIdProvider.notifier).state = widget.initialGradeId;
+    ref.read(selectedTopicIdsProvider.notifier).state = {};
+
+    if (widget.initialLessonId == null) {
+      if (!mounted) return;
+      setState(() {
+        _isBootstrapping = false;
+        _bootstrapError =
+            'Ders bilgisi gelmedi. Bu ekrana haftalık ders içinden geçin.';
+      });
+      return;
+    }
+
+    try {
+      final units = await ref.read(lessonUnitsProvider.future);
+      final topicIds = <int>{};
+
+      for (final unit in units) {
+        final topics = await ref.read(topicsProvider(unit.id).future);
+        for (final topic in topics) {
+          topicIds.add(topic.id);
+        }
+      }
+
+      if (topicIds.isEmpty) {
+        if (!mounted) return;
+        setState(() {
+          _isBootstrapping = false;
+          _bootstrapError = 'Bu ders için konu bulunamadı.';
+        });
+        return;
+      }
+
+      ref.read(selectedTopicIdsProvider.notifier).state = topicIds;
+      await _startSession(topicIds);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isBootstrapping = false;
+        _bootstrapError = 'Veriler yüklenirken bir hata oluştu.';
+      });
+    }
+  }
+
+  Future<void> _startSession(Set<int> topicIds) async {
     await ref
         .read(writtenSessionProvider.notifier)
         .startSession(topicIds.toList());
@@ -130,15 +124,16 @@ class _WrittenPracticeHomeScreenState
     if (!mounted) return;
     final session = ref.read(writtenSessionProvider);
     if (session == null || session.totalQuestions == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Seçilen konularda soru bulunamadı.')),
-      );
+      setState(() {
+        _isBootstrapping = false;
+        _bootstrapError = 'Seçilen konularda soru bulunamadı.';
+      });
       return;
     }
 
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const WrittenSessionScreen()));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const WrittenSessionScreen()),
+    );
   }
 }
 
@@ -185,25 +180,45 @@ class _UnitTile extends ConsumerWidget {
     final theme = Theme.of(context);
     final topicsAsync = ref.watch(topicsProvider(unit.id));
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: theme.colorScheme.outlineVariant.withOpacity(0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                unit.title,
-                style: const TextStyle(fontWeight: FontWeight.w700),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+              color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+              child: Row(
+                children: [
+                  Icon(Icons.folder_open_rounded, 
+                    size: 20, color: theme.colorScheme.primary.withOpacity(0.7)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      unit.title,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
 
           topicsAsync.when(
             loading: () => const Padding(
@@ -221,7 +236,6 @@ class _UnitTile extends ConsumerWidget {
                   )
                 : Column(
                     children: [
-                      const Divider(height: 1),
                       ...topics.map(
                         (t) => _TopicCheckTile(
                           topic: t,
@@ -234,7 +248,8 @@ class _UnitTile extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 }
 
@@ -254,14 +269,16 @@ class _TopicCheckTile extends StatelessWidget {
     final theme = Theme.of(context);
     return InkWell(
       onTap: onToggle,
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
             AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 22,
-              height: 22,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.fastOutSlowIn,
+              width: 24,
+              height: 24,
               decoration: BoxDecoration(
                 color: isSelected
                     ? theme.colorScheme.primary
@@ -269,18 +286,31 @@ class _TopicCheckTile extends StatelessWidget {
                 border: Border.all(
                   color: isSelected
                       ? theme.colorScheme.primary
-                      : theme.colorScheme.outline,
+                      : theme.colorScheme.outline.withOpacity(0.5),
                   width: 2,
                 ),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: isSelected 
+                  ? [BoxShadow(
+                      color: theme.colorScheme.primary.withOpacity(0.3),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2)
+                    )]
+                  : null,
               ),
               child: isSelected
-                  ? const Icon(Icons.check, size: 14, color: Colors.white)
+                  ? const Icon(Icons.check_rounded, size: 16, color: Colors.white)
                   : null,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 14),
             Expanded(
-              child: Text(topic.title, style: theme.textTheme.bodyMedium),
+              child: Text(
+                topic.title, 
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  color: isSelected ? theme.colorScheme.onSurface : theme.colorScheme.onSurface.withOpacity(0.8),
+                ),
+              ),
             ),
           ],
         ),
