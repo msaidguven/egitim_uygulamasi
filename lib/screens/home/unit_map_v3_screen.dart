@@ -157,6 +157,7 @@ class UnitMapV3Screen extends StatefulWidget {
 class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
     with SingleTickerProviderStateMixin {
   final List<WeekV3> _weeks = [];
+  Map<int, int> _breakAfterWeekCounts = {};
   bool _isLoading = true;
   String? _loadError;
   int _selectedWeekIndex = 0;
@@ -238,6 +239,7 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
     try {
       await _fetchGradeName();
       await _fetchWeeks();
+      await _fetchBreakFlow();
       
       if (_weeks.isEmpty) {
         if (!mounted) return;
@@ -310,6 +312,48 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
         ),
       );
     }
+  }
+
+  Future<void> _fetchBreakFlow() async {
+    try {
+      final response = await supabase
+          .from('special_week_events')
+          .select('grade_id, lesson_id, curriculum_week, event_type, priority')
+          .eq('is_active', true)
+          .order('curriculum_week', ascending: true)
+          .order('priority', ascending: true);
+
+      final breakCounts = <int, int>{};
+      for (final raw in (response as List)) {
+        final row = Map<String, dynamic>.from(raw as Map);
+        final grade = row['grade_id'] as int?;
+        final lesson = row['lesson_id'] as int?;
+        if (grade != null && grade != widget.gradeId) continue;
+        if (lesson != null && lesson != widget.lessonId) continue;
+
+        final type = (row['event_type'] as String? ?? '').trim();
+        if (type != 'break') continue;
+
+        final afterWeek = row['curriculum_week'] as int?;
+        if (afterWeek == null || afterWeek < 1) continue;
+        breakCounts[afterWeek] = (breakCounts[afterWeek] ?? 0) + 1;
+      }
+
+      if (breakCounts.isNotEmpty) {
+        _breakAfterWeekCounts = breakCounts;
+        return;
+      }
+    } catch (e) {
+      debugPrint('Break flow load failed, static fallback will be used: $e');
+    }
+
+    final fallbackCounts = <int, int>{};
+    for (final entry in getAcademicBreakEntries()) {
+      final afterWeek = entry['insert_after_week'] as int?;
+      if (afterWeek == null || afterWeek < 1) continue;
+      fallbackCounts[afterWeek] = (fallbackCounts[afterWeek] ?? 0) + 1;
+    }
+    _breakAfterWeekCounts = fallbackCounts;
   }
   
   void _setInitialWeekIndex() {
@@ -460,8 +504,26 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
     }
   }
 
+  (DateTime, DateTime) _getWeekDateRangeFromFlow(int curriculumWeek) {
+    final schoolStart = getSchoolStartDate();
+    if (curriculumWeek <= 1) {
+      final end = schoolStart.add(const Duration(days: 6));
+      return (schoolStart, end);
+    }
+
+    int breaksBefore = 0;
+    for (final entry in _breakAfterWeekCounts.entries) {
+      if (entry.key < curriculumWeek) breaksBefore += entry.value;
+    }
+
+    final weekOffset = (curriculumWeek - 1) + breaksBefore;
+    final weekStart = schoolStart.add(Duration(days: weekOffset * 7));
+    final weekEnd = weekStart.add(const Duration(days: 6));
+    return (weekStart, weekEnd);
+  }
+
   String _formatWeekDateRange(int curriculumWeek, {bool compact = false}) {
-    final (startDate, endDate) = getWeekDateRangeForAcademicWeek(curriculumWeek);
+    final (startDate, endDate) = _getWeekDateRangeFromFlow(curriculumWeek);
     if (compact) {
       return '${startDate.day}.${startDate.month} - ${endDate.day}.${endDate.month}';
     }
