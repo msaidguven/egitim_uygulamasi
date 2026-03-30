@@ -18,7 +18,15 @@ bool get _isDesktopOrWeb {
 
 class WordOrderWidget extends ConsumerWidget {
   final QuestionAttempt attempt;
-  const WordOrderWidget({super.key, required this.attempt});
+  final double textScale;
+  final VoidCallback onRetry;
+
+  const WordOrderWidget({
+    super.key,
+    required this.attempt,
+    required this.textScale,
+    required this.onRetry,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,12 +44,16 @@ class WordOrderWidget extends ConsumerWidget {
         // ── Answer area label ────────────────────────────────────────────
         Row(
           children: [
-            Icon(Icons.edit_note_rounded, 
-              size: 20, color: theme.colorScheme.onSurfaceVariant),
+            Icon(
+              Icons.edit_note_rounded,
+              size: 20,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             const SizedBox(width: 8),
             Text(
               'Cevabını oluştur:',
               style: theme.textTheme.labelLarge?.copyWith(
+                fontSize: 15 * textScale,
                 color: theme.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold,
               ),
@@ -55,6 +67,7 @@ class WordOrderWidget extends ConsumerWidget {
           placedWords: placed,
           status: attempt.status,
           isAnswered: isAnswered,
+          textScale: textScale,
           onRemove: (i) => notifier.removeWord(i),
           onReorder: (from, to) => notifier.reorderWord(from, to),
         ),
@@ -63,12 +76,16 @@ class WordOrderWidget extends ConsumerWidget {
         // ── Word bank ────────────────────────────────────────────────────
         Row(
           children: [
-            Icon(Icons.widgets_outlined, 
-              size: 18, color: theme.colorScheme.onSurfaceVariant),
+            Icon(
+              Icons.widgets_outlined,
+              size: 18,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             const SizedBox(width: 8),
             Text(
               'Kelimeler:',
               style: theme.textTheme.labelLarge?.copyWith(
+                fontSize: 15 * textScale,
                 color: theme.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.bold,
               ),
@@ -79,6 +96,7 @@ class WordOrderWidget extends ConsumerWidget {
         _WordBank(
           words: bankWords,
           isAnswered: isAnswered,
+          textScale: textScale,
           onTap: (word) => notifier.placeWord(word),
         ),
         const SizedBox(height: 32),
@@ -95,27 +113,39 @@ class WordOrderWidget extends ConsumerWidget {
                 foregroundColor: theme.colorScheme.onPrimary,
                 elevation: 2,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
-              child: const Text('Cevabı Kontrol Et',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+              child: const Text(
+                'Cevabı Kontrol Et',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+              ),
             ),
           ),
 
         // ── Feedback banner ───────────────────────────────────────────────
-        if (isAnswered) 
+        if (isAnswered)
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 24),
-            child: _FeedbackBanner(attempt: attempt),
+            child: _FeedbackBanner(
+              attempt: attempt,
+              textScale: textScale,
+              onRetry: onRetry,
+            ),
           ),
       ],
     );
   }
 
-  List<String> _remainingBankWords(
-      List<String> shuffled, List<String> placed) {
+  List<String> _remainingBankWords(List<String> shuffled, List<String> placed) {
     final pool = [...shuffled];
-    for (final w in placed) pool.remove(w);
+    for (final w in placed) {
+      pool.remove(w);
+    }
     return pool;
   }
 }
@@ -128,6 +158,7 @@ class _AnswerArea extends StatelessWidget {
   final List<String> placedWords;
   final AnswerStatus status;
   final bool isAnswered;
+  final double textScale;
   final void Function(int) onRemove;
   final void Function(int, int) onReorder;
 
@@ -135,16 +166,16 @@ class _AnswerArea extends StatelessWidget {
     required this.placedWords,
     required this.status,
     required this.isAnswered,
+    required this.textScale,
     required this.onRemove,
     required this.onReorder,
   });
 
   Color _borderColor(BuildContext context) => switch (status) {
-        AnswerStatus.correct => Colors.green.shade600,
-        AnswerStatus.incorrect => Colors.red.shade400,
-        AnswerStatus.unanswered =>
-          Theme.of(context).colorScheme.outlineVariant,
-      };
+    AnswerStatus.correct => Colors.green.shade600,
+    AnswerStatus.incorrect => Colors.red.shade400,
+    AnswerStatus.unanswered => Theme.of(context).colorScheme.outlineVariant,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -158,8 +189,8 @@ class _AnswerArea extends StatelessWidget {
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: _borderColor(context).withOpacity(0.4), 
-          width: 2.5
+          color: _borderColor(context).withOpacity(0.4),
+          width: 2.5,
         ),
         boxShadow: [
           BoxShadow(
@@ -174,42 +205,50 @@ class _AnswerArea extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.touch_app_outlined, 
-                    size: 28, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.3)),
+                  Icon(
+                    Icons.touch_app_outlined,
+                    size: 28,
+                    color: theme.colorScheme.onSurfaceVariant.withOpacity(0.3),
+                  ),
                   const SizedBox(height: 10),
                   Text(
                     'Aşağıdan kelimelere dokunarak\ncümleyi oluşturmaya başla',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
-                        fontSize: 14,
-                        height: 1.4,
-                        fontWeight: FontWeight.w500),
+                      color: theme.colorScheme.onSurfaceVariant.withOpacity(
+                        0.6,
+                      ),
+                      fontSize: 14 * textScale,
+                      height: 1.4,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
             )
           : isAnswered
-              ? Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: [
-                    for (int i = 0; i < placedWords.length; i++)
-                      _PlacedWordChip(
-                        word: placedWords[i],
-                        index: i,
-                        isAnswered: true,
-                        status: status,
-                        onRemove: onRemove,
-                      ),
-                  ],
-                )
-              : _DraggableWrapWordList(
-                  words: placedWords,
-                  status: status,
-                  onRemove: onRemove,
-                  onReorder: onReorder,
-                ),
+          ? Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                for (int i = 0; i < placedWords.length; i++)
+                  _PlacedWordChip(
+                    word: placedWords[i],
+                    index: i,
+                    isAnswered: true,
+                    status: status,
+                    textScale: textScale,
+                    onRemove: onRemove,
+                  ),
+              ],
+            )
+          : _DraggableWrapWordList(
+              words: placedWords,
+              status: status,
+              textScale: textScale,
+              onRemove: onRemove,
+              onReorder: onReorder,
+            ),
     );
   }
 }
@@ -221,12 +260,14 @@ class _AnswerArea extends StatelessWidget {
 class _DraggableWrapWordList extends StatefulWidget {
   final List<String> words;
   final AnswerStatus status;
+  final double textScale;
   final void Function(int) onRemove;
   final void Function(int, int) onReorder;
 
   const _DraggableWrapWordList({
     required this.words,
     required this.status,
+    required this.textScale,
     required this.onRemove,
     required this.onReorder,
   });
@@ -248,7 +289,6 @@ class _DraggableWrapWordListState extends State<_DraggableWrapWordList> {
       runSpacing: 12,
       children: List.generate(widget.words.length, (i) {
         final word = widget.words[i];
-        final isDragging = _draggingIndex == i;
         final isHover = _hoverIndex == i && _draggingIndex != i;
 
         return DragTarget<int>(
@@ -276,6 +316,7 @@ class _DraggableWrapWordListState extends State<_DraggableWrapWordList> {
                   index: i,
                   isAnswered: false,
                   status: widget.status,
+                  textScale: widget.textScale,
                   onRemove: (_) {},
                   isDragging: true,
                 ),
@@ -290,6 +331,7 @@ class _DraggableWrapWordListState extends State<_DraggableWrapWordList> {
                 index: i,
                 isAnswered: false,
                 status: widget.status,
+                textScale: widget.textScale,
                 onRemove: (_) {},
               ),
             );
@@ -310,19 +352,20 @@ class _DraggableWrapWordListState extends State<_DraggableWrapWordList> {
                 index: i,
                 isAnswered: false,
                 status: widget.status,
+                textScale: widget.textScale,
                 onRemove: widget.onRemove,
               ),
             );
 
             void onDragStarted() => setState(() => _draggingIndex = i);
             void onDragEnd(DraggableDetails _) => setState(() {
-                  _draggingIndex = null;
-                  _hoverIndex = null;
-                });
-            void onDraggableCanceled(Velocity _, Offset __) => setState(() {
-                  _draggingIndex = null;
-                  _hoverIndex = null;
-                });
+              _draggingIndex = null;
+              _hoverIndex = null;
+            });
+            void onDraggableCanceled(Velocity _, Offset offset) => setState(() {
+              _draggingIndex = null;
+              _hoverIndex = null;
+            });
 
             if (_isDesktopOrWeb) {
               return Draggable<int>(
@@ -361,6 +404,7 @@ class _PlacedWordChip extends StatelessWidget {
   final int index;
   final bool isAnswered;
   final AnswerStatus status;
+  final double textScale;
   final void Function(int) onRemove;
   final bool isDragging;
 
@@ -369,6 +413,7 @@ class _PlacedWordChip extends StatelessWidget {
     required this.index,
     required this.isAnswered,
     required this.status,
+    required this.textScale,
     required this.onRemove,
     this.isDragging = false,
   });
@@ -377,7 +422,9 @@ class _PlacedWordChip extends StatelessWidget {
     if (isDragging) {
       return Theme.of(context).colorScheme.primary.withOpacity(0.1);
     }
-    if (!isAnswered) return Theme.of(context).colorScheme.primaryContainer.withOpacity(0.7);
+    if (!isAnswered) {
+      return Theme.of(context).colorScheme.primaryContainer.withOpacity(0.7);
+    }
     return switch (status) {
       AnswerStatus.correct => Colors.green.shade100,
       AnswerStatus.incorrect => Colors.red.shade100,
@@ -412,19 +459,19 @@ class _PlacedWordChip extends StatelessWidget {
                     color: theme.colorScheme.primary.withOpacity(0.2),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
-                  )
+                  ),
                 ]
               : [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.04),
                     blurRadius: 2,
                     offset: const Offset(0, 1),
-                  )
+                  ),
                 ],
           border: Border.all(
-            color: isDragging 
-              ? theme.colorScheme.primary.withOpacity(0.4)
-              : _textColor(context).withOpacity(0.1),
+            color: isDragging
+                ? theme.colorScheme.primary.withOpacity(0.4)
+                : _textColor(context).withOpacity(0.1),
             width: 1,
           ),
         ),
@@ -440,15 +487,21 @@ class _PlacedWordChip extends StatelessWidget {
                   color: _textColor(context).withOpacity(0.3),
                 ),
               ),
-            Text(word,
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: _textColor(context))),
+            Text(
+              word,
+              style: TextStyle(
+                fontSize: 15 * textScale,
+                fontWeight: FontWeight.w800,
+                color: _textColor(context),
+              ),
+            ),
             if (!isAnswered && !isDragging) ...[
               const SizedBox(width: 8),
-              Icon(Icons.close_rounded,
-                  size: 16, color: _textColor(context).withOpacity(0.35)),
+              Icon(
+                Icons.close_rounded,
+                size: 16,
+                color: _textColor(context).withOpacity(0.35),
+              ),
             ],
           ],
         ),
@@ -464,10 +517,15 @@ class _PlacedWordChip extends StatelessWidget {
 class _WordBank extends StatelessWidget {
   final List<String> words;
   final bool isAnswered;
+  final double textScale;
   final void Function(String) onTap;
 
-  const _WordBank(
-      {required this.words, required this.isAnswered, required this.onTap});
+  const _WordBank({
+    required this.words,
+    required this.isAnswered,
+    required this.textScale,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -481,12 +539,19 @@ class _WordBank extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.check_circle_rounded, size: 18, color: theme.colorScheme.primary),
+            Icon(
+              Icons.check_circle_rounded,
+              size: 18,
+              color: theme.colorScheme.primary,
+            ),
             const SizedBox(width: 10),
             Text(
               'Tüm kelimeler yerleştirildi ✓',
               style: TextStyle(
-                  color: theme.colorScheme.primary, fontWeight: FontWeight.bold),
+                fontSize: 14 * textScale,
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -496,36 +561,44 @@ class _WordBank extends StatelessWidget {
       spacing: 12,
       runSpacing: 12,
       children: words
-          .map((w) => GestureDetector(
-                onTap: isAnswered ? null : () => onTap(w),
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: isAnswered ? 0.35 : 1.0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 18, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                          color: theme.colorScheme.outlineVariant.withOpacity(0.6),
-                          width: 1.5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.03),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
+          .map(
+            (w) => GestureDetector(
+              onTap: isAnswered ? null : () => onTap(w),
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: isAnswered ? 0.35 : 1.0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: theme.colorScheme.outlineVariant.withOpacity(0.6),
+                      width: 1.5,
                     ),
-                    child: Text(w,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: theme.colorScheme.onSurface.withOpacity(0.9))),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    w,
+                    style: TextStyle(
+                      fontSize: 15 * textScale,
+                      fontWeight: FontWeight.w700,
+                      color: theme.colorScheme.onSurface.withOpacity(0.9),
+                    ),
                   ),
                 ),
-              ))
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -537,7 +610,14 @@ class _WordBank extends StatelessWidget {
 
 class _FeedbackBanner extends StatelessWidget {
   final QuestionAttempt attempt;
-  const _FeedbackBanner({required this.attempt});
+  final double textScale;
+  final VoidCallback onRetry;
+
+  const _FeedbackBanner({
+    required this.attempt,
+    required this.textScale,
+    required this.onRetry,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -552,7 +632,9 @@ class _FeedbackBanner extends StatelessWidget {
         color: isCorrect ? Colors.green.shade50 : Colors.red.shade50,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-            color: isCorrect ? Colors.green.shade200 : Colors.red.shade200, width: 2),
+          color: isCorrect ? Colors.green.shade200 : Colors.red.shade200,
+          width: 2,
+        ),
         boxShadow: [
           BoxShadow(
             color: (isCorrect ? Colors.green : Colors.red).withOpacity(0.05),
@@ -569,13 +651,13 @@ class _FeedbackBanner extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: isCorrect ? Colors.green.shade100 : Colors.red.shade100,
+                  color: isCorrect
+                      ? Colors.green.shade100
+                      : Colors.red.shade100,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  isCorrect
-                      ? Icons.check_circle_rounded
-                      : Icons.error_rounded,
+                  isCorrect ? Icons.check_circle_rounded : Icons.error_rounded,
                   color: isCorrect
                       ? Colors.green.shade700
                       : Colors.red.shade600,
@@ -590,39 +672,51 @@ class _FeedbackBanner extends StatelessWidget {
                     Text(
                       isCorrect ? 'Mükemmel!' : 'Bir dahaki sefere...',
                       style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 18,
-                          color: isCorrect
-                              ? Colors.green.shade800
-                              : Colors.red.shade800),
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18 * textScale,
+                        color: isCorrect
+                            ? Colors.green.shade800
+                            : Colors.red.shade800,
+                      ),
                     ),
                     Text(
-                      isCorrect ? 'Tüm kelimeler doğru yerinde.' : 'Doğru dizilişi inceleyelim.',
+                      isCorrect
+                          ? 'Tüm kelimeler doğru yerinde.'
+                          : 'Doğru dizilişi inceleyelim.',
                       style: TextStyle(
-                          fontSize: 13,
-                          color: isCorrect
-                              ? Colors.green.shade700
-                              : Colors.red.shade700),
+                        fontSize: 13 * textScale,
+                        color: isCorrect
+                            ? Colors.green.shade700
+                            : Colors.red.shade700,
+                      ),
                     ),
                   ],
                 ),
               ),
               if (isCorrect) ...[
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.green.shade700,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
-                      BoxShadow(color: Colors.green.withOpacity(0.3), blurRadius: 8)
-                    ]
+                      BoxShadow(
+                        color: Colors.green.withOpacity(0.3),
+                        blurRadius: 8,
+                      ),
+                    ],
                   ),
-                  child: Text('+${attempt.question.score}',
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 14)),
+                  child: Text(
+                    '+${attempt.question.score}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 14,
+                    ),
+                  ),
                 ),
               ],
             ],
@@ -640,17 +734,39 @@ class _FeedbackBanner extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('DOĞRU CEVAP',
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.red.shade700,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.2)),
+                  Text(
+                    'DOĞRU CEVAP',
+                    style: TextStyle(
+                      fontSize: 11 * textScale,
+                      color: Colors.red.shade700,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Text(modelAnswer,
-                      style:
-                          TextStyle(fontSize: 17, color: Colors.red.shade900, fontWeight: FontWeight.w800, height: 1.4)),
+                  _CorrectAnswerWrap(attempt: attempt, textScale: textScale),
+                  if (modelAnswer.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      modelAnswer,
+                      style: TextStyle(
+                        fontSize: 15 * textScale,
+                        color: Colors.red.shade900,
+                        fontWeight: FontWeight.w700,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
                 ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.replay_rounded),
+                label: const Text('Yeniden Dene'),
               ),
             ),
           ],
@@ -660,23 +776,79 @@ class _FeedbackBanner extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                Icon(Icons.auto_awesome_rounded, size: 18, color: Colors.grey.shade700),
+                Icon(
+                  Icons.auto_awesome_rounded,
+                  size: 18,
+                  color: Colors.grey.shade700,
+                ),
                 const SizedBox(width: 8),
-                Text('ÖĞRENME NOTU',
-                    style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.2,
-                        color: Colors.grey.shade800)),
+                Text(
+                  'ÖĞRENME NOTU',
+                  style: TextStyle(
+                    fontSize: 11 * textScale,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 10),
-            Text(solution,
-                style:
-                    TextStyle(fontSize: 14, color: Colors.grey.shade800, height: 1.6, fontWeight: FontWeight.w500)),
+            Text(
+              solution,
+              style: TextStyle(
+                fontSize: 14 * textScale,
+                color: Colors.grey.shade800,
+                height: 1.6,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ],
       ),
+    );
+  }
+}
+
+class _CorrectAnswerWrap extends StatelessWidget {
+  final QuestionAttempt attempt;
+  final double textScale;
+
+  const _CorrectAnswerWrap({required this.attempt, required this.textScale});
+
+  @override
+  Widget build(BuildContext context) {
+    final correctWords = attempt.question.classical?.answerWords ?? const [];
+    final placedWords = attempt.placedWords;
+
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: List.generate(correctWords.length, (index) {
+        final word = correctWords[index];
+        final matched =
+            index < placedWords.length &&
+            placedWords[index] == correctWords[index];
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: matched ? Colors.green.shade100 : Colors.red.shade100,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: matched ? Colors.green.shade300 : Colors.red.shade300,
+            ),
+          ),
+          child: Text(
+            '${index + 1}. $word',
+            style: TextStyle(
+              fontSize: 14 * textScale,
+              fontWeight: FontWeight.w800,
+              color: matched ? Colors.green.shade900 : Colors.red.shade900,
+            ),
+          ),
+        );
+      }),
     );
   }
 }

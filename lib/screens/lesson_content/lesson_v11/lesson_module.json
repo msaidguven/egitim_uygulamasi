@@ -1,40 +1,56 @@
 {
   "lessonModule": {
-    "id": "module_5_03_yasayan_demokrasi_kurumlar",
-    "title": "İhtiyaç Durumunda veya Sorunların Çözümünde Başvurulabilecek Kurumlar",
-    "description": "Yaşadığımız sorunlarda ve ihtiyaçlarımızda başvurabileceğimiz kamu kurumları ve sivil toplum kuruluşlarını öğreniyoruz.",
-    "subject": "Sosyal Bilgiler",
+    "id": "module_5_btyz_problem_algoritma",
+    "title": "Problem Belirleme ve Algoritma Oluşturma",
+    "description": "Günlük yaşamdan problemler belirleyerek girdi-çıktı analizi yapmayı, işlem adımlarını listelemeyi ve akış şeması çizmeyi öğreniyoruz.",
+    "subject": "Bilişim Teknolojileri ve Yazılım",
     "gradeLevel": "5. Sınıf",
     "language": "tr",
     "tags": [
-      "yaşayan demokrasi",
-      "kamusal kurumlar",
-      "sivil toplum",
-      "sorun çözme",
-      "vatandaşlık",
-      "belediye",
-      "okul",
-      "hastane"
+      "problem belirleme",
+      "algoritma",
+      "girdi çıktı",
+      "akış şeması",
+      "yazılım tasarımı",
+      "programlama",
+      "işlem adımları",
+      "5. sınıf"
     ],
-    "estimatedMinutes": 35,
-    "createdAt": "2026-03-29T09:00:00Z",
-    "updatedAt": "2026-03-29T09:00:00Z",
+    "estimatedMinutes": 40,
+    "createdAt": "2026-01-01T00:00:00Z",
+    "updatedAt": "2026-01-01T00:00:00Z",
     "sections": [
       {
         "id": "section_01",
         "order": 1,
-        "title": "Sorunlarla Karşılaştığımızda Ne Yaparız?",
+        "title": "Problem Nedir? Algoritma Nedir?",
         "icon": "🤔",
         "content": [
           {
+            "id": "blk_001",
             "type": "markdown",
-            "body": "## Günlük Hayatta Sorunlarla Karşılaşırız\n\nHer gün farklı ihtiyaçlarımız olur. Bazen bir sorunla karşılaşırız. Bu durumlarda yardım alabileceğimiz kurumlar vardır.\n\n### Örnek Durumlar:\n- 🏫 Okulda bir sorun yaşadığımızda\n- 🏥 Sağlık sorunumuz olduğunda\n- 🚧 Sokakta bir sorun gördüğümüzde\n- 🆘 Acil yardıma ihtiyacımız olduğunda\n\nBu durumlarda doğru kuruma başvurmak önemlidir."
+            "order": 1,
+            "content": {
+              "body": "## Problem Nedir?\n\nHayatımızda her gün onlarca sorunla karşılaşırız. Sabah geç kalkmak, çantamızı hazırlamamış olmak, bir şeyin nerede olduğunu bulamamak... İşte bunların hepsi birer **problemdir**.\n\nBilişim dünyasında **problem**, çözülmesi gereken ve net bir sonuca ulaşmayı hedefleyen bir durum ya da sorudur.\n\n## Algoritma Nedir?\n\nBir problemi çözmek için izlediğimiz **adım adım yol tarifi** algoritmadır.\n\nAlgoritmanın temel özellikleri:\n- **Kesin:** Her adım net ve anlaşılır olmalıdır.\n- **Sıralı:** Adımlar belirli bir sıraya göre uygulanır.\n- **Sonlu:** Algoritma bir noktada mutlaka biter.\n- **Etkili:** Her adım gerçekleştirilebilir olmalıdır."
+            }
           },
           {
+            "id": "blk_002",
+            "type": "markdown",
+            "order": 2,
+            "content": {
+              "body": "## Günlük Hayattan Örnek\n\nSabah okula geç kaldığında ne yaparsın? İşte basit bir algoritma:\n\n1. Gözlerini aç.\n2. Saate bak.\n3. Hızlıca kalk.\n4. Dişlerini fırçala.\n5. Kıyafetlerini giy.\n6. Çantanı al.\n7. Evden çık.\n\nBu adımların sırasını değiştirsen ne olurdu? Kıyafetlerini giymeden evden çıkman mümkün olmaz, değil mi? İşte bu yüzden sıra çok önemlidir!\n\n> **Hatırla:** Bir algoritma, bilgisayara verebileceğimiz kadar kesin ve net talimatlar içermelidir."
+            }
+          },
+          {
+            "id": "blk_003",
             "type": "misconception",
-            "wrong": "Tüm sorunlarımızı ailemiz çözer, başka kurumlara gitmeye gerek yoktur.",
-            "correct": "Ailemiz birçok sorunumuzu çözer ama bazı özel durumlarda (sağlık, eğitim, güvenlik gibi) o alanın uzmanı olan kurumlara başvurmamız gerekir.",
-            "tip": "Her kurumun görev alanı farklıdır. Doğru kuruma gitmek sorunumuzu daha hızlı çözer."
+            "order": 3,
+            "content": {
+              "wrong": "Algoritma sadece bilgisayarlar için kullanılan bir kavramdır.",
+              "correct": "Algoritma, bilgisayar olmasa da her alanda karşımıza çıkan adım adım çözüm yoludur; yemek tarifleri, yol tarifleri ve günlük rutinler de birer algoritmadır.",
+              "tip": "Algoritmayı 'bilgisayar talimatı' değil, 'kesin adımlı çözüm yolu' olarak düşün."
+            }
           }
         ],
         "quiz": [
@@ -44,28 +60,28 @@
             "order": 1,
             "content": {
               "questionType": "single_choice",
-              "question": "Okulda bir sorun yaşadığında ilk olarak hangi kuruma başvurmalısın?",
+              "question": "Aşağıdakilerden hangisi bir algoritmanın zorunlu özelliği değildir?",
               "options": [
                 {
-                  "id": "opt_01_01_a",
-                  "text": "Okul yönetimi ve öğretmenler"
+                  "id": "opt_1_01_1",
+                  "text": "Kesin ve net olması"
                 },
                 {
-                  "id": "opt_01_01_b",
-                  "text": "Belediye zabıtası"
+                  "id": "opt_1_01_2",
+                  "text": "Sıralı adımlardan oluşması"
                 },
                 {
-                  "id": "opt_01_01_c",
-                  "text": "Hastane acil servisi"
+                  "id": "opt_1_01_3",
+                  "text": "Mutlaka bilgisayarda çalışması"
                 },
                 {
-                  "id": "opt_01_01_d",
-                  "text": "Banka şubesi"
+                  "id": "opt_1_01_4",
+                  "text": "Sonlu olması"
                 }
               ],
-              "correctOptionId": "opt_01_01_a",
-              "hint": "Okulda yaşanan sorunlar için en yakın yetkili kimlerdir?",
-              "explanation": "Okulda yaşanan sorunlar için okul yönetimi ve öğretmenlerimize danışmalıyız. Onlar bizi en iyi anlayacak ve yardım edecek kişilerdir."
+              "correctOptionId": "opt_1_01_3",
+              "hint": "Algoritmanın nerede kullanıldığını değil, nasıl olduğunu düşün.",
+              "explanation": "Algoritma bir bilgisayar programı olmak zorunda değildir. Yemek tarifi, yol tarifi gibi günlük talimatlar da algoritmadır. Bilgisayarda çalışmak algoritmanın zorunlu özelliği değildir."
             }
           },
           {
@@ -74,11 +90,11 @@
             "order": 2,
             "content": {
               "questionType": "true_false",
-              "question": "Her sorunumuzu tek başımıza çözmeye çalışmalıyız, kimseye danışmamalıyız.",
-              "statement": "Her sorunumuzu tek başımıza çözmeye çalışmalıyız, kimseye danışmamalıyız.",
+              "question": "Aşağıdaki ifadeyi doğru ya da yanlış olarak değerlendiriniz.",
+              "statement": "Algoritma adımlarının sırası değiştirilse bile aynı sonuca ulaşılır.",
               "correctAnswer": false,
-              "hint": "Büyüklerimiz ve uzman kurumlar bize yardımcı olmak için vardır.",
-              "explanation": "Yanlış! Bazı sorunları tek başımıza çözemeyebiliriz. Ailemizden, öğretmenlerimizden veya ilgili kurumlardan yardım istemek akıllıca bir davranıştır."
+              "hint": "Sabah rutinini düşün: önce giyinip sonra uyumak mümkün mü?",
+              "explanation": "Algoritma adımlarının sırası, sonucu doğrudan etkiler. Yanlış sıralama hatalı ya da hiç sonuç vermeyebilir. Bu nedenle sıralı olma özelliği algoritmanın temel gerekliliklerinden biridir."
             }
           },
           {
@@ -86,51 +102,18 @@
             "type": "quiz",
             "order": 3,
             "content": {
-              "questionType": "multiple_choice",
-              "question": "Aşağıdakilerden hangileri günlük hayatta başvurabileceğimiz kurum örnekleridir?",
-              "options": [
-                {
-                  "id": "opt_01_03_a",
-                  "text": "Okul"
-                },
-                {
-                  "id": "opt_01_03_b",
-                  "text": "Aile büyükleri"
-                },
-                {
-                  "id": "opt_01_03_c",
-                  "text": "Sadece arkadaşlar"
-                },
-                {
-                  "id": "opt_01_03_d",
-                  "text": "Hastane"
-                }
-              ],
-              "correctOptionIds": [
-                "opt_01_03_a",
-                "opt_01_03_b",
-                "opt_01_03_d"
-              ],
-              "hint": "Resmi kurumlar ve bize destek olan kişileri düşün.",
-              "explanation": "Okul, aile büyükleri ve hastane ihtiyaç durumunda başvurabileceğimiz kurum ve kişilerdir. Arkadaşlar destek olabilir ama resmi kurum değildir."
-            }
-          },
-          {
-            "id": "q_01_04",
-            "type": "quiz",
-            "order": 4,
-            "content": {
               "questionType": "classical_order",
-              "question": "Bir sorunla karşılaştığımızda izlenmesi gereken adımları doğru sırayla diziniz.",
+              "question": "Algoritma adımlarının kesin ve sıralı olmasının zorunluluğu, bilgisayarın hangi temel özelliğinden kaynaklanmaktadır?",
               "answer_words": [
-                "Sorunu fark et",
-                "Doğru kurumu belirle",
-                "Başvuruda bulun",
-                "Çözümü takip et"
+                "Bilgisayar,",
+                "belirsiz talimatları",
+                "kendi başına",
+                "yorumlayıp",
+                "anlam çıkaramaz."
               ],
-              "model_answer": "Sorunu fark et → Doğru kurumu belirle → Başvuruda bulun → Çözümü takip et",
-              "hint": "Önce sorunu görmeli, sonra nereye gideceğimizi bilmeli, sonra gidip sonucu izlemeliyiz.",
-              "explanation": "Sorun çözme süreci: Önce sorunu fark ederiz, hangi kuruma gideceğimizi belirleriz, o kuruma başvururuz ve sonucu takip ederiz."
+              "model_answer": "Bilgisayar, belirsiz talimatları kendi başına yorumlayıp anlam çıkaramaz.",
+              "hint": "İnsan bir talimatı yorumlayabilir; bilgisayar yorumlayabilir mi?",
+              "explanation": "Bilgisayarlar mantıksal işlem yapar; belirsizliği insan gibi yorumlayamazlar. Bu nedenle her adımın kesin ve sıralı olması zorunludur; aksi hâlde bilgisayar hangi yolu izleyeceğini bilemez."
             }
           }
         ]
@@ -138,18 +121,38 @@
       {
         "id": "section_02",
         "order": 2,
-        "title": "Kamu Kurumları ve Görevleri",
-        "icon": "🏛️",
+        "title": "Girdi ve Çıktı: Problemin Bileşenleri",
+        "icon": "🔄",
         "content": [
           {
+            "id": "blk_004",
             "type": "markdown",
-            "body": "## Devletin Hizmet Kurumları\n\nDevlet, vatandaşların ihtiyaçlarını karşılamak için çeşitli kurumlar kurmuştur.\n\n### Temel Kamu Kurumları:\n\n| Kurum | Görev Alanı | Örnek Durum |\n|-------|-------------|-------------|\n| 🏥 **Hastane/Sağlık Ocağı** | Sağlık hizmetleri | Hastalandığımızda |\n| 🏫 **Okul/MEB** | Eğitim hizmetleri | Eğitim ihtiyaçlarımızda |\n| 🏛️ **Belediye** | Yerel hizmetler | Park, yol, temizlik sorunları |\n| 👮 **Polis/Jandarma** | Güvenlik | Güvenlik sorunlarında |\n| 🚒 **İtfaiye** | Yangın ve kurtarma | Yangın ve afet durumları |\n| 🚑 **Ambulans (112)** | Acil sağlık | Hayati tehlike durumları |\n\nBu kurumlar vatandaşlara ücretsiz veya düşük ücretli hizmet sunar."
+            "order": 1,
+            "content": {
+              "body": "## Girdi (Input) Nedir?\n\nBir problemi çözmek için sürece **verilen bilgiler veya değerlere** girdi denir.\n\nÖrnek: Bir hesap makinesiyle toplama yapıyorsun.\n- Girdi: 25 ve 17 sayıları\n\n## Çıktı (Output) Nedir?\n\nİşlem sonucunda **elde edilen sonuca** çıktı denir.\n\nÖrnek:\n- Çıktı: 42\n\n## Süreç (İşlem) Nedir?\n\nGirdileri çıktıya dönüştüren **işlemler topluluğudur**.\n\n| Bileşen | Açıklama | Örnek |\n|---------|----------|-------|\n| Girdi | Sürece giren bilgi | İki sayı |\n| İşlem | Yapılan hesaplama | Toplama |\n| Çıktı | Elde edilen sonuç | Toplam |"
+            }
           },
           {
+            "id": "blk_005",
+            "type": "image",
+            "order": 2,
+            "content": {
+              "svgCode": "<svg viewBox=\"0 0 600 200\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Arial, sans-serif\">\n  <defs>\n    <marker id=\"ok_saga\" markerWidth=\"10\" markerHeight=\"7\" refX=\"9\" refY=\"3.5\" orient=\"auto\">\n      <polygon points=\"0 0, 10 3.5, 0 7\" fill=\"#555\"/>\n    </marker>\n  </defs>\n  <text x=\"300\" y=\"30\" text-anchor=\"middle\" font-size=\"15\" font-weight=\"bold\" fill=\"#1e293b\">Girdi - İşlem - Çıktı Süreci</text>\n  <rect x=\"30\" y=\"60\" width=\"130\" height=\"70\" rx=\"10\" fill=\"#2563eb\"/>\n  <text x=\"95\" y=\"91\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"white\">GİRDİ</text>\n  <text x=\"95\" y=\"112\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">25 ve 17</text>\n  <line x1=\"160\" y1=\"95\" x2=\"215\" y2=\"95\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_saga)\"/>\n  <rect x=\"215\" y=\"60\" width=\"170\" height=\"70\" rx=\"10\" fill=\"#16a34a\"/>\n  <text x=\"300\" y=\"91\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"white\">İŞLEM</text>\n  <text x=\"300\" y=\"112\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">Toplama yapılır</text>\n  <line x1=\"385\" y1=\"95\" x2=\"440\" y2=\"95\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_saga)\"/>\n  <rect x=\"440\" y=\"60\" width=\"130\" height=\"70\" rx=\"10\" fill=\"#ea580c\"/>\n  <text x=\"505\" y=\"91\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"white\">ÇIKTI</text>\n  <text x=\"505\" y=\"112\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">42</text>\n  <text x=\"300\" y=\"170\" text-anchor=\"middle\" font-size=\"12\" fill=\"#64748b\">Girdi işleme girer, işlem sonucunda çıktı elde edilir.</text>\n</svg>",
+              "imageUrl": "",
+              "imagePrompt": "Girdi, işlem ve çıktı bileşenlerini gösteren soldan sağa akan oklu kutu diyagramı, 5. sınıf düzeyine uygun renkli ve sade",
+              "caption": "Bir problemin üç temel bileşeni: Girdi, İşlem ve Çıktı",
+              "altText": "Soldan sağa oklar ile bağlanmış üç renkli kutu: Mavi Girdi kutusu, Yeşil İşlem kutusu ve Turuncu Çıktı kutusu"
+            }
+          },
+          {
+            "id": "blk_006",
             "type": "misconception",
-            "wrong": "Belediyeye sadece belediye başkanını seçmek için gidilir.",
-            "correct": "Belediye başkanını seçmek için sandığa gideriz. Ama belediyeler park bakımı, yol onarımı, temizlik hizmetleri gibi günlük sorunlarımızda da başvurduğumuz kurumlardır.",
-            "tip": "Sokak lambası bozuksa, çöp kutusu dolmuşsa veya parkta sorun varsa belediyeye bildirebiliriz."
+            "order": 3,
+            "content": {
+              "wrong": "Girdi ve çıktı her zaman sayıdır.",
+              "correct": "Girdi ve çıktı; sayı, metin, ses, görüntü veya herhangi bir bilgi türü olabilir.",
+              "tip": "Klavyeden yazılan bir isim de girdi, ekrana yazdırılan sonuç da çıktıdır."
+            }
           }
         ],
         "quiz": [
@@ -159,31 +162,31 @@
             "order": 1,
             "content": {
               "questionType": "matching",
-              "question": "Kurumları görev alanlarıyla eşleştiriniz.",
+              "question": "Aşağıdaki kavramları doğru tanımlarıyla eşleştiriniz.",
               "pairs": [
                 {
-                  "id": "p1",
-                  "left": "Hastane",
-                  "right": "Sağlık hizmetleri sunar"
+                  "id": "p2_1",
+                  "left": "Girdi",
+                  "right": "Sürece sokulan ham bilgi"
                 },
                 {
-                  "id": "p2",
-                  "left": "Belediye",
-                  "right": "Park ve yol bakımı yapar"
+                  "id": "p2_2",
+                  "left": "Çıktı",
+                  "right": "İşlem sonucunda elde edilen sonuç"
                 },
                 {
-                  "id": "p3",
-                  "left": "Polis",
-                  "right": "Güvenliği sağlar"
+                  "id": "p2_3",
+                  "left": "İşlem",
+                  "right": "Girdileri çıktıya dönüştüren adımlar"
                 },
                 {
-                  "id": "p4",
-                  "left": "İtfaiye",
-                  "right": "Yangın söndürür"
+                  "id": "p2_4",
+                  "left": "Problem",
+                  "right": "Çözülmesi gereken durum veya soru"
                 }
               ],
-              "hint": "Her kurumun uzmanlık alanı farklıdır.",
-              "explanation": "Hastane sağlık, belediye yerel hizmetler, polis güvenlik, itfaiye yangın işleriyle ilgilenir. Doğru kuruma gitmek sorunumuzu hızlı çözer."
+              "hint": "Her bileşenin süreçteki rolünü düşün.",
+              "explanation": "Girdi ham veri, işlem dönüşüm süreci, çıktı ise sonuçtur. Problem ise çözülmeye ihtiyaç duyulan durumdur."
             }
           },
           {
@@ -191,22 +194,33 @@
             "type": "quiz",
             "order": 2,
             "content": {
-              "questionType": "fill_blank",
-              "question": "Sokaktaki çöp kutusunun dolu olduğunu fark ettiğimizde ________ kurumuna başvurmalıyız.",
-              "question_text": "Sokaktaki çöp kutusunun dolu olduğunu fark ettiğimizde ________ kurumuna başvurmalıyız.",
-              "acceptedAnswers": [
-                "belediye",
-                "belediyeye",
-                "yerel yönetim",
-                "çevre şehircilik"
+              "questionType": "multiple_choice",
+              "question": "Bir öğrenci not hesaplama programı yazıyor. Aşağıdakilerden hangileri bu programın girdisi olabilir?",
+              "options": [
+                {
+                  "id": "opt_2_02_1",
+                  "text": "Sınav notları"
+                },
+                {
+                  "id": "opt_2_02_2",
+                  "text": "Ödev notları"
+                },
+                {
+                  "id": "opt_2_02_3",
+                  "text": "Hesaplanan ortalama"
+                },
+                {
+                  "id": "opt_2_02_4",
+                  "text": "Öğrencinin adı"
+                }
               ],
-              "distractors": [
-                "hastane",
-                "polis",
-                "okul"
+              "correctOptionIds": [
+                "opt_2_02_1",
+                "opt_2_02_2",
+                "opt_2_02_4"
               ],
-              "hint": "Temizlik ve çevre düzenlemesi hangi kurumun görevidir?",
-              "explanation": "Çöp toplama ve çevre temizliği belediyenin görevidir. Belediyeye bildirerek çözüm talep edebiliriz."
+              "hint": "Programa verilen bilgileri düşün; hesaplanan değil, verilen bilgiler girdidir.",
+              "explanation": "Sınav notları, ödev notları ve öğrencinin adı programa verilir; bunlar girdidir. Hesaplanan ortalama ise işlem sonucunda elde edilen çıktıdır."
             }
           },
           {
@@ -214,29 +228,20 @@
             "type": "quiz",
             "order": 3,
             "content": {
-              "questionType": "single_choice",
-              "question": "Yangın çıktığında hangi numarayı aramalıyız?",
-              "options": [
-                {
-                  "id": "opt_02_03_a",
-                  "text": "110"
-                },
-                {
-                  "id": "opt_02_03_b",
-                  "text": "112"
-                },
-                {
-                  "id": "opt_02_03_c",
-                  "text": "110 (İtfaiye)"
-                },
-                {
-                  "id": "opt_02_03_d",
-                  "text": "155"
-                }
+              "questionType": "fill_blank",
+              "question": "Aşağıdaki cümledeki boşluğu uygun kavramla doldurunuz.",
+              "question_text": "Bir problemi çözen sistemde, sürece verilen bilgiler ________ olarak adlandırılır.",
+              "acceptedAnswers": [
+                "girdi",
+                "Girdi"
               ],
-              "correctOptionId": "opt_02_03_c",
-              "hint": "Yangın durumunda itfaiye yardımı gerekir. İtfaiye hangi numaradan aranır?",
-              "explanation": "Yangın durumunda 110'u arayarak itfaiyeye ulaşırız. 112 acil sağlık, 155 polis ihbar hattıdır."
+              "distractors": [
+                "çıktı",
+                "işlem",
+                "sonuç"
+              ],
+              "hint": "Bilgi sürece giriyor mu, yoksa çıkıyor mu?",
+              "explanation": "Sürece verilen bilgiler 'girdi' olarak adlandırılır. İşlem sonucunda elde edilen ise 'çıktı'dır."
             }
           },
           {
@@ -245,16 +250,17 @@
             "order": 4,
             "content": {
               "questionType": "classical_order",
-              "question": "Acil durumlarda yapılması gereken işlemleri doğru sırayla diziniz.",
+              "question": "Girdi ile çıktıyı birbirinden ayıran işlevsel farkı açıklayınız.",
               "answer_words": [
-                "Durumu değerlendir",
-                "Doğru acil numarayı ara",
-                "Adresi net söyle",
-                "Güvenli bölgede bekle"
+                "Girdi sürece",
+                "aktarılan ham",
+                "veridir; çıktı ise",
+                "işlem sonucunda",
+                "elde edilen sonuçtur."
               ],
-              "model_answer": "Durumu değerlendir → Doğru acil numarayı ara → Adresi net söyle → Güvenli bölgede bekle",
-              "hint": "Önce ne olduğunu anlamalı, sonra doğru yere haber vermeli, adresi söylemeli ve güvenli yerde beklemeliyiz.",
-              "explanation": "Acil durumlarda önce durumu anlarız, doğru numarayı ararız (110-itfaiye, 112-sağlık, 155-polis), adresi net söyleriz ve güvenli yerde yardımı bekleriz."
+              "model_answer": "Girdi sürece aktarılan ham veridir; çıktı ise işlem sonucunda elde edilen sonuçtur.",
+              "hint": "Biri sürece girer, diğeri süreçten çıkar.",
+              "explanation": "Girdi; sürece sokulan ham bilgidir. Çıktı ise bu bilginin işlenmesiyle ortaya çıkan sonuçtur. İkisi sürecin farklı uçlarını temsil eder."
             }
           }
         ]
@@ -262,20 +268,34 @@
       {
         "id": "section_03",
         "order": 3,
-        "title": "Sivil Toplum Kuruluşları",
-        "icon": "🤝",
+        "title": "Günlük Hayattan Problem Çözme Adımları",
+        "icon": "🧩",
         "content": [
           {
+            "id": "blk_007",
             "type": "markdown",
-            "body": "## Devlet Dışı Yardım Kuruluşları\n\nSadece devlet kurumları değil, sivil toplum kuruluşları da (STK) topluma hizmet eder.\n\n### Sivil Toplum Kuruluşları Örnekleri:\n\n- 🩸 **Türk Kızılay** - Kan bağışı, yardım çalışmaları\n- 🌙 **Türk Diyanet Vakfı** - Eğitim ve sosyal yardım\n- 🐾 **Hayvan Dernekleri** - Hayvan hakları ve koruma\n- ♿ **Engelli Dernekleri** - Engelli bireylere destek\n- 🌳 **Çevre Örgütleri** - Doğa koruma çalışmaları\n\n### STK'ların Özellikleri:\n- Gönüllülük esasına dayanır\n- Kar amacı gütmez\n- Toplum yararına çalışır\n- Herkes katkıda bulunabilir"
+            "order": 1,
+            "content": {
+              "body": "## Problemi Belirleme\n\nBir problemi çözmeden önce onu **doğru tanımlamalıyız**. İyi tanımlanmamış bir problem, doğru çözüme götürmez.\n\nBir problemi belirlerken şu soruları sorarız:\n- **Ne istiyoruz?** (Hedef nedir?)\n- **Elimizde ne var?** (Girdi nedir?)\n- **Ne elde edeceğiz?** (Çıktı nedir?)\n\n## Örnek: Sınıfın Sıralarını Düzenleme\n\n**Problem:** Sınıfın sıraları dağınık, öğretmen sıraları düzenlenmesini istiyor.\n\n| | |\n|---|---|\n| **Girdi** | Sıraların mevcut düzeni, istenilen düzen |\n| **İşlem** | Sıraları birer birer doğru konuma taşıma |\n| **Çıktı** | Düzenlenmiş sınıf |\n\n## Adımları Listeleme\n\nProblemi tanımladıktan sonra çözüm adımlarını yazarız:\n\n1. Mevcut düzeni incele.\n2. İstenilen düzeni belirle.\n3. İlk sırayı doğru konuma taşı.\n4. Diğer sıraları sırayla yerleştir.\n5. Son durumu kontrol et."
+            }
           },
           {
-            "type": "image",
-            "svgCode": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 300\"><rect fill=\"#f0f8ff\" width=\"400\" height=\"300\"/><circle cx=\"200\" cy=\"100\" r=\"60\" fill=\"#ff6b6b\" opacity=\"0.8\"/><text x=\"200\" y=\"105\" text-anchor=\"middle\" fill=\"white\" font-size=\"14\" font-family=\"Arial\">KAMU KURUMLARI</text><circle cx=\"100\" cy=\"200\" r=\"50\" fill=\"#4ecdc4\" opacity=\"0.8\"/><text x=\"100\" y=\"205\" text-anchor=\"middle\" fill=\"white\" font-size=\"11\" font-family=\"Arial\">SİVİL TOPLUM</text><circle cx=\"300\" cy=\"200\" r=\"50\" fill=\"#45b7d1\" opacity=\"0.8\"/><text x=\"300\" y=\"205\" text-anchor=\"middle\" fill=\"white\" font-size=\"11\" font-family=\"Arial\">VATANDAŞ</text><line x1=\"160\" y1=\"140\" x2=\"120\" y2=\"160\" stroke=\"#666\" stroke-width=\"2\"/><line x1=\"240\" y1=\"140\" x2=\"280\" y2=\"160\" stroke=\"#666\" stroke-width=\"2\"/><line x1=\"150\" y1=\"200\" x2=\"250\" y2=\"200\" stroke=\"#666\" stroke-width=\"2\"/><text x=\"200\" y=\"250\" text-anchor=\"middle\" fill=\"#333\" font-size=\"12\" font-family=\"Arial\">İş Birliği İle Sorunlar Çözülür</text></svg>",
-            "imageUrl": "",
-            "imagePrompt": "Üç daire içeren basit diyagram: ortada büyük kırmızı 'Kamu Kurumları', solda turkuaz 'Sivil Toplum', sağda mavi 'Vatandaş' daireleri, aralarında iş birliği çizgileri",
-            "caption": "Kamu kurumları, sivil toplum ve vatandaşlar iş birliği içinde çalışır.",
-            "altText": "Kamu kurumları, sivil toplum kuruluşları ve vatandaşlar arasındaki iş birliği diyagramı"
+            "id": "blk_008",
+            "type": "markdown",
+            "order": 2,
+            "content": {
+              "body": "## Farklı Problemlerden Örnekler\n\n### Örnek 1: Alışveriş Listesi\n- **Problem:** Markete gideceksin ama neyi alacağını bilmiyorsun.\n- **Girdi:** Buzdolabında ne var, ne yok?\n- **Çıktı:** Eksiksiz alışveriş listesi\n\n### Örnek 2: Kelime Oyunu\n- **Problem:** Bir kelimeyi tersine çevirmek istiyorsun.\n- **Girdi:** Orijinal kelime (örneğin \"araba\")\n- **Çıktı:** Tersine çevrilmiş kelime (\"abara\")\n\n### Örnek 3: Sınıf Nöbet Listesi\n- **Problem:** Sınıfın nöbet listesini adil biçimde oluşturmak\n- **Girdi:** Öğrenci adları ve gün sayısı\n- **Çıktı:** Günlük nöbet çizelgesi\n\n> **İpucu:** Her problemde önce \"Girdi nedir? Çıktı nedir?\" sorularını sor, sonra adımları belirle."
+            }
+          },
+          {
+            "id": "blk_009",
+            "type": "misconception",
+            "order": 3,
+            "content": {
+              "wrong": "Problemi çözmek için hemen yazmaya başlamalıyım; önce analiz yapmaya gerek yok.",
+              "correct": "Önce problemi iyi anlamak, girdi ve çıktıları belirlemek gerekir; ancak sonra çözüm adımları yazılır.",
+              "tip": "Aceleci başlamak, yanlış çözümlere ya da eksik algoritmalara yol açar."
+            }
           }
         ],
         "quiz": [
@@ -284,12 +304,29 @@
             "type": "quiz",
             "order": 1,
             "content": {
-              "questionType": "true_false",
-              "question": "Sivil toplum kuruluşları kar amacı güden şirketlerdir.",
-              "statement": "Sivil toplum kuruluşları kar amacı güden şirketlerdir.",
-              "correctAnswer": false,
-              "hint": "STK'ların temel amacı para kazanmak mı yoksa topluma yardım etmek mi?",
-              "explanation": "Yanlış! Sivil toplum kuruluşları (STK) kar amacı gütmeyen, toplum yararına çalışan gönüllü kuruluşlardır."
+              "questionType": "single_choice",
+              "question": "Bir öğrenci \"Kaç sorum var?\" diye soruyor ama elimizde soru listesi yok. Bu durumda algoritmayı çalıştırmak için önce ne yapılmalıdır?",
+              "options": [
+                {
+                  "id": "opt_3_01_1",
+                  "text": "Direkt cevap bulmaya çalışılmalı"
+                },
+                {
+                  "id": "opt_3_01_2",
+                  "text": "Girdi olan soru listesi temin edilmeli"
+                },
+                {
+                  "id": "opt_3_01_3",
+                  "text": "Çıktı tahmin edilmeli"
+                },
+                {
+                  "id": "opt_3_01_4",
+                  "text": "Algoritma gereksizdir, akılda tutulabilir"
+                }
+              ],
+              "correctOptionId": "opt_3_01_2",
+              "hint": "Girdi olmadan işlem yapılabilir mi?",
+              "explanation": "Girdi olmadan algoritma çalışamaz. Soru sayısını saymak için önce soru listesine ihtiyaç vardır. Bu durum girdinin zorunluluğunu gösterir."
             }
           },
           {
@@ -298,33 +335,33 @@
             "order": 2,
             "content": {
               "questionType": "ordering",
-              "question": "Kan bağışı sürecinin adımlarını doğru sıraya diziniz.",
+              "question": "Bir problemi çözmek için izlenmesi gereken aşamaları doğru sıraya koyunuz.",
               "items": [
                 {
-                  "id": "step_1",
-                  "text": "Kızılay merkezine git"
+                  "id": "ord_3_1",
+                  "text": "Problemi tanımla ve anla"
                 },
                 {
-                  "id": "step_2",
-                  "text": "Sağlık kontrolünden geç"
+                  "id": "ord_3_2",
+                  "text": "Girdi ve çıktıları belirle"
                 },
                 {
-                  "id": "step_3",
-                  "text": "Kan bağışı yap"
+                  "id": "ord_3_3",
+                  "text": "Çözüm adımlarını listele"
                 },
                 {
-                  "id": "step_4",
-                  "text": "Bağış belgesi al"
+                  "id": "ord_3_4",
+                  "text": "Adımları sınayarak doğrula"
                 }
               ],
               "correctOrder": [
-                "step_1",
-                "step_2",
-                "step_3",
-                "step_4"
+                "ord_3_1",
+                "ord_3_2",
+                "ord_3_3",
+                "ord_3_4"
               ],
-              "hint": "Önce merkeze gitmeli, sağlık kontrolü yapılmalı, sonra bağış ve belge alınmalı.",
-              "explanation": "Kan bağışı süreci: Kızılay merkezine gideriz, sağlık kontrolünden geçeriz, kanımızı bağışlarız ve bağış belgesi alırız."
+              "hint": "Önce anlamadan, girdi-çıktı bilmeden adım yazılabilir mi?",
+              "explanation": "Önce problemi anlamak, ardından girdi-çıktıları belirlemek ve çözüm adımlarını yazmak gerekir. Son aşamada algoritmayı test etmek doğruluğu sağlar."
             }
           },
           {
@@ -332,29 +369,12 @@
             "type": "quiz",
             "order": 3,
             "content": {
-              "questionType": "single_choice",
-              "question": "Hangi kuruluş doğal afetlerde (deprem, sel vb.) yardım çalışmaları yürütür?",
-              "options": [
-                {
-                  "id": "opt_03_03_a",
-                  "text": "Türk Kızılay"
-                },
-                {
-                  "id": "opt_03_03_b",
-                  "text": "Banka"
-                },
-                {
-                  "id": "opt_03_03_c",
-                  "text": "Market zinciri"
-                },
-                {
-                  "id": "opt_03_03_d",
-                  "text": "Restoran"
-                }
-              ],
-              "correctOptionId": "opt_03_03_a",
-              "hint": "Afetlerde çadır, gıda ve sağlık hizmeti sunan sivil toplum kuruluşu hangisidir?",
-              "explanation": "Türk Kızılay, afetlerde çadır kurma, gıda dağıtımı ve sağlık hizmetleri sunan en önemli sivil toplum kuruluşlarından biridir."
+              "questionType": "true_false",
+              "question": "Aşağıdaki ifadeyi doğru ya da yanlış olarak değerlendiriniz.",
+              "statement": "Bir problemin girdisi ve çıktısı belirlenmeden doğru işlem adımları yazılamaz.",
+              "correctAnswer": true,
+              "hint": "Nereye gideceğini bilmeden yol tarifi yapabilir misin?",
+              "explanation": "Girdi ve çıktı belirlenmeden işlem adımları yazılırsa algoritma eksik ya da yanlış olur. Girdinin ne olduğunu bilmeden neyin nasıl işleneceğini, çıktının ne olacağını bilmeden ise hedefe ulaşıp ulaşılmadığını belirleyemeyiz."
             }
           },
           {
@@ -362,51 +382,18 @@
             "type": "quiz",
             "order": 4,
             "content": {
-              "questionType": "multiple_choice",
-              "question": "Bir öğrenci olarak sivil toplum kuruluşlarına nasıl destek olabiliriz?",
-              "options": [
-                {
-                  "id": "opt_03_04_a",
-                  "text": "Kitap ve kıyafet bağışı yapmak"
-                },
-                {
-                  "id": "opt_03_04_b",
-                  "text": "Farkındalık etkinliklerine katılmak"
-                },
-                {
-                  "id": "opt_03_04_c",
-                  "text": "Para kazanmak için çalışmak"
-                },
-                {
-                  "id": "opt_03_04_d",
-                  "text": "Gönüllü faaliyetlere katılmak"
-                }
-              ],
-              "correctOptionIds": [
-                "opt_03_04_a",
-                "opt_03_04_b",
-                "opt_03_04_d"
-              ],
-              "hint": "Öğrencilerin yapabileceği gönüllü ve yardım faaliyetleri nelerdir?",
-              "explanation": "Öğrenciler olarak kitap bağışı, farkındalık etkinlikleri ve gönüllü çalışmalara katılarak STK'lara destek olabiliriz."
-            }
-          },
-          {
-            "id": "q_03_05",
-            "type": "quiz",
-            "order": 5,
-            "content": {
               "questionType": "classical_order",
-              "question": "STK'lardan yardım almak için izlenmesi gereken adımları sıralayınız.",
+              "question": "Bir tarif defterindeki yemek yapım talimatları algoritma tanımına uymaktadır; bu uyumun temel koşulu nedir?",
               "answer_words": [
-                "İhtiyacı belirle",
-                "Uygun STK'yı bul",
-                "Başvuru yap",
-                "Belgeleri teslim et"
+                "Her adımın",
+                "belirli bir sırayla",
+                "ve kesin biçimde",
+                "tanımlanmış olması",
+                "gerekmektedir."
               ],
-              "model_answer": "İhtiyacı belirle → Uygun STK'yı bul → Başvuru yap → Belgeleri teslim et",
-              "hint": "Önce neye ihtiyacımız olduğunu bilmeli, sonra doğru kurumu bulup başvurmalıyız.",
-              "explanation": "STK'lardan yardım almak için önce ihtiyacımızı belirleriz, bize yardımcı olabilecek STK'yı buluruz, başvuru yapar ve gerekli belgeleri teslim ederiz."
+              "model_answer": "Her adımın belirli bir sırayla ve kesin biçimde tanımlanmış olması gerekmektedir.",
+              "hint": "Tarif ile algoritmayı buluşturan ortak özelliği düşün.",
+              "explanation": "Bir tarif; malzeme miktarlarını, işlem sırasını ve beklenen sonucu net biçimde veriyorsa algoritma tanımına uyar. Belirsiz ifadeler bu uyumu bozar."
             }
           }
         ]
@@ -414,18 +401,36 @@
       {
         "id": "section_04",
         "order": 4,
-        "title": "Bilgi Kaynakları ve Doğrulama",
-        "icon": "📚",
+        "title": "Akış Şeması: Algoritmaları Görselleştirme",
+        "icon": "📊",
         "content": [
           {
+            "id": "blk_010",
             "type": "markdown",
-            "body": "## Doğru Bilgiye Nasıl Ulaşırız?\n\nBir kurum hakkında bilgi edinmek için birçok kaynak kullanabiliriz.\n\n### Bilgi Kaynakları:\n\n1. **Resmi İnternet Siteleri**\n   - Devlet kurumlarının .gov.tr uzantılı siteleri\n   - Belediye web siteleri\n   - Güncel ve güvenilir bilgi kaynağı\n\n2. **Alo Hattı ve Çağrı Merkezleri**\n   - 112 (Acil)\n   - 153 (Belediye)\n   - 184 (Sağlık Danışma)\n\n3. **Yüz Yüze Başvuru**\n   - Kurum binasına gitmek\n   - Doğrudan yetkililere sormak\n\n4. **Rehberler ve Broşürler**\n   - Okuldan dağıtılan bilgi materyalleri\n   - Kamu spotları ve duyurular"
+            "order": 1,
+            "content": {
+              "body": "## Akış Şeması Nedir?\n\nAkış şeması, bir algoritmanın adımlarını **şekil ve oklarla görsel olarak gösteren diyagramdır**.\n\nAkış şeması sayesinde:\n- Algoritmanın akışını bir bakışta görebiliriz.\n- Hataları daha kolay bulabiliriz.\n- Başkalarına algoritmamızı daha açık anlatırız.\n\n## Temel Akış Şeması Sembolleri\n\n| Sembol | Şekil | Anlamı |\n|--------|-------|--------|\n| Başla/Bitir | Oval/Yuvarlak köşeli dikdörtgen | Algoritmanın başlangıcı ve sonu |\n| İşlem | Dikdörtgen | Gerçekleştirilen işlem |\n| Karar | Eşkenar dörtgen (baklava) | Evet/Hayır sorusu |\n| Veri | Paralelkenar | Girdi veya çıktı |\n| Ok | Yönlü çizgi | Akışın yönü |"
+            }
           },
           {
-            "type": "misconception",
-            "wrong": "İnternette gördüğümüz her bilgi doğrudur, hemen inanmalıyız.",
-            "correct": "İnternetteki bilgilerin doğruluğunu kontrol etmeliyiz. Resmi kurum siteleri ve uzman kaynaklar daha güvenilirdir.",
-            "tip": "Bilgiyi en az iki farklı güvenilir kaynaktan doğrulamaya çalışın."
+            "id": "blk_011",
+            "type": "image",
+            "order": 2,
+            "content": {
+              "svgCode": "<svg viewBox=\"0 0 340 480\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Arial, sans-serif\">\n  <defs>\n    <marker id=\"ok_asagi\" markerWidth=\"7\" markerHeight=\"10\" refX=\"3.5\" refY=\"9\" orient=\"auto\">\n      <polygon points=\"0 0, 7 0, 3.5 10\" fill=\"#555\"/>\n    </marker>\n  </defs>\n  <text x=\"170\" y=\"28\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"bold\" fill=\"#1e293b\">Akış Şeması Sembolleri</text>\n  <rect x=\"70\" y=\"45\" width=\"200\" height=\"40\" rx=\"20\" fill=\"#2563eb\"/>\n  <text x=\"170\" y=\"70\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"bold\" fill=\"white\">BAŞLA / BİTİR (Oval)</text>\n  <line x1=\"170\" y1=\"85\" x2=\"170\" y2=\"108\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <rect x=\"70\" y=\"108\" width=\"200\" height=\"40\" rx=\"4\" fill=\"#16a34a\"/>\n  <text x=\"170\" y=\"133\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"bold\" fill=\"white\">İŞLEM (Dikdörtgen)</text>\n  <line x1=\"170\" y1=\"148\" x2=\"170\" y2=\"171\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <polygon points=\"170,171 270,211 170,251 70,211\" fill=\"#ea580c\"/>\n  <text x=\"170\" y=\"208\" text-anchor=\"middle\" font-size=\"11\" font-weight=\"bold\" fill=\"white\">KARAR</text>\n  <text x=\"170\" y=\"225\" text-anchor=\"middle\" font-size=\"10\" fill=\"white\">(Baklava Dilimi)</text>\n  <line x1=\"170\" y1=\"251\" x2=\"170\" y2=\"274\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <polygon points=\"70,274 270,274 250,314 90,314\" fill=\"#7c3aed\"/>\n  <text x=\"170\" y=\"299\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"bold\" fill=\"white\">VERİ (Paralelkenar)</text>\n  <line x1=\"170\" y1=\"314\" x2=\"170\" y2=\"337\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <line x1=\"100\" y1=\"350\" x2=\"240\" y2=\"350\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <text x=\"170\" y=\"370\" text-anchor=\"middle\" font-size=\"12\" fill=\"#1e293b\">OK: Akış Yönü</text>\n  <text x=\"170\" y=\"400\" text-anchor=\"middle\" font-size=\"11\" fill=\"#64748b\">Her sembol algoritmanın farklı</text>\n  <text x=\"170\" y=\"418\" text-anchor=\"middle\" font-size=\"11\" fill=\"#64748b\">bir aşamasını temsil eder.</text>\n  <text x=\"170\" y=\"460\" text-anchor=\"middle\" font-size=\"10\" fill=\"#94a3b8\">Semboller, standart akış şeması kurallarına göredir.</text>\n</svg>",
+              "imageUrl": "",
+              "imagePrompt": "Akış şeması sembollerini gösteren, oval başla/bitir, dikdörtgen işlem, baklava dilimi karar ve paralelkenar veri sembollerini içeren eğitsel diyagram",
+              "caption": "Temel akış şeması sembolleri ve anlamları",
+              "altText": "Akış şemasında kullanılan semboller: Mavi oval Başla/Bitir, Yeşil dikdörtgen İşlem, Turuncu baklava dilimi Karar, Mor paralelkenar Veri, Ok Akış Yönü"
+            }
+          },
+          {
+            "id": "blk_012",
+            "type": "markdown",
+            "order": 3,
+            "content": {
+              "body": "## Örnek: Sayının Çift mi Tek mi Olduğunu Bulma\n\nBu algoritma, girilen bir sayının çift mi tek mi olduğunu belirler.\n\n**Girdi:** Bir sayı (örneğin 8)\n**Çıktı:** \"Çift\" veya \"Tek\" bilgisi\n\nAkış şeması adımları:\n1. **Başla**\n2. Sayıyı al (Girdi)\n3. Sayı 2'ye tam bölünüyor mu? (Karar)\n   - **Evet** → \"Çift sayıdır\" yaz\n   - **Hayır** → \"Tek sayıdır\" yaz\n4. **Bitir**\n\nGördüğün gibi karar noktaları algoritmada iki farklı yol oluşturabilir. Akış şeması bunu görsel olarak net şekilde gösterir."
+            }
           }
         ],
         "quiz": [
@@ -434,32 +439,29 @@
             "type": "quiz",
             "order": 1,
             "content": {
-              "questionType": "matching",
-              "question": "İletişim kanallarını amaçlarıyla eşleştiriniz.",
-              "pairs": [
+              "questionType": "single_choice",
+              "question": "Akış şemasında bir karar noktası hangi sembolle gösterilir?",
+              "options": [
                 {
-                  "id": "p1",
-                  "left": "112",
-                  "right": "Acil sağlık ve yardım"
+                  "id": "opt_4_01_1",
+                  "text": "Dikdörtgen"
                 },
                 {
-                  "id": "p2",
-                  "left": "153",
-                  "right": "Belediye hizmetleri"
+                  "id": "opt_4_01_2",
+                  "text": "Oval"
                 },
                 {
-                  "id": "p3",
-                  "left": "Resmi web sitesi",
-                  "right": "Güncel bilgi ve duyurular"
+                  "id": "opt_4_01_3",
+                  "text": "Baklava dilimi (eşkenar dörtgen)"
                 },
                 {
-                  "id": "p4",
-                  "left": "Kuruma gitmek",
-                  "right": "Yüz yüze danışma"
+                  "id": "opt_4_01_4",
+                  "text": "Paralelkenar"
                 }
               ],
-              "hint": "Her iletişim kanalının farklı bir kullanım amacı vardır.",
-              "explanation": "112 acil durumlar için, 153 belediye için, resmi siteler güncel bilgi için, kuruma gitmek ise yüz yüze danışma içindir."
+              "correctOptionId": "opt_4_01_3",
+              "hint": "Evet/Hayır sorusu soran sembolü düşün.",
+              "explanation": "Karar noktaları, iki farklı yol arasında seçim yapıldığını gösterir ve baklava dilimi (eşkenar dörtgen) şekliyle temsil edilir."
             }
           },
           {
@@ -467,22 +469,33 @@
             "type": "quiz",
             "order": 2,
             "content": {
-              "questionType": "fill_blank",
-              "question": "Bir kurum hakkında bilgi edinirken en güvenilir kaynak o kurumun ________ uzantılı resmi internet sitesidir.",
-              "question_text": "Bir kurum hakkında bilgi edinirken en güvenilir kaynak o kurumun ________ uzantılı resmi internet sitesidir.",
-              "acceptedAnswers": [
-                "gov.tr",
-                ".gov.tr",
-                "resmi",
-                "kurumsal"
+              "questionType": "multiple_choice",
+              "question": "Akış şemasının sağladığı avantajlar arasında aşağıdakilerden hangileri yer alır?",
+              "options": [
+                {
+                  "id": "opt_4_02_1",
+                  "text": "Algoritmanın akışını görsel olarak gösterir"
+                },
+                {
+                  "id": "opt_4_02_2",
+                  "text": "Hataları bulmayı kolaylaştırır"
+                },
+                {
+                  "id": "opt_4_02_3",
+                  "text": "Algoritmayı otomatik olarak çalıştırır"
+                },
+                {
+                  "id": "opt_4_02_4",
+                  "text": "Başkalarına açıklamayı kolaylaştırır"
+                }
               ],
-              "distractors": [
-                "com",
-                "net",
-                "org"
+              "correctOptionIds": [
+                "opt_4_02_1",
+                "opt_4_02_2",
+                "opt_4_02_4"
               ],
-              "hint": "Devlet kurumlarının resmi sitesini nasıl anlarız?",
-              "explanation": "Devlet kurumlarının resmi siteleri genellikle .gov.tr uzantılıdır. Bu uzantıya sahip siteler daha güvenilirdir."
+              "hint": "Akış şeması bir program değildir; bir gösterim aracıdır.",
+              "explanation": "Akış şeması algoritmayı görselleştirerek anlamayı, hata bulmayı ve paylaşmayı kolaylaştırır. Ancak bir program değildir; algoritmayı kendisi çalıştırmaz."
             }
           },
           {
@@ -490,29 +503,12 @@
             "type": "quiz",
             "order": 3,
             "content": {
-              "questionType": "single_choice",
-              "question": "Bir bilginin doğruluğundan emin olmak için ne yapmalıyız?",
-              "options": [
-                {
-                  "id": "opt_04_03_a",
-                  "text": "Sadece sosyal medyadan bakmak yeterlidir"
-                },
-                {
-                  "id": "opt_04_03_b",
-                  "text": "En az iki farklı güvenilir kaynaktan kontrol etmeliyiz"
-                },
-                {
-                  "id": "opt_04_03_c",
-                  "text": "Arkadaşlarımız ne diyorsa ona inanmalıyız"
-                },
-                {
-                  "id": "opt_04_03_d",
-                  "text": "İlk gördüğümüz kaynağı hemen kabul etmeliyiz"
-                }
-              ],
-              "correctOptionId": "opt_04_03_b",
-              "hint": "Doğrulama için tek kaynak yeterli midir?",
-              "explanation": "Bilgilerin doğruluğundan emin olmak için en az iki farklı güvenilir kaynaktan kontrol etmek gerekir."
+              "questionType": "true_false",
+              "question": "Aşağıdaki ifadeyi doğru ya da yanlış olarak değerlendiriniz.",
+              "statement": "Akış şemasında karar sembolünden yalnızca bir yol çıkabilir.",
+              "correctAnswer": false,
+              "hint": "Karar sembolü 'Evet' ve 'Hayır' gibi iki olasılığı temsil eder.",
+              "explanation": "Karar sembolünden iki yol çıkar: 'Evet' ve 'Hayır' (veya Doğru/Yanlış). Bu, algoritmanın koşula göre farklı yollar izleyebildiğini gösterir."
             }
           },
           {
@@ -521,16 +517,18 @@
             "order": 4,
             "content": {
               "questionType": "classical_order",
-              "question": "Kurum hakkında bilgi toplarken izlenmesi gereken adımları sıralayınız.",
+              "question": "Akış şemasının doğru işlev görmesinin hangi koşulun sağlanmasına bağlı olduğunu açıklayınız.",
               "answer_words": [
-                "Kaynağı belirle",
-                "Bilgiyi topla",
-                "Farklı kaynaklardan doğrula",
-                "Not al ve kaydet"
+                "Her sembolün",
+                "doğru yerde kullanılması",
+                "ve okların",
+                "akış yönünü",
+                "eksiksiz göstermesi",
+                "gerekmektedir."
               ],
-              "model_answer": "Kaynağı belirle → Bilgiyi topla → Farklı kaynaklardan doğrula → Not al ve kaydet",
-              "hint": "Önce nereden bakacağımızı seçmeli, sonra bilgiyi alıp başka yerden teyit etmeli ve kaydetmeliyiz.",
-              "explanation": "Bilgi toplama süreci: Kaynağı belirleriz, bilgiyi toplarız, farklı kaynaklardan doğrularız ve kaydederiz."
+              "model_answer": "Her sembolün doğru yerde kullanılması ve okların akış yönünü eksiksiz göstermesi gerekmektedir.",
+              "hint": "Yanlış sembol veya eksik ok ne anlama gelir?",
+              "explanation": "Akış şemasında her sembol belirli bir anlamı temsil eder. Yanlış sembol kullanılırsa şema yanıltıcı olur. Oklar olmadan akışın hangi yönde ilerlediği anlaşılamaz. Bu nedenle her ikisi de eksiksiz olmalıdır."
             }
           }
         ]
@@ -538,12 +536,24 @@
       {
         "id": "section_05",
         "order": 5,
-        "title": "Özet ve Değerlendirme",
-        "icon": "📝",
+        "title": "Genel Değerlendirme ve Pekiştirme",
+        "icon": "🏆",
         "content": [
           {
+            "id": "blk_013",
             "type": "markdown",
-            "body": "## Öğrendiklerimizi Tekrar Edelim\n\nBu ünitede öğrendiklerimiz:\n\n### Ana Kavramlar:\n\n1. **İhtiyaç ve Sorun Durumları**\n   - Günlük hayatta farklı sorunlarla karşılaşabiliriz\n   - Her sorun için doğru kurum vardır\n\n2. **Başvurulabilecek Kurumlar**\n   - **Kamu Kurumları**: Hastane, polis, belediye, itfaiye\n   - **Sivil Toplum Kuruluşları**: Kızılay, vakıflar, dernekler\n   - **Eğitim Kurumları**: Okul, rehberlik servisi\n\n3. **Bilgi Toplama ve Doğrulama**\n   - Resmi kaynakları kullanmak\n   - Bilgiyi doğrulamak\n   - Not almak ve kaydetmek\n\n### Unutma!\nDoğru kuruma başvurmak, sorunlarımızı daha hızlı ve etkili çözmemizi sağlar."
+            "order": 1,
+            "content": {
+              "body": "## Öğrendiklerimizi Birleştirelim\n\nBu derste aşağıdaki temel kavramları öğrendik:\n\n### 1. Problem Belirleme\nGünlük hayattan bir problemi fark etmek ve net biçimde tanımlamak.\n\n### 2. Girdi ve Çıktı Belirleme\nProblemin çözümüne neyin girdiğini ve sonuçta neyin elde edildiğini belirlemek.\n\n### 3. İşlem Adımlarını Listeleme\nProblemi çözen sıralı, kesin ve sonlu adımları yazmak.\n\n### 4. Akış Şeması\nAlgoritmayı semboller ve oklarla görselleştirmek.\n\n## Tüm Sürecin Özeti\n\n**Problem → Girdi/Çıktı Belirleme → Algoritma → Akış Şeması**\n\nBu dört adım, bir sorunu bilgisayara çözdürmek için gereken temel süreçtir. Yazılım geliştiriciler her gün bu adımları izler."
+            }
+          },
+          {
+            "id": "blk_014",
+            "type": "markdown",
+            "order": 2,
+            "content": {
+              "body": "## Uygulama: Kapsamlı Bir Örnek\n\n**Problem:** Öğrencinin sınav ortalamasını hesapla ve geçip geçmediğini belirle.\n\n**Girdi:**\n- Sınav 1 notu\n- Sınav 2 notu\n\n**Çıktı:**\n- Ortalama\n- Geçti / Kaldı bilgisi\n\n**Algoritma Adımları:**\n1. Sınav 1 ve Sınav 2 notlarını al.\n2. İki notu topla.\n3. Toplamı 2'ye böl (ortalama).\n4. Ortalama 50'den büyük veya eşit mi?\n   - Evet: \"Geçti\" yaz.\n   - Hayır: \"Kaldı\" yaz.\n5. Bitir.\n\n**Fark Ettiniz mi?**\nBu örnekte bir karar noktası var. Akış şemasında bu noktada baklava dilimi sembolü kullanılır ve iki farklı yol ortaya çıkar."
+            }
           }
         ],
         "quiz": [
@@ -552,34 +562,29 @@
             "type": "quiz",
             "order": 1,
             "content": {
-              "questionType": "multiple_choice",
-              "question": "Aşağıdaki durumlarda hangi kurumlara başvurulabilir? (Çoklu seçim)",
+              "questionType": "single_choice",
+              "question": "Problem belirleme aşamasında öncelikle yapılması gereken nedir?",
               "options": [
                 {
-                  "id": "opt_05_01_a",
-                  "text": "Hastalandığında - Hastane"
+                  "id": "opt_5_01_1",
+                  "text": "Akış şeması çizmek"
                 },
                 {
-                  "id": "opt_05_01_b",
-                  "text": "Park bozuksa - Belediye"
+                  "id": "opt_5_01_2",
+                  "text": "Çözüm adımlarını yazmak"
                 },
                 {
-                  "id": "opt_05_01_c",
-                  "text": "Okul sorunu - Öğretmen"
+                  "id": "opt_5_01_3",
+                  "text": "Problemi net olarak tanımlamak"
                 },
                 {
-                  "id": "opt_05_01_d",
-                  "text": "Yangın varsa - İtfaiye"
+                  "id": "opt_5_01_4",
+                  "text": "Çıktıyı tahmin etmek"
                 }
               ],
-              "correctOptionIds": [
-                "opt_05_01_a",
-                "opt_05_01_b",
-                "opt_05_01_c",
-                "opt_05_01_d"
-              ],
-              "hint": "Tüm seçenekler doğru eşleştirilmiş mi kontrol et.",
-              "explanation": "Tüm seçenekler doğrudur. Hastane sağlık, belediye yerel hizmetler, öğretmen eğitim, itfaiye yangın durumlarında başvurulacak kurumlardır."
+              "correctOptionId": "opt_5_01_3",
+              "hint": "Neyi çözmeye çalıştığını bilmeden nasıl çözebilirsin?",
+              "explanation": "Problem belirleme aşamasının ilk ve en önemli adımı, problemi doğru ve net biçimde tanımlamaktır. Tanım olmadan diğer adımlar sağlıklı yürütülemez."
             }
           },
           {
@@ -587,34 +592,20 @@
             "type": "quiz",
             "order": 2,
             "content": {
-              "questionType": "ordering",
-              "question": "Sorun çözme adımlarını mantıksal sıraya diziniz.",
-              "items": [
-                {
-                  "id": "step_1",
-                  "text": "Sorunu tanımla"
-                },
-                {
-                  "id": "step_2",
-                  "text": "Uygun kurumu seç"
-                },
-                {
-                  "id": "step_3",
-                  "text": "Başvuruyu yap"
-                },
-                {
-                  "id": "step_4",
-                  "text": "Sonucu değerlendir"
-                }
+              "questionType": "fill_blank",
+              "question": "Aşağıdaki cümledeki boşluğu uygun kavramla doldurunuz.",
+              "question_text": "Algoritmanın adımlarını şekil ve oklarla görsel olarak gösteren diyagrama ________ denir.",
+              "acceptedAnswers": [
+                "akış şeması",
+                "akış şeması"
               ],
-              "correctOrder": [
-                "step_1",
-                "step_2",
-                "step_3",
-                "step_4"
+              "distractors": [
+                "algoritma",
+                "girdi",
+                "karar tablosu"
               ],
-              "hint": "Önce sorunu anlamalı, sonra nereye gideceğimizi seçmeli, başvurmalı ve sonucu görmeliyiz.",
-              "explanation": "Sorun çözme adımları: Sorunu tanımlarız, uygun kurumu seçeriz, başvuruyu yaparız ve sonucu değerlendiririz."
+              "hint": "Bu diyagramda semboller ve oklar birlikte kullanılır.",
+              "explanation": "Akış şeması, bir algoritmanın adımlarını görsel olarak ifade eden ve standart semboller kullanan bir diyagramdır."
             }
           },
           {
@@ -622,12 +613,39 @@
             "type": "quiz",
             "order": 3,
             "content": {
-              "questionType": "true_false",
-              "question": "Sivil toplum kuruluşlarına sadece yetişkinler katılabilir, çocuklar katkıda bulunamaz.",
-              "statement": "Sivil toplum kuruluşlarına sadece yetişkinler katılabilir, çocuklar katkıda bulunamaz.",
-              "correctAnswer": false,
-              "hint": "Çocuklar olarak bizim de yapabileceğimiz yardım faaliyetleri var mı?",
-              "explanation": "Yanlış! Çocuklar da kitap bağışı, farkındalık etkinlikleri gibi yöntemlerle STK'lara katkıda bulunabilir."
+              "questionType": "ordering",
+              "question": "Problem çözme sürecinin aşamalarını baştan sona doğru sıralayınız.",
+              "items": [
+                {
+                  "id": "ord_5_1",
+                  "text": "Problemi tanımla"
+                },
+                {
+                  "id": "ord_5_2",
+                  "text": "Girdi ve çıktıları belirle"
+                },
+                {
+                  "id": "ord_5_3",
+                  "text": "Çözüm adımlarını listele (Algoritma)"
+                },
+                {
+                  "id": "ord_5_4",
+                  "text": "Akış şeması çiz"
+                },
+                {
+                  "id": "ord_5_5",
+                  "text": "Algoritmayı test et"
+                }
+              ],
+              "correctOrder": [
+                "ord_5_1",
+                "ord_5_2",
+                "ord_5_3",
+                "ord_5_4",
+                "ord_5_5"
+              ],
+              "hint": "Görselleştirme mi önce, yoksa adım yazma mı?",
+              "explanation": "Önce problem tanımlanır, girdi-çıktılar belirlenir, algoritma yazılır, akış şeması çizilir ve son olarak test edilir. Bu sıralama, sağlıklı bir çözüm süreci için gereklidir."
             }
           },
           {
@@ -635,29 +653,32 @@
             "type": "quiz",
             "order": 4,
             "content": {
-              "questionType": "single_choice",
-              "question": "Bir bilginin doğruluğunu teyit etmek için en iyi yöntem hangisidir?",
-              "options": [
+              "questionType": "matching",
+              "question": "Aşağıdaki kavramları doğru açıklamalarıyla eşleştiriniz.",
+              "pairs": [
                 {
-                  "id": "opt_05_04_a",
-                  "text": "Sosyal medyada görmek"
+                  "id": "p5_1",
+                  "left": "Problem",
+                  "right": "Çözülmesi hedeflenen durum veya soru"
                 },
                 {
-                  "id": "opt_05_04_b",
-                  "text": "Resmi kurum sitesinden kontrol etmek"
+                  "id": "p5_2",
+                  "left": "Algoritma",
+                  "right": "Adım adım, sıralı çözüm yolu"
                 },
                 {
-                  "id": "opt_05_04_c",
-                  "text": "Arkadaş söyledi diye inanmak"
+                  "id": "p5_3",
+                  "left": "Akış şeması",
+                  "right": "Algoritmanın sembollerle gösterimi"
                 },
                 {
-                  "id": "opt_05_04_d",
-                  "text": "Televizyonda duymak"
+                  "id": "p5_4",
+                  "left": "Çıktı",
+                  "right": "İşlem sonucunda elde edilen sonuç"
                 }
               ],
-              "correctOptionId": "opt_05_04_b",
-              "hint": "En güvenilir bilgi kaynağı hangisidir?",
-              "explanation": "Resmi kurum siteleri en güvenilir bilgi kaynaklarıdır. .gov.tr uzantılı siteler devlet kurumlarına aittir."
+              "hint": "Her kavramın süreçteki rolünü düşün.",
+              "explanation": "Problem çözülmesi gereken durumu, algoritma adım adım çözüm yolunu, akış şeması bu yolun görsel gösterimini, çıktı ise sürecin sonucunu ifade eder."
             }
           },
           {
@@ -666,16 +687,18 @@
             "order": 5,
             "content": {
               "questionType": "classical_order",
-              "question": "İhtiyaç durumunda başvuru yapılabilecek kurumlar hakkında bilgi toplama sürecini sıralayınız.",
+              "question": "Girdi, işlem ve çıktı ögelerinin bir arada bulunması ile birlikte akış şemasıyla görselleştirilmesi, bir algoritmanın hangi iki temel gereksinimini karşılamaktadır?",
               "answer_words": [
-                "Kaynakları belirle",
-                "Bilgileri topla",
-                "Ulaştığın bilgileri doğrula",
-                "Bilgileri kaydet"
+                "Bu ögeler algoritmayı",
+                "hem işlevsel hem de",
+                "anlaşılır ve",
+                "doğrulanabilir bir",
+                "çözüm bütününe",
+                "dönüştürmektedir."
               ],
-              "model_answer": "Kaynakları belirle → Bilgileri topla → Ulaştığın bilgileri doğrula → Bilgileri kaydet",
-              "hint": "Kazanımlarımızı hatırla: önce kaynakları belirle, sonra bilgileri bul, doğrula ve kaydet.",
-              "explanation": "Kazanımlarımıza göre süreç: Kaynakları belirleriz, bilgileri toplarız, ulaştığımız bilgileri doğrularız ve kaydederiz."
+              "model_answer": "Bu ögeler algoritmayı hem işlevsel hem de anlaşılır ve doğrulanabilir bir çözüm bütününe dönüştürmektedir.",
+              "hint": "Biri algoritmayı çalışır kılar, diğeri anlaşılır ve test edilebilir kılar.",
+              "explanation": "Girdi-işlem-çıktı bütünü algoritmayı işlevsel yapar. Akış şeması ise algoritmanın anlaşılmasını ve test edilmesini kolaylaştırır. İkisi birlikte eksiksiz bir çözüm süreci oluşturur."
             }
           }
         ]
@@ -688,9 +711,9 @@
         "type": "review_section",
         "content": [],
         "quiz_refs": [
-          "q_01_04",
+          "q_01_03",
           "q_02_04",
-          "q_03_05",
+          "q_03_04",
           "q_04_04",
           "q_05_05"
         ]

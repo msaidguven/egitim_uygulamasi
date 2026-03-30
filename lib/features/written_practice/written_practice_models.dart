@@ -124,6 +124,7 @@ class QuestionAttempt {
   List<String> placedWords;
   AnswerStatus status;
   int revealedHintCount; // kaç kelime ipucu olarak açıldı
+  int incorrectAttempts;
 
   QuestionAttempt({
     required this.question,
@@ -131,10 +132,14 @@ class QuestionAttempt {
     this.placedWords = const [],
     this.status = AnswerStatus.unanswered,
     this.revealedHintCount = 0,
+    this.incorrectAttempts = 0,
   });
 
   bool get isComplete => placedWords.length == shuffledWords.length;
   bool get hasHint => revealedHintCount > 0;
+  bool get isFirstTryCorrect =>
+      status == AnswerStatus.correct && incorrectAttempts == 0;
+  bool get countsAsIncorrect => incorrectAttempts > 0;
   bool get allHintsRevealed {
     final total = question.classical?.answerWords.length ?? 0;
     return revealedHintCount >= total;
@@ -158,13 +163,12 @@ class WrittenSession {
   WrittenSession({required this.attempts, this.currentIndex = 0});
 
   QuestionAttempt get current => attempts[currentIndex];
+  bool get hasPrevious => currentIndex > 0;
   bool get isLast => currentIndex == attempts.length - 1;
   int get totalQuestions => attempts.length;
-  int get correctCount =>
-      attempts.where((a) => a.status == AnswerStatus.correct).length;
-  int get incorrectCount =>
-      attempts.where((a) => a.status == AnswerStatus.incorrect).length;
+  int get correctCount => attempts.where((a) => a.isFirstTryCorrect).length;
+  int get incorrectCount => attempts.where((a) => a.countsAsIncorrect).length;
   int get totalScore => attempts
-      .where((a) => a.status == AnswerStatus.correct)
+      .where((a) => a.isFirstTryCorrect)
       .fold(0, (sum, a) => sum + a.question.score);
 }

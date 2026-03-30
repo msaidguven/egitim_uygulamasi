@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'written_practice_models.dart';
 import 'written_practice_repository.dart';
 
 final _repo = WrittenPracticeRepository.instance;
+const _writtenPracticeTextScaleKey = 'written_practice_text_scale';
 
 // ── Data providers ─────────────────────────────────────────────────────────
 
@@ -28,6 +30,11 @@ final selectedTopicIdsProvider = StateProvider<Set<int>>((_) => {});
 final writtenSessionProvider =
     StateNotifierProvider<WrittenSessionNotifier, WrittenSession?>(
       (_) => WrittenSessionNotifier(),
+    );
+
+final writtenPracticeTextScaleProvider =
+    StateNotifierProvider<WrittenPracticeTextScaleNotifier, double>(
+      (_) => WrittenPracticeTextScaleNotifier(),
     );
 
 class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
@@ -71,6 +78,9 @@ class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
     if (!attempt.isComplete) return;
 
     final isCorrect = attempt.checkAnswer();
+    if (!isCorrect) {
+      attempt.incorrectAttempts++;
+    }
     attempt.status = isCorrect ? AnswerStatus.correct : AnswerStatus.incorrect;
     state = _copySession(session);
   }
@@ -109,7 +119,27 @@ class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
   void nextQuestion() {
     final session = state;
     if (session == null || session.isLast) return;
+    if (session.current.status != AnswerStatus.correct) return;
     session.currentIndex++;
+    state = _copySession(session);
+  }
+
+  void previousQuestion() {
+    final session = state;
+    if (session == null || !session.hasPrevious) return;
+    session.currentIndex--;
+    state = _copySession(session);
+  }
+
+  void retryCurrentQuestion() {
+    final session = state;
+    if (session == null) return;
+
+    final attempt = session.current;
+    attempt.placedWords = [];
+    attempt.status = AnswerStatus.unanswered;
+    attempt.revealedHintCount = 0;
+    attempt.shuffledWords.shuffle();
     state = _copySession(session);
   }
 
@@ -118,4 +148,33 @@ class WrittenSessionNotifier extends StateNotifier<WrittenSession?> {
   // Force Riverpod to detect change (WrittenSession is mutable)
   WrittenSession _copySession(WrittenSession s) =>
       WrittenSession(attempts: s.attempts, currentIndex: s.currentIndex);
+}
+
+class WrittenPracticeTextScaleNotifier extends StateNotifier<double> {
+  WrittenPracticeTextScaleNotifier() : super(1.0) {
+    _load();
+  }
+
+  static const double _minScale = 0.85;
+  static const double _maxScale = 4.0;
+  static const double _step = 0.10;
+
+  Future<void> increase() => _updateScale(state + _step);
+
+  Future<void> decrease() => _updateScale(state - _step);
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedScale = prefs.getDouble(_writtenPracticeTextScaleKey);
+    if (savedScale != null) {
+      state = savedScale.clamp(_minScale, _maxScale);
+    }
+  }
+
+  Future<void> _updateScale(double newValue) async {
+    final nextValue = newValue.clamp(_minScale, _maxScale);
+    state = nextValue;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(_writtenPracticeTextScaleKey, nextValue);
+  }
 }

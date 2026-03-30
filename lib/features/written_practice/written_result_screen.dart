@@ -47,10 +47,7 @@ class WrittenResultScreen extends ConsumerWidget {
                         shape: BoxShape.circle,
                       ),
                     ),
-                    Text(
-                      _emoji(pct),
-                      style: const TextStyle(fontSize: 80),
-                    ),
+                    Text(_emoji(pct), style: const TextStyle(fontSize: 80)),
                   ],
                 ),
                 const SizedBox(height: 32),
@@ -65,7 +62,10 @@ class WrittenResultScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(20),
@@ -124,7 +124,10 @@ class WrittenResultScreen extends ConsumerWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -137,11 +140,17 @@ class WrittenResultScreen extends ConsumerWidget {
                   label: const Text('Tekrar Çalış'),
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size.fromHeight(60),
-                    side: BorderSide(color: theme.colorScheme.primary, width: 2),
+                    side: BorderSide(
+                      color: theme.colorScheme.primary,
+                      width: 2,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
