@@ -933,24 +933,38 @@ class _TopicCardState extends State<_TopicCard> {
   Widget _buildScaleButton({
     required String label,
     required VoidCallback onTap,
+    bool isLeft = false,
+    bool isRight = false,
   }) {
     final colorScheme = widget.colorScheme;
     return Material(
-      color: colorScheme.surfaceContainerHighest.withOpacity(0.9),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(8),
         onTap: onTap,
-        child: SizedBox(
-          width: 28,
-          height: 28,
+        borderRadius: BorderRadius.horizontal(
+          left: Radius.circular(isLeft ? 12 : 0),
+          right: Radius.circular(isRight ? 12 : 0),
+        ),
+        hoverColor: colorScheme.primary.withOpacity(0.08),
+        splashColor: colorScheme.primary.withOpacity(0.12),
+        child: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            border: Border(
+              right: isLeft
+                  ? BorderSide(color: colorScheme.outlineVariant.withOpacity(0.5))
+                  : BorderSide.none,
+            ),
+          ),
           child: Center(
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                color: colorScheme.onSurface,
+                fontSize: 13,
+                fontWeight: FontWeight.w900,
+                color: colorScheme.primary,
+                letterSpacing: -0.5,
               ),
             ),
           ),
@@ -962,332 +976,377 @@ class _TopicCardState extends State<_TopicCard> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = widget.colorScheme;
-
-    // Subtle per-card accent from primary with slight hue rotation feel
-    final accentOpacity = widget.index.isEven ? 0.07 : 0.04;
-
     final bool isPublished = widget.topic['has_published_content'] == true;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: colorScheme.outlineVariant.withOpacity(0.55)),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: colorScheme.primary.withOpacity(accentOpacity),
-            blurRadius: 20,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Stack(
-          children: [
-            // Left accent stripe
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              child: Container(
-                width: 4,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [colorScheme.primary, colorScheme.tertiary],
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 6,
-              right: 6,
-              child: Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Header (OUTSIDE CARD) ────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Spacer(),
+              const SizedBox(width: 12),
+              // Action Buttons Grouped
+              Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildScaleButton(label: 'A-', onTap: _decreaseTextScale),
-                  const SizedBox(width: 6),
-                  _buildScaleButton(label: 'A+', onTap: _increaseTextScale),
-                  if (widget.isAdmin) ...[
-                    const SizedBox(width: 4),
-                    PopupMenuButton<String>(
-                      icon: Icon(
-                        Icons.more_vert_rounded,
-                        size: 20,
-                        color: colorScheme.onSurface.withOpacity(0.4),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: colorScheme.outlineVariant.withOpacity(0.5),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      onSelected: (value) async {
-                        final outcomes = widget.outcomes
-                            .map((e) => {'description': e})
-                            .toList();
-
-                        if (value == 'promptV2') {
-                          await AdminCopyButton.copyPrompt(
-                            context,
-                            gradeName: widget.gradeName,
-                            lessonName: widget.lessonName,
-                            unitTitle: widget.unitTitle,
-                            topicTitle: widget.topicTitle,
-                            outcomes: outcomes,
-                            promptType: AdminPromptType.contentV2,
-                          );
-                        } else if (value == 'promptQuestions') {
-                          await AdminCopyButton.copyPrompt(
-                            context,
-                            gradeName: widget.gradeName,
-                            lessonName: widget.lessonName,
-                            unitTitle: widget.unitTitle,
-                            topicTitle: widget.topicTitle,
-                            outcomes: outcomes,
-                            promptType: AdminPromptType.questions,
-                          );
-                        } else if (value == 'addContent') {
-                          widget.onOpenAdmin();
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        const PopupMenuItem(
-                          value: 'promptV2',
-                          child: ListTile(
-                            leading: Icon(Icons.data_object_rounded, size: 18),
-                            title: Text(
-                              'İçerik Promptu V2',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                            dense: true,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                        ),
-                        const PopupMenuItem(
-                          value: 'promptQuestions',
-                          child: ListTile(
-                            leading: Icon(Icons.quiz_outlined, size: 18),
-                            title: Text(
-                              'Soru Promptu',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                            dense: true,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                        ),
-                        const PopupMenuDivider(),
-                        const PopupMenuItem(
-                          value: 'addContent',
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.admin_panel_settings_rounded,
-                              size: 18,
-                              color: Colors.blue,
-                            ),
-                            title: Text(
-                              'Yönetici İçerik Ekle',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            dense: true,
-                            contentPadding: EdgeInsets.zero,
-                          ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
                       ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildScaleButton(
+                          label: 'A-',
+                          onTap: _decreaseTextScale,
+                          isLeft: true,
+                        ),
+                        _buildScaleButton(
+                          label: 'A+',
+                          onTap: _increaseTextScale,
+                          isRight: !widget.isAdmin,
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (widget.isAdmin) ...[
+                    const SizedBox(width: 8),
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: colorScheme.outlineVariant.withOpacity(0.5),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: PopupMenuButton<String>(
+                        padding: EdgeInsets.zero,
+                        icon: Icon(
+                          Icons.more_vert_rounded,
+                          size: 20,
+                          color: colorScheme.primary,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        offset: const Offset(0, 42),
+                        onSelected: (value) async {
+                          final outcomes = widget.outcomes
+                              .map((e) => {'description': e})
+                              .toList();
+
+                          if (value == 'promptV2') {
+                            await AdminCopyButton.copyPrompt(
+                              context,
+                              gradeName: widget.gradeName,
+                              lessonName: widget.lessonName,
+                              unitTitle: widget.unitTitle,
+                              topicTitle: widget.topicTitle,
+                              outcomes: outcomes,
+                              promptType: AdminPromptType.contentV2,
+                            );
+                          } else if (value == 'promptQuestions') {
+                            await AdminCopyButton.copyPrompt(
+                              context,
+                              gradeName: widget.gradeName,
+                              lessonName: widget.lessonName,
+                              unitTitle: widget.unitTitle,
+                              topicTitle: widget.topicTitle,
+                              outcomes: outcomes,
+                              promptType: AdminPromptType.questions,
+                            );
+                          } else if (value == 'addContent') {
+                            widget.onOpenAdmin();
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'promptV2',
+                            child: Row(
+                              children: [
+                                Icon(Icons.data_object_rounded,
+                                    size: 18, color: colorScheme.primary),
+                                const SizedBox(width: 12),
+                                const Text('İçerik Promptu V2',
+                                    style: TextStyle(fontSize: 13)),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'promptQuestions',
+                            child: Row(
+                              children: [
+                                Icon(Icons.quiz_outlined,
+                                    size: 18, color: colorScheme.primary),
+                                const SizedBox(width: 12),
+                                const Text('Soru Promptu',
+                                    style: TextStyle(fontSize: 13)),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuDivider(),
+                          PopupMenuItem(
+                            value: 'addContent',
+                            child: Row(
+                              children: [
+                                const Icon(Icons.admin_panel_settings_rounded,
+                                    size: 18, color: Colors.blue),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Yönetici İçerik Ekle',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.blue.shade700,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ],
               ),
-            ),
-            // Content
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Unit badge
-                  if (widget.unitTitle.isNotEmpty) ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 9,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        'Ünite: ${widget.unitTitle}',
-                        style: TextStyle(
-                          fontSize: 25 * _textScale,
-                          fontWeight: FontWeight.w700,
-                          color: colorScheme.primary,
-                          letterSpacing: 0.2,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
+            ],
+          ),
+        ),
 
-                  // Topic title
-                  Text(
-                    widget.topicTitle.isNotEmpty
-                        ? 'Konu: ${widget.topicTitle}'
-                        : 'Konu: -',
-                    style: TextStyle(
-                      fontSize: 21 * _textScale,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.2,
-                      height: 1.3,
+        // ── Card Content ─────────────────────────────────────────────────────
+        Container(
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: BorderRadius.circular(20),
+            border:
+                Border.all(color: colorScheme.outlineVariant.withOpacity(0.55)),
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.shadow.withOpacity(0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(
+                  widget.index.isEven ? 0.07 : 0.04,
+                ),
+                blurRadius: 20,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Stack(
+              children: [
+                // Left accent stripe
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 4,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [colorScheme.primary, colorScheme.tertiary],
+                      ),
                     ),
                   ),
+                ),
+                // Main Content
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Ünite title
+                      if (widget.unitTitle.isNotEmpty) ...[
+                        Text(
+                          'Ünite: ${widget.unitTitle}',
+                          style: TextStyle(
+                            fontSize: 20 * _textScale,
+                            fontWeight: FontWeight.w900,
+                            color: colorScheme.primary,
+                            letterSpacing: -0.4,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                      ],
 
-                  // Outcomes
-                  if (widget.outcomes.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    ...widget.outcomes.map(
-                      (o) => Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Container(
-                                width: 5,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                  color: colorScheme.primary.withOpacity(0.55),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                o,
-                                style: TextStyle(
-                                  fontSize: 12.5 * _textScale,
-                                  height: 1.5,
-                                  color: colorScheme.onSurface.withOpacity(
-                                    0.68,
+                      // Topic title
+                      Text(
+                        widget.topicTitle.isNotEmpty
+                            ? 'Konu: ${widget.topicTitle}'
+                            : 'Konu: -',
+                        style: TextStyle(
+                          fontSize: 17 * _textScale,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.2,
+                          height: 1.3,
+                          color: colorScheme.onSurface.withOpacity(0.85),
+                        ),
+                      ),
+
+                      // Outcomes
+                      if (widget.outcomes.isNotEmpty) ...[
+                        const SizedBox(height: 14),
+                        ...widget.outcomes.map(
+                          (o) => Padding(
+                            padding: const EdgeInsets.only(bottom: 6),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 6),
+                                  child: Container(
+                                    width: 5,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          colorScheme.primary.withOpacity(0.4),
+                                      shape: BoxShape.circle,
+                                    ),
                                   ),
                                 ),
-                              ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    o,
+                                    style: TextStyle(
+                                      fontSize: 13 * _textScale,
+                                      height: 1.5,
+                                      color: colorScheme.onSurface.withOpacity(
+                                        0.7,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+
+                      // Footer CTA
+                      const SizedBox(height: 24),
+                      if (isPublished) ...[
+                        Column(
+                          children: [
+                            _GameLikeButton(
+                              label: 'Ders İçeriğini Göster',
+                              icon: Icons.menu_book_rounded,
+                              onTap: widget.onShowContent,
+                              gradientColors: const [
+                                Color(0xFF6366F1),
+                                Color(0xFF4F46E5),
+                              ],
+                              shadowColor: const Color(0xFF4F46E5),
+                            ),
+                            const SizedBox(height: 12),
+                            _GameLikeButton(
+                              label: 'Testi Başlat',
+                              icon: Icons.play_arrow_rounded,
+                              onTap: widget.onStartQuestions,
+                              gradientColors: const [
+                                Color(0xFFFF8A65),
+                                Color(0xFFFF5722),
+                              ],
+                              shadowColor: const Color(0xFFFF5722),
+                            ),
+                            const SizedBox(height: 12),
+                            _GameLikeButton(
+                              label: 'Yazılıya Çalış',
+                              icon: Icons.edit_note_rounded,
+                              onTap: widget.onOpenWritten,
+                              gradientColors: const [
+                                Color(0xFF0EA5E9),
+                                Color(0xFF2563EB),
+                              ],
+                              shadowColor: const Color(0xFF2563EB),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                  ],
-
-                  // Footer CTA
-                  const SizedBox(height: 16),
-                  if (isPublished) ...[
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _GameLikeButton(
-                            label: 'Ders İçeriğini Göster',
-                            icon: Icons.menu_book_rounded,
-                            onTap: widget.onShowContent,
-                            gradientColors: const [
-                              Color(0xFF6366F1),
-                              Color(0xFF4F46E5),
-                            ],
-                            shadowColor: const Color(0xFF4F46E5),
+                      ] else ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 14,
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _GameLikeButton(
-                            label: 'Testi Başlat',
-                            icon: Icons.play_arrow_rounded,
-                            onTap: widget.onStartQuestions,
-                            gradientColors: const [
-                              Color(0xFFFF8A65),
-                              Color(0xFFFF5722),
-                            ],
-                            shadowColor: const Color(0xFFFF5722),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest
+                                .withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
-                      child: _GameLikeButton(
-                        label: 'Yazılıya Çalış',
-                        icon: Icons.edit_note_rounded,
-                        onTap: widget.onOpenWritten,
-                        gradientColors: const [
-                          Color(0xFF0EA5E9),
-                          Color(0xFF2563EB),
-                        ],
-                        shadowColor: const Color(0xFF2563EB),
-                      ),
-                    ),
-                  ] else ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest.withOpacity(
-                          0.5,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.info_outline_rounded,
-                            size: 16,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'Bu konu için V11 içerikleri henüz eklenmemiş.',
-                              style: TextStyle(
-                                fontSize: 12,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline_rounded,
+                                size: 18,
                                 color: colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Bu konu için V11 içerikleri henüz eklenmemiş.',
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: widget.onOpenClassic,
+                            icon: const Icon(Icons.history_rounded, size: 18),
+                            label: const Text('Klasik Versiyonu Aç'),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              side: BorderSide(
+                                color: colorScheme.outline.withOpacity(0.5),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: widget.onOpenClassic,
-                        icon: const Icon(Icons.history_rounded, size: 18),
-                        label: const Text('Klasik Versiyonu Aç'),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          side: BorderSide(
-                            color: colorScheme.outline.withOpacity(0.5),
-                          ),
                         ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
