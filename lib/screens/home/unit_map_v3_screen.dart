@@ -828,16 +828,27 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            // Connector line
-            Positioned(
-              left: 47,
-              top: _kItemHeight / 2,
-              bottom: _kItemHeight / 2,
-              child: CustomPaint(
-                size: Size(2, (_weeks.length - 1) * _kItemHeight),
-                painter: _ConnectorLinePainter(),
+            // Current week row highlight
+            if (_currentWeekIndex != -1)
+              Positioned(
+                top: _currentWeekIndex * _kItemHeight,
+                left: 0,
+                right: 0,
+                height: _kItemHeight,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        _AppColors.blue.withOpacity(0.08),
+                        _AppColors.white,
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                  ),
+                ),
               ),
-            ),
+            // Connector line
             // Week nodes
             Column(
               children: List.generate(_weeks.length, (index) {
@@ -880,11 +891,21 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
                       ? FontWeight.w700
                       : FontWeight.w500,
                   color: isSelected
-                      ? _AppColors.navyMid
-                      : _AppColors.slate400,
-                  letterSpacing: 0.2,
+                      ? _AppColors.blue
+                      : isCurrent
+                          ? _AppColors.navyMid
+                          : _AppColors.slate400,
+                  letterSpacing: isSelected || isCurrent ? 0.4 : 0.2,
                 ),
-                child: Text('Hafta ${week.curriculumWeek}'),
+                child: Text(
+                  'Hafta ${week.curriculumWeek}',
+                  style: TextStyle(
+                    fontSize: isSelected ? 11 : 9.5,
+                    fontWeight: isSelected || isCurrent
+                        ? FontWeight.w800
+                        : FontWeight.w600,
+                  ),
+                ),
               ),
             ],
           ),
@@ -902,43 +923,69 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
     Widget icon;
     List<BoxShadow> shadows = [];
 
-    if (week.isCompleted) {
-      bgColor = _AppColors.emerald;
-      borderColor = _AppColors.emeraldDark;
-      iconColor = Colors.white;
+    if (isSelected) {
+      // AKTIF HAFTA: MAVI
+      bgColor = _AppColors.blue;
+      borderColor = _AppColors.blueMid;
+      iconColor = _AppColors.white;
+      icon = Text(
+        '${week.curriculumWeek}',
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w900,
+          fontSize: 20,
+        ),
+      );
+      shadows = [
+        BoxShadow(
+          color: _AppColors.blue.withOpacity(0.4),
+          blurRadius: 16,
+          offset: const Offset(0, 6),
+        ),
+      ];
+    } else if (isCurrent) {
+      // MEVCUT HAFTA: BEYAZ GÖZÜKÜP ARKA PLANDA PARLAYAN
+      bgColor = _AppColors.white;
+      borderColor = _AppColors.blue;
+      iconColor = _AppColors.blue;
+      icon = Text(
+        '${week.curriculumWeek}',
+        style: const TextStyle(
+          color: _AppColors.blue,
+          fontWeight: FontWeight.w900,
+          fontSize: 16,
+        ),
+      );
+      shadows = [
+        BoxShadow(
+          color: _AppColors.blue.withOpacity(0.25),
+          blurRadius: 24,
+          spreadRadius: 2,
+        ),
+      ];
+    } else if (week.isCompleted) {
+      // GECMIS HAFTALAR: GRI
+      bgColor = _AppColors.slate200;
+      borderColor = _AppColors.slate300;
+      iconColor = _AppColors.slate500;
       icon = Icon(Icons.check_rounded, color: iconColor, size: 20);
       shadows = [
         BoxShadow(
-          color: _AppColors.emerald.withOpacity(0.3),
-          blurRadius: 12,
-          offset: const Offset(0, 4),
+          color: Colors.black.withOpacity(0.05),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
         ),
       ];
     } else if (!week.isLocked) {
-      if (isSelected) {
-        bgColor = _AppColors.blue;
-        borderColor = _AppColors.blueMid;
-        iconColor = Colors.white;
-        shadows = [
-          BoxShadow(
-            color: _AppColors.blue.withOpacity(0.4),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ];
-      } else {
-        bgColor = _AppColors.white;
-        borderColor = isCurrent
-            ? _AppColors.blue.withOpacity(0.5)
-            : _AppColors.slate200;
-        iconColor = isCurrent ? _AppColors.blue : _AppColors.slate400;
-      }
+      bgColor = _AppColors.white;
+      borderColor = _AppColors.slate200;
+      iconColor = _AppColors.slate400;
       icon = Text(
         '${week.curriculumWeek}',
         style: TextStyle(
           color: iconColor,
           fontWeight: FontWeight.w800,
-          fontSize: isSelected ? 18 : 14,
+          fontSize: 14,
         ),
       );
     } else {
@@ -958,37 +1005,51 @@ class _UnitMapV3ScreenState extends State<UnitMapV3Screen>
         color: bgColor,
         border: Border.all(
           color: borderColor,
-          width: isSelected ? 2.5 : 2,
+          width: isSelected || isCurrent ? 2.5 : 2,
         ),
         boxShadow: shadows,
       ),
       child: Center(child: icon),
     );
 
-    // Pulse ring for current active week
-    if (isCurrent && !week.isCompleted && !week.isLocked) {
-      node = AnimatedBuilder(
-        animation: _pulseController,
-        builder: (context, child) {
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: size + 12 + (_pulseController.value * 6),
-                height: size + 12 + (_pulseController.value * 6),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _AppColors.blue.withOpacity(
-                      0.12 * (1 - _pulseController.value)),
+    // Modern Badge for CURRENT week (ŞU AN)
+    if (isCurrent && !isSelected) {
+      node = Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          node,
+          Positioned(
+            top: -14,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                gradient: _AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: _AppColors.blue.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: const Text(
+                'ŞU AN',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 7.5,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.8,
                 ),
               ),
-              child!,
-            ],
-          );
-        },
-        child: node,
+            ),
+          ),
+        ],
       );
     }
+
+    return node;
 
     return node;
   }
