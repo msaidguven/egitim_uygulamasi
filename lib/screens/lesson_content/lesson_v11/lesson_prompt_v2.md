@@ -496,59 +496,39 @@ Cevabı oluşturan kelimeler karışık halde chip olarak ekranda gosterilir. Og
 Bu tip YALNIZCA her bolumun SON sorusu olarak kullanilir.
 Bir bolumde birden fazla `classical_order` sorusu OLAMAZ.
 
-Soru dili ve kalitesi kurallari:
-- Sorular RESMI SINAV kalitesinde olmali. Sohbet havasi, gunluk konusma dili veya samimi uslup KULLANILMAMALI.
-- Soru cumlesi akademik, net ve olcme amacli yazilmali.
-- Her soru dogrudan bir kazanimi olmali; muglak veya cok genel olmamali.
-- Cevap (model_answer) 5 ila 10 kelime arasinda, tam ve anlamli bir cumle olmali.
-- Cevap cumlesinde kisaltma, konusma dili ifadesi veya eksik yapilar OLMAMALI.
-
 Soru icerigi kurallari:
 - Soru bir tanim, neden-sonuc, ozellik, karsilastirma veya uygulama sorusu olmali.
 - Siralama sorusu OLMAMALI. Yanlis: "Su adimlari sirala: ..."
 - YALNIZCA "X nedir?" kalibini kullanma. Bu kalip cok tekrarci ve sigdir.
-- Asagidaki resmi sinav soru kaliplarini dengeli ve cesitli sekilde kullan; her bolumde farkli bir kalip tercih et:
+- Asagidaki soru kaliplarini dengeli ve cesitli sekilde kullan; her bolumde farkli bir kalip tercih et:
 
-  TANIM (resmi):
-  - "X'in tanimi nasil yapilir?"
-  - "X kavramini tanimlayaniz."
+  TANIM (ama farkli acidan):
+  - "X'i kendi sozlerinle acikla."
+  - "X'i hic duymamis birine nasil anlatirdin?"
   - "X ile Y arasindaki temel fark nedir?"
 
-  NEDEN-SONUC (resmi):
-  - "X'in onemi nedir?"
+  NEDEN-SONUC:
+  - "X neden onemlidir?"
+  - "X olmasa ne olurdu?"
   - "X'in temel amaci nedir?"
-  - "X olmadigi takdirde ne gerceklesirdi?"
 
-  OZELLIK / AYIRT EDICI (resmi):
-  - "X'i Y'den ayiran temel ozellik nedir?"
+  OZELLIK / AYIRT EDICI:
+  - "X'i Y'den ayiran en onemli ozellik nedir?"
   - "X'in en belirgin ozelligi nedir?"
-  - "X'in sagladigi en onemli avantaj nedir?"
+  - "X hangi durumda isimize yarar?"
 
-  UYGULAMA / ORNEK (resmi):
-  - "X'in gunluk hayattaki bir ornegini belirtiniz."
-  - "X hangi durumlarda kullanilir?"
-  - "X'den yararlanan biri ne kazanir?"
+  UYGULAMA / ORNEK:
+  - "X'e gunluk hayattan bir ornek ver."
+  - "Hangi durumda X'e ihtiyac duyariz?"
+  - "X'i kullanan biri ne kazanir?"
 
-  ILISKI / ACIKLAMA (resmi):
-  - "X ile Y arasindaki iliskiyi aciklayiniz."
-  - "X'in Y uzerindeki etkisi nedir?"
-  - "X olmadan Y nasil etkilenir?"
+  TAMAMLAMA / ILISKI:
+  - "X sayesinde Y mumkun olur, cunku..."
+  - "X olmadan Z yapamazdik, cunku..."
+  - "X ile Y arasindaki iliski nedir?"
 
 - Tum modulde bu kaliplar dengeli dagitilmali; hicbir kalip 2 kezden fazla tekrarlanmamali.
 - Her bolumun classical_order sorusu farkli bir soru kalibinda olmali.
-
-Soru dili icin YANLIS ve DOGRU ornekler:
-  YANLIS (sohbet dili): "Algoritma olmasa ne olurdu?"
-  DOGRU (resmi sinav): "Algoritmanin bilgisayar programlari icin onemi nedir?"
-
-  YANLIS (sohbet dili): "Girdi olmadan surec baslatilabilir mi? Neden?"
-  DOGRU (resmi sinav): "Girdi ile surec arasindaki iliskiyi aciklayiniz."
-
-  YANLIS (sohbet dili): "Gunluk hayatta algoritma kullanan bir isleme ornek ver."
-  DOGRU (resmi sinav): "Algoritmanin gunluk hayattaki bir ornegini belirtiniz."
-
-  YANLIS (sohbet dili): "Akis semasi olmasa algoritmayi anlatmak nasil olurdu?"
-  DOGRU (resmi sinav): "Akis semasinin algoritma ogretimindeki onemi nedir?"
 
 `answer_words` kurallari:
 - Cevap cumlesinin kelimelerine veya dogal kelime obeklerine bolunmus liste olmali.
@@ -565,65 +545,65 @@ Soru dili icin YANLIS ve DOGRU ornekler:
 - `→` oku KULLANILMAZ. Bu tip siralama sorusu degildir.
 - Ornek: `"Algoritma bir problemi cozmek icin yazilmis sirali adimlardir."`
 
-Dogru ornekler (resmi sinav kalitesinde):
+Dogru ornekler:
 
-Ornek 1 — Onem/neden-sonuc sorusu:
+Ornek 1 — Neden-sonuc sorusu:
 {
   "id": "q_01_04",
   "type": "quiz",
   "order": 4,
   "content": {
     "questionType": "classical_order",
-    "question": "Algoritmanin bilgisayar programlari icin onemi nedir?",
-    "answer_words": ["Bilgisayarlara", "hangi islemi", "ne zaman yapacagini", "adim adim gosterir"],
-    "model_answer": "Bilgisayarlara hangi islemi ne zaman yapacagini adim adim gosterir",
-    "hint": "Algoritma bilgisayara ne saglar?",
-    "explanation": "Algoritma, bilgisayarin hangi adimi hangi sirada yapacagini belirler; bu olmadan program calisamaz."
+    "question": "Algoritma olmasa ne olurdu?",
+    "answer_words": ["Bilgisayarlar", "hangi adimi", "atacaklarini", "bilemezdi"],
+    "model_answer": "Bilgisayarlar hangi adimi atacaklarini bilemezdi",
+    "hint": "Algoritma talimat verir; talimat olmasa ne olur?",
+    "explanation": "Algoritma olmadan bilgisayarlar hangi islemi ne zaman yapacagini belirleyemez, calisamazdi."
   }
 }
 
-Ornek 2 — Ayirt edici ozellik sorusu:
+Ornek 2 — Ozellik/ayirt edici sorusu:
 {
   "id": "q_02_04",
   "type": "quiz",
   "order": 4,
   "content": {
     "questionType": "classical_order",
-    "question": "Algoritmayı gunluk bir tariften ayiran temel ozellik nedir?",
-    "answer_words": ["Her adimin", "kesin, net", "ve tek islem", "icermesi zorunludur"],
-    "model_answer": "Her adimin kesin, net ve tek islem icermesi zorunludur",
-    "hint": "Tarifin aksine algoritmada belirsizlik kabul edilmez.",
-    "explanation": "Algoritma her adimda kesinlik gerektirir; muglak ifadeler kullanilamaz. Gunluk tarifler ise yaklasik olculerle yazilabilir."
+    "question": "Algoritmayi siradisi bir tariften ayiran en onemli ozellik nedir?",
+    "answer_words": ["Her adimin", "kesin ve", "anlasilir", "olmasi gerekir"],
+    "model_answer": "Her adimin kesin ve anlasilir olmasi gerekir",
+    "hint": "Algoritma belirsizligi kaldirmaz; her adim net olmali.",
+    "explanation": "Tarif birazcik muglak olsa da anlasilabilir; ama algoritma her adimda kesinlik ister."
   }
 }
 
-Ornek 3 — Gunluk hayat ornegi sorusu:
+Ornek 3 — Uygulama/ornek sorusu:
 {
   "id": "q_03_05",
   "type": "quiz",
   "order": 5,
   "content": {
     "questionType": "classical_order",
-    "question": "Algoritmanin gunluk hayattaki bir ornegini belirtiniz.",
-    "answer_words": ["Yemek tarifi", "adim adim uygulanan", "bir algoritma", "ornegidir"],
-    "model_answer": "Yemek tarifi adim adim uygulanan bir algoritma ornegidir",
-    "hint": "Adim adim ilerleyen ve bir sonuca ulasan islemleri dusununuz.",
-    "explanation": "Yemek tarifi; malzemeleri ve islemleri belirli bir sirayla vererek sonunda bir urune ulasmayi saglayan algoritmaya iyi bir ornektir."
+    "question": "Gunluk hayatta algoritma kullanan bir isleme ornek ver.",
+    "answer_words": ["Yemek tarifi", "adim adim", "uygulanan", "bir algoritmadır"],
+    "model_answer": "Yemek tarifi adim adim uygulanan bir algoritmadır",
+    "hint": "Siradaki adimi belirleyen ve bir sonuca ulasan bir islem dusun.",
+    "explanation": "Yemek tarifi; malzemeleri ve islemleri belirli bir sirayla veren, sonunda yemegi ortaya cikaran bir algoritmadır."
   }
 }
 
-Ornek 4 — Iliski/aciklama sorusu:
+Ornek 4 — Tamamlama/iliski sorusu:
 {
   "id": "q_04_04",
   "type": "quiz",
   "order": 4,
   "content": {
     "questionType": "classical_order",
-    "question": "Girdi ile surec arasindaki iliskiyi aciklayiniz.",
-    "answer_words": ["Surec, girdi", "olmadan isleyecek", "veri bulamaz", "ve baslamaz"],
-    "model_answer": "Surec, girdi olmadan isleyecek veri bulamaz ve baslamaz",
-    "hint": "Surecin calismaya baslamak icin neye ihtiyaci vardir?",
-    "explanation": "Girdi, surece ham veriyi saglar. Girdi olmadan surec isleyecek bir sey bulamaz ve calisma baslamaz."
+    "question": "Girdi olmadan surec baslatilabilir mi? Neden?",
+    "answer_words": ["Hayir,", "islenmesi gereken", "veri olmadan", "surec baslamaz"],
+    "model_answer": "Hayir, islenmesi gereken veri olmadan surec baslamaz",
+    "hint": "Surec ne ile baslar?",
+    "explanation": "Surec girdileri alip isleme tabi tutar; girdi yoksa surec baslatilacak bir sey bulamaz."
   }
 }
 
@@ -734,9 +714,6 @@ Kacin:
 - Cok kolay veya anlamsiz celdirici
 - Birbirinin tekrari olan soru tipleri
 - `classical_order` sorusunu siralama sorusu olarak yazmak
-- `classical_order` sorularini sohbet dili veya gunluk konusma uslubunda yazmak
-- `classical_order` cevabini (model_answer) 5 kelimeden az veya 10 kelimeden fazla yazmak
-- Soru cumlesi olmadan veya muglak soru kaliplariyla classical_order sorusu uretmek
 - Tum `classical_order` sorularini "X nedir?" kalibinda yazmak
 - Ayni soru kalibını birden fazla bolumde tekrarlamak
 - `classical_order` sorularinda anlamsiz kelime parcalama veya tek basina baglac kullanmak
@@ -789,9 +766,6 @@ Quiz turu kontrolu:
 - `classical_order`: Her normal bolumun son sorusu bu tip mi; soru bir tanim/neden-sonuc/bilgi sorusu mu (siralama sorusu degil mi); `answer_words` anlamli ogelerden mi olusuyor; `model_answer` `→` oku icermiyor mu; bir bolumde birden fazla `classical_order` yok mu?
 
 `classical_order` kontrolu:
-- Soru dili resmi ve akademik mi? Sohbet veya gunluk konusma uslubunda ise YANLISTIR.
-- Soru "...aciklayiniz", "...onemi nedir", "...belirtiniz", "...iliskiyi aciklayiniz" gibi resmi sinav kalibiyla mi yazildi?
-- model_answer 5-10 kelime arasinda, tam ve anlamli bir cumle mi?
 - Soru tanim, neden-sonuc veya bilgi sorusu mu? Siralama sorusu ise YANLISTIR.
 - `answer_words` ogelerini yan yana dizince `model_answer` cumlesi olusuyor mu?
 - `"ve"`, `"ile"`, `"bir"`, `"de"`, `"da"` gibi baglaçlar tek basina oge degil, yanindaki kelimeyle birlikte mi yazildi?

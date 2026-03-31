@@ -17,7 +17,8 @@ bool get _isDesktopOrWeb {
 
 /// Test feature içinde kullanılan klasik (word-order) soru widget'ı.
 ///
-/// [testQuestion] içindeki [shuffledAnswerWords] kelime bankası olarak gösterilir.
+/// [testQuestion] içindeki kelimeler karıştırılarak
+/// kelime bankası olarak gösterilir.
 /// Kullanıcı sıraladıktan sonra [onAnswered] ile `List<String>` döner.
 /// [onAnswered] null'a çağrılırsa cevap iptal edilmiş demektir.
 class ClassicalQuestionWidget extends StatefulWidget {
@@ -36,25 +37,37 @@ class ClassicalQuestionWidget extends StatefulWidget {
 }
 
 class _ClassicalQuestionWidgetState extends State<ClassicalQuestionWidget> {
-  late List<String> _bank; // Henüz yerleştirilmemiş kelimeler
-  late List<String> _placed; // Cevap alanına yerleştirilen kelimeler
+  /// Kelime öbeklerinden oluşan banka (henüz yerleştirilmemiş)
+  late List<String> _bank;
+  /// Kelime öbeklerinden oluşan cevap alanı
+  late List<String> _placed;
 
   bool get _isChecked => widget.testQuestion.isChecked;
   bool get _isCorrect => widget.testQuestion.isCorrect;
 
+  /// Orijinal (sıralı) kelimeleri karıştırır.
+  List<String> _buildBank() {
+    final list = List<String>.from(widget.testQuestion.question.answerWords);
+    list.shuffle();
+    return list;
+  }
+
   @override
   void initState() {
     super.initState();
-    _bank = List<String>.from(widget.testQuestion.shuffledAnswerWords);
     _placed = [];
+
     // Eğer daha önce bir cevap var ise (resume) geri yükle
     final prev = widget.testQuestion.userAnswer;
-    if (prev is List<String> && prev.isNotEmpty) {
+    if (prev is List && prev.isNotEmpty) {
       _placed = List<String>.from(prev);
-      // Placed kelimeleri bank'tan çıkar
-      for (final w in _placed) {
-        _bank.remove(w);
-      }
+    }
+
+    // Bank: tüm kelime setinden _placed'dekileri birer birer çıkar
+    final allWords = _buildBank();
+    _bank = List<String>.from(allWords);
+    for (final chunk in _placed) {
+      _bank.remove(chunk); // ilk eşleşeni kaldırır
     }
   }
 
@@ -64,16 +77,16 @@ class _ClassicalQuestionWidgetState extends State<ClassicalQuestionWidget> {
     // Soru değiştiğinde durumu sıfırla
     if (oldWidget.testQuestion.question.id !=
         widget.testQuestion.question.id) {
-      _bank = List<String>.from(widget.testQuestion.shuffledAnswerWords);
+      _bank = _buildBank();
       _placed = [];
     }
   }
 
-  void _placeWord(String word) {
+  void _placeWord(String chunk) {
     if (_isChecked) return;
     setState(() {
-      _bank.remove(word);
-      _placed.add(word);
+      _bank.remove(chunk);
+      _placed.add(chunk);
     });
     _notifyAnswer();
   }
@@ -90,9 +103,9 @@ class _ClassicalQuestionWidgetState extends State<ClassicalQuestionWidget> {
   void _reorderWord(int from, int to) {
     if (_isChecked) return;
     setState(() {
-      final word = _placed.removeAt(from);
+      final chunk = _placed.removeAt(from);
       final insertAt = to > from ? to - 1 : to;
-      _placed.insert(insertAt.clamp(0, _placed.length), word);
+      _placed.insert(insertAt.clamp(0, _placed.length), chunk);
     });
     _notifyAnswer();
   }
