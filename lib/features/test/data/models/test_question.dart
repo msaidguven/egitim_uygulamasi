@@ -11,6 +11,7 @@ class TestQuestion {
   final List<QuestionBlankOption> shuffledBlankOptions;
   final List<MatchingPair> shuffledMatchingPairsRight;
   final List<MatchingPair> shuffledMatchingLeftTexts;
+  final List<String> shuffledAnswerWords; // Klasik soru için karıştırılmış kelimeler
   dynamic userAnswer;
   bool isChecked;
   bool isCorrect;
@@ -21,6 +22,7 @@ class TestQuestion {
     List<QuestionBlankOption>? shuffledBlankOptions,
     List<MatchingPair>? shuffledMatchingPairsRight,
     List<MatchingPair>? shuffledMatchingLeftTexts,
+    List<String>? shuffledAnswerWords,
     this.userAnswer,
     this.isChecked = false,
     this.isCorrect = false,
@@ -32,7 +34,10 @@ class TestQuestion {
            _shuffleMatchingPairsRight(question.matchingPairs),
        shuffledMatchingLeftTexts =
            shuffledMatchingLeftTexts ??
-           _shuffleMatchingLeftTexts(question.matchingPairs);
+           _shuffleMatchingLeftTexts(question.matchingPairs),
+       shuffledAnswerWords =
+           shuffledAnswerWords ??
+           _shuffleAnswerWords(question.answerWords);
 
   static List<QuestionChoice> _shuffleChoices(List<QuestionChoice> choices) {
     if (choices.length <= 1) return List<QuestionChoice>.from(choices);
@@ -71,6 +76,13 @@ class TestQuestion {
     return shuffled;
   }
 
+  static List<String> _shuffleAnswerWords(List<String> words) {
+    if (words.length <= 1) return List<String>.from(words);
+    final shuffled = List<String>.from(words);
+    shuffled.shuffle();
+    return shuffled;
+  }
+
   /// İmmutable bir kopya oluşturur
   TestQuestion copyWith({
     Question? question,
@@ -78,6 +90,7 @@ class TestQuestion {
     List<QuestionBlankOption>? shuffledBlankOptions,
     List<MatchingPair>? shuffledMatchingPairsRight,
     List<MatchingPair>? shuffledMatchingLeftTexts,
+    List<String>? shuffledAnswerWords,
     dynamic userAnswer,
     bool? isChecked,
     bool? isCorrect,
@@ -90,6 +103,7 @@ class TestQuestion {
           shuffledMatchingPairsRight ?? this.shuffledMatchingPairsRight,
       shuffledMatchingLeftTexts:
           shuffledMatchingLeftTexts ?? this.shuffledMatchingLeftTexts,
+      shuffledAnswerWords: shuffledAnswerWords ?? this.shuffledAnswerWords,
       userAnswer: userAnswer ?? this.userAnswer,
       isChecked: isChecked ?? this.isChecked,
       isCorrect: isCorrect ?? this.isCorrect,

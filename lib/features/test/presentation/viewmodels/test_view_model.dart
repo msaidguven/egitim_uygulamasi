@@ -541,6 +541,18 @@ class TestViewModel extends ChangeNotifier {
           }
           return true;
 
+        case QuestionType.classical:
+          if (testQuestion.userAnswer is! List) return false;
+          final userWords = (testQuestion.userAnswer as List)
+              .whereType<String>()
+              .toList();
+          final correctWords = question.answerWords;
+          if (userWords.length != correctWords.length) return false;
+          for (int i = 0; i < correctWords.length; i++) {
+            if (userWords[i] != correctWords[i]) return false;
+          }
+          return true;
+
         default:
           return false;
       }

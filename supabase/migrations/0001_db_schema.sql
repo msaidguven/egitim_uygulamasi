@@ -263,6 +263,16 @@ CREATE TABLE public.test_sessions (
   CONSTRAINT fk_test_sessions_lesson FOREIGN KEY (lesson_id) REFERENCES public.lessons(id),
   CONSTRAINT fk_test_sessions_grade FOREIGN KEY (grade_id) REFERENCES public.grades(id)
 );
+CREATE TABLE public.topic_content_generated_questions (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  topic_content_v11_id bigint NOT NULL,
+  question_id bigint NOT NULL,
+  quiz_ref text NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT topic_content_generated_questions_pkey PRIMARY KEY (id),
+  CONSTRAINT topic_content_generated_questions_topic_content_v11_id_fkey FOREIGN KEY (topic_content_v11_id) REFERENCES public.topic_contents_v11(id),
+  CONSTRAINT topic_content_generated_questions_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id)
+);
 CREATE TABLE public.topic_content_outcomes (
   topic_content_id bigint NOT NULL,
   outcome_id bigint NOT NULL,

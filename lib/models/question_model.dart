@@ -166,9 +166,10 @@ class Question {
   final List<QuestionChoice> choices;
   final List<QuestionBlankOption> blankOptions;
   final String? modelAnswer;
+  final List<String> answerWords; // Klasik soru: doğru sıralı kelimeler
   final List<MatchingPair>? matchingPairs;
-  final String? solutionText; // YENİ: Çözüm açıklaması
-  final UserQuestionStats? userStats; // YENİ: Kullanıcı istatistikleri alanı
+  final String? solutionText;
+  final UserQuestionStats? userStats;
 
   Question({
     required this.id,
@@ -179,9 +180,10 @@ class Question {
     this.choices = const [],
     this.blankOptions = const [],
     this.modelAnswer,
+    this.answerWords = const [],
     this.matchingPairs,
-    this.solutionText, // YENİ
-    this.userStats, // YENİ
+    this.solutionText,
+    this.userStats,
   });
 
   factory Question.fromMap(Map<String, dynamic> map) {
@@ -212,13 +214,36 @@ class Question {
         [];
 
     String? modelAnswer;
-     if (questionType == QuestionType.classical && map['question_classical'] != null && (map['question_classical'] as List).isNotEmpty) {
-        modelAnswer = (map['question_classical'] as List).first['model_answer'] as String?;
+    List<String> answerWords = const [];
+    if (questionType == QuestionType.classical &&
+        map['question_classical'] != null &&
+        (map['question_classical'] as List).isNotEmpty) {
+      final classicalData =
+          (map['question_classical'] as List).first as Map<String, dynamic>;
+      modelAnswer = classicalData['model_answer'] as String?;
+
+      // answer_words dizisini parse et
+      final rawWords = classicalData['answer_words'];
+      if (rawWords is List) {
+        answerWords = rawWords
+            .whereType<String>()
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
+      // Eğer answer_words boşsa model_answer'dan türet
+      if (answerWords.isEmpty && (modelAnswer ?? '').isNotEmpty) {
+        answerWords = modelAnswer!
+            .split(RegExp(r'\s+'))
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
     }
 
-    // YENİ: Gelen user_stats verisini parse et
     final userStatsData = map['user_stats'] as Map<String, dynamic>?;
-    final userStats = userStatsData != null ? UserQuestionStats.fromMap(userStatsData) : null;
+    final userStats =
+        userStatsData != null ? UserQuestionStats.fromMap(userStatsData) : null;
 
     return Question(
       id: map['id'] as int? ?? 0,
@@ -229,9 +254,10 @@ class Question {
       choices: choicesList,
       blankOptions: blankOptionsList,
       modelAnswer: modelAnswer,
+      answerWords: answerWords,
       matchingPairs: matchingPairsList,
-      solutionText: map['solution_text'] as String?, // YENİ
-      userStats: userStats, // YENİ
+      solutionText: map['solution_text'] as String?,
+      userStats: userStats,
     );
   }
 
@@ -245,8 +271,15 @@ class Question {
       'question_choices': choices.map((c) => c.toMap()).toList(),
       'question_blank_options': blankOptions.map((b) => b.toMap()).toList(),
       'question_matching_pairs': matchingPairs?.map((p) => p.toMap()).toList(),
-      'question_classical': modelAnswer != null ? [{'model_answer': modelAnswer}] : null,
-      'solution_text': solutionText, // YENİ
+      'question_classical': modelAnswer != null
+          ? [
+              {
+                'model_answer': modelAnswer,
+                'answer_words': answerWords,
+              }
+            ]
+          : null,
+      'solution_text': solutionText,
       'user_stats': userStats?.toMap(),
     };
   }

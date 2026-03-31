@@ -1,37 +1,37 @@
 {
   "lessonModule": {
-    "id": "module_5_btyz_problem_algoritma",
-    "title": "Problem Belirleme ve Algoritma Oluşturma",
-    "description": "Günlük yaşamdan problemler belirleyerek girdi-çıktı analizi yapmayı, işlem adımlarını listelemeyi ve akış şeması çizmeyi öğreniyoruz.",
+    "id": "module_5_bty_algoritma_test",
+    "title": "Algoritma Test Etme ve Geri Bildirim Alma",
+    "description": "Bu modülde geliştirilen algoritmaların nasıl test edileceğini, hataların nasıl bulunup düzeltileceğini ve algoritmanın kullanıma hazır hâle getirilmesini öğreniyoruz.",
     "subject": "Bilişim Teknolojileri ve Yazılım",
     "gradeLevel": "5. Sınıf",
     "language": "tr",
     "tags": [
-      "problem belirleme",
       "algoritma",
-      "girdi çıktı",
-      "akış şeması",
+      "test etme",
+      "hata ayıklama",
+      "geri bildirim",
       "yazılım tasarımı",
       "programlama",
-      "işlem adımları",
+      "debug",
       "5. sınıf"
     ],
-    "estimatedMinutes": 40,
+    "estimatedMinutes": 35,
     "createdAt": "2026-01-01T00:00:00Z",
     "updatedAt": "2026-01-01T00:00:00Z",
     "sections": [
       {
         "id": "section_01",
         "order": 1,
-        "title": "Problem Nedir? Algoritma Nedir?",
-        "icon": "🤔",
+        "title": "Algoritma Neden Test Edilmeli?",
+        "icon": "🔍",
         "content": [
           {
             "id": "blk_001",
             "type": "markdown",
             "order": 1,
             "content": {
-              "body": "## Problem Nedir?\n\nHayatımızda her gün onlarca sorunla karşılaşırız. Sabah geç kalkmak, çantamızı hazırlamamış olmak, bir şeyin nerede olduğunu bulamamak... İşte bunların hepsi birer **problemdir**.\n\nBilişim dünyasında **problem**, çözülmesi gereken ve net bir sonuca ulaşmayı hedefleyen bir durum ya da sorudur.\n\n## Algoritma Nedir?\n\nBir problemi çözmek için izlediğimiz **adım adım yol tarifi** algoritmadır.\n\nAlgoritmanın temel özellikleri:\n- **Kesin:** Her adım net ve anlaşılır olmalıdır.\n- **Sıralı:** Adımlar belirli bir sıraya göre uygulanır.\n- **Sonlu:** Algoritma bir noktada mutlaka biter.\n- **Etkili:** Her adım gerçekleştirilebilir olmalıdır."
+              "body": "## Algoritma Test Etmek Ne Demektir?\n\nBir algoritma yazdığında, bu algoritmanın gerçekten doğru çalışıp çalışmadığını bilmek istersin. İşte bu yüzden **test etmek** gerekir.\n\nTest etmek; algoritmana farklı girdi değerleri vererek beklediğin sonuçları alıp almadığını kontrol etmektir.\n\n### Test Etmek Neden Gereklidir?\n\n- Algoritman her zaman doğru çalışmayabilir.\n- Bazı durumlarda beklenmedik hatalar ortaya çıkabilir.\n- Test etmeden kullanıma sunulan bir algoritma yanlış sonuçlar üretebilir.\n- Küçük bir hata bile büyük sorunlara yol açabilir.\n\nDüşün: Bir uçak yazılımı test edilmeden kullanılsaydı ne olurdu?"
             }
           },
           {
@@ -39,17 +39,19 @@
             "type": "markdown",
             "order": 2,
             "content": {
-              "body": "## Günlük Hayattan Örnek\n\nSabah okula geç kaldığında ne yaparsın? İşte basit bir algoritma:\n\n1. Gözlerini aç.\n2. Saate bak.\n3. Hızlıca kalk.\n4. Dişlerini fırçala.\n5. Kıyafetlerini giy.\n6. Çantanı al.\n7. Evden çık.\n\nBu adımların sırasını değiştirsen ne olurdu? Kıyafetlerini giymeden evden çıkman mümkün olmaz, değil mi? İşte bu yüzden sıra çok önemlidir!\n\n> **Hatırla:** Bir algoritma, bilgisayara verebileceğimiz kadar kesin ve net talimatlar içermelidir."
+              "body": "## Algoritma Test Süreci\n\nAlgoritmayı test etmek için şu adımları izleriz:\n\n1. **Farklı girdiler seç:** Algoritmanı farklı değerlerle çalıştır.\n2. **Beklenen çıktıyı belirle:** Her girdi için doğru sonucun ne olması gerektiğini önceden düşün.\n3. **Sonucu karşılaştır:** Algoritmanın verdiği çıktıyı beklenen çıktıyla karşılaştır.\n4. **Sonucu değerlendir:** Doğruysa devam et, yanlışsa hatayı bul.\n\n### Örnek\n\nBir toplama algoritması yazdın. Test için şunu yaparsın:\n- Girdi: 3 ve 5 → Beklenen çıktı: 8\n- Girdi: 0 ve 7 → Beklenen çıktı: 7\n- Girdi: -2 ve 4 → Beklenen çıktı: 2\n\nAlgoritman her üçünde de doğru sonuç veriyorsa test başarılı!"
             }
           },
           {
             "id": "blk_003",
-            "type": "misconception",
+            "type": "image",
             "order": 3,
             "content": {
-              "wrong": "Algoritma sadece bilgisayarlar için kullanılan bir kavramdır.",
-              "correct": "Algoritma, bilgisayar olmasa da her alanda karşımıza çıkan adım adım çözüm yoludur; yemek tarifleri, yol tarifleri ve günlük rutinler de birer algoritmadır.",
-              "tip": "Algoritmayı 'bilgisayar talimatı' değil, 'kesin adımlı çözüm yolu' olarak düşün."
+              "svgCode": "<svg viewBox=\"0 0 620 230\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Arial, sans-serif\">\n  <defs>\n    <marker id=\"ok1\" markerWidth=\"10\" markerHeight=\"7\" refX=\"9\" refY=\"3.5\" orient=\"auto\">\n      <polygon points=\"0 0, 10 3.5, 0 7\" fill=\"#555\"/>\n    </marker>\n  </defs>\n  <text x=\"310\" y=\"28\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"bold\" fill=\"#1e293b\">Algoritma Test Süreci</text>\n  <rect x=\"20\" y=\"50\" width=\"120\" height=\"50\" rx=\"8\" fill=\"#2563eb\"/>\n  <text x=\"80\" y=\"72\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\" font-weight=\"bold\">Girdi</text>\n  <text x=\"80\" y=\"89\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">Seç</text>\n  <line x1=\"140\" y1=\"75\" x2=\"178\" y2=\"75\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok1)\"/>\n  <rect x=\"180\" y=\"50\" width=\"120\" height=\"50\" rx=\"8\" fill=\"#16a34a\"/>\n  <text x=\"240\" y=\"72\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\" font-weight=\"bold\">Algoritmayı</text>\n  <text x=\"240\" y=\"89\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">Çalıştır</text>\n  <line x1=\"300\" y1=\"75\" x2=\"338\" y2=\"75\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok1)\"/>\n  <rect x=\"340\" y=\"50\" width=\"120\" height=\"50\" rx=\"8\" fill=\"#ea580c\"/>\n  <text x=\"400\" y=\"72\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\" font-weight=\"bold\">Sonucu</text>\n  <text x=\"400\" y=\"89\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">Karşılaştır</text>\n  <line x1=\"460\" y1=\"75\" x2=\"498\" y2=\"75\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok1)\"/>\n  <rect x=\"500\" y=\"50\" width=\"100\" height=\"50\" rx=\"8\" fill=\"#7c3aed\"/>\n  <text x=\"550\" y=\"72\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\" font-weight=\"bold\">Değerlendir</text>\n  <text x=\"550\" y=\"89\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">Hata / Başarı</text>\n  <rect x=\"20\" y=\"140\" width=\"580\" height=\"40\" rx=\"6\" fill=\"#f1f5f9\"/>\n  <text x=\"310\" y=\"156\" text-anchor=\"middle\" font-size=\"11\" fill=\"#334155\">Doğru sonuç → Test başarılı!</text>\n  <text x=\"310\" y=\"172\" text-anchor=\"middle\" font-size=\"11\" fill=\"#334155\">Yanlış sonuç → Hatayı bul ve düzelt</text>\n  <text x=\"310\" y=\"210\" text-anchor=\"middle\" font-size=\"11\" fill=\"#64748b\">Her adım, algoritmamızın güvenilirliğini artırır.</text>\n</svg>",
+              "imageUrl": "",
+              "imagePrompt": "Algoritma test sürecini gösteren soldan sağa akan dört aşamalı akış şeması: Girdi Seç, Algoritmayı Çalıştır, Sonucu Karşılaştır, Değerlendir",
+              "caption": "Algoritma test sürecinin dört temel adımı",
+              "altText": "Soldan sağa dört kutulu akış şeması: Girdi Seç, Algoritmayı Çalıştır, Sonucu Karşılaştır, Değerlendir"
             }
           }
         ],
@@ -60,28 +62,28 @@
             "order": 1,
             "content": {
               "questionType": "single_choice",
-              "question": "Aşağıdakilerden hangisi bir algoritmanın zorunlu özelliği değildir?",
+              "question": "Bir algoritmayı test etmenin temel amacı nedir?",
               "options": [
                 {
                   "id": "opt_1_01_1",
-                  "text": "Kesin ve net olması"
+                  "text": "Algoritmanın doğru çalışıp çalışmadığını kontrol etmek"
                 },
                 {
                   "id": "opt_1_01_2",
-                  "text": "Sıralı adımlardan oluşması"
+                  "text": "Algoritmayı daha uzun yazmak"
                 },
                 {
                   "id": "opt_1_01_3",
-                  "text": "Mutlaka bilgisayarda çalışması"
+                  "text": "Algoritmayı başkasına göstermek"
                 },
                 {
                   "id": "opt_1_01_4",
-                  "text": "Sonlu olması"
+                  "text": "Algoritmaya yeni adımlar eklemek"
                 }
               ],
-              "correctOptionId": "opt_1_01_3",
-              "hint": "Algoritmanın nerede kullanıldığını değil, nasıl olduğunu düşün.",
-              "explanation": "Algoritma bir bilgisayar programı olmak zorunda değildir. Yemek tarifi, yol tarifi gibi günlük talimatlar da algoritmadır. Bilgisayarda çalışmak algoritmanın zorunlu özelliği değildir."
+              "correctOptionId": "opt_1_01_1",
+              "hint": "Test etmek, bir şeyin doğru işleyip işlemediğini anlamak içindir.",
+              "explanation": "Algoritmayı test etmenin amacı, farklı girdilerle doğru sonuçlar üretip üretmediğini kontrol etmektir."
             }
           },
           {
@@ -90,11 +92,11 @@
             "order": 2,
             "content": {
               "questionType": "true_false",
-              "question": "Aşağıdaki ifadeyi doğru ya da yanlış olarak değerlendiriniz.",
-              "statement": "Algoritma adımlarının sırası değiştirilse bile aynı sonuca ulaşılır.",
+              "question": "Aşağıdaki ifadeyi değerlendirin.",
+              "statement": "Bir algoritmayı yalnızca tek bir girdi değeriyle test etmek yeterlidir.",
               "correctAnswer": false,
-              "hint": "Sabah rutinini düşün: önce giyinip sonra uyumak mümkün mü?",
-              "explanation": "Algoritma adımlarının sırası, sonucu doğrudan etkiler. Yanlış sıralama hatalı ya da hiç sonuç vermeyebilir. Bu nedenle sıralı olma özelliği algoritmanın temel gerekliliklerinden biridir."
+              "hint": "Farklı girdilerde farklı hatalar çıkabilir mi?",
+              "explanation": "Bir algoritmanın farklı durumlarda da doğru çalıştığını görmek için birden fazla ve çeşitli girdi değerleriyle test edilmesi gerekir."
             }
           },
           {
@@ -102,18 +104,52 @@
             "type": "quiz",
             "order": 3,
             "content": {
-              "questionType": "classical_order",
-              "question": "Algoritma adımlarının kesin ve sıralı olmasının zorunluluğu, bilgisayarın hangi temel özelliğinden kaynaklanmaktadır?",
-              "answer_words": [
-                "Bilgisayar,",
-                "belirsiz talimatları",
-                "kendi başına",
-                "yorumlayıp",
-                "anlam çıkaramaz."
+              "questionType": "ordering",
+              "question": "Algoritma test sürecinin adımlarını doğru sıraya koyun.",
+              "items": [
+                {
+                  "id": "stp_01_1",
+                  "text": "Farklı girdi değerleri seç"
+                },
+                {
+                  "id": "stp_01_2",
+                  "text": "Beklenen çıktıyı önceden belirle"
+                },
+                {
+                  "id": "stp_01_3",
+                  "text": "Algoritmayı çalıştır"
+                },
+                {
+                  "id": "stp_01_4",
+                  "text": "Elde edilen sonucu beklenenle karşılaştır"
+                }
               ],
-              "model_answer": "Bilgisayar, belirsiz talimatları kendi başına yorumlayıp anlam çıkaramaz.",
-              "hint": "İnsan bir talimatı yorumlayabilir; bilgisayar yorumlayabilir mi?",
-              "explanation": "Bilgisayarlar mantıksal işlem yapar; belirsizliği insan gibi yorumlayamazlar. Bu nedenle her adımın kesin ve sıralı olması zorunludur; aksi hâlde bilgisayar hangi yolu izleyeceğini bilemez."
+              "correctOrder": [
+                "stp_01_1",
+                "stp_01_2",
+                "stp_01_3",
+                "stp_01_4"
+              ],
+              "hint": "Önce neyi deneyeceğini planla, sonra çalıştır.",
+              "explanation": "Önce girdi seçilir, beklenen sonuç belirlenir, algoritma çalıştırılır ve son olarak sonuç karşılaştırılır."
+            }
+          },
+          {
+            "id": "q_01_04",
+            "type": "quiz",
+            "order": 4,
+            "content": {
+              "questionType": "classical_order",
+              "question": "Algoritma test etmenin yazılım geliştirme sürecindeki önemi nedir?",
+              "answer_words": [
+                "Hataların erken",
+                "fark edilmesini sağlayarak",
+                "güvenilir sonuçlar",
+                "üretilmesine katkı sağlar"
+              ],
+              "model_answer": "Hataların erken fark edilmesini sağlayarak güvenilir sonuçlar üretilmesine katkı sağlar",
+              "hint": "Test etmek hataları ne zaman yakalar?",
+              "explanation": "Algoritma testi, hatalar büyük soruna dönüşmeden önce tespit edilmesini sağlar ve algoritmanın güvenilir biçimde çalışmasını garanti eder."
             }
           }
         ]
@@ -121,37 +157,33 @@
       {
         "id": "section_02",
         "order": 2,
-        "title": "Girdi ve Çıktı: Problemin Bileşenleri",
-        "icon": "🔄",
+        "title": "Hata Nedir? Hata Türleri",
+        "icon": "🐛",
         "content": [
           {
             "id": "blk_004",
             "type": "markdown",
             "order": 1,
             "content": {
-              "body": "## Girdi (Input) Nedir?\n\nBir problemi çözmek için sürece **verilen bilgiler veya değerlere** girdi denir.\n\nÖrnek: Bir hesap makinesiyle toplama yapıyorsun.\n- Girdi: 25 ve 17 sayıları\n\n## Çıktı (Output) Nedir?\n\nİşlem sonucunda **elde edilen sonuca** çıktı denir.\n\nÖrnek:\n- Çıktı: 42\n\n## Süreç (İşlem) Nedir?\n\nGirdileri çıktıya dönüştüren **işlemler topluluğudur**.\n\n| Bileşen | Açıklama | Örnek |\n|---------|----------|-------|\n| Girdi | Sürece giren bilgi | İki sayı |\n| İşlem | Yapılan hesaplama | Toplama |\n| Çıktı | Elde edilen sonuç | Toplam |"
+              "body": "## Algoritmalarda Hatalar\n\nBir algoritmada hata olduğunda buna **bug** (böcek) denir. Hataları bulmak ve düzeltmek işlemine ise **hata ayıklama** (debugging) adı verilir.\n\n### Algoritmalarda Karşılaşılan Hata Türleri\n\n| Hata Türü | Açıklama | Örnek |\n|-----------|----------|-------|\n| Mantık Hatası | Algoritma çalışır ama yanlış sonuç verir | Toplamak yerine çarpmak |\n| Adım Hatası | Bir adım eksik ya da fazladır | Parolayı kontrol etmeyi unutmak |\n| Sıralama Hatası | Adımlar yanlış sırada yazılmıştır | Kapıyı açmadan önce kilidi kilitlemek |\n\nHataların büyük çoğunluğu **mantık hatası** türündendir; algoritma çalışır görünür ama yanlış sonuç üretir."
             }
           },
           {
             "id": "blk_005",
-            "type": "image",
+            "type": "misconception",
             "order": 2,
             "content": {
-              "svgCode": "<svg viewBox=\"0 0 600 200\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Arial, sans-serif\">\n  <defs>\n    <marker id=\"ok_saga\" markerWidth=\"10\" markerHeight=\"7\" refX=\"9\" refY=\"3.5\" orient=\"auto\">\n      <polygon points=\"0 0, 10 3.5, 0 7\" fill=\"#555\"/>\n    </marker>\n  </defs>\n  <text x=\"300\" y=\"30\" text-anchor=\"middle\" font-size=\"15\" font-weight=\"bold\" fill=\"#1e293b\">Girdi - İşlem - Çıktı Süreci</text>\n  <rect x=\"30\" y=\"60\" width=\"130\" height=\"70\" rx=\"10\" fill=\"#2563eb\"/>\n  <text x=\"95\" y=\"91\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"white\">GİRDİ</text>\n  <text x=\"95\" y=\"112\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">25 ve 17</text>\n  <line x1=\"160\" y1=\"95\" x2=\"215\" y2=\"95\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_saga)\"/>\n  <rect x=\"215\" y=\"60\" width=\"170\" height=\"70\" rx=\"10\" fill=\"#16a34a\"/>\n  <text x=\"300\" y=\"91\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"white\">İŞLEM</text>\n  <text x=\"300\" y=\"112\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">Toplama yapılır</text>\n  <line x1=\"385\" y1=\"95\" x2=\"440\" y2=\"95\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_saga)\"/>\n  <rect x=\"440\" y=\"60\" width=\"130\" height=\"70\" rx=\"10\" fill=\"#ea580c\"/>\n  <text x=\"505\" y=\"91\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"white\">ÇIKTI</text>\n  <text x=\"505\" y=\"112\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">42</text>\n  <text x=\"300\" y=\"170\" text-anchor=\"middle\" font-size=\"12\" fill=\"#64748b\">Girdi işleme girer, işlem sonucunda çıktı elde edilir.</text>\n</svg>",
-              "imageUrl": "",
-              "imagePrompt": "Girdi, işlem ve çıktı bileşenlerini gösteren soldan sağa akan oklu kutu diyagramı, 5. sınıf düzeyine uygun renkli ve sade",
-              "caption": "Bir problemin üç temel bileşeni: Girdi, İşlem ve Çıktı",
-              "altText": "Soldan sağa oklar ile bağlanmış üç renkli kutu: Mavi Girdi kutusu, Yeşil İşlem kutusu ve Turuncu Çıktı kutusu"
+              "wrong": "Algoritma çalışıyorsa hata yoktur.",
+              "correct": "Algoritma çalışsa bile yanlış sonuç üretebilir; bu mantık hatasıdır.",
+              "tip": "Her zaman çıktının doğruluğunu kontrol et, sadece çalışıp çalışmadığına bakma."
             }
           },
           {
             "id": "blk_006",
-            "type": "misconception",
+            "type": "markdown",
             "order": 3,
             "content": {
-              "wrong": "Girdi ve çıktı her zaman sayıdır.",
-              "correct": "Girdi ve çıktı; sayı, metin, ses, görüntü veya herhangi bir bilgi türü olabilir.",
-              "tip": "Klavyeden yazılan bir isim de girdi, ekrana yazdırılan sonuç da çıktıdır."
+              "body": "## Hata Ayıklama (Debugging) Nasıl Yapılır?\n\nHata ayıklamak için şu yöntemleri kullanabilirsin:\n\n- **Adım adım izle:** Algoritmayı baştan sona tek tek takip et.\n- **Aradaki değerleri kontrol et:** Her adımdan sonra değerlerin ne olduğunu gözlemle.\n- **Farklı girdiler dene:** Hatanın hangi durumda ortaya çıktığını bulmaya çalış.\n- **Geri bildirim al:** Algoritmayı başkasına göstererek gözden geçirmesini iste.\n\n### Hata Ayıklama Örneği\n\nBir sıralama algoritması yazıyorsun. Girdi: [5, 3, 8, 1]\n- Beklenen çıktı: [1, 3, 5, 8]\n- Algoritma çıktısı: [1, 5, 3, 8] → Hata var!\n- 2. ve 3. adımları kontrol et → Karşılaştırma koşulu yanlış yazılmış."
             }
           }
         ],
@@ -162,31 +194,26 @@
             "order": 1,
             "content": {
               "questionType": "matching",
-              "question": "Aşağıdaki kavramları doğru tanımlarıyla eşleştiriniz.",
+              "question": "Hata türlerini açıklamalarıyla eşleştirin.",
               "pairs": [
                 {
                   "id": "p2_1",
-                  "left": "Girdi",
-                  "right": "Sürece sokulan ham bilgi"
+                  "left": "Mantık Hatası",
+                  "right": "Algoritma çalışır ama yanlış sonuç verir"
                 },
                 {
                   "id": "p2_2",
-                  "left": "Çıktı",
-                  "right": "İşlem sonucunda elde edilen sonuç"
+                  "left": "Adım Hatası",
+                  "right": "Bir adım eksik ya da gereksiz yere fazladır"
                 },
                 {
                   "id": "p2_3",
-                  "left": "İşlem",
-                  "right": "Girdileri çıktıya dönüştüren adımlar"
-                },
-                {
-                  "id": "p2_4",
-                  "left": "Problem",
-                  "right": "Çözülmesi gereken durum veya soru"
+                  "left": "Sıralama Hatası",
+                  "right": "Doğru adımlar yanlış sırada yazılmıştır"
                 }
               ],
-              "hint": "Her bileşenin süreçteki rolünü düşün.",
-              "explanation": "Girdi ham veri, işlem dönüşüm süreci, çıktı ise sonuçtur. Problem ise çözülmeye ihtiyaç duyulan durumdur."
+              "hint": "Her hata türünün algoritmanın farklı bir bölümünü etkilediğini düşün.",
+              "explanation": "Mantık hatası yanlış sonuç, adım hatası eksik/fazla işlem, sıralama hatası ise yanlış sıralı adımlar anlamına gelir."
             }
           },
           {
@@ -194,33 +221,29 @@
             "type": "quiz",
             "order": 2,
             "content": {
-              "questionType": "multiple_choice",
-              "question": "Bir öğrenci not hesaplama programı yazıyor. Aşağıdakilerden hangileri bu programın girdisi olabilir?",
+              "questionType": "single_choice",
+              "question": "Bir algoritmayı adım adım takip ederek hata aramak hangi yönteme örnektir?",
               "options": [
                 {
                   "id": "opt_2_02_1",
-                  "text": "Sınav notları"
+                  "text": "Hata ayıklama (debugging)"
                 },
                 {
                   "id": "opt_2_02_2",
-                  "text": "Ödev notları"
+                  "text": "Algoritma tasarımı"
                 },
                 {
                   "id": "opt_2_02_3",
-                  "text": "Hesaplanan ortalama"
+                  "text": "Akış şeması çizme"
                 },
                 {
                   "id": "opt_2_02_4",
-                  "text": "Öğrencinin adı"
+                  "text": "Girdi seçimi"
                 }
               ],
-              "correctOptionIds": [
-                "opt_2_02_1",
-                "opt_2_02_2",
-                "opt_2_02_4"
-              ],
-              "hint": "Programa verilen bilgileri düşün; hesaplanan değil, verilen bilgiler girdidir.",
-              "explanation": "Sınav notları, ödev notları ve öğrencinin adı programa verilir; bunlar girdidir. Hesaplanan ortalama ise işlem sonucunda elde edilen çıktıdır."
+              "correctOptionId": "opt_2_02_1",
+              "hint": "İngilizce 'debug' ne anlama gelir?",
+              "explanation": "Algoritmadaki hataları adım adım izleyerek bulmak ve düzeltmek işlemi hata ayıklama (debugging) olarak adlandırılır."
             }
           },
           {
@@ -229,19 +252,19 @@
             "order": 3,
             "content": {
               "questionType": "fill_blank",
-              "question": "Aşağıdaki cümledeki boşluğu uygun kavramla doldurunuz.",
-              "question_text": "Bir problemi çözen sistemde, sürece verilen bilgiler ________ olarak adlandırılır.",
+              "question": "Aşağıdaki cümlede boşluğu uygun kelimeyle doldurun.",
+              "question_text": "Algoritmalardaki hataları bulup düzeltme işlemine ________ denir.",
               "acceptedAnswers": [
-                "girdi",
-                "Girdi"
+                "hata ayıklama",
+                "debugging"
               ],
               "distractors": [
-                "çıktı",
-                "işlem",
-                "sonuç"
+                "test etme",
+                "sıralama",
+                "programlama"
               ],
-              "hint": "Bilgi sürece giriyor mu, yoksa çıkıyor mu?",
-              "explanation": "Sürece verilen bilgiler 'girdi' olarak adlandırılır. İşlem sonucunda elde edilen ise 'çıktı'dır."
+              "hint": "Bu işlemin İngilizce karşılığı 'debugging'dir.",
+              "explanation": "Hata ayıklama (debugging), algoritma veya programdaki hataları tespit edip düzeltme sürecidir."
             }
           },
           {
@@ -250,17 +273,16 @@
             "order": 4,
             "content": {
               "questionType": "classical_order",
-              "question": "Girdi ile çıktıyı birbirinden ayıran işlevsel farkı açıklayınız.",
+              "question": "Mantık hatasını diğer hata türlerinden ayıran temel özellik nedir?",
               "answer_words": [
-                "Girdi sürece",
-                "aktarılan ham",
-                "veridir; çıktı ise",
-                "işlem sonucunda",
-                "elde edilen sonuçtur."
+                "Algoritma çalışır",
+                "ancak beklenen",
+                "sonucu değil",
+                "yanlış sonucu üretir"
               ],
-              "model_answer": "Girdi sürece aktarılan ham veridir; çıktı ise işlem sonucunda elde edilen sonuçtur.",
-              "hint": "Biri sürece girer, diğeri süreçten çıkar.",
-              "explanation": "Girdi; sürece sokulan ham bilgidir. Çıktı ise bu bilginin işlenmesiyle ortaya çıkan sonuçtur. İkisi sürecin farklı uçlarını temsil eder."
+              "model_answer": "Algoritma çalışır ancak beklenen sonucu değil yanlış sonucu üretir",
+              "hint": "Mantık hatasında algoritma duraksıyor mu, yoksa çalışmaya devam mı ediyor?",
+              "explanation": "Mantık hatasında algoritma hata vermeden çalışır; ancak ürettiği sonuç beklenen değildir. Bu yüzden en zor fark edilen hata türüdür."
             }
           }
         ]
@@ -268,15 +290,15 @@
       {
         "id": "section_03",
         "order": 3,
-        "title": "Günlük Hayattan Problem Çözme Adımları",
-        "icon": "🧩",
+        "title": "Geri Bildirim Alma ve Günlük Hayattan Örnekler",
+        "icon": "💬",
         "content": [
           {
             "id": "blk_007",
             "type": "markdown",
             "order": 1,
             "content": {
-              "body": "## Problemi Belirleme\n\nBir problemi çözmeden önce onu **doğru tanımlamalıyız**. İyi tanımlanmamış bir problem, doğru çözüme götürmez.\n\nBir problemi belirlerken şu soruları sorarız:\n- **Ne istiyoruz?** (Hedef nedir?)\n- **Elimizde ne var?** (Girdi nedir?)\n- **Ne elde edeceğiz?** (Çıktı nedir?)\n\n## Örnek: Sınıfın Sıralarını Düzenleme\n\n**Problem:** Sınıfın sıraları dağınık, öğretmen sıraları düzenlenmesini istiyor.\n\n| | |\n|---|---|\n| **Girdi** | Sıraların mevcut düzeni, istenilen düzen |\n| **İşlem** | Sıraları birer birer doğru konuma taşıma |\n| **Çıktı** | Düzenlenmiş sınıf |\n\n## Adımları Listeleme\n\nProblemi tanımladıktan sonra çözüm adımlarını yazarız:\n\n1. Mevcut düzeni incele.\n2. İstenilen düzeni belirle.\n3. İlk sırayı doğru konuma taşı.\n4. Diğer sıraları sırayla yerleştir.\n5. Son durumu kontrol et."
+              "body": "## Geri Bildirim Nedir?\n\n**Geri bildirim**, bir algoritmayı veya ürünü test eden kişilerin deneyimlerini ve düşüncelerini aktarmasıdır.\n\nAlgoritmayı yalnızca kendin test etmek her zaman yeterli olmayabilir. Çünkü:\n- Kendi hatalarını görmekte zorlanabilirsin.\n- Farklı insanlar farklı durumlar dener; bu yeni hatalar ortaya çıkarabilir.\n- Başkasının bakış açısı algoritmanı daha iyi yapmana yardımcı olur.\n\n### Geri Bildirim Almak İçin Neler Yapılabilir?\n\n- Algoritmanı bir arkadaşına açıkla ve ondan denemesini iste.\n- Öğretmeninden incelemesini iste.\n- Test sonuçlarını yazıp gözden geçir.\n- Hataların nerede, hangi girdide çıktığını not al."
             }
           },
           {
@@ -284,7 +306,7 @@
             "type": "markdown",
             "order": 2,
             "content": {
-              "body": "## Farklı Problemlerden Örnekler\n\n### Örnek 1: Alışveriş Listesi\n- **Problem:** Markete gideceksin ama neyi alacağını bilmiyorsun.\n- **Girdi:** Buzdolabında ne var, ne yok?\n- **Çıktı:** Eksiksiz alışveriş listesi\n\n### Örnek 2: Kelime Oyunu\n- **Problem:** Bir kelimeyi tersine çevirmek istiyorsun.\n- **Girdi:** Orijinal kelime (örneğin \"araba\")\n- **Çıktı:** Tersine çevrilmiş kelime (\"abara\")\n\n### Örnek 3: Sınıf Nöbet Listesi\n- **Problem:** Sınıfın nöbet listesini adil biçimde oluşturmak\n- **Girdi:** Öğrenci adları ve gün sayısı\n- **Çıktı:** Günlük nöbet çizelgesi\n\n> **İpucu:** Her problemde önce \"Girdi nedir? Çıktı nedir?\" sorularını sor, sonra adımları belirle."
+              "body": "## Günlük Hayattan Örnekler\n\nTest etme ve geri bildirim alma sadece bilgisayar dünyasında değil, günlük hayatta da karşımıza çıkar:\n\n### Örnek 1: Yemek Tarifi\nBir yemek tarifi (algoritma) yazıyorsun. Arkadaşın tarifi uygular ve yemeğin tuzsuz çıktığını söyler. Bu bir **geri bildirimdir**. Tarife tuz ekleme adımı koyarsın → Algoritma düzelir.\n\n### Örnek 2: Oyun Uygulaması\nBir mobil oyun çıkmadan önce test oyuncularına (beta test) sunulur. Oyuncular bulduğu hataları rapor eder. Geliştiriciler bu geri bildirimlere göre hataları düzeltir.\n\n### Örnek 3: Sınav Sorusu\nBir sınav sorusu hazırlandıktan sonra başka bir öğretmen inceler ve belirsiz bir ifade bulur. Bu geri bildirim sayesinde soru netleştirilir.\n\nGörüyorsun ki **test etmek ve geri bildirim almak**, her alanda kaliteyi artırır."
             }
           },
           {
@@ -292,9 +314,9 @@
             "type": "misconception",
             "order": 3,
             "content": {
-              "wrong": "Problemi çözmek için hemen yazmaya başlamalıyım; önce analiz yapmaya gerek yok.",
-              "correct": "Önce problemi iyi anlamak, girdi ve çıktıları belirlemek gerekir; ancak sonra çözüm adımları yazılır.",
-              "tip": "Aceleci başlamak, yanlış çözümlere ya da eksik algoritmalara yol açar."
+              "wrong": "Geri bildirim almak zayıflık işaretidir; iyi bir algoritma zaten mükemmel olur.",
+              "correct": "Geri bildirim almak, algoritmanın gelişmesi için en değerli yöntemlerden biridir.",
+              "tip": "En iyi yazılımlar bile test ekipleri ve kullanıcı geri bildirimleriyle iyileştirilir."
             }
           }
         ],
@@ -304,29 +326,12 @@
             "type": "quiz",
             "order": 1,
             "content": {
-              "questionType": "single_choice",
-              "question": "Bir öğrenci \"Kaç sorum var?\" diye soruyor ama elimizde soru listesi yok. Bu durumda algoritmayı çalıştırmak için önce ne yapılmalıdır?",
-              "options": [
-                {
-                  "id": "opt_3_01_1",
-                  "text": "Direkt cevap bulmaya çalışılmalı"
-                },
-                {
-                  "id": "opt_3_01_2",
-                  "text": "Girdi olan soru listesi temin edilmeli"
-                },
-                {
-                  "id": "opt_3_01_3",
-                  "text": "Çıktı tahmin edilmeli"
-                },
-                {
-                  "id": "opt_3_01_4",
-                  "text": "Algoritma gereksizdir, akılda tutulabilir"
-                }
-              ],
-              "correctOptionId": "opt_3_01_2",
-              "hint": "Girdi olmadan işlem yapılabilir mi?",
-              "explanation": "Girdi olmadan algoritma çalışamaz. Soru sayısını saymak için önce soru listesine ihtiyaç vardır. Bu durum girdinin zorunluluğunu gösterir."
+              "questionType": "true_false",
+              "question": "Aşağıdaki ifadeyi değerlendirin.",
+              "statement": "Geri bildirim almak, algoritmanın hatalarını daha kolay fark etmeye yardımcı olur.",
+              "correctAnswer": true,
+              "hint": "Başkasının bakış açısını düşün.",
+              "explanation": "Başkasının algoritmayı test etmesi, kişinin kendi göremediği hataları ortaya çıkarır ve algoritmanın gelişmesini sağlar."
             }
           },
           {
@@ -334,34 +339,33 @@
             "type": "quiz",
             "order": 2,
             "content": {
-              "questionType": "ordering",
-              "question": "Bir problemi çözmek için izlenmesi gereken aşamaları doğru sıraya koyunuz.",
-              "items": [
+              "questionType": "multiple_choice",
+              "question": "Aşağıdakilerden hangileri geri bildirim almak için kullanılabilecek yöntemlerdir?",
+              "options": [
                 {
-                  "id": "ord_3_1",
-                  "text": "Problemi tanımla ve anla"
+                  "id": "opt_3_02_1",
+                  "text": "Algoritmayı bir arkadaşa açıklayıp denemesini istemek"
                 },
                 {
-                  "id": "ord_3_2",
-                  "text": "Girdi ve çıktıları belirle"
+                  "id": "opt_3_02_2",
+                  "text": "Test sonuçlarını yazıp gözden geçirmek"
                 },
                 {
-                  "id": "ord_3_3",
-                  "text": "Çözüm adımlarını listele"
+                  "id": "opt_3_02_3",
+                  "text": "Algoritmayı hiç kimseyle paylaşmamak"
                 },
                 {
-                  "id": "ord_3_4",
-                  "text": "Adımları sınayarak doğrula"
+                  "id": "opt_3_02_4",
+                  "text": "Öğretmenden incelemesini istemek"
                 }
               ],
-              "correctOrder": [
-                "ord_3_1",
-                "ord_3_2",
-                "ord_3_3",
-                "ord_3_4"
+              "correctOptionIds": [
+                "opt_3_02_1",
+                "opt_3_02_2",
+                "opt_3_02_4"
               ],
-              "hint": "Önce anlamadan, girdi-çıktı bilmeden adım yazılabilir mi?",
-              "explanation": "Önce problemi anlamak, ardından girdi-çıktıları belirlemek ve çözüm adımlarını yazmak gerekir. Son aşamada algoritmayı test etmek doğruluğu sağlar."
+              "hint": "Geri bildirim başkasından gelir mi, yoksa yalnız da alınabilir mi?",
+              "explanation": "Geri bildirim; başkasına açıklama, test kaydetme ve öğretmen incelemesi gibi yollarla alınabilir. Algoritmayı kimseyle paylaşmamak geri bildirim almayı engeller."
             }
           },
           {
@@ -369,12 +373,29 @@
             "type": "quiz",
             "order": 3,
             "content": {
-              "questionType": "true_false",
-              "question": "Aşağıdaki ifadeyi doğru ya da yanlış olarak değerlendiriniz.",
-              "statement": "Bir problemin girdisi ve çıktısı belirlenmeden doğru işlem adımları yazılamaz.",
-              "correctAnswer": true,
-              "hint": "Nereye gideceğini bilmeden yol tarifi yapabilir misin?",
-              "explanation": "Girdi ve çıktı belirlenmeden işlem adımları yazılırsa algoritma eksik ya da yanlış olur. Girdinin ne olduğunu bilmeden neyin nasıl işleneceğini, çıktının ne olacağını bilmeden ise hedefe ulaşıp ulaşılmadığını belirleyemeyiz."
+              "questionType": "single_choice",
+              "question": "Bir mobil oyunun kullanıcılara sunulmadan önce test oyuncularına verilmesi hangi kavrama örnek oluşturur?",
+              "options": [
+                {
+                  "id": "opt_3_03_1",
+                  "text": "Geri bildirim alma"
+                },
+                {
+                  "id": "opt_3_03_2",
+                  "text": "Algoritma tasarlama"
+                },
+                {
+                  "id": "opt_3_03_3",
+                  "text": "Akış şeması çizme"
+                },
+                {
+                  "id": "opt_3_03_4",
+                  "text": "Girdi seçimi yapma"
+                }
+              ],
+              "correctOptionId": "opt_3_03_1",
+              "hint": "Test oyuncuları buldukları sorunları geliştiricilere bildiriyor.",
+              "explanation": "Test oyuncuları deneyimledikleri sorunları bildirerek geri bildirim sağlar; bu sayede oyun kullanıma hazır hâle getirilir."
             }
           },
           {
@@ -383,17 +404,16 @@
             "order": 4,
             "content": {
               "questionType": "classical_order",
-              "question": "Bir tarif defterindeki yemek yapım talimatları algoritma tanımına uymaktadır; bu uyumun temel koşulu nedir?",
+              "question": "Algoritma geliştirme sürecinde geri bildirim almanın sağladığı temel avantajı belirtiniz.",
               "answer_words": [
-                "Her adımın",
-                "belirli bir sırayla",
-                "ve kesin biçimde",
-                "tanımlanmış olması",
-                "gerekmektedir."
+                "Kişinin kendi",
+                "göremediği hataların",
+                "başkası tarafından",
+                "tespit edilmesini sağlar"
               ],
-              "model_answer": "Her adımın belirli bir sırayla ve kesin biçimde tanımlanmış olması gerekmektedir.",
-              "hint": "Tarif ile algoritmayı buluşturan ortak özelliği düşün.",
-              "explanation": "Bir tarif; malzeme miktarlarını, işlem sırasını ve beklenen sonucu net biçimde veriyorsa algoritma tanımına uyar. Belirsiz ifadeler bu uyumu bozar."
+              "model_answer": "Kişinin kendi göremediği hataların başkası tarafından tespit edilmesini sağlar",
+              "hint": "Kendi hatalarını görmek neden zordur?",
+              "explanation": "Algoritma sahibi bazı hataları gözden kaçırabilir. Başkasının geri bildirimi, bu hataların fark edilmesini ve düzeltilmesini kolaylaştırır."
             }
           }
         ]
@@ -401,15 +421,15 @@
       {
         "id": "section_04",
         "order": 4,
-        "title": "Akış Şeması: Algoritmaları Görselleştirme",
-        "icon": "📊",
+        "title": "Hataları Ayıklayarak Algoritmayı Düzeltme",
+        "icon": "🔧",
         "content": [
           {
             "id": "blk_010",
             "type": "markdown",
             "order": 1,
             "content": {
-              "body": "## Akış Şeması Nedir?\n\nAkış şeması, bir algoritmanın adımlarını **şekil ve oklarla görsel olarak gösteren diyagramdır**.\n\nAkış şeması sayesinde:\n- Algoritmanın akışını bir bakışta görebiliriz.\n- Hataları daha kolay bulabiliriz.\n- Başkalarına algoritmamızı daha açık anlatırız.\n\n## Temel Akış Şeması Sembolleri\n\n| Sembol | Şekil | Anlamı |\n|--------|-------|--------|\n| Başla/Bitir | Oval/Yuvarlak köşeli dikdörtgen | Algoritmanın başlangıcı ve sonu |\n| İşlem | Dikdörtgen | Gerçekleştirilen işlem |\n| Karar | Eşkenar dörtgen (baklava) | Evet/Hayır sorusu |\n| Veri | Paralelkenar | Girdi veya çıktı |\n| Ok | Yönlü çizgi | Akışın yönü |"
+              "body": "## Hata Bulundu, Sonra Ne Yapılır?\n\nBir hata tespit ettiğinde şu adımları izle:\n\n1. **Hatayı tanımla:** Hatanın tam olarak nerede olduğunu bul.\n2. **Nedenini anla:** Bu hata neden ortaya çıktı? Yanlış adım mı, yanlış sıra mı?\n3. **Düzelt:** Algoritmadaki hatalı adımı düzelt veya eksik adımı ekle.\n4. **Yeniden test et:** Düzeltme sonrasında algoritmayı tekrar test et.\n5. **Hata kalmadığını doğrula:** Tüm test girdilerinde doğru sonuç çıkıyor mu?\n\n### Dikkat!\nBir hatayı düzeltmek bazen başka bir hataya yol açabilir. Bu yüzden her düzeltme sonrası algoritmayı **baştan test etmek** gerekir."
             }
           },
           {
@@ -417,11 +437,11 @@
             "type": "image",
             "order": 2,
             "content": {
-              "svgCode": "<svg viewBox=\"0 0 340 480\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Arial, sans-serif\">\n  <defs>\n    <marker id=\"ok_asagi\" markerWidth=\"7\" markerHeight=\"10\" refX=\"3.5\" refY=\"9\" orient=\"auto\">\n      <polygon points=\"0 0, 7 0, 3.5 10\" fill=\"#555\"/>\n    </marker>\n  </defs>\n  <text x=\"170\" y=\"28\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"bold\" fill=\"#1e293b\">Akış Şeması Sembolleri</text>\n  <rect x=\"70\" y=\"45\" width=\"200\" height=\"40\" rx=\"20\" fill=\"#2563eb\"/>\n  <text x=\"170\" y=\"70\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"bold\" fill=\"white\">BAŞLA / BİTİR (Oval)</text>\n  <line x1=\"170\" y1=\"85\" x2=\"170\" y2=\"108\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <rect x=\"70\" y=\"108\" width=\"200\" height=\"40\" rx=\"4\" fill=\"#16a34a\"/>\n  <text x=\"170\" y=\"133\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"bold\" fill=\"white\">İŞLEM (Dikdörtgen)</text>\n  <line x1=\"170\" y1=\"148\" x2=\"170\" y2=\"171\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <polygon points=\"170,171 270,211 170,251 70,211\" fill=\"#ea580c\"/>\n  <text x=\"170\" y=\"208\" text-anchor=\"middle\" font-size=\"11\" font-weight=\"bold\" fill=\"white\">KARAR</text>\n  <text x=\"170\" y=\"225\" text-anchor=\"middle\" font-size=\"10\" fill=\"white\">(Baklava Dilimi)</text>\n  <line x1=\"170\" y1=\"251\" x2=\"170\" y2=\"274\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <polygon points=\"70,274 270,274 250,314 90,314\" fill=\"#7c3aed\"/>\n  <text x=\"170\" y=\"299\" text-anchor=\"middle\" font-size=\"12\" font-weight=\"bold\" fill=\"white\">VERİ (Paralelkenar)</text>\n  <line x1=\"170\" y1=\"314\" x2=\"170\" y2=\"337\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <line x1=\"100\" y1=\"350\" x2=\"240\" y2=\"350\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok_asagi)\"/>\n  <text x=\"170\" y=\"370\" text-anchor=\"middle\" font-size=\"12\" fill=\"#1e293b\">OK: Akış Yönü</text>\n  <text x=\"170\" y=\"400\" text-anchor=\"middle\" font-size=\"11\" fill=\"#64748b\">Her sembol algoritmanın farklı</text>\n  <text x=\"170\" y=\"418\" text-anchor=\"middle\" font-size=\"11\" fill=\"#64748b\">bir aşamasını temsil eder.</text>\n  <text x=\"170\" y=\"460\" text-anchor=\"middle\" font-size=\"10\" fill=\"#94a3b8\">Semboller, standart akış şeması kurallarına göredir.</text>\n</svg>",
+              "svgCode": "<svg viewBox=\"0 0 580 260\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Arial, sans-serif\">\n  <defs>\n    <marker id=\"ok2\" markerWidth=\"10\" markerHeight=\"7\" refX=\"9\" refY=\"3.5\" orient=\"auto\">\n      <polygon points=\"0 0, 10 3.5, 0 7\" fill=\"#555\"/>\n    </marker>\n    <marker id=\"ok_asagi2\" markerWidth=\"7\" markerHeight=\"10\" refX=\"3.5\" refY=\"9\" orient=\"auto\">\n      <polygon points=\"0 7, 7 7, 3.5 0\" fill=\"#dc2626\"/>\n    </marker>\n  </defs>\n  <text x=\"290\" y=\"28\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"bold\" fill=\"#1e293b\">Hata Ayıklama Döngüsü</text>\n  <rect x=\"200\" y=\"45\" width=\"140\" height=\"42\" rx=\"8\" fill=\"#2563eb\"/>\n  <text x=\"270\" y=\"62\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\" font-weight=\"bold\">Algoritmayı</text>\n  <text x=\"270\" y=\"78\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\">Test Et</text>\n  <line x1=\"270\" y1=\"87\" x2=\"270\" y2=\"118\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok2)\" transform=\"rotate(90 270 103)\"/>\n  <line x1=\"270\" y1=\"87\" x2=\"270\" y2=\"120\" stroke=\"#555\" stroke-width=\"2\"/>\n  <polygon points=\"265,120 275,120 270,128\" fill=\"#555\"/>\n  <rect x=\"170\" y=\"128\" width=\"200\" height=\"42\" rx=\"8\" fill=\"#ea580c\"/>\n  <text x=\"270\" y=\"145\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\" font-weight=\"bold\">Hata Var mı?</text>\n  <text x=\"270\" y=\"161\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">(Sonucu Karşılaştır)</text>\n  <line x1=\"370\" y1=\"149\" x2=\"430\" y2=\"149\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok2)\"/>\n  <text x=\"398\" y=\"142\" text-anchor=\"middle\" font-size=\"11\" fill=\"#16a34a\" font-weight=\"bold\">Hayır</text>\n  <rect x=\"430\" y=\"128\" width=\"120\" height=\"42\" rx=\"8\" fill=\"#16a34a\"/>\n  <text x=\"490\" y=\"145\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\" font-weight=\"bold\">Algoritma</text>\n  <text x=\"490\" y=\"161\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\">Hazır!</text>\n  <line x1=\"270\" y1=\"170\" x2=\"270\" y2=\"198\" stroke=\"#555\" stroke-width=\"2\"/>\n  <polygon points=\"265,198 275,198 270,206\" fill=\"#555\"/>\n  <text x=\"245\" y=\"188\" text-anchor=\"middle\" font-size=\"11\" fill=\"#dc2626\" font-weight=\"bold\">Evet</text>\n  <rect x=\"170\" y=\"206\" width=\"200\" height=\"40\" rx=\"8\" fill=\"#7c3aed\"/>\n  <text x=\"270\" y=\"222\" text-anchor=\"middle\" font-size=\"12\" fill=\"white\" font-weight=\"bold\">Hatayı Bul</text>\n  <text x=\"270\" y=\"238\" text-anchor=\"middle\" font-size=\"11\" fill=\"white\">ve Düzelt</text>\n  <line x1=\"170\" y1=\"226\" x2=\"100\" y2=\"226\" stroke=\"#555\" stroke-width=\"2\"/>\n  <line x1=\"100\" y1=\"66\" x2=\"100\" y2=\"226\" stroke=\"#555\" stroke-width=\"2\"/>\n  <line x1=\"100\" y1=\"66\" x2=\"200\" y2=\"66\" stroke=\"#555\" stroke-width=\"2\" marker-end=\"url(#ok2)\"/>\n</svg>",
               "imageUrl": "",
-              "imagePrompt": "Akış şeması sembollerini gösteren, oval başla/bitir, dikdörtgen işlem, baklava dilimi karar ve paralelkenar veri sembollerini içeren eğitsel diyagram",
-              "caption": "Temel akış şeması sembolleri ve anlamları",
-              "altText": "Akış şemasında kullanılan semboller: Mavi oval Başla/Bitir, Yeşil dikdörtgen İşlem, Turuncu baklava dilimi Karar, Mor paralelkenar Veri, Ok Akış Yönü"
+              "imagePrompt": "Hata ayıklama döngüsünü gösteren akış şeması: Algoritmayı Test Et, Hata Var mı sorusu, Evet ise Hatayı Bul ve Düzelt döngüsü, Hayır ise Algoritma Hazır",
+              "caption": "Hata ayıklama: Test et, hata bul, düzelt ve yeniden test et döngüsü",
+              "altText": "Hata ayıklama döngüsünü gösteren akış şeması, hata bulunursa düzeltip tekrar test etmeye geri döner, hata yoksa algoritma hazır olur"
             }
           },
           {
@@ -429,7 +449,7 @@
             "type": "markdown",
             "order": 3,
             "content": {
-              "body": "## Örnek: Sayının Çift mi Tek mi Olduğunu Bulma\n\nBu algoritma, girilen bir sayının çift mi tek mi olduğunu belirler.\n\n**Girdi:** Bir sayı (örneğin 8)\n**Çıktı:** \"Çift\" veya \"Tek\" bilgisi\n\nAkış şeması adımları:\n1. **Başla**\n2. Sayıyı al (Girdi)\n3. Sayı 2'ye tam bölünüyor mu? (Karar)\n   - **Evet** → \"Çift sayıdır\" yaz\n   - **Hayır** → \"Tek sayıdır\" yaz\n4. **Bitir**\n\nGördüğün gibi karar noktaları algoritmada iki farklı yol oluşturabilir. Akış şeması bunu görsel olarak net şekilde gösterir."
+              "body": "## Algoritmayı Kullanıma Hazır Hâle Getirme\n\nAlgoritmayı kullanıma hazır sayabilmek için şu koşulların sağlanması gerekir:\n\n- Tüm test girdilerinde doğru sonuç üretilmelidir.\n- Bilinen tüm hatalar düzeltilmiş olmalıdır.\n- Algoritma, beklenmedik girdilere karşı da tutarlı davranmalıdır.\n- Geri bildirimler değerlendirilerek gerekli düzenlemeler yapılmış olmalıdır.\n\nBu adımları tamamlayan bir algoritma artık **kullanıma hazır** demektir."
             }
           }
         ],
@@ -439,29 +459,39 @@
             "type": "quiz",
             "order": 1,
             "content": {
-              "questionType": "single_choice",
-              "question": "Akış şemasında bir karar noktası hangi sembolle gösterilir?",
-              "options": [
+              "questionType": "ordering",
+              "question": "Bir hata bulunduğunda izlenecek adımları doğru sıraya koyun.",
+              "items": [
                 {
-                  "id": "opt_4_01_1",
-                  "text": "Dikdörtgen"
+                  "id": "stp_04_1",
+                  "text": "Hatanın tam yerini belirle"
                 },
                 {
-                  "id": "opt_4_01_2",
-                  "text": "Oval"
+                  "id": "stp_04_2",
+                  "text": "Hatanın nedenini anla"
                 },
                 {
-                  "id": "opt_4_01_3",
-                  "text": "Baklava dilimi (eşkenar dörtgen)"
+                  "id": "stp_04_3",
+                  "text": "Algoritmayı düzelt"
                 },
                 {
-                  "id": "opt_4_01_4",
-                  "text": "Paralelkenar"
+                  "id": "stp_04_4",
+                  "text": "Algoritmayı yeniden test et"
+                },
+                {
+                  "id": "stp_04_5",
+                  "text": "Hata kalmadığını doğrula"
                 }
               ],
-              "correctOptionId": "opt_4_01_3",
-              "hint": "Evet/Hayır sorusu soran sembolü düşün.",
-              "explanation": "Karar noktaları, iki farklı yol arasında seçim yapıldığını gösterir ve baklava dilimi (eşkenar dörtgen) şekliyle temsil edilir."
+              "correctOrder": [
+                "stp_04_1",
+                "stp_04_2",
+                "stp_04_3",
+                "stp_04_4",
+                "stp_04_5"
+              ],
+              "hint": "Önce nerede olduğunu bul, sonra nedenini anla, düzelt ve doğrula.",
+              "explanation": "Hata düzeltme sürecinde önce hata yeri tespit edilir, nedeni anlaşılır, düzeltme yapılır, ardından algoritma tekrar test edilerek doğrulanır."
             }
           },
           {
@@ -469,33 +499,12 @@
             "type": "quiz",
             "order": 2,
             "content": {
-              "questionType": "multiple_choice",
-              "question": "Akış şemasının sağladığı avantajlar arasında aşağıdakilerden hangileri yer alır?",
-              "options": [
-                {
-                  "id": "opt_4_02_1",
-                  "text": "Algoritmanın akışını görsel olarak gösterir"
-                },
-                {
-                  "id": "opt_4_02_2",
-                  "text": "Hataları bulmayı kolaylaştırır"
-                },
-                {
-                  "id": "opt_4_02_3",
-                  "text": "Algoritmayı otomatik olarak çalıştırır"
-                },
-                {
-                  "id": "opt_4_02_4",
-                  "text": "Başkalarına açıklamayı kolaylaştırır"
-                }
-              ],
-              "correctOptionIds": [
-                "opt_4_02_1",
-                "opt_4_02_2",
-                "opt_4_02_4"
-              ],
-              "hint": "Akış şeması bir program değildir; bir gösterim aracıdır.",
-              "explanation": "Akış şeması algoritmayı görselleştirerek anlamayı, hata bulmayı ve paylaşmayı kolaylaştırır. Ancak bir program değildir; algoritmayı kendisi çalıştırmaz."
+              "questionType": "true_false",
+              "question": "Aşağıdaki ifadeyi değerlendirin.",
+              "statement": "Bir hatayı düzelttikten sonra algoritmayı yeniden test etmek gerekmez.",
+              "correctAnswer": false,
+              "hint": "Bir düzeltme başka bir hataya neden olabilir mi?",
+              "explanation": "Bir hatayı düzeltmek bazen başka hatalara yol açabilir. Bu yüzden her düzeltme sonrası algoritmayı baştan test etmek zorunludur."
             }
           },
           {
@@ -503,12 +512,33 @@
             "type": "quiz",
             "order": 3,
             "content": {
-              "questionType": "true_false",
-              "question": "Aşağıdaki ifadeyi doğru ya da yanlış olarak değerlendiriniz.",
-              "statement": "Akış şemasında karar sembolünden yalnızca bir yol çıkabilir.",
-              "correctAnswer": false,
-              "hint": "Karar sembolü 'Evet' ve 'Hayır' gibi iki olasılığı temsil eder.",
-              "explanation": "Karar sembolünden iki yol çıkar: 'Evet' ve 'Hayır' (veya Doğru/Yanlış). Bu, algoritmanın koşula göre farklı yollar izleyebildiğini gösterir."
+              "questionType": "multiple_choice",
+              "question": "Bir algoritmanın kullanıma hazır sayılabilmesi için hangi koşullar sağlanmış olmalıdır?",
+              "options": [
+                {
+                  "id": "opt_4_03_1",
+                  "text": "Tüm test girdilerinde doğru sonuç üretilmelidir"
+                },
+                {
+                  "id": "opt_4_03_2",
+                  "text": "Bilinen tüm hatalar düzeltilmiş olmalıdır"
+                },
+                {
+                  "id": "opt_4_03_3",
+                  "text": "Algoritma mutlaka en kısa şekilde yazılmış olmalıdır"
+                },
+                {
+                  "id": "opt_4_03_4",
+                  "text": "Geri bildirimler değerlendirilerek düzenlemeler yapılmış olmalıdır"
+                }
+              ],
+              "correctOptionIds": [
+                "opt_4_03_1",
+                "opt_4_03_2",
+                "opt_4_03_4"
+              ],
+              "hint": "Hazır olmak için doğruluk ve geri bildirim şart mıdır?",
+              "explanation": "Doğru sonuç üretmek, hataların giderilmesi ve geri bildirimlerin değerlendirilmesi zorunludur. Algoritmanın uzunluğu ise kullanıma hazırlık için bir ölçüt değildir."
             }
           },
           {
@@ -517,18 +547,17 @@
             "order": 4,
             "content": {
               "questionType": "classical_order",
-              "question": "Akış şemasının doğru işlev görmesinin hangi koşulun sağlanmasına bağlı olduğunu açıklayınız.",
+              "question": "Hata ayıklama ile algoritma geliştirme arasındaki ilişkiyi açıklayınız.",
               "answer_words": [
-                "Her sembolün",
-                "doğru yerde kullanılması",
-                "ve okların",
-                "akış yönünü",
-                "eksiksiz göstermesi",
-                "gerekmektedir."
+                "Hata ayıklama,",
+                "algoritmanın doğru",
+                "ve güvenilir hâle",
+                "gelmesini sağlayan",
+                "zorunlu bir aşamadır"
               ],
-              "model_answer": "Her sembolün doğru yerde kullanılması ve okların akış yönünü eksiksiz göstermesi gerekmektedir.",
-              "hint": "Yanlış sembol veya eksik ok ne anlama gelir?",
-              "explanation": "Akış şemasında her sembol belirli bir anlamı temsil eder. Yanlış sembol kullanılırsa şema yanıltıcı olur. Oklar olmadan akışın hangi yönde ilerlediği anlaşılamaz. Bu nedenle her ikisi de eksiksiz olmalıdır."
+              "model_answer": "Hata ayıklama, algoritmanın doğru ve güvenilir hâle gelmesini sağlayan zorunlu bir aşamadır",
+              "hint": "Hata ayıklama olmadan algoritma geliştirme tamamlanabilir mi?",
+              "explanation": "Hata ayıklama, algoritma geliştirme sürecinin ayrılmaz bir parçasıdır. Bu aşama atlanırsa algoritma hatalı çalışmaya devam edebilir."
             }
           }
         ]
@@ -544,15 +573,25 @@
             "type": "markdown",
             "order": 1,
             "content": {
-              "body": "## Öğrendiklerimizi Birleştirelim\n\nBu derste aşağıdaki temel kavramları öğrendik:\n\n### 1. Problem Belirleme\nGünlük hayattan bir problemi fark etmek ve net biçimde tanımlamak.\n\n### 2. Girdi ve Çıktı Belirleme\nProblemin çözümüne neyin girdiğini ve sonuçta neyin elde edildiğini belirlemek.\n\n### 3. İşlem Adımlarını Listeleme\nProblemi çözen sıralı, kesin ve sonlu adımları yazmak.\n\n### 4. Akış Şeması\nAlgoritmayı semboller ve oklarla görselleştirmek.\n\n## Tüm Sürecin Özeti\n\n**Problem → Girdi/Çıktı Belirleme → Algoritma → Akış Şeması**\n\nBu dört adım, bir sorunu bilgisayara çözdürmek için gereken temel süreçtir. Yazılım geliştiriciler her gün bu adımları izler."
+              "body": "## Öğrendiklerimizi Özetleyelim\n\nBu modülde şunları öğrendik:\n\n- **Algoritma testi:** Algoritmanın farklı girdilerle doğru çalışıp çalışmadığını kontrol etme sürecidir.\n- **Hata türleri:** Mantık hatası, adım hatası ve sıralama hatası olmak üzere üç temel tür vardır.\n- **Hata ayıklama (debugging):** Hataları bulup düzeltme işlemidir.\n- **Geri bildirim:** Başkalarının algoritma hakkındaki görüş ve tespitleridir; geliştirme sürecinde büyük önem taşır.\n- **Kullanıma hazır algoritma:** Tüm testleri geçmiş, hataları giderilmiş, geri bildirimleri değerlendirilmiş algoritmadır.\n\n### Altın Kural\nHiçbir algoritma ilk yazılışında mükemmel olmaz. Test etmek, hata ayıklamak ve geri bildirim almak — bu üçlü, her iyi algoritmacının rutinidir."
             }
           },
           {
             "id": "blk_014",
-            "type": "markdown",
+            "type": "misconception",
             "order": 2,
             "content": {
-              "body": "## Uygulama: Kapsamlı Bir Örnek\n\n**Problem:** Öğrencinin sınav ortalamasını hesapla ve geçip geçmediğini belirle.\n\n**Girdi:**\n- Sınav 1 notu\n- Sınav 2 notu\n\n**Çıktı:**\n- Ortalama\n- Geçti / Kaldı bilgisi\n\n**Algoritma Adımları:**\n1. Sınav 1 ve Sınav 2 notlarını al.\n2. İki notu topla.\n3. Toplamı 2'ye böl (ortalama).\n4. Ortalama 50'den büyük veya eşit mi?\n   - Evet: \"Geçti\" yaz.\n   - Hayır: \"Kaldı\" yaz.\n5. Bitir.\n\n**Fark Ettiniz mi?**\nBu örnekte bir karar noktası var. Akış şemasında bu noktada baklava dilimi sembolü kullanılır ve iki farklı yol ortaya çıkar."
+              "wrong": "Algoritmayı bir kez test etmek yeterlidir; sonra değişiklik yapılırsa yeniden test etmeye gerek yoktur.",
+              "correct": "Her değişiklik sonrasında algoritmanın yeniden test edilmesi gerekir; bir düzeltme yeni bir hata yaratabilir.",
+              "tip": "Düzelt, sonra test et. Bu döngü, algoritma hazır olana kadar devam eder."
+            }
+          },
+          {
+            "id": "blk_015",
+            "type": "markdown",
+            "order": 3,
+            "content": {
+              "body": "## Algoritma Kalitesini Değerlendirme Ölçütleri\n\nİyi bir algoritma şu özelliklere sahiptir:\n\n| Ölçüt | Açıklama |\n|-------|----------|\n| Doğruluk | Her girdide beklenen sonucu üretir |\n| Tutarlılık | Aynı girdi her seferinde aynı sonucu verir |\n| Eksiksizlik | Tüm adımlar eksiksiz tanımlanmıştır |\n| Anlaşılırlık | Başkası okuyup anlayabilir |\n\nBu ölçütleri karşılayan bir algoritma gerçek anlamda **kullanıma hazır** demektir."
             }
           }
         ],
@@ -563,28 +602,28 @@
             "order": 1,
             "content": {
               "questionType": "single_choice",
-              "question": "Problem belirleme aşamasında öncelikle yapılması gereken nedir?",
+              "question": "Aynı girdiyle her çalıştırıldığında aynı sonucu veren algoritmalar hangi özelliği taşır?",
               "options": [
                 {
                   "id": "opt_5_01_1",
-                  "text": "Akış şeması çizmek"
+                  "text": "Tutarlılık"
                 },
                 {
                   "id": "opt_5_01_2",
-                  "text": "Çözüm adımlarını yazmak"
+                  "text": "Uzunluk"
                 },
                 {
                   "id": "opt_5_01_3",
-                  "text": "Problemi net olarak tanımlamak"
+                  "text": "Karmaşıklık"
                 },
                 {
                   "id": "opt_5_01_4",
-                  "text": "Çıktıyı tahmin etmek"
+                  "text": "Hız"
                 }
               ],
-              "correctOptionId": "opt_5_01_3",
-              "hint": "Neyi çözmeye çalıştığını bilmeden nasıl çözebilirsin?",
-              "explanation": "Problem belirleme aşamasının ilk ve en önemli adımı, problemi doğru ve net biçimde tanımlamaktır. Tanım olmadan diğer adımlar sağlıklı yürütülemez."
+              "correctOptionId": "opt_5_01_1",
+              "hint": "Her seferinde aynı sonucu vermek hangi özelliğin göstergesidir?",
+              "explanation": "Tutarlılık, algoritmanın aynı girdiye her zaman aynı çıktıyı üretmesi demektir. Bu, güvenilir bir algoritmanın temel özelliklerinden biridir."
             }
           },
           {
@@ -593,19 +632,19 @@
             "order": 2,
             "content": {
               "questionType": "fill_blank",
-              "question": "Aşağıdaki cümledeki boşluğu uygun kavramla doldurunuz.",
-              "question_text": "Algoritmanın adımlarını şekil ve oklarla görsel olarak gösteren diyagrama ________ denir.",
+              "question": "Boşluğu uygun kavramla doldurun.",
+              "question_text": "Algoritmanın farklı girdilerle doğru sonuç üretip üretmediğini kontrol etme işlemine ________ denir.",
               "acceptedAnswers": [
-                "akış şeması",
-                "akış şeması"
+                "test etme",
+                "algoritma testi"
               ],
               "distractors": [
-                "algoritma",
-                "girdi",
-                "karar tablosu"
+                "hata ayıklama",
+                "geri bildirim",
+                "programlama"
               ],
-              "hint": "Bu diyagramda semboller ve oklar birlikte kullanılır.",
-              "explanation": "Akış şeması, bir algoritmanın adımlarını görsel olarak ifade eden ve standart semboller kullanan bir diyagramdır."
+              "hint": "Bu işlemde girdi verilip çıktı kontrol edilir.",
+              "explanation": "Test etme, algoritmanın çeşitli girdilerle beklenen çıktıları üretip üretmediğini sistematik biçimde kontrol etme işlemidir."
             }
           },
           {
@@ -613,39 +652,32 @@
             "type": "quiz",
             "order": 3,
             "content": {
-              "questionType": "ordering",
-              "question": "Problem çözme sürecinin aşamalarını baştan sona doğru sıralayınız.",
-              "items": [
+              "questionType": "matching",
+              "question": "Kavramları doğru tanımlarıyla eşleştirin.",
+              "pairs": [
                 {
-                  "id": "ord_5_1",
-                  "text": "Problemi tanımla"
+                  "id": "p5_1",
+                  "left": "Test etme",
+                  "right": "Girdilerle sonuçları karşılaştırma"
                 },
                 {
-                  "id": "ord_5_2",
-                  "text": "Girdi ve çıktıları belirle"
+                  "id": "p5_2",
+                  "left": "Hata ayıklama",
+                  "right": "Hataları bulup düzeltme"
                 },
                 {
-                  "id": "ord_5_3",
-                  "text": "Çözüm adımlarını listele (Algoritma)"
+                  "id": "p5_3",
+                  "left": "Geri bildirim",
+                  "right": "Başkasının görüş ve tespitleri"
                 },
                 {
-                  "id": "ord_5_4",
-                  "text": "Akış şeması çiz"
-                },
-                {
-                  "id": "ord_5_5",
-                  "text": "Algoritmayı test et"
+                  "id": "p5_4",
+                  "left": "Kullanıma hazır algoritma",
+                  "right": "Tüm testleri geçmiş algoritma"
                 }
               ],
-              "correctOrder": [
-                "ord_5_1",
-                "ord_5_2",
-                "ord_5_3",
-                "ord_5_4",
-                "ord_5_5"
-              ],
-              "hint": "Görselleştirme mi önce, yoksa adım yazma mı?",
-              "explanation": "Önce problem tanımlanır, girdi-çıktılar belirlenir, algoritma yazılır, akış şeması çizilir ve son olarak test edilir. Bu sıralama, sağlıklı bir çözüm süreci için gereklidir."
+              "hint": "Her kavramın öğrendiğimiz tanımını hatırla.",
+              "explanation": "Test etme karşılaştırmayı, hata ayıklama düzeltmeyi, geri bildirim başkasının görüşünü, kullanıma hazırlık ise tüm testleri geçmeyi ifade eder."
             }
           },
           {
@@ -653,32 +685,33 @@
             "type": "quiz",
             "order": 4,
             "content": {
-              "questionType": "matching",
-              "question": "Aşağıdaki kavramları doğru açıklamalarıyla eşleştiriniz.",
-              "pairs": [
+              "questionType": "multiple_choice",
+              "question": "Aşağıdakilerden hangileri iyi bir algoritmanın sahip olması gereken özellikler arasındadır?",
+              "options": [
                 {
-                  "id": "p5_1",
-                  "left": "Problem",
-                  "right": "Çözülmesi hedeflenen durum veya soru"
+                  "id": "opt_5_04_1",
+                  "text": "Doğruluk: Her girdide beklenen sonucu üretir"
                 },
                 {
-                  "id": "p5_2",
-                  "left": "Algoritma",
-                  "right": "Adım adım, sıralı çözüm yolu"
+                  "id": "opt_5_04_2",
+                  "text": "Tutarlılık: Aynı girdi her seferinde aynı sonucu verir"
                 },
                 {
-                  "id": "p5_3",
-                  "left": "Akış şeması",
-                  "right": "Algoritmanın sembollerle gösterimi"
+                  "id": "opt_5_04_3",
+                  "text": "Uzunluk: Mümkün olduğunca çok adım içermelidir"
                 },
                 {
-                  "id": "p5_4",
-                  "left": "Çıktı",
-                  "right": "İşlem sonucunda elde edilen sonuç"
+                  "id": "opt_5_04_4",
+                  "text": "Anlaşılırlık: Başkası okuyup anlayabilir"
                 }
               ],
-              "hint": "Her kavramın süreçteki rolünü düşün.",
-              "explanation": "Problem çözülmesi gereken durumu, algoritma adım adım çözüm yolunu, akış şeması bu yolun görsel gösterimini, çıktı ise sürecin sonucunu ifade eder."
+              "correctOptionIds": [
+                "opt_5_04_1",
+                "opt_5_04_2",
+                "opt_5_04_4"
+              ],
+              "hint": "Uzunluk mu, yoksa doğruluk mu daha önemlidir?",
+              "explanation": "İyi bir algoritma doğru, tutarlı ve anlaşılır olmalıdır. Uzunluk bir kalite ölçütü değildir; aksine gereksiz uzunluk algoritmayı karmaşık hâle getirebilir."
             }
           },
           {
@@ -687,18 +720,16 @@
             "order": 5,
             "content": {
               "questionType": "classical_order",
-              "question": "Girdi, işlem ve çıktı ögelerinin bir arada bulunması ile birlikte akış şemasıyla görselleştirilmesi, bir algoritmanın hangi iki temel gereksinimini karşılamaktadır?",
+              "question": "Algoritma test etme, hata ayıklama ve geri bildirim alma arasındaki ilişkiyi açıklayınız.",
               "answer_words": [
-                "Bu ögeler algoritmayı",
-                "hem işlevsel hem de",
-                "anlaşılır ve",
-                "doğrulanabilir bir",
-                "çözüm bütününe",
-                "dönüştürmektedir."
+                "Bu üç süreç",
+                "birlikte algoritmanın",
+                "kullanıma hazır",
+                "hâle gelmesini sağlar"
               ],
-              "model_answer": "Bu ögeler algoritmayı hem işlevsel hem de anlaşılır ve doğrulanabilir bir çözüm bütününe dönüştürmektedir.",
-              "hint": "Biri algoritmayı çalışır kılar, diğeri anlaşılır ve test edilebilir kılar.",
-              "explanation": "Girdi-işlem-çıktı bütünü algoritmayı işlevsel yapar. Akış şeması ise algoritmanın anlaşılmasını ve test edilmesini kolaylaştırır. İkisi birlikte eksiksiz bir çözüm süreci oluşturur."
+              "model_answer": "Bu üç süreç birlikte algoritmanın kullanıma hazır hâle gelmesini sağlar",
+              "hint": "Bu üç kavram birbirinden bağımsız mı, yoksa birbirini tamamlayan mı?",
+              "explanation": "Test etme hataları ortaya çıkarır, hata ayıklama onları düzeltir, geri bildirim ise gözden kaçan sorunları tespit etmeye yardımcı olur. Üçü birlikte kullanıldığında algoritma kullanıma hazır hâle gelir."
             }
           }
         ]
@@ -711,7 +742,7 @@
         "type": "review_section",
         "content": [],
         "quiz_refs": [
-          "q_01_03",
+          "q_01_04",
           "q_02_04",
           "q_03_04",
           "q_04_04",

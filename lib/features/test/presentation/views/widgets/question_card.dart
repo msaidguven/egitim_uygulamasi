@@ -4,6 +4,7 @@ import 'package:egitim_uygulamasi/features/test/data/models/test_question.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/multiple_choice_widget.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/fill_blank_widget.dart';
 import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/matching_question_widget.dart';
+import 'package:egitim_uygulamasi/features/test/presentation/views/widgets/classical_question_widget.dart';
 import 'package:egitim_uygulamasi/models/question_model.dart';
 import 'package:egitim_uygulamasi/widgets/question_text.dart';
 
@@ -49,7 +50,8 @@ class QuestionCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (question.type != QuestionType.fill_blank)
+                    if (question.type != QuestionType.fill_blank &&
+                        question.type != QuestionType.classical)
                       QuestionText(
                         text: question.text,
                         fontSize: isNarrow ? 17 : 18,
@@ -58,7 +60,8 @@ class QuestionCard extends StatelessWidget {
                             Colors.black,
                         fractionColor: Theme.of(context).colorScheme.primary,
                       ),
-                    if (question.type != QuestionType.fill_blank)
+                    if (question.type != QuestionType.fill_blank &&
+                        question.type != QuestionType.classical)
                       Divider(height: isNarrow ? 24 : 32),
                     _buildAnswerArea(context),
                     if (isChecked) ...[
@@ -216,8 +219,145 @@ class QuestionCard extends StatelessWidget {
           testQuestion: testQuestion,
           onAnswered: onAnswered,
         );
+      case QuestionType.classical:
+        return _ClassicalAnswerSection(
+          testQuestion: testQuestion,
+          onAnswered: onAnswered,
+        );
       default:
         return const Center(child: Text('Soru tipi desteklenmiyor.'));
     }
+  }
+}
+
+/// Klasik soru tipi i\u00e7in: soru metnini + word-order alan\u0131n\u0131 birlikte g\u00f6sterir.
+class _ClassicalAnswerSection extends StatelessWidget {
+  final TestQuestion testQuestion;
+  final ValueChanged<dynamic> onAnswered;
+
+  const _ClassicalAnswerSection({
+    required this.testQuestion,
+    required this.onAnswered,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final question = testQuestion.question;
+    final isNarrow = MediaQuery.of(context).size.width < 700;
+    final isChecked = testQuestion.isChecked;
+    final isCorrect = testQuestion.isCorrect;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Soru metni ──────────────────────────────────────────────────
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(isNarrow ? 16 : 20),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primaryContainer.withOpacity(0.18),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: theme.colorScheme.primary.withOpacity(0.12),
+              width: 1.5,
+            ),
+          ),
+          child: QuestionText(
+            text: question.text,
+            fontSize: isNarrow ? 17 : 18,
+            textColor:
+                theme.textTheme.titleLarge?.color ?? Colors.black,
+            fractionColor: theme.colorScheme.primary,
+          ),
+        ),
+        SizedBox(height: isNarrow ? 16 : 20),
+
+        // ── Cevabını olu\u015ftur etiketi ────────────────────────────────────
+        Row(
+          children: [
+            Icon(
+              Icons.edit_note_rounded,
+              size: 20,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Cevab\u0131n\u0131 olu\u015ftur:',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+
+        // ── Word-order widget ────────────────────────────────────────────
+        ClassicalQuestionWidget(
+          key: ValueKey('classical-${question.id}'),
+          testQuestion: testQuestion,
+          onAnswered: onAnswered,
+        ),
+
+        // ── Do\u011fru cevap g\u00f6sterimi (yanl\u0131\u015f ise) ─────────────────────────────
+        if (isChecked && !isCorrect && (question.modelAnswer ?? '').isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.red.shade200, width: 1.5),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'DO\u011eRU CEVAP',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.red.shade700,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: question.answerWords.map((w) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade100,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: Colors.red.shade300,
+                            width: 0.5,
+                          ),
+                        ),
+                        child: Text(
+                          w,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.red.shade900,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }
