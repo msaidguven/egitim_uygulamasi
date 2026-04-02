@@ -4,6 +4,7 @@ import 'written_practice_models.dart';
 import 'written_practice_providers.dart';
 import 'word_order_widget.dart';
 import 'written_result_screen.dart';
+import 'written_examples_screen.dart';
 
 class WrittenSessionScreen extends ConsumerWidget {
   const WrittenSessionScreen({super.key});
@@ -384,6 +385,24 @@ class _TopicFilterDrawer extends ConsumerWidget {
                           );
                         },
                       ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const WrittenExamplesScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.menu_book_rounded),
+                label: const Text('Örnek Sorular'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(46),
+                ),
               ),
             ),
             Padding(

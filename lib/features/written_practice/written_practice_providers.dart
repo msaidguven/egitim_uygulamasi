@@ -156,7 +156,7 @@ class WrittenPracticeTextScaleNotifier extends StateNotifier<double> {
   }
 
   static const double _minScale = 0.85;
-  static const double _maxScale = 4.0;
+  static const double _maxScale = 5.0;
   static const double _step = 0.10;
 
   Future<void> increase() => _updateScale(state + _step);
