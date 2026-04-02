@@ -33,17 +33,38 @@ class _WrittenExamplesScreenState extends ConsumerState<WrittenExamplesScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surfaceContainerLow,
       appBar: AppBar(
-        title: Text(
-          'Örnek Sorular',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-            fontSize: 16,
-          ),
+        backgroundColor: theme.colorScheme.surfaceContainerLow,
+        centerTitle: false,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Örnek Sorular',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+                fontSize: 22,
+                letterSpacing: -0.5,
+              ),
+            ),
+            Text(
+              'Çalışma Notları ve Örnekler',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
         actions: [
           IconButton(
             tooltip: 'Ara',
+            style: IconButton.styleFrom(
+              backgroundColor: _showSearchBar
+                  ? theme.colorScheme.primaryContainer
+                  : Colors.transparent,
+            ),
             onPressed: () {
               setState(() {
                 _showSearchBar = !_showSearchBar;
@@ -57,22 +78,39 @@ class _WrittenExamplesScreenState extends ConsumerState<WrittenExamplesScreen> {
               _showSearchBar ? Icons.search_off_rounded : Icons.search_rounded,
             ),
           ),
+          const SizedBox(width: 8),
           _ScaleButton(
             label: 'A-',
             tooltip: 'Yazıyı küçült',
             onPressed: textScale <= 0.85 ? null : textScaleNotifier.decrease,
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
           _ScaleButton(
             label: 'A+',
             tooltip: 'Yazıyı büyüt',
             onPressed: textScale >= 5.0 ? null : textScaleNotifier.increase,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 16),
         ],
       ),
       body: session == null || session.attempts.isEmpty
-          ? const Center(child: Text('Listelenecek soru bulunamadı.'))
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.history_edu_rounded,
+                    size: 64,
+                    color: theme.colorScheme.outlineVariant,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Listelenecek soru bulunamadı.',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            )
           : _buildContent(theme, textScale, session.attempts),
     );
   }
@@ -98,13 +136,14 @@ class _WrittenExamplesScreenState extends ConsumerState<WrittenExamplesScreen> {
       children: [
         if (_showSearchBar)
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             child: TextField(
               controller: _queryController,
               onChanged: (value) => setState(() => _query = value),
+              autofocus: true,
               decoration: InputDecoration(
-                hintText: 'Ara...',
-                prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                hintText: 'Sorularda veya cevaplarda ara...',
+                prefixIcon: const Icon(Icons.search_rounded),
                 suffixIcon: _query.isEmpty
                     ? null
                     : IconButton(
@@ -112,16 +151,25 @@ class _WrittenExamplesScreenState extends ConsumerState<WrittenExamplesScreen> {
                           _queryController.clear();
                           setState(() => _query = '');
                         },
-                        icon: const Icon(Icons.close_rounded, size: 20),
+                        icon: const Icon(Icons.close_rounded),
                       ),
+                filled: true,
+                fillColor: theme.colorScheme.surface,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.outlineVariant,
+                    width: 1,
+                  ),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
+                  horizontal: 20,
+                  vertical: 16,
                 ),
-                isDense: true,
               ),
             ),
           ),
@@ -129,83 +177,123 @@ class _WrittenExamplesScreenState extends ConsumerState<WrittenExamplesScreen> {
           child: filtered.isEmpty
               ? const Center(child: Text('Aramaya uygun soru bulunamadı.'))
               : ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+                  physics: const BouncingScrollPhysics(),
                   itemCount: filtered.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 12),
+                  separatorBuilder: (_, _) => const SizedBox(height: 20),
                   itemBuilder: (context, listIndex) {
                     final entry = filtered[listIndex];
                     final itemIndex = entry.index;
 
                     return Container(
-                      padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+                      clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
                         color: theme.colorScheme.surface,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                         border: Border.all(
                           color: theme.colorScheme.outlineVariant.withValues(
-                            alpha: 0.5,
+                            alpha: 0.8,
                           ),
+                          width: 1,
                         ),
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 14,
-                                backgroundColor: theme.colorScheme.primary,
-                                child: Text(
-                                  '${itemIndex + 1}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.primary,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        'SORU ${itemIndex + 1}',
+                                        style: theme.textTheme.labelSmall
+                                            ?.copyWith(
+                                          color: theme.colorScheme.onPrimary,
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    IconButton(
+                                      tooltip: 'Kopyala',
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () => _copyToClipboard(
+                                        context,
+                                        '${itemIndex + 1}) ${entry.question}\nCevap: ${entry.answer}',
+                                      ),
+                                      icon: const Icon(
+                                        Icons.content_copy_rounded,
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
+                                const SizedBox(height: 12),
+                                Text(
                                   entry.question,
-                                  style: TextStyle(
-                                    fontSize: 17 * textScale,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontSize: 18 * textScale,
                                     fontWeight: FontWeight.w700,
-                                    height: 1.35,
+                                    height: 1.4,
+                                    color: theme.colorScheme.onSurface,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              const Spacer(),
-                              IconButton(
-                                tooltip: 'Soru + cevap kopyala',
-                                onPressed: () => _copyToClipboard(
-                                  context,
-                                  '${itemIndex + 1}) ${entry.question}\nCevap: ${entry.answer}',
-                                ),
-                                icon: const Icon(Icons.copy_rounded),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                           Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.only(top: 4),
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: theme.colorScheme.secondaryContainer
-                                  .withValues(alpha: 0.55),
-                            ),
-                            child: Text(
-                              'Cevap: ${entry.answer}',
-                              style: TextStyle(
-                                fontSize: 16 * textScale,
-                                height: 1.45,
+                              color: theme.colorScheme.primaryContainer
+                                  .withValues(alpha: 0.25),
+                              border: Border(
+                                top: BorderSide(
+                                  color: theme.colorScheme.outlineVariant
+                                      .withValues(alpha: 0.5),
+                                ),
                               ),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.auto_awesome_rounded,
+                                  size: 20 * textScale,
+                                  color: theme.colorScheme.primary,
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    entry.answer,
+                                    style: theme.textTheme.bodyLarge?.copyWith(
+                                      fontSize: 17 * textScale,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.5,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -223,7 +311,20 @@ class _WrittenExamplesScreenState extends ConsumerState<WrittenExamplesScreen> {
     if (!context.mounted) return;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Soru panoya kopyalandı.')));
+    ).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+            SizedBox(width: 12),
+            Text('Soru ve cevap panoya kopyalandı.'),
+          ],
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 }
 
@@ -240,11 +341,42 @@ class _ScaleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isEnabled = onPressed != null;
+
     return Tooltip(
       message: tooltip,
-      child: TextButton(
-        onPressed: onPressed,
-        child: Text(label, style: const TextStyle(fontWeight: FontWeight.w900)),
+      child: Material(
+        color: isEnabled
+            ? theme.colorScheme.surfaceContainerHigh
+            : theme.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(12),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onPressed,
+          child: Container(
+            width: 44,
+            height: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: isEnabled
+                    ? theme.colorScheme.outlineVariant
+                    : theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              label,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w900,
+                color: isEnabled
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurface.withValues(alpha: 0.3),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -279,3 +411,4 @@ class _ExampleEntry {
     );
   }
 }
+
