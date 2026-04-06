@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ seo_title }}</title>
+  <meta name="description" content="{{ seo_description }}">
+  <meta name="keywords" content="{{ topic.title }}, {{ unit.title }}, {{ lesson.name }}, {{ grade.name }}, eğitim, ders notları">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{ seo_title }}">
+  <meta property="og:description" content="{{ seo_description }}">
+  <meta property="og:url" content="{{ site_url }}{{ breadcrumb[-1][1] or '' }}">
+  <meta property="og:type" content="article">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{ seo_title }}">
+  <meta name="twitter:description" content="{{ seo_description }}">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client }}"
+     crossorigin="anonymous"></script>
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalResource",
+    "name": "{{ topic.title }}",
+    "description": "{{ topic.title }} konusu detaylı anlatımı",
+    "educationalLevel": "{{ grade.name }}",
+    "learningResourceType": "Ders İçeriği",
+    "inLanguage": "tr",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {% for item in breadcrumb %}
+        {
+          "@type": "ListItem",
+          "position": {{ loop.index }},
+          "name": "{{ item[0] }}"{% if item[1] %},
+          "item": "{{ site_url }}{{ item[1] }}"{% endif %}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    }
+  }
+  </script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 15px 0;
+      margin-bottom: 20px;
+    }
+    .breadcrumb {
+      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 10px;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .content-wrapper { grid-template-columns: 1fr; }
+      .sidebar { order: 2; }
+    }
+    .main-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+    }
+    .ad-slot {
+      background: #f0f0f0;
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      margin: 20px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar-card {
+      background: white;
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-top: 16px;
+    }
+    .sidebar-card h3 {
+      font-size: 16px;
+      color: #1e40af;
+      margin-bottom: 12px;
+    }
+    .sidebar-topics {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .sidebar-topics a {
+      display: block;
+      text-decoration: none;
+      color: #1f2937;
+      padding: 10px 12px;
+      border-radius: 6px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .sidebar-topics a:hover {
+      border-color: #2563eb;
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
+    .sidebar-unit {
+      display: block;
+      margin-top: 3px;
+      color: #6b7280;
+      font-size: 12px;
+    }
+    .section {
+      margin: 30px 0;
+    }
+    .section h2 {
+      font-size: 22px;
+      color: #2563eb;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    .content-block {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 6px;
+      border-left: 4px solid #2563eb;
+    }
+    .content-block h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #1e40af;
+    }
+    .outcome-list {
+      list-style: none;
+      padding: 0;
+    }
+    .outcome-item {
+      padding: 12px;
+      margin: 8px 0;
+      background: white;
+      border-radius: 4px;
+      border-left: 3px solid #10b981;
+    }
+    .outcome-weeks {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 5px;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .footer-topic-links {
+      margin: 0 auto 20px;
+      max-width: 1200px;
+      text-align: left;
+      padding: 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+    }
+    .footer-topic-links h3 {
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #1f2937;
+    }
+    .footer-topic-grid {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 8px 14px;
+    }
+    .footer-topic-grid a {
+      color: #334155;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .footer-topic-grid a:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+    .footer-topic-current {
+      color: #111827;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        {% for item in breadcrumb %}
+          {% if item[1] %}
+            <a href="{{ item[1] }}">{{ item[0] }}</a>
+          {% else %}
+            <strong>{{ item[0] }}</strong>
+          {% endif %}
+          {% if not loop.last %}<span>›</span>{% endif %}
+        {% endfor %}
+      </nav>
+      <h1>{{ topic.title }}</h1>
+      <div class="meta">{{ grade.name }} • {{ lesson.name }} • {{ unit.title }}</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="content-wrapper">
+      <main class="main-content">
+        <!-- AdSense: Üst Reklam -->
+        <div class="ad-slot">
+          <!-- Google AdSense buraya gelecek -->
+          <div>Reklam Alanı (728x90)</div>
+        </div>
+
+        <!-- İçerik Bölümü -->
+        <section class="section">
+          <h2>📚 Konu İçeriği</h2>
+          {% if contents %}
+            {% for content in contents %}
+            <div class="content-block">
+              <h3>{{ content.title }}</h3>
+              <div>{{ content.content | safe }}</div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p>Bu konu için henüz yayınlanmış içerik bulunmamaktadır.</p>
+          {% endif %}
+        </section>
+
+        <!-- AdSense: Orta Reklam -->
+        <div class="ad-slot">
+          <div>Reklam Alanı (336x280)</div>
+        </div>
+
+        <!-- Kazanımlar Bölümü -->
+        {% if outcomes %}
+        <section class="section">
+          <h2>🎯 Öğrenme Kazanımları</h2>
+          <ul class="outcome-list">
+            {% for outcome in outcomes %}
+            <li class="outcome-item">
+              <div>{{ outcome.description }}</div>
+              {% if outcome.outcome_weeks %}
+              <div class="outcome-weeks">
+                📅 
+                {% for ow in outcome.outcome_weeks %}
+                  {% if ow.start_week == ow.end_week %}
+                    Hafta {{ ow.start_week }}
+                  {% else %}
+                    Hafta {{ ow.start_week }}-{{ ow.end_week }}
+                  {% endif %}
+                  {% if not loop.last %}, {% endif %}
+                {% endfor %}
+              </div>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+        </section>
+        {% endif %}
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <!-- AdSense: Sidebar Reklam -->
+        <div class="ad-slot" style="min-height: 600px;">
+          <div>Reklam Alanı<br>(300x600)</div>
+        </div>
+
+        {% if unit_related_topics %}
+        <div class="sidebar-card">
+          <h3>{{ unit.title }} Ünitesi Diğer Konular</h3>
+          <ul class="sidebar-topics">
+            {% for item in unit_related_topics %}
+            <li>
+              <a href="{{ item.url }}">
+                {{ item.title }}
+                <span class="sidebar-unit">{{ item.unit_title }}</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </aside>
+    </div>
+  </div>
+
+  <!-- Sorularla Pekiştir -->
+  {% if has_questions %}
+  <div class="container" style="margin: 40px auto;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 16px; text-align: center; color: white; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);">
+      <h2 style="font-size: 28px; margin-bottom: 16px;">🎯 Öğrendiklerini Test Et!</h2>
+      <p style="font-size: 16px; opacity: 0.95; margin-bottom: 24px;">{{ questions_count }} soru ile konuyu pekiştir, başarını ölç</p>
+      <a href="{{ questions_page_url }}" style="display: inline-block; padding: 16px 48px; background: white; color: #667eea; text-decoration: none; border-radius: 12px; font-size: 18px; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s;">
+        Sorulara Başla →
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+  <footer>
+    {% if lesson_topics %}
+    <div class="footer-topic-links">
+      <h3>{{ grade.name }} {{ lesson.name }} - Tüm Konular</h3>
+      <ul class="footer-topic-grid">
+        {% for item in lesson_topics %}
+        <li>
+          {% if item.is_current %}
+          <span class="footer-topic-current">{{ item.title }} (Bu Sayfa)</span>
+          {% else %}
+          <a href="{{ item.url }}">{{ item.title }}</a>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 14px;">
+        <a href="/contact" style="color: #6b7280; text-decoration: none;">İletişim</a>
+        <a href="/about" style="color: #6b7280; text-decoration: none;">Hakkımızda</a>
+        <a href="/privacy-policy" style="color: #6b7280; text-decoration: none;">Gizlilik Politikası</a>
+      </div>
+    </div>
+    <p>&copy; 2025 {{ site_name }}. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Bu sayfa {{ grade.name }} {{ lesson.name }} dersi {{ unit.title }} ünitesi {{ topic.title }} konusu hakkında eğitim amaçlı içerik sunmaktadır.
+    </p>
+  </footer>
+</body>
+</html>

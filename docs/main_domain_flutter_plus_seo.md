@@ -13,7 +13,8 @@ Hedef davranis:
 
 Bu script su adimlari yapar:
 1. `flutter build web`
-2. `./scripts/sync_seo_output.sh`
+2. `seo_generator/output` icerigini `seo_output` klasorune senkronlar
+   (klasor indexleri ve `404.html` dosyasini da uretir)
 3. `seo_output` dosyalarini `build/web` icine kopyalar (root `index.html` ve `404.html` haric)
 4. `firebase deploy --only hosting:app`
 

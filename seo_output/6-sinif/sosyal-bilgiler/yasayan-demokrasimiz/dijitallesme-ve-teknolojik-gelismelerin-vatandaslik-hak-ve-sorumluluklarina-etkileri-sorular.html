@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dijitalleşme ve Teknolojik Gelişmelerin Vatandaşlık Hak...</title>
+  <meta name="description" content="19 soru ile Dijitalleşme ve Teknolojik Gelişmelerin Vatandaşlık Hak ve Sorumluluklarına Etkileri konusunu pekiştir ve başarını ölç. 6. Sınıf Sosyal...">
+  <meta name="keywords" content="Dijitalleşme ve Teknolojik Gelişmelerin Vatandaşlık Hak ve Sorumluluklarına Etkileri test, Dijitalleşme ve Teknolojik Gelişmelerin Vatandaşlık Hak ve Sorumluluklarına Etkileri sorular, Sosyal Bilgiler quiz, 6. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Dijitalleşme ve Teknolojik Gelişmelerin Vatandaşlık Hak...">
+  <meta property="og:description" content="19 soru ile Dijitalleşme ve Teknolojik Gelişmelerin Vatandaşlık Hak ve Sorumluluklarına Etkileri konusunu pekiştir ve başarını ölç. 6. Sınıf Sosyal...">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/6-sinif/">6. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/sosyal-bilgiler/">Sosyal Bilgiler</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/6-sinif/sosyal-bilgiler/yasayan-demokrasimiz/">Yaşayan Demokrasimiz</a>
+          
+          <span>›</span>
+        
+          
+            <strong>Dijitalleşme ve Teknolojik Gelişmelerin Vatandaşlık Hak ve Sorumluluklarına Etkileri Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 Dijitalleşme ve Teknolojik Gelişmelerin Vatandaşlık Hak ve Sorumluluklarına Etkileri - Test Soruları</h1>
+      <div class="meta">19 Soru • 6. Sınıf Sosyal Bilgiler</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/6-sinif/sosyal-bilgiler/yasayan-demokrasimiz/dijitallesme-ve-teknolojik-gelismelerin-vatandaslik-hak-ve-sorumluluklarina-etkileri/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">19</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="3122" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Ayşe, internet üzerinden e-Devlet kapısı kullanarak nüfus cüzdanı yenileme işlemini evinden 5 dakikada tamamlıyor. Daha önce bu işlem için ilçe nüfus müdürlüğüne gitmesi ve sıra beklemesi gerekiyordu. Bu durum, dijitalleşmenin vatandaşlık haklarının kullanımında hangi etkisini göstermektedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5766" 
+                  data-correct="true"
+                  onclick="selectChoice(3122, 5766, true)">
+            <span class="choice-letter">A</span>
+            <span>Kamu hizmetlerine erişimi hızlandırır ve kolaylaştırır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5767" 
+                  data-correct="false"
+                  onclick="selectChoice(3122, 5767, false)">
+            <span class="choice-letter">B</span>
+            <span>Vatandaşların fiziki başvuru yapmasını zorunlu kılar</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5768" 
+                  data-correct="false"
+                  onclick="selectChoice(3122, 5768, false)">
+            <span class="choice-letter">C</span>
+            <span>Devlet hizmetleri için ek vergi yükü getirir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5769" 
+                  data-correct="false"
+                  onclick="selectChoice(3122, 5769, false)">
+            <span class="choice-letter">D</span>
+            <span>Bürokratik işlemleri artırarak vatandaşı yorar</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3122">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu sorunun doğru cevabı A seçeneğidir. Dijitalleşme sayesinde vatandaşlar kamu hizmetlerine daha hızlı ve kolay erişebilmektedir. Ayşe'nin evinden işlem yapabilmesi, zaman ve mekândan bağımsız hizmet almasını sağlamıştır. B seçeneği yanlıştır çünkü dijitalleşme erişimi artırır, kısıtlamaz. C seçeneği yanlıştır çünkü örnekte vergi artışından bahsedilmemektedir. D seçeneği yanlıştır çünkü dijitalleşme bürokratik işlemleri azaltır, artırmaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3112" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir vatandaş, e-devlet sistemi üzerinden hangi işlemi yaparak vatandaşlık haklarını dijital ortamda kullanabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5744" 
+                  data-correct="false"
+                  onclick="selectChoice(3112, 5744, false)">
+            <span class="choice-letter">A</span>
+            <span>Seyahat acentesinden uçak bileti satın almak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5745" 
+                  data-correct="true"
+                  onclick="selectChoice(3112, 5745, true)">
+            <span class="choice-letter">B</span>
+            <span>E-devlet üzerinden adli sicil kaydı almak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5746" 
+                  data-correct="false"
+                  onclick="selectChoice(3112, 5746, false)">
+            <span class="choice-letter">C</span>
+            <span>Online alışveriş sitesinden kitap sipariş etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5747" 
+                  data-correct="false"
+                  onclick="selectChoice(3112, 5747, false)">
+            <span class="choice-letter">D</span>
+            <span>Sosyal medyada fotoğraf paylaşmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3112">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">E-devlet sistemi, vatandaşların kimlik bilgilerini sorgulamadan, pasaport başvurusu yapmadan, adli sicil kaydı almadan ve vergi borçlarını sorgulamadan işlemlerini dijital ortamda gerçekleştirmesini sağlar. Bu sistem, vatandaşlık haklarının kullanımında dijitalleşmenin en somut örneklerinden biridir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3107" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Dijitalleşme, vatandaşların bilgiye ulaşmasını zorlaştırır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5734" 
+                  data-correct="false"
+                  onclick="selectChoice(3107, 5734, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5735" 
+                  data-correct="true"
+                  onclick="selectChoice(3107, 5735, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3107">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü dijitalleşme bilgiye erişimi kolaylaştırır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3120" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Dijital ortamda bilgi toplarken sadece tek bir kaynağa bakmak yeterlidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5760" 
+                  data-correct="false"
+                  onclick="selectChoice(3120, 5760, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5761" 
+                  data-correct="true"
+                  onclick="selectChoice(3120, 5761, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3120">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Kazanım c) ve ç) kapsamında bilgi toplanırken çapraz doğrulama yapılması, birden fazla güvenilir kaynaktan bilgi karşılaştırılması esastır. Tek bir kaynağa güvenmek, yanlış veya eksik bilgiyle karar vermeye yol açabilir. Bilimsel değerlendirme, bilgilerin çoklu kaynaklarla doğrulanmasını gerektirir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3102" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">E-devlet uygulamalarının vatandaşlık haklarının kullanımına en önemli katkısı aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5724" 
+                  data-correct="true"
+                  onclick="selectChoice(3102, 5724, true)">
+            <span class="choice-letter">A</span>
+            <span>İşlemleri daha hızlı ve kolay hale getirmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5725" 
+                  data-correct="false"
+                  onclick="selectChoice(3102, 5725, false)">
+            <span class="choice-letter">B</span>
+            <span>Vatandaşların haklarını tamamen ortadan kaldırması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5726" 
+                  data-correct="false"
+                  onclick="selectChoice(3102, 5726, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece devlet çalışanlarına hizmet vermesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5727" 
+                  data-correct="false"
+                  onclick="selectChoice(3102, 5727, false)">
+            <span class="choice-letter">D</span>
+            <span>Teknolojiyi gereksiz hale getirmesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3102">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">E-devlet sayesinde işlemler hızlı ve kolay yapılır, böylece vatandaşlar haklarını daha etkin kullanabilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3116" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Vatandaşlar, dijital ortamda oy kullanabilmek için mutlaka bir siyasi partinin üyesi olmalıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5754" 
+                  data-correct="false"
+                  onclick="selectChoice(3116, 5754, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5755" 
+                  data-correct="true"
+                  onclick="selectChoice(3116, 5755, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3116">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Demokratik hakların kullanımı siyasi parti üyeliği ile bağlantılı değildir. Dijital ortamda oy kullanma veya dijital katılım hakları, vatandaşlık statüsüne bağlı evrensel haklardır. Kazanım a) kapsamında dijitalleşmenin haklara erişimi kolaylaştırdığı ancak hakların partizan koşullara bağlanmadığı anlaşılmalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3128" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Dijital ortamda bilgi toplarken, bilginin kaynağına bakmadan sadece içeriğin ilgi çekiciliğine göre değerlendirme yapmak bilimsel bir yaklaşımdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5780" 
+                  data-correct="false"
+                  onclick="selectChoice(3128, 5780, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5781" 
+                  data-correct="true"
+                  onclick="selectChoice(3128, 5781, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3128">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Kazanım ç) gereği bilgiler güncellik ve bilimsellik açısından değerlendirilmelidir. Kaynak kontrolü yapmadan, içeriğin ilgi çekiciliğine göre değerlendirme yapmak yanlış bilgiye maruz kalma riskini artırır. Bilimsel yaklaşım, kaynağın güvenilirliğini, tarihini ve amacını sorgulamayı gerektirir. Bu nedenle sadece ilgi çekicilik kriteri yetersizdir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3118" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavano, sosyal medyada gördüğü bir kampanyaya katılarak bir dilekçe imzalamıştır. Bu durum, kazanımlardan hangisiyle en doğru şekilde açıklanabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5756" 
+                  data-correct="false"
+                  onclick="selectChoice(3118, 5756, false)">
+            <span class="choice-letter">A</span>
+            <span>Dijitalleşme sadece ekonomik hakları etkiler</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5757" 
+                  data-correct="true"
+                  onclick="selectChoice(3118, 5757, true)">
+            <span class="choice-letter">B</span>
+            <span>Dijital ortamda dilekçe imzalamak hak arama hakkının kullanımıdır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5758" 
+                  data-correct="false"
+                  onclick="selectChoice(3118, 5758, false)">
+            <span class="choice-letter">C</span>
+            <span>Sosyal medya kampanyaları her zaman yasal sonuç doğurur</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5759" 
+                  data-correct="false"
+                  onclick="selectChoice(3118, 5759, false)">
+            <span class="choice-letter">D</span>
+            <span>Dijital katılım için mutlaka devlet onayı gereklidir</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3118">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu soru kavram yanılgısını ölçmeyi amaçlamaktadır. Dijital ortamda dilekçe imzalamak, bireylerin hak arama ve katılım haklarını kullandıkları bir örnektir. Ancak dikkat edilmesi gereken nokta, dijital ortamda toplanan imzaların her zaman yasal geçerliliğe sahip olmayabileceğidir. Bu durum kazanım a) ve d) kapsamında hakların kullanımında bilinçli olunması gerektiğini gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3103" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Dijital ortamda paylaşılan her bilgi doğru kabul edilmelidir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5728" 
+                  data-correct="false"
+                  onclick="selectChoice(3103, 5728, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5729" 
+                  data-correct="true"
+                  onclick="selectChoice(3103, 5729, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3103">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü dijital ortamlarda yanlış veya eksik bilgiler bulunabilir, bu nedenle doğruluk kontrolü yapılmalıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3106" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi dijitalleşmenin vatandaşlık sorumluluklarına etkisine örnektir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5730" 
+                  data-correct="true"
+                  onclick="selectChoice(3106, 5730, true)">
+            <span class="choice-letter">A</span>
+            <span>İnternette doğru bilgi paylaşmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5731" 
+                  data-correct="false"
+                  onclick="selectChoice(3106, 5731, false)">
+            <span class="choice-letter">B</span>
+            <span>Hiçbir bilgiye bakmamak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5732" 
+                  data-correct="false"
+                  onclick="selectChoice(3106, 5732, false)">
+            <span class="choice-letter">C</span>
+            <span>Sadece oyun oynamak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5733" 
+                  data-correct="false"
+                  onclick="selectChoice(3106, 5733, false)">
+            <span class="choice-letter">D</span>
+            <span>Teknolojiyi tamamen reddetmek</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3106">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Dijital ortamda doğru bilgi paylaşmak vatandaşlık sorumluluğudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3113" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Dijital ortamda paylaşılan her bilgi doğru ve güvenilirdir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5748" 
+                  data-correct="false"
+                  onclick="selectChoice(3113, 5748, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5749" 
+                  data-correct="true"
+                  onclick="selectChoice(3113, 5749, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3113">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Dijital ortamlarda herkes içerik paylaşabilir, bu nedenle paylaşılan bilgilerin doğruluğu mutlaka sorgulanmalıdır. E-devlet, resmi kurum web siteleri ve akredite edilmiş haber kaynakları güvenilir kaynaklar arasındayken, sosyal medyada paylaşılan içerikler her zaman doğru olmayabilir. Kazanım ç) kapsamında bilgilerin güncellik ve bilimsellik açısından değerlendirilmesi gerektiği vurgulanmaktadır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3123" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Dijital ortamda elde edilen tüm bilgiler güncel ve bilimsel olarak kabul edilebilir; bu nedenle vatandaşlar bu bilgileri sorgulamadan kullanmalıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5770" 
+                  data-correct="false"
+                  onclick="selectChoice(3123, 5770, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5771" 
+                  data-correct="true"
+                  onclick="selectChoice(3123, 5771, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3123">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. İnternetteki her bilgi güncel veya bilimsel olmayabilir. Kazanım ç) gereği vatandaşlar topladıkları bilgileri güncellik ve bilimsellik açısından değerlendirmelidir. Dijital ortamda yanlış bilgi, eski tarihli veri veya spekülatif içerikler yaygındır. Vatandaşlar sorumlulukları gereği bilgileri kaynak kontrolü yaparak ve çoklu doğrulama yöntemleriyle değerlendirmelidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3125" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, e-okul sisteminden notlarını anlık olarak takip edebiliyor, velisi ise e-Devlet üzerinden çocuğunun devamsızlık bilgilerine ulaşabiliyor. Bu uygulamaların vatandaşlık hakları açısından ortak özelliği nedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5772" 
+                  data-correct="false"
+                  onclick="selectChoice(3125, 5772, false)">
+            <span class="choice-letter">A</span>
+            <span>Eğitim hizmetlerini tamamen dijital ortama taşıması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5773" 
+                  data-correct="false"
+                  onclick="selectChoice(3125, 5773, false)">
+            <span class="choice-letter">B</span>
+            <span>Vatandaşların eşitlik ilkesinden yararlanmasını engellemesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5774" 
+                  data-correct="true"
+                  onclick="selectChoice(3125, 5774, true)">
+            <span class="choice-letter">C</span>
+            <span>Bilgiye erişim hakkının dijital ortamda kullanılmasını sağlaması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5775" 
+                  data-correct="false"
+                  onclick="selectChoice(3125, 5775, false)">
+            <span class="choice-letter">D</span>
+            <span>Kişisel verilerin mahremiyetini ihlal etmesi</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3125">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu sorunun doğru cevabı C seçeneğidir. Her iki uygulama da bilgiye erişim hakkının dijital ortamda kullanımını göstermektedir. Kazanım a) kapsamında vatandaşlar bilgiye erişim haklarını teknolojik araçlarla kullanabilmektedir. A seçeneği yanlıştır çünkü bu uygulamalar sadece öğrenci/veli içindir, herkese açık değildir. B seçaneği yanlıştır çünkü bu durum eşitlik ilkesini zedeleyici değil, destekleyicidir. D seçeneği yanlıştır çünkü bu durum mahremiyeti ihlal etmez, bilgiye erişimi kolaylaştırır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3111" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi bir kavram yanılgısıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5740" 
+                  data-correct="true"
+                  onclick="selectChoice(3111, 5740, true)">
+            <span class="choice-letter">A</span>
+            <span>İnternetteki her bilgi doğrudur</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5741" 
+                  data-correct="false"
+                  onclick="selectChoice(3111, 5741, false)">
+            <span class="choice-letter">B</span>
+            <span>Bilgiler kontrol edilmelidir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5742" 
+                  data-correct="false"
+                  onclick="selectChoice(3111, 5742, false)">
+            <span class="choice-letter">C</span>
+            <span>Dijital araçlar hayatı kolaylaştırır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5743" 
+                  data-correct="false"
+                  onclick="selectChoice(3111, 5743, false)">
+            <span class="choice-letter">D</span>
+            <span>Teknoloji sorumluluk gerektirir</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3111">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İnternetteki her bilginin doğru olduğu düşüncesi yanlış bir genellemedir ve kavram yanılgısıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3130" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi, dijitalleşmenin vatandaşlık hakları kullanımına olumsuz etki oluşturabilecek bir durumdur? (Kavram yanılgısı sorusu)</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5782" 
+                  data-correct="false"
+                  onclick="selectChoice(3130, 5782, false)">
+            <span class="choice-letter">A</span>
+            <span>Kamu hizmetlerine hızlı erişim sağlaması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5783" 
+                  data-correct="true"
+                  onclick="selectChoice(3130, 5783, true)">
+            <span class="choice-letter">B</span>
+            <span>Kişisel verilerin izinsiz kullanımı ve mahremiyet ihlali</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5784" 
+                  data-correct="false"
+                  onclick="selectChoice(3130, 5784, false)">
+            <span class="choice-letter">C</span>
+            <span>Devlet işlemlerinin şeffaf hale gelmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5785" 
+                  data-correct="false"
+                  onclick="selectChoice(3130, 5785, false)">
+            <span class="choice-letter">D</span>
+            <span>Vatandaş katılımının artması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3130">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu sorunun doğru cevabı B seçeneğidir. Bu bir kavram yanılgısı sorusudur. Öğrenciler genellikle dijitalleşmenin sadece olumlu etkileri olduğunu düşünürken, mahremiyet ihlali gibi olumsuz etkileri gözden kaçırabilir. Kişisel verilerin korunması hakkı, dijital ortamda risk altındadır. A seçeneği yanlıştır çünkü hızlı erişim olumlu etkidir. C seçeneği yanlıştır çünkü şeffaflık olumlu etkidir. D seçeneği yanlıştır çünkü katılımı artırmak olumlu etkidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3127" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir vatandaş, internet üzerinden imza kampanyası başlatarak çevre sorununa dikkat çekiyor ve bu kampanya kısa sürede binlerce kişiye ulaşıyor. Daha sonra yetkililer bu sorunu gündemlerine alıyor. Bu süreç, dijitalleşmenin hangi vatandaşlık hakkının kullanımını güçlendirdiğini gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5776" 
+                  data-correct="false"
+                  onclick="selectChoice(3127, 5776, false)">
+            <span class="choice-letter">A</span>
+            <span>Vergi ödeme yükümlülüğünü</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5777" 
+                  data-correct="false"
+                  onclick="selectChoice(3127, 5777, false)">
+            <span class="choice-letter">B</span>
+            <span>Askerlik hizmetini</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5778" 
+                  data-correct="false"
+                  onclick="selectChoice(3127, 5778, false)">
+            <span class="choice-letter">C</span>
+            <span>Seçme ve seçilme hakkını</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5779" 
+                  data-correct="true"
+                  onclick="selectChoice(3127, 5779, true)">
+            <span class="choice-letter">D</span>
+            <span>İfade özgürlüğü ve örgütlenme hakkını</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3127">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu sorunun doğru cevabı D seçeneğidir. Kazanım a) kapsamında dijitalleşme, ifade özgürlüğü ve örgütlenme hakkının kullanımını kolaylaştırmaktadır. İmza kampanyası, kolektif sesini duyurma ve kamuoyu oluşturma aracıdır. A seçaneği yanlıştır çünkü bu durum vergi yükümlülüğüyle ilgili değildir. B seçeneği yanlıştır çünkü askerlik hizmeti dijital ortamda yapılamaz. C seçeneği yanlıştır çünkü bu durum seçme-seçilme hakkının kullanımı değil, kamuoyu baskısıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3109" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci sosyal medyada gördüğü bir haberi paylaşmadan önce doğruluğunu araştırıyor. Bu davranış aşağıdakilerden hangisini gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5736" 
+                  data-correct="true"
+                  onclick="selectChoice(3109, 5736, true)">
+            <span class="choice-letter">A</span>
+            <span>Sorumlu vatandaşlık</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5737" 
+                  data-correct="false"
+                  onclick="selectChoice(3109, 5737, false)">
+            <span class="choice-letter">B</span>
+            <span>Hak ihlali</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5738" 
+                  data-correct="false"
+                  onclick="selectChoice(3109, 5738, false)">
+            <span class="choice-letter">C</span>
+            <span>Zaman kaybı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5739" 
+                  data-correct="false"
+                  onclick="selectChoice(3109, 5739, false)">
+            <span class="choice-letter">D</span>
+            <span>Teknoloji bağımlılığı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3109">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu davranış bilinçli dijital vatandaşlık ve sorumluluk bilincini gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3114" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ayşe, internette gördüğü bir haberin doğruluğunu değerlendirmek için aşağıdakilerden hangisini yapmalıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5750" 
+                  data-correct="false"
+                  onclick="selectChoice(3114, 5750, false)">
+            <span class="choice-letter">A</span>
+            <span>Haberin sosyal medyada çok fazla paylaşılıp paylaşılmadığını kontrol etmek</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5751" 
+                  data-correct="true"
+                  onclick="selectChoice(3114, 5751, true)">
+            <span class="choice-letter">B</span>
+            <span>Haberin kaynağını, güncelliğini ve bilimselliğini sorgulamak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5752" 
+                  data-correct="false"
+                  onclick="selectChoice(3114, 5752, false)">
+            <span class="choice-letter">C</span>
+            <span>Haberdeki fotoğrafların güzel olup olmadığına bakmak</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5753" 
+                  data-correct="false"
+                  onclick="selectChoice(3114, 5753, false)">
+            <span class="choice-letter">D</span>
+            <span>Haberi beğenenlerin yorumlarına bakmak</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3114">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu soru analiz düzeyinde bir sorudur. Bir haberin güvenilirliğini değerlendirmek için: kaynağın resmi ve güvenilir olup olmadığı, haberin diğer güvenilir kaynaklarda da yer alıp almadığı, yayın tarihinin güncel olup olmadığı ve yazarın uzmanlık alanının kontrol edilmesi gerekir. Bu beceriler kazanım ç) ve d) kapsamında bilgilerin değerlendirilmesi ve çıkarım yapılması ile doğrudan ilişkilidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3121" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 19</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">5N1K soruları hazırlayarak dijitalleşmenin vatandaşlık haklarına etkisini araştıran bir öğrenci, 'Nasıl?' sorusunu kullanarak neyi sorgulamış olabilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5762" 
+                  data-correct="false"
+                  onclick="selectChoice(3121, 5762, false)">
+            <span class="choice-letter">A</span>
+            <span>Dijitalleşme ne zaman başladı?</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5763" 
+                  data-correct="false"
+                  onclick="selectChoice(3121, 5763, false)">
+            <span class="choice-letter">B</span>
+            <span>Dijitalleşme kimleri etkiledi?</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5764" 
+                  data-correct="true"
+                  onclick="selectChoice(3121, 5764, true)">
+            <span class="choice-letter">C</span>
+            <span>Dijitalleşme vatandaşlık haklarının kullanımını nasıl kolaylaştırdı?</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5765" 
+                  data-correct="false"
+                  onclick="selectChoice(3121, 5765, false)">
+            <span class="choice-letter">D</span>
+            <span>Dijitalleşme neden önemlidir?</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3121">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu soru, kazanım b) kapsamında 5N1K sorularının anlaşılmasını ölçmektedir. 'Nasıl?' sorusu, bir olayın gerçekleşme biçimini, sürecini veya mekanizmasını sorgular. Örneğin: 'Dijitalleşme, oy kullanma hakkının kullanımını nasıl değiştirdi?' sorusu, dijitalleşmenin mekanizmasını ve sürecini anlamaya yönelik bir 5N1K sorusudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 14px;">
+        <a href="/contact" style="color: #6b7280; text-decoration: none;">İletişim</a>
+        <a href="/about" style="color: #6b7280; text-decoration: none;">Hakkımızda</a>
+        <a href="/privacy-policy" style="color: #6b7280; text-decoration: none;">Gizlilik Politikası</a>
+      </div>
+    </div>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      Dijitalleşme ve Teknolojik Gelişmelerin Vatandaşlık Hak ve Sorumluluklarına Etkileri test soruları - 6. Sınıf Sosyal Bilgiler dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // Yanlış seçimi işaretle
+        if (btn.dataset.choiceId == choiceId && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

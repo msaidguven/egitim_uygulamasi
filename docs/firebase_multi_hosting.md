@@ -18,12 +18,12 @@ If you prefer another site id, update `.firebaserc` target `seo` accordingly.
 ## 2) Sync generated SEO files into this repo
 
 ```bash
-./scripts/sync_seo_output.sh
+./scripts/deploy_main_with_seo.sh
 ```
 
-This copies from:
+This script includes SEO sync internally and copies from:
 
-`/home/msaid/İndirilenler/seo_generator/output`
+`/home/msaid/Masaüstü/app/mobil/egitim_uygulamasi/seo_generator/output`
 
 into:
 
@@ -31,7 +31,13 @@ into:
 
 ## 3) Build and deploy
 
-App only:
+Single command (recommended):
+
+```bash
+./scripts/deploy_main_with_seo.sh
+```
+
+Manual app-only deploy:
 
 ```bash
 flutter build web

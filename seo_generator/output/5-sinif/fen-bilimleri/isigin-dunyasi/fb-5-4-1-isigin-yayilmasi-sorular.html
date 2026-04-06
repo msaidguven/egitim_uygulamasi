@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FB.5.4.1.Işığın Yayılması Test Soruları - Işığın Dünyası...</title>
+  <meta name="description" content="18 soru ile FB.5.4.1.Işığın Yayılması konusunu pekiştir ve başarını ölç. 5. Sınıf Fen Bilimleri dersi Işığın Dünyası ünitesi online alıştırma.">
+  <meta name="keywords" content="FB.5.4.1.Işığın Yayılması test, FB.5.4.1.Işığın Yayılması sorular, Fen Bilimleri quiz, 5. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="FB.5.4.1.Işığın Yayılması Test Soruları - Işığın Dünyası...">
+  <meta property="og:description" content="18 soru ile FB.5.4.1.Işığın Yayılması konusunu pekiştir ve başarını ölç. 5. Sınıf Fen Bilimleri dersi Işığın Dünyası ünitesi online alıştırma.">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/fen-bilimleri/">Fen Bilimleri</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/fen-bilimleri/isigin-dunyasi/">Işığın Dünyası</a>
+          
+          <span>›</span>
+        
+          
+            <strong>FB.5.4.1.Işığın Yayılması Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 FB.5.4.1.Işığın Yayılması - Test Soruları</h1>
+      <div class="meta">18 Soru • 5. Sınıf Fen Bilimleri</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/5-sinif/fen-bilimleri/isigin-dunyasi/fb-5-4-1-isigin-yayilmasi/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">18</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="1272" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bulutların arasından süzülen güneş ışınlarının düz çizgiler şeklinde görülmesi, ışığın doğrusal yayıldığının bir kanıtıdır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2352" 
+                  data-correct="true"
+                  onclick="selectChoice(1272, 2352, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2353" 
+                  data-correct="false"
+                  onclick="selectChoice(1272, 2353, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1272">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Doğadaki gözlemlerimiz, özellikle tozlu ortamlarda veya bulut arasından süzülen ışıklarda, ışığın doğrusal (düz) çizgiler halinde yayıldığını açıkça gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1271" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci el fenerini karanlık bir odada duvara doğru tuttuğunda ışığın izlediği yolu gözlemlemek istiyor. Işığın izlediği yol ile ilgili aşağıdakilerden hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2348" 
+                  data-correct="false"
+                  onclick="selectChoice(1271, 2348, false)">
+            <span class="choice-letter">A</span>
+            <span>Işık sadece tutulduğu yöne doğru dalgalı bir yol izler.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2349" 
+                  data-correct="true"
+                  onclick="selectChoice(1271, 2349, true)">
+            <span class="choice-letter">B</span>
+            <span>Işık kaynağından çıkan ışık her yöne ve doğrusal bir yol izler.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2350" 
+                  data-correct="false"
+                  onclick="selectChoice(1271, 2350, false)">
+            <span class="choice-letter">C</span>
+            <span>Işık sadece yukarı ve aşağı yönde yayılır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2351" 
+                  data-correct="false"
+                  onclick="selectChoice(1271, 2351, false)">
+            <span class="choice-letter">D</span>
+            <span>Işık kaynağından çıkan ışınlar zikzak çizerek ilerler.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1271">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık, bir engel ile karşılaşmadığı sürece her yöne doğrusal (düz bir çizgi şeklinde) yayılır. Bu yüzden ışık ışınları çizilirken ok işaretli düz çizgiler kullanılır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1261" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Bir el fenerinden çıkan ışığın yolu hakkında hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2330" 
+                  data-correct="true"
+                  onclick="selectChoice(1261, 2330, true)">
+            <span class="choice-letter">A</span>
+            <span>Işık her yöne doğrusal bir yol izler.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2331" 
+                  data-correct="false"
+                  onclick="selectChoice(1261, 2331, false)">
+            <span class="choice-letter">B</span>
+            <span>Işık sadece bir yöne kıvrılarak gider.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2332" 
+                  data-correct="false"
+                  onclick="selectChoice(1261, 2332, false)">
+            <span class="choice-letter">C</span>
+            <span>Işık yayılmaz, sadece kaynaktan kalır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2333" 
+                  data-correct="false"
+                  onclick="selectChoice(1261, 2333, false)">
+            <span class="choice-letter">D</span>
+            <span>Işık rastgele zigzag çizerek ilerler.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1261">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık her yöne doğrusal yayılır çünkü kaynaktan çıkan ışık dalgaları düz bir hat üzerinde ilerler ve engelle karşılaşmadıkça yön değiştirmez. Bu, kazanımlarda belirtilen ışığın doğrusal yol izlemesiyle uyumludur.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1262" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Işık, kaynaktan çıktıktan sonra kıvrılarak yol alır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2334" 
+                  data-correct="false"
+                  onclick="selectChoice(1262, 2334, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2335" 
+                  data-correct="true"
+                  onclick="selectChoice(1262, 2335, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1262">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü ışık doğrusal bir yol izler; kıvrılma ancak yansıma veya kırılma gibi olaylarda gerçekleşir. Bu, yaygın bir kavram yanılgısını ölçer ve kazanımlardaki doğrusal yayılmayı vurgular.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1254" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Işık kaynağından çıkan ışınlar, engel olmadığı sürece doğrusal bir yol izler.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2322" 
+                  data-correct="true"
+                  onclick="selectChoice(1254, 2322, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2323" 
+                  data-correct="false"
+                  onclick="selectChoice(1254, 2323, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1254">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Deney ve gözlemler ışığın doğrusal yayıldığını göstermektedir. Engel olmadığı sürece ışık düz bir yol izler.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1251" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Karanlık bir odada el fenerini duvara doğru tuttuğumuzda ışığın duvara düz bir çizgi şeklinde ulaştığı gözlemleniyor. Bu durum ışığın hangi özelliğini gösterir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2310" 
+                  data-correct="true"
+                  onclick="selectChoice(1251, 2310, true)">
+            <span class="choice-letter">A</span>
+            <span>Işığın doğrusal yayılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2311" 
+                  data-correct="false"
+                  onclick="selectChoice(1251, 2311, false)">
+            <span class="choice-letter">B</span>
+            <span>Işığın sadece yukarı doğru yayılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2312" 
+                  data-correct="false"
+                  onclick="selectChoice(1251, 2312, false)">
+            <span class="choice-letter">C</span>
+            <span>Işığın eğri çizerek yayılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2313" 
+                  data-correct="false"
+                  onclick="selectChoice(1251, 2313, false)">
+            <span class="choice-letter">D</span>
+            <span>Işığın yalnızca bir yönde yayılması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1251">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Gözlemde ışığın kaynaktan çıkıp duvara düz bir yol izleyerek ulaştığı görülmektedir. Bu durum ışığın doğrusal yayıldığını gösterir. Işık engel olmadığı sürece doğrusal bir yol izler.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1280" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir mum yakıldığında odanın tavanının, tabanının ve tüm duvarlarının aynı anda aydınlanması ışığın hangi özelliği ile açıklanır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2364" 
+                  data-correct="false"
+                  onclick="selectChoice(1280, 2364, false)">
+            <span class="choice-letter">A</span>
+            <span>Işığın çok hızlı olması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2365" 
+                  data-correct="true"
+                  onclick="selectChoice(1280, 2365, true)">
+            <span class="choice-letter">B</span>
+            <span>Işığın her yöne yayılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2366" 
+                  data-correct="false"
+                  onclick="selectChoice(1280, 2366, false)">
+            <span class="choice-letter">C</span>
+            <span>Işığın sadece doğrusal yayılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2367" 
+                  data-correct="false"
+                  onclick="selectChoice(1280, 2367, false)">
+            <span class="choice-letter">D</span>
+            <span>Işığın bir enerji türü olması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1280">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Eğer ışık sadece bir yöne gitseydi odanın sadece bir kısmı aydınlanırdı. Her yerin aydınlanması ışığın kaynaktan her yöne yayıldığını gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1252" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, üç kartona aynı hizaya gelecek şekilde delikler açıyor ve arkasına mum koyuyor. Mum ışığı sadece delikler tam hizalıyken görülüyor. Bu deney hangi sonucu destekler?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2314" 
+                  data-correct="true"
+                  onclick="selectChoice(1252, 2314, true)">
+            <span class="choice-letter">A</span>
+            <span>Işığın doğrusal yayıldığı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2315" 
+                  data-correct="false"
+                  onclick="selectChoice(1252, 2315, false)">
+            <span class="choice-letter">B</span>
+            <span>Işığın sadece yukarı yönlü yayıldığı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2316" 
+                  data-correct="false"
+                  onclick="selectChoice(1252, 2316, false)">
+            <span class="choice-letter">C</span>
+            <span>Işığın engelleri yok saydığı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2317" 
+                  data-correct="false"
+                  onclick="selectChoice(1252, 2317, false)">
+            <span class="choice-letter">D</span>
+            <span>Işığın karanlıkta yayılmadığı</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1252">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Mum ışığının yalnızca delikler aynı doğrultuda olduğunda görülmesi, ışığın doğrusal yayıldığını gösterir. Eğer ışık eğri ya da her yöne rastgele yayılsaydı, delikler hizalı olmasa da ışık görülebilirdi.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1255" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Işık sadece yatay doğrultuda yayılır, dikey yönde yayılmaz.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2324" 
+                  data-correct="false"
+                  onclick="selectChoice(1255, 2324, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2325" 
+                  data-correct="true"
+                  onclick="selectChoice(1255, 2325, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1255">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Işık kaynaktan her yönde yayılır. Yalnızca yatay değil, yukarı, aşağı ve diğer tüm yönlerde doğrusal olarak yayılabilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1264" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Güneş ışığının yeryüzüne ulaşması sırasında izlediği yolun niteliği nedir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2336" 
+                  data-correct="true"
+                  onclick="selectChoice(1264, 2336, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğrusal bir yol izler.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2337" 
+                  data-correct="false"
+                  onclick="selectChoice(1264, 2337, false)">
+            <span class="choice-letter">B</span>
+            <span>Dairesel bir yörünge çizer.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2338" 
+                  data-correct="false"
+                  onclick="selectChoice(1264, 2338, false)">
+            <span class="choice-letter">C</span>
+            <span>Rastgele dağılır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2339" 
+                  data-correct="false"
+                  onclick="selectChoice(1264, 2339, false)">
+            <span class="choice-letter">D</span>
+            <span>Sadece aşağı doğru iner.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1264">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Güneş ışığı uzayda doğrusal yayılır çünkü boşlukta engel yoktur. Bu, kazanımlardaki gözlem ve tanımlama ile uyumlu olup günlük hayat bağlantılıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1266" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Işık, bir kaynaktan çıktıktan sonra her yöne doğru yayılır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2340" 
+                  data-correct="true"
+                  onclick="selectChoice(1266, 2340, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2341" 
+                  data-correct="false"
+                  onclick="selectChoice(1266, 2341, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1266">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur çünkü noktasal kaynaklarda ışık küresel dalga gibi her yöne doğrusal hatlar üzerinde gider. Kazanımlardaki açıklama ve kayıt ile uyumludur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1277" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir ışık kaynağından çıkan ışık, önüne bir engel çıkana kadar sonsuza dek doğrusal bir yol izler.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2362" 
+                  data-correct="true"
+                  onclick="selectChoice(1277, 2362, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2363" 
+                  data-correct="false"
+                  onclick="selectChoice(1277, 2363, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1277">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık, bir maddeyle etkileşime girip soğurulana veya yansıtılana kadar izlediği düz yolu bozmaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1259" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci sisli havada araba farlarının ışık huzmelerini daha belirgin görmektedir. Bu durumun nedeni aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2326" 
+                  data-correct="true"
+                  onclick="selectChoice(1259, 2326, true)">
+            <span class="choice-letter">A</span>
+            <span>Işığın izlediği yolun ortam sayesinde görünür hale gelmesi</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2327" 
+                  data-correct="false"
+                  onclick="selectChoice(1259, 2327, false)">
+            <span class="choice-letter">B</span>
+            <span>Işığın eğri çizerek yayılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2328" 
+                  data-correct="false"
+                  onclick="selectChoice(1259, 2328, false)">
+            <span class="choice-letter">C</span>
+            <span>Işığın sadece yere doğru yayılması</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2329" 
+                  data-correct="false"
+                  onclick="selectChoice(1259, 2329, false)">
+            <span class="choice-letter">D</span>
+            <span>Işığın sisli havada yayılmaması</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1259">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sisli havada su damlacıkları ışığın izlediği yolu görünür hale getirir. Böylece ışığın doğrusal olarak yayıldığı gözlemlenebilir. Bu durum ışığın yolunun gözlemlenmesini sağlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1253" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir öğrenci, 'Işık sadece fenerin tutulduğu yöne doğru yayılır.' demektedir. Bu ifadeye göre hangi değerlendirme doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2318" 
+                  data-correct="true"
+                  onclick="selectChoice(1253, 2318, true)">
+            <span class="choice-letter">A</span>
+            <span>İfade yanlıştır, ışık kaynaktan her yönde doğrusal olarak yayılır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2319" 
+                  data-correct="false"
+                  onclick="selectChoice(1253, 2319, false)">
+            <span class="choice-letter">B</span>
+            <span>İfade doğrudur, ışık sadece tek yönde yayılır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2320" 
+                  data-correct="false"
+                  onclick="selectChoice(1253, 2320, false)">
+            <span class="choice-letter">C</span>
+            <span>İfade doğrudur, ışık eğri çizerek yayılır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2321" 
+                  data-correct="false"
+                  onclick="selectChoice(1253, 2321, false)">
+            <span class="choice-letter">D</span>
+            <span>İfade yanlıştır, ışık sadece aşağı doğru yayılır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1253">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade kavram yanılgısı içerir. Işık kaynaktan her yönde yayılır; ancak her bir ışın doğrusal yol izler. Fener belirli bir yöne yoğun ışık verse de ışık tek bir doğrultuyla sınırlı değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1275" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kavram Yanılgısı Sorusu: Ali, ışığın sadece önündeki cisimleri aydınlattığını, arkasındaki cisimlerin aydınlanması için ışığın bükülmesi gerektiğini düşünüyor. Ali'nin bu düşüncesini düzeltmek için hangi bilgi verilmelidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2354" 
+                  data-correct="false"
+                  onclick="selectChoice(1275, 2354, false)">
+            <span class="choice-letter">A</span>
+            <span>Işık sadece camdan geçerken bükülür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2355" 
+                  data-correct="true"
+                  onclick="selectChoice(1275, 2355, true)">
+            <span class="choice-letter">B</span>
+            <span>Işık bir kaynaktan çıkarak her yöne yayılır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2356" 
+                  data-correct="false"
+                  onclick="selectChoice(1275, 2356, false)">
+            <span class="choice-letter">C</span>
+            <span>Işık sadece aynalardan yansıyarak arkaya gider.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2357" 
+                  data-correct="false"
+                  onclick="selectChoice(1275, 2357, false)">
+            <span class="choice-letter">D</span>
+            <span>Işık kaynağı sadece en güçlü olduğu yöne ışık verir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1275">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Öğrenciler bazen ışığın sadece tek bir yöne gittiğini sanabilir. Oysa ışık kaynağı engellenmediği sürece her yöne ışınlar gönderir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="1267" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir deneyde, ışık kaynağından çıkan ışığın bir kağıt üzerindeki deliğe ulaşmasını gözlemliyorsunuz. Işığın yolu hakkında ne söylersiniz?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2342" 
+                  data-correct="true"
+                  onclick="selectChoice(1267, 2342, true)">
+            <span class="choice-letter">A</span>
+            <span>Işık deliğe doğrusal bir hat üzerinde ulaşır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2343" 
+                  data-correct="false"
+                  onclick="selectChoice(1267, 2343, false)">
+            <span class="choice-letter">B</span>
+            <span>Işık deliğin etrafından kıvrılarak geçer.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2344" 
+                  data-correct="false"
+                  onclick="selectChoice(1267, 2344, false)">
+            <span class="choice-letter">C</span>
+            <span>Işık deliğe ulaşmaz, dağılır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2345" 
+                  data-correct="false"
+                  onclick="selectChoice(1267, 2345, false)">
+            <span class="choice-letter">D</span>
+            <span>Işık sadece deliğin üstünden gider.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1267">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Işık deliğe doğrusal ulaşır çünkü düz hat izler; bu deney gözlemi kazanımlardaki veriyi kaydetmeyi gerektirir ve analiz düzeyindedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1269" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Işığın yayılması sırasında, ışık sadece bir yöne doğru gider.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2346" 
+                  data-correct="false"
+                  onclick="selectChoice(1269, 2346, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2347" 
+                  data-correct="true"
+                  onclick="selectChoice(1269, 2347, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1269">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır çünkü ışık her yöne yayılır; kavram yanılgısını ölçer ve kazanımlardaki her yöne doğrusal yayılmayı açıklar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="1276" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Analiz Sorusu: Bir öğrenci ucu açık, kıvrımlı bir hortumun bir ucundan yanan bir muma bakıyor ancak mumu göremiyor. Hortumu düz hale getirdiğinde ise mumu görebiliyor. Bu deneyin temel amacı aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="2358" 
+                  data-correct="false"
+                  onclick="selectChoice(1276, 2358, false)">
+            <span class="choice-letter">A</span>
+            <span>Işığın şiddetini ölçmek.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2359" 
+                  data-correct="false"
+                  onclick="selectChoice(1276, 2359, false)">
+            <span class="choice-letter">B</span>
+            <span>Işığın her yöne yayıldığını kanıtlamak.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2360" 
+                  data-correct="true"
+                  onclick="selectChoice(1276, 2360, true)">
+            <span class="choice-letter">C</span>
+            <span>Işığın doğrusal yol izlediğini ispatlamak.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="2361" 
+                  data-correct="false"
+                  onclick="selectChoice(1276, 2361, false)">
+            <span class="choice-letter">D</span>
+            <span>Mumun ışık kaynağı olmadığını göstermek.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-1276">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Kıvrımlı hortumda ışık engellendiği için mum görülmez. Hortum düzleşince ışık doğrusal yolla göze ulaşır. Bu, ışığın eğri yollar izleyemeyeceğini kanıtlar.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 14px;">
+        <a href="/contact" style="color: #6b7280; text-decoration: none;">İletişim</a>
+        <a href="/about" style="color: #6b7280; text-decoration: none;">Hakkımızda</a>
+        <a href="/privacy-policy" style="color: #6b7280; text-decoration: none;">Gizlilik Politikası</a>
+      </div>
+    </div>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      FB.5.4.1.Işığın Yayılması test soruları - 5. Sınıf Fen Bilimleri dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // Yanlış seçimi işaretle
+        if (btn.dataset.choiceId == choiceId && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FB.5.5.2.Isı ve Sıcaklık Test Soruları - Maddenin Doğası...</title>
+  <meta name="description" content="20 soru ile FB.5.5.2.Isı ve Sıcaklık konusunu pekiştir ve başarını ölç. 5. Sınıf Fen Bilimleri dersi Maddenin Doğası ünitesi online alıştırma.">
+  <meta name="keywords" content="FB.5.5.2.Isı ve Sıcaklık test, FB.5.5.2.Isı ve Sıcaklık sorular, Fen Bilimleri quiz, 5. Sınıf test">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="FB.5.5.2.Isı ve Sıcaklık Test Soruları - Maddenin Doğası...">
+  <meta property="og:description" content="20 soru ile FB.5.5.2.Isı ve Sıcaklık konusunu pekiştir ve başarını ölç. 5. Sınıf Fen Bilimleri dersi Maddenin Doğası ünitesi online alıştırma.">
+  <meta property="og:type" content="article">
+  
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8561144837504825"
+     crossorigin="anonymous"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .breadcrumb {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.95;
+    }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 8px; }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    /* Score Card */
+    .score-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+    .score-item {
+      padding: 10px;
+    }
+    .score-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .score-label {
+      font-size: 13px;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+    .score-correct { color: #10b981; }
+    .score-wrong { color: #ef4444; }
+    .score-total { color: #3b82f6; }
+    
+    /* Difficulty Filter */
+    .filter-bar {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .filter-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .difficulty-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .difficulty-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .difficulty-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    .reset-btn {
+      margin-left: auto;
+      padding: 8px 16px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover {
+      background: #dc2626;
+    }
+    
+    /* Question Card */
+    .question-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    .question-card.answered {
+      opacity: 0.7;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    .question-number {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 16px;
+    }
+    .difficulty-stars {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .question-text {
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice-btn {
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f9fafb;
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+    }
+    .choice-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .choice-btn.correct {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .choice-btn.correct .choice-letter {
+      background: #10b981;
+      color: white;
+    }
+    .choice-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: #ef4444;
+      color: white;
+    }
+    .solution {
+      margin-top: 20px;
+      padding: 20px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 6px;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    .solution-title {
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .solution-text {
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    
+    /* Ad Slot */
+    .ad-slot {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      padding: 20px;
+      text-align: center;
+      color: #9ca3af;
+      margin: 30px 0;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+      transform: translateX(-4px);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="breadcrumb">
+        
+          
+            <a href="/5-sinif/">5. Sınıf</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/fen-bilimleri/">Fen Bilimleri</a>
+          
+          <span>›</span>
+        
+          
+            <a href="/5-sinif/fen-bilimleri/maddenin-dogasi/">Maddenin Doğası</a>
+          
+          <span>›</span>
+        
+          
+            <strong>FB.5.5.2.Isı ve Sıcaklık Soruları</strong>
+          
+          
+        
+      </nav>
+      <h1>🎯 FB.5.5.2.Isı ve Sıcaklık - Test Soruları</h1>
+      <div class="meta">20 Soru • 5. Sınıf Fen Bilimleri</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="/5-sinif/fen-bilimleri/maddenin-dogasi/fb-5-5-2-isi-ve-sicaklik/" class="back-link">
+      ← İçerik Sayfasına Dön
+    </a>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-number score-total" id="total-score">20</div>
+        <div class="score-label">Toplam Soru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-correct" id="correct-score">0</div>
+        <div class="score-label">Doğru</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number score-wrong" id="wrong-score">0</div>
+        <div class="score-label">Yanlış</div>
+      </div>
+      <div class="score-item">
+        <div class="score-number" id="percentage-score">0%</div>
+        <div class="score-label">Başarı</div>
+      </div>
+    </div>
+
+    <!-- Difficulty Filter -->
+    <div class="filter-bar">
+      <span class="filter-label">Zorluk:</span>
+      <button class="difficulty-btn active" data-difficulty="all">Tümü</button>
+      <button class="difficulty-btn" data-difficulty="1">⭐ Çok Kolay</button>
+      <button class="difficulty-btn" data-difficulty="2">⭐⭐ Kolay</button>
+      <button class="difficulty-btn" data-difficulty="3">⭐⭐⭐ Orta</button>
+      <button class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐ Zor</button>
+      <button class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐ Çok Zor</button>
+      <button class="reset-btn" onclick="resetQuiz()">Sıfırla</button>
+    </div>
+
+    <!-- AdSense: Üst Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questions-container">
+      
+      <div class="question-card" data-question-id="3042" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 1</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi sıcaklığın bir özelliğidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5594" 
+                  data-correct="true"
+                  onclick="selectChoice(3042, 5594, true)">
+            <span class="choice-letter">A</span>
+            <span>Termometre ile ölçülür</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5595" 
+                  data-correct="false"
+                  onclick="selectChoice(3042, 5595, false)">
+            <span class="choice-letter">B</span>
+            <span>Kalori ile ölçülür</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5596" 
+                  data-correct="false"
+                  onclick="selectChoice(3042, 5596, false)">
+            <span class="choice-letter">C</span>
+            <span>Bir enerji türüdür</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5597" 
+                  data-correct="false"
+                  onclick="selectChoice(3042, 5597, false)">
+            <span class="choice-letter">D</span>
+            <span>Madde miktarına bağlıdır</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3042">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıcaklık, bir maddenin ne kadar sıcak ya da soğuk olduğunu gösterir ve termometre ile ölçülür. Enerji değildir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3044" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 2</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Isı, bir enerji türüdür.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5602" 
+                  data-correct="true"
+                  onclick="selectChoice(3044, 5602, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5603" 
+                  data-correct="false"
+                  onclick="selectChoice(3044, 5603, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3044">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Isı enerjidir ve bir maddeden diğerine aktarılabilir. Bu nedenle ifade doğrudur.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3052" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 3</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi sıcaklığın doğru bir tanımıdır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5614" 
+                  data-correct="false"
+                  onclick="selectChoice(3052, 5614, false)">
+            <span class="choice-letter">A</span>
+            <span>Bir maddeden diğerine geçen enerji miktarı</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5615" 
+                  data-correct="true"
+                  onclick="selectChoice(3052, 5615, true)">
+            <span class="choice-letter">B</span>
+            <span>Bir maddenin ne kadar sıcak ya da soğuk olduğunu gösteren ölçü</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5616" 
+                  data-correct="false"
+                  onclick="selectChoice(3052, 5616, false)">
+            <span class="choice-letter">C</span>
+            <span>Maddenin kütlesiyle orantılı olan enerji türü</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5617" 
+                  data-correct="false"
+                  onclick="selectChoice(3052, 5617, false)">
+            <span class="choice-letter">D</span>
+            <span>Yalnızca sıvılarda ölçülebilen bir büyüklük</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3052">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıcaklık, bir maddenin ne kadar sıcak ya da soğuk olduğunu gösteren bir ölçüdür ve termometre ile ölçülür. Isı ise bir maddeden diğerine geçen enerji miktarıdır. Bu ikisini birbirine karıştırmamak gerekir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3055" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 4</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Isı ve sıcaklık aynı anlama gelir; bu yüzden birbirinin yerine kullanılabilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5626" 
+                  data-correct="false"
+                  onclick="selectChoice(3055, 5626, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5627" 
+                  data-correct="true"
+                  onclick="selectChoice(3055, 5627, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3055">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade yanlıştır. Isı, bir maddeden diğerine geçen enerji miktarıdır ve joule ile ölçülür. Sıcaklık ise maddenin ne kadar sıcak olduğunu gösteren bir ölçüdür ve termometre ile ölçülür. İkisi farklı kavramlardır ve birbirinin yerine kullanılamaz.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3057" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 5</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Isı, sıcaklığı yüksek olan maddeden sıcaklığı düşük olan maddeye doğru aktarılır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5630" 
+                  data-correct="true"
+                  onclick="selectChoice(3057, 5630, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5631" 
+                  data-correct="false"
+                  onclick="selectChoice(3057, 5631, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3057">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Isı enerjisi her zaman sıcaklığı yüksek olan ortamdan sıcaklığı düşük olan ortama doğru kendiliğinden aktarılır. Bu, ısı iletiminin temel ilkesidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3062" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 6</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Ankara’da sabah ölçülen hava sıcaklığı 10 °C, öğlen ise 25 °C olarak bulunmuştur. Bu durumla ilgili aşağıda verilenlerden hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5636" 
+                  data-correct="true"
+                  onclick="selectChoice(3062, 5636, true)">
+            <span class="choice-letter">A</span>
+            <span>Hava, öğlen daha fazla ısı almıştır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5637" 
+                  data-correct="false"
+                  onclick="selectChoice(3062, 5637, false)">
+            <span class="choice-letter">B</span>
+            <span>Hava, öğlen daha fazla sıcaklık enerjisine sahip olmuştur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5638" 
+                  data-correct="false"
+                  onclick="selectChoice(3062, 5638, false)">
+            <span class="choice-letter">C</span>
+            <span>Sabah ve öğlen hava aynı miktarda ısıya sahiptir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5639" 
+                  data-correct="false"
+                  onclick="selectChoice(3062, 5639, false)">
+            <span class="choice-letter">D</span>
+            <span>Hava, sıcaklık enerjisini kaybetmiştir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3062">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıcaklık bir maddenin sıcaklık durumunu ölçen büyüklüktür, bu nedenle sabah ve öğlen ölçülen sıcaklık değerleri farklıdır. Isı ise bir enerji türüdür ve bu durumda bahsedilmektedir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3064" data-difficulty="1">
+        <div class="question-header">
+          <span class="question-number">Soru 7</span>
+          <span class="difficulty-stars">⭐</span>
+        </div>
+        
+        <div class="question-text">Isı bir enerji türüdür, sıcaklık ise bir maddenin sıcaklık düzeyini belirten ölçümdür.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5644" 
+                  data-correct="true"
+                  onclick="selectChoice(3064, 5644, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5645" 
+                  data-correct="false"
+                  onclick="selectChoice(3064, 5645, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3064">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Isı, maddeler arasında aktarılan bir enerji türüdür ve kalori veya joule ile ölçülür. Sıcaklık ise bir maddeyi ne kadar sıcak ya da soğuk olduğunu gösteren bir ölçüm büyüklüğüdür ve genellikle Celsius, Fahrenheit veya Kelvin ile ifade edilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3054" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 8</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Isı ve sıcaklığın ortak özelliği aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5622" 
+                  data-correct="false"
+                  onclick="selectChoice(3054, 5622, false)">
+            <span class="choice-letter">A</span>
+            <span>İkisi de joule birimi ile ölçülür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5623" 
+                  data-correct="true"
+                  onclick="selectChoice(3054, 5623, true)">
+            <span class="choice-letter">B</span>
+            <span>İkisi de maddenin ısıl durumuyla ilgilidir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5624" 
+                  data-correct="false"
+                  onclick="selectChoice(3054, 5624, false)">
+            <span class="choice-letter">C</span>
+            <span>İkisi de yalnızca termometre ile ölçülür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5625" 
+                  data-correct="false"
+                  onclick="selectChoice(3054, 5625, false)">
+            <span class="choice-letter">D</span>
+            <span>İkisi de maddenin kütlesine bağlı değildir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3054">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Hem ısı hem de sıcaklık maddenin termik (ısıl) durumunu ifade etmek için kullanılan kavramlardır. İkisi de maddenin taneciklerinin hareketiyle ilgilidir. Ancak ısı bir enerji türü, sıcaklık ise bir ölçüdür; birimleri ve ölçüm araçları farklıdır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3065" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 9</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir kış günü dışarıda bırakılan bir cam bardakta sıcak su varken bardağın dışı “buharlanıyor” ve buğulanıyor gibi görünür. Bu gözlemler ile ilgili aşağıda verilen açıklamalardan hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5646" 
+                  data-correct="false"
+                  onclick="selectChoice(3065, 5646, false)">
+            <span class="choice-letter">A</span>
+            <span>Bardak içindeki suyun sıcaklığı, ısı ile ölçülür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5647" 
+                  data-correct="true"
+                  onclick="selectChoice(3065, 5647, true)">
+            <span class="choice-letter">B</span>
+            <span>Sıcak sudan bardağa doğru ısı aktığı için bardak dış yüzeyinde buğulanma oluşur.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5648" 
+                  data-correct="false"
+                  onclick="selectChoice(3065, 5648, false)">
+            <span class="choice-letter">C</span>
+            <span>Bardak dış yüzeyindeki buğulanma, sıcaklığın artmasından kaynaklanır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5649" 
+                  data-correct="false"
+                  onclick="selectChoice(3065, 5649, false)">
+            <span class="choice-letter">D</span>
+            <span>Sıcak su soğuk hava ile aynı sıcaklık enerjisine sahiptir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3065">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıcak su, bardağı ısıtıyor ve bu ısı bardak yüzeyine geçer. Soğuk hava ile temas eden bardak yüzeyi, su buharını yoğunlaştırdığı için buğulanma görülür. Bu durumda sıcaklık, enerji akışını ve değişimlerin yönünü gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3056" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 10</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sıcaklık, maddenin kütlesine bağlı değildir; aynı maddeden alınan küçük ya da büyük parça aynı sıcaklığa sahip olabilir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5628" 
+                  data-correct="true"
+                  onclick="selectChoice(3056, 5628, true)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5629" 
+                  data-correct="false"
+                  onclick="selectChoice(3056, 5629, false)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3056">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu ifade doğrudur. Sıcaklık yoğun bir özelliktir; maddenin miktarına bağlı değildir. Örneğin kaynayan bir tenceredeki suyun tamamı ile bir kaşık alınan kaynar su aynı sıcaklıktadır. Isı ise kapsamlı bir özelliktir ve maddenin miktarıyla değişir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3043" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 11</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir tenceredeki su ile bardaktaki suyun sıcaklığı aynıysa aşağıdakilerden hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5598" 
+                  data-correct="true"
+                  onclick="selectChoice(3043, 5598, true)">
+            <span class="choice-letter">A</span>
+            <span>Tenceredeki suyun ısısı daha fazladır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5599" 
+                  data-correct="false"
+                  onclick="selectChoice(3043, 5599, false)">
+            <span class="choice-letter">B</span>
+            <span>Bardaktaki suyun ısısı daha fazladır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5600" 
+                  data-correct="false"
+                  onclick="selectChoice(3043, 5600, false)">
+            <span class="choice-letter">C</span>
+            <span>İkisinin ısısı da aynıdır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5601" 
+                  data-correct="false"
+                  onclick="selectChoice(3043, 5601, false)">
+            <span class="choice-letter">D</span>
+            <span>Sıcaklıkları farklıdır</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3043">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıcaklık aynı olabilir ancak tenceredeki su miktarı fazla olduğu için ısı enerjisi daha fazladır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3063" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 12</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sıcak çay, soğuk su ile karıştırıldığında, sonunda ortak bir sıcaklıkta dengeye gelir. Bu durum ile ilgili aşağıdaki bilgilerden hangisi yanlıştır?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5640" 
+                  data-correct="false"
+                  onclick="selectChoice(3063, 5640, false)">
+            <span class="choice-letter">A</span>
+            <span>Isı, sıcak çaydan soğuk suya doğru aktığı için suyun sıcaklığı artar.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5641" 
+                  data-correct="true"
+                  onclick="selectChoice(3063, 5641, true)">
+            <span class="choice-letter">B</span>
+            <span>Karışımın son sıcaklığı, başlangıçtaki sıcak çayın sıcaklığından daha yüksektir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5642" 
+                  data-correct="false"
+                  onclick="selectChoice(3063, 5642, false)">
+            <span class="choice-letter">C</span>
+            <span>Sıcak çay ve soğuk su, sonunda aynı sıcaklık değerine ulaşır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5643" 
+                  data-correct="false"
+                  onclick="selectChoice(3063, 5643, false)">
+            <span class="choice-letter">D</span>
+            <span>Soğuk suya aktarılan ısı, çayın iç enerjisini azaltır.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3063">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Isı, sıcaklığı yüksek olan maddeden düşük olan maddeye doğru akar. Karışımın son sıcaklığı, başlangıç sıcaklıklarına ve madde miktarına bağlıdır. Sıcaklık ise her iki maddenin dengeye ulaştığı noktadaki ölçüm değeridir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3050" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 13</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Kışın elini sıcak suya sokan bir kişi, elini daha sıcak hisseder. Bunun nedeni aşağıdakilerden hangisidir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5610" 
+                  data-correct="true"
+                  onclick="selectChoice(3050, 5610, true)">
+            <span class="choice-letter">A</span>
+            <span>Sıcak sudan ele ısı geçişi olur</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5611" 
+                  data-correct="false"
+                  onclick="selectChoice(3050, 5611, false)">
+            <span class="choice-letter">B</span>
+            <span>El suya ısı verir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5612" 
+                  data-correct="false"
+                  onclick="selectChoice(3050, 5612, false)">
+            <span class="choice-letter">C</span>
+            <span>Sıcaklık aktarılır</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5613" 
+                  data-correct="false"
+                  onclick="selectChoice(3050, 5613, false)">
+            <span class="choice-letter">D</span>
+            <span>Suyun kütlesi artar</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3050">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıcak sudan ele doğru ısı akışı olur. Bu durum hissedilen sıcaklığı artırır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3070" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 14</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıda verilen ifadelerden hangisi, ısı ve sıcaklık kavramları arasındaki temel farkı en iyi şekilde açıklar?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5656" 
+                  data-correct="false"
+                  onclick="selectChoice(3070, 5656, false)">
+            <span class="choice-letter">A</span>
+            <span>Isı, sıcaklık ölçümüdür; sıcaklık ise enerjidir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5657" 
+                  data-correct="true"
+                  onclick="selectChoice(3070, 5657, true)">
+            <span class="choice-letter">B</span>
+            <span>Isı, maddeler arasında aktarılan enerjidir; sıcaklık ise bir maddenin sıcaklık durumunu ölçen büyüklüktür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5658" 
+                  data-correct="false"
+                  onclick="selectChoice(3070, 5658, false)">
+            <span class="choice-letter">C</span>
+            <span>Isı ve sıcaklık aynı şeydir, sadece farklı adlandırılır.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5659" 
+                  data-correct="false"
+                  onclick="selectChoice(3070, 5659, false)">
+            <span class="choice-letter">D</span>
+            <span>Sıcaklık, enerji türüdür; ısı ise sıcaklık ölçümüdür.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3070">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Isı, enerji akışıdır ve aktarılabilir. Sıcaklık ise bir maddenin sıcaklık seviyesini ölçen bir büyüklüktür. Bu nedenle ısı miktarını ve sıcaklık değerini birbirinden ayırmak gerekir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3053" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 15</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir bardak kaynar su ile bir kova ılık su karşılaştırıldığında aşağıdakilerden hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5618" 
+                  data-correct="false"
+                  onclick="selectChoice(3053, 5618, false)">
+            <span class="choice-letter">A</span>
+            <span>Bardak kaynar suyun ısısı da sıcaklığı da daha yüksektir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5619" 
+                  data-correct="false"
+                  onclick="selectChoice(3053, 5619, false)">
+            <span class="choice-letter">B</span>
+            <span>Kova ılık suyun hem ısısı hem de sıcaklığı daha yüksektir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5620" 
+                  data-correct="true"
+                  onclick="selectChoice(3053, 5620, true)">
+            <span class="choice-letter">C</span>
+            <span>Bardak kaynar suyun sıcaklığı yüksek, ancak kova ılık suyun toplam ısı enerjisi daha fazla olabilir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5621" 
+                  data-correct="false"
+                  onclick="selectChoice(3053, 5621, false)">
+            <span class="choice-letter">D</span>
+            <span>Isı ve sıcaklık aynı şey olduğundan ikisi de eşittir.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3053">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bardak kaynar suyun sıcaklığı daha yüksektir; ancak kova ılık suyun içerdiği toplam ısı enerjisi daha fazla olabilir çünkü ısı, maddenin miktarına (kütlesine) bağlıdır. Bu soru, ısı ve sıcaklığın farklı kavramlar olduğunu anlamayı ölçer.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3068" data-difficulty="2">
+        <div class="question-header">
+          <span class="question-number">Soru 16</span>
+          <span class="difficulty-stars">⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sıcaklık ölçümü, maddenin iç enerjisini ve kütlesini doğrudan gösterir.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5654" 
+                  data-correct="false"
+                  onclick="selectChoice(3068, 5654, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5655" 
+                  data-correct="true"
+                  onclick="selectChoice(3068, 5655, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3068">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıcaklık, bir maddenin ısıl durumunun ölçümünü verir ancak maddenin iç enerjisi ve kütlesi ile aynı şey değildir. Isı ise iç enerji değişimi ile ilgilidir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3067" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 17</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Bir bardak soğuk suya, aynı büyüklükte sıcak su eklenince, karışımın sıcaklığı 30 °C olarak ölçülmüştür. Bu durumla ilgili aşağıdaki açıklamalardan hangisi doğrudur?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5650" 
+                  data-correct="false"
+                  onclick="selectChoice(3067, 5650, false)">
+            <span class="choice-letter">A</span>
+            <span>Sıcak çaydan soğuk suya aktarılan ısıyun miktarı, sıcaklık cinsinden ölçülür.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5651" 
+                  data-correct="true"
+                  onclick="selectChoice(3067, 5651, true)">
+            <span class="choice-letter">B</span>
+            <span>Son sıcaklık 30 °C olduğuna göre, sıcak suyun sıcaklığı 30 °C den daha yüksektir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5652" 
+                  data-correct="false"
+                  onclick="selectChoice(3067, 5652, false)">
+            <span class="choice-letter">C</span>
+            <span>Sıcak suyun sıcaklığı, soğuk suyun sıcaklığından daha düşük olabilir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5653" 
+                  data-correct="false"
+                  onclick="selectChoice(3067, 5653, false)">
+            <span class="choice-letter">D</span>
+            <span>Her iki sıvı da aynı sıcaklıkta idi ve bu nedenle sıcaklık değişmedi.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3067">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">İki sıvı arasında ısı aktarımı gerçekleşir. Isı, sıcaklığı yüksek olan sıvıdan düşük olan sıvıya doğru akar. Son sıcaklık, başlangıçtaki sıcaklık değerlerine ve sıvı miktarlarına bağlıdır; bu yüzden sıcaklık değerini incelemek gerekir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3049" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 18</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Aşağıdakilerden hangisi ısı ve sıcaklık arasındaki farklardan biridir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5606" 
+                  data-correct="true"
+                  onclick="selectChoice(3049, 5606, true)">
+            <span class="choice-letter">A</span>
+            <span>Isı enerji, sıcaklık ölçülebilir bir büyüklüktür</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5607" 
+                  data-correct="false"
+                  onclick="selectChoice(3049, 5607, false)">
+            <span class="choice-letter">B</span>
+            <span>İkisi de aynı şeydir</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5608" 
+                  data-correct="false"
+                  onclick="selectChoice(3049, 5608, false)">
+            <span class="choice-letter">C</span>
+            <span>Sıcaklık enerji türüdür</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5609" 
+                  data-correct="false"
+                  onclick="selectChoice(3049, 5609, false)">
+            <span class="choice-letter">D</span>
+            <span>Isı termometre ile ölçülür</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3049">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Isı bir enerji türüdür ve birimi joule veya kaloridir, sıcaklık ise derece ile ifade edilir.</div>
+        </div>
+        
+      </div>
+      
+      
+      <!-- AdSense: Her 3 soruda bir -->
+      <div class="ad-slot">
+        <div>Reklam Alanı (336x280)</div>
+      </div>
+      
+      
+      <div class="question-card" data-question-id="3061" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 19</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Ayşe, sabah çayını yaparken 200 mL suyu ısıtıyor. Öğleden sonra aynı ocakta 1 litre suyu ısıtıyor. Her iki durumda da su kaynamaya başladığında termometre 100°C gösteriyor. Bu gözleme dayanarak aşağıdakilerden hangisi söylenebilir?</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5632" 
+                  data-correct="false"
+                  onclick="selectChoice(3061, 5632, false)">
+            <span class="choice-letter">A</span>
+            <span>Her iki suyun ısısı da sıcaklığı da birbirine eşittir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5633" 
+                  data-correct="true"
+                  onclick="selectChoice(3061, 5633, true)">
+            <span class="choice-letter">B</span>
+            <span>Her iki suyun sıcaklığı eşitken 1 litre suyu ısıtmak daha fazla ısı enerjisi gerektirir.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5634" 
+                  data-correct="false"
+                  onclick="selectChoice(3061, 5634, false)">
+            <span class="choice-letter">C</span>
+            <span>Az su daha fazla ısı enerjisi içerdiğinden daha çabuk kaynar.</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5635" 
+                  data-correct="false"
+                  onclick="selectChoice(3061, 5635, false)">
+            <span class="choice-letter">D</span>
+            <span>Sıcaklık ve ısı aynı şey olduğundan iki durum arasında fark yoktur.</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3061">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Bu analiz düzeyi bir sorudur. Her iki durumda da sıcaklık 100°C olduğu için sıcaklıklar eşittir. Ancak 1 litre suyu 100°C'ye getirmek için daha fazla ısı enerjisi harcanmıştır; çünkü ısı, maddenin kütlesiyle doğru orantılıdır. Bu durum, ısı ve sıcaklığın farklı kavramlar olduğunu somut biçimde gösterir.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+      <div class="question-card" data-question-id="3045" data-difficulty="3">
+        <div class="question-header">
+          <span class="question-number">Soru 20</span>
+          <span class="difficulty-stars">⭐⭐⭐</span>
+        </div>
+        
+        <div class="question-text">Sıcaklık arttıkça maddenin ısısı her zaman aynı kalır.</div>
+        
+        <div class="choices">
+          
+          <button class="choice-btn" 
+                  data-choice-id="5604" 
+                  data-correct="false"
+                  onclick="selectChoice(3045, 5604, false)">
+            <span class="choice-letter">A</span>
+            <span>Doğru</span>
+          </button>
+          
+          <button class="choice-btn" 
+                  data-choice-id="5605" 
+                  data-correct="true"
+                  onclick="selectChoice(3045, 5605, true)">
+            <span class="choice-letter">B</span>
+            <span>Yanlış</span>
+          </button>
+          
+        </div>
+        
+        
+        <div class="solution" id="solution-3045">
+          <div class="solution-title">💡 Çözüm</div>
+          <div class="solution-text">Sıcaklık arttıkça genellikle maddenin ısı enerjisi de artar. Bu nedenle ifade yanlıştır.</div>
+        </div>
+        
+      </div>
+      
+      
+      
+    </div>
+
+    <!-- AdSense: Alt Reklam -->
+    <div class="ad-slot">
+      <div>Reklam Alanı (728x90)</div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 14px;">
+        <a href="/contact" style="color: #6b7280; text-decoration: none;">İletişim</a>
+        <a href="/about" style="color: #6b7280; text-decoration: none;">Hakkımızda</a>
+        <a href="/privacy-policy" style="color: #6b7280; text-decoration: none;">Gizlilik Politikası</a>
+      </div>
+    </div>
+    <p>&copy; 2025 Eğitim Portalı. Tüm hakları saklıdır.</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      FB.5.5.2.Isı ve Sıcaklık test soruları - 5. Sınıf Fen Bilimleri dersi online alıştırma
+    </p>
+  </footer>
+
+  <script>
+    let stats = { correct: 0, wrong: 0, answered: new Set() };
+
+    function selectChoice(questionId, choiceId, isCorrect) {
+      // Daha önce cevaplandı mı kontrol et
+      if (stats.answered.has(questionId)) return;
+
+      const card = document.querySelector(`[data-question-id="${questionId}"]`);
+      const buttons = card.querySelectorAll('.choice-btn');
+      
+      // Tüm butonları disable et
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        const btnCorrect = btn.dataset.correct === 'true';
+        
+        // Doğru cevabı işaretle
+        if (btnCorrect) {
+          btn.classList.add('correct');
+        }
+        
+        // Yanlış seçimi işaretle
+        if (btn.dataset.choiceId == choiceId && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      // İstatistikleri güncelle
+      stats.answered.add(questionId);
+      if (isCorrect) {
+        stats.correct++;
+      } else {
+        stats.wrong++;
+      }
+      
+      updateScoreCard();
+      
+      // Çözümü göster
+      const solution = document.getElementById(`solution-${questionId}`);
+      if (solution) {
+        solution.classList.add('show');
+      }
+      
+      // Kartı "answered" olarak işaretle
+      card.classList.add('answered');
+      
+      // Scroll to next question
+      setTimeout(() => {
+        const nextCard = card.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('question-card')) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 1000);
+    }
+
+    function updateScoreCard() {
+      document.getElementById('correct-score').textContent = stats.correct;
+      document.getElementById('wrong-score').textContent = stats.wrong;
+      
+      const total = stats.answered.size;
+      const percentage = total > 0 ? Math.round((stats.correct / total) * 100) : 0;
+      document.getElementById('percentage-score').textContent = percentage + '%';
+    }
+
+    function resetQuiz() {
+      if (!confirm('Tüm cevaplarınız silinecek. Emin misiniz?')) return;
+      
+      stats = { correct: 0, wrong: 0, answered: new Set() };
+      updateScoreCard();
+      
+      document.querySelectorAll('.question-card').forEach(card => {
+        card.classList.remove('answered');
+        card.querySelectorAll('.choice-btn').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('correct', 'wrong');
+        });
+        card.querySelectorAll('.solution').forEach(sol => {
+          sol.classList.remove('show');
+        });
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Difficulty filter
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Active state
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const difficulty = this.dataset.difficulty;
+        
+        // Filter questions
+        document.querySelectorAll('.question-card').forEach(card => {
+          if (difficulty === 'all' || card.dataset.difficulty == difficulty) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Choice letter helper (A, B, C, D)
+    function choiceLetterFilter(index) {
+      return String.fromCharCode(65 + index); // 65 = 'A'
+    }
+  </script>
+</body>
+</html>

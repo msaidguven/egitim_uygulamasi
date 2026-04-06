@@ -10,6 +10,23 @@
         "**/.*",
         "**/node_modules/**"
       ],
+      "redirects": [
+        {
+          "source": "/Default.aspx",
+          "destination": "/",
+          "type": 301
+        },
+        {
+          "source": "/default.aspx",
+          "destination": "/",
+          "type": 301
+        },
+        {
+          "source": "/**/*.aspx",
+          "destination": "/",
+          "type": 301
+        }
+      ],
       "rewrites": [
         {
           "source": "**",
